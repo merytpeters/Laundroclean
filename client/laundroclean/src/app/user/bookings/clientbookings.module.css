@@ -1,15 +1,16 @@
 .clientbookingcontainer {
     display: flex;
+    flex-direction: column;
     color: black;
     font-size: small;
     padding: 1em;
     width: 100%;
 }
 
-.pastbookingsection {
-    display: block;
-    width: 90%;
-    padding: 1.5em;
+.bookingsection {
+    display: flex;
+    flex-direction: column;
+    gap: 4em 0em;
 }
 
 .addnewbtn {
@@ -29,4 +30,18 @@
     margin: 1em 4em;
     right: 0;
     cursor: pointer;
+}
+
+
+.allongoingbookings {
+    display: block;
+    width: 100%;
+    padding: 1.5em;
+    margin-top: 3em;
+}
+
+.pastbookingsection {
+    display: block;
+    width: 100%;
+    padding: 1.5em;
 }

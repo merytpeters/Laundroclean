@@ -9,6 +9,7 @@ import {
     adminCancelBookingService,
     adminUpdateBookingStatusService,
     adminRestoreBookingService,
+    adminHardDeleteBookingService,
     clientCancelBookingService,
     clientGetBookingsService,
     clientGetBookingByIdService,
@@ -20,7 +21,8 @@ import {
     staffGetBookingById,
     staffSearchBookingService,
     staffUpdateBookingStatusService,
-    getBookingSettingsService
+    getBookingSettingsService,
+    clientGetBookingSettingsService
 } from "src/services/bookingService/booking.service";
 
 import { BookingPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload } from "src/types/booking/booking";
@@ -54,7 +56,13 @@ export function useCreateBooking() {
             queryClient.invalidateQueries({
                 queryKey: bookingKeys.lists(),
             });
-            toast.success(data?.message)
+            const messageToast = toast.success(data?.message);
+            if (data.warning) {
+                toast.dismiss(messageToast);
+                setTimeout(() => {
+                    toast.warning(data?.warning);
+                }, 3000)
+            }
         },
 
         onError(error) {
@@ -106,8 +114,12 @@ export function useGetBookingSettings() {
 
     return useQuery<ApiResponse<BookingSettingsDto> | null>({
         queryKey: bookingSettingsKeys.current(),
-        queryFn: getBookingSettingsService,
-        enabled: authUser?.type === "COMPANYUSER",
+        queryFn: () => {
+            if (authUser?.type === "COMPANYUSER") {
+                return getBookingSettingsService()
+            }
+            return clientGetBookingSettingsService();
+        },
     })
 }
 
@@ -115,10 +127,12 @@ export function useGetBookingSettings() {
 type GetBookingsVariables = {
     id?: string;
     params?: CompanyListBookingsQueryParam;
+    enabled?: boolean;
 }
 export function useGetbookings({
     id,
     params,
+    enabled = true
 }: GetBookingsVariables) {
     const { authUser } = useAuth();
 
@@ -134,7 +148,8 @@ export function useGetbookings({
                 return id ? staffGetBookingById(id) : staffSearchBookingService(params)
             }
             return null;
-        }
+        },
+        enabled
     });
 }
 
@@ -142,10 +157,13 @@ export function useGetbookings({
 type GetClientBookingsVariables = {
     id?: string;
     params?: ClientUserListBookingsQueryParam;
+    enabled?: boolean;
 }
+
 export function useGetClientbookings({
     id,
-    params
+    params,
+    enabled = true
 }: GetClientBookingsVariables) {
 
     return useQuery<ApiResponse<BookingDto | ListBookingsDto> | null>({
@@ -153,6 +171,78 @@ export function useGetClientbookings({
             ? bookingKeys.detail(id)
             : bookingKeys.list(params),
         queryFn: () =>
-            id ? clientGetBookingByIdService(id) : clientGetBookingsService(params)
+            id
+                ? clientGetBookingByIdService(id)
+                : params
+                    ? clientGetBookingsService(params)
+                    : clientGetBookingsService(),
+        enabled
     });
+}
+
+export function useCancelBookings() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async(bookingId: string) => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser?.uiRole === "ADMIN") {
+                    return adminCancelBookingService(bookingId)
+                }
+            }
+            return clientCancelBookingService(bookingId)
+        },
+        onSuccess(data) {
+            queryClient.invalidateQueries({
+                queryKey: bookingKeys.lists(),
+            });
+            const messageToast = toast.success(data?.message);
+            if (data?.warning) {
+                toast.dismiss(messageToast);
+                setTimeout(() => {
+                    toast.warning(data?.warning);
+                }, 3000)
+            }
+        },
+
+        onError(error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : 'Something went wrong'
+            );
+        }
+    });
+    return mutation
+}
+
+export function useHardDeleteBookings() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async() => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser?.uiRole === "ADMIN") {
+                    return adminHardDeleteBookingService()
+                }
+            }
+        },
+        onSuccess(data) {
+            queryClient.invalidateQueries({
+                queryKey: bookingKeys.lists(),
+            });
+            toast.success(data?.message);
+        },
+
+        onError(error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : 'Something went wrong'
+            );
+        }
+    });
+    return mutation
 }

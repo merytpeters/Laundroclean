@@ -706,8 +706,6 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
-
- 
  */
 
 /**
@@ -967,6 +965,26 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/BookingListResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ * 
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Delete all pending inactive bookings
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Delete all pending inactive bookings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/'
  *       '401':
  *         description: Unauthorized
  *         content:

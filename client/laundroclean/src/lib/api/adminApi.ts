@@ -120,6 +120,11 @@ export const adminApi = {
             params: params
         }),
 
+    hardDeletePendingInactiveBookings: () =>
+        apiRequest<string>('/admin/bookings', {
+            method: "DELETE",
+        }),
+
     createBooking: (payload: BookingPayload) =>
         apiRequest<BookingDto>('/admin/booking', {
             method: "POST",

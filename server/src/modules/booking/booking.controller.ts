@@ -24,8 +24,9 @@ const createBookingController = asyncHandler(async (req, res) => {
 
     return res.status(201).json({
         success: true,
-        data: newBooking,
+        data: newBooking.booking,
         message: 'Booking created successfully',
+        warning: newBooking.warning
     });
 });
 
@@ -38,8 +39,9 @@ const updateBookingController = asyncHandler(async (req, res) => {
 
     return res.status(200).json({
         success: true,
-        data: updatedBooking,
-        message: `${updatedBooking.customBookingId} booking has been updated successfully`
+        data: updatedBooking.booking,
+        message: `${updatedBooking.booking.customBookingId} booking has been updated successfully`,
+        warning: updatedBooking.warning
     });
 });
 
@@ -153,6 +155,17 @@ const getBookingSettings = asyncHandler(async (req, res) => {
     });
 });
 
+const adminHardDeleteBookingController = asyncHandler(async (req, res) => {
+    const isAdmin = req.user?.role?.title === 'ADMIN';
+
+    const message = await BookingService.adminHardDeleteBookings(Boolean(isAdmin));
+
+    return res.status(200).json({
+        success: true,
+        message: message
+    });
+});
+
 export default {
     createBookingController,
     updateBookingController,
@@ -162,5 +175,6 @@ export default {
     cancelBookingController,
     restoreBookingController,
     updateBookingSettings,
-    getBookingSettings
+    getBookingSettings,
+    adminHardDeleteBookingController
 };

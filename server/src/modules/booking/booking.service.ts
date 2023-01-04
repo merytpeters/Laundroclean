@@ -73,8 +73,10 @@ const validateServiceArea = async (tx: Prisma.TransactionClient, lat: number, ln
 const createBooking = async (
     input: CreateBookingInput,
     email?: string
-): Promise<Booking> => {
-    return await prisma.$transaction(async (tx) => {
+): Promise<{ booking: Booking, warning?: string }> => {
+    let bookingWarning: string | undefined;
+
+    const booking = await prisma.$transaction(async (tx) => {
         let user: User | null = null;
 
         // 1. Resolve user
@@ -141,19 +143,28 @@ const createBooking = async (
         let addressId: string | null = null;
 
         if (input.address) {
-            const addressLine = input.address.addressLine1 || input.address.addressLine2;
-            if (!addressLine) {
-                throw new Error('At least one address line is required');
-            }
-            const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-            if (input.deliveryType === 'PICK_UP') {
-                const serviceArea = await validateServiceArea(tx, lat, lng);
-                if (!serviceArea) {
-                    const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
-                    throw new NotFoundError(
-                        `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
-                    );
+            try {
+                const addressLine = input.address.addressLine1 || input.address.addressLine2;
+                if (!addressLine) {
+                    throw new Error('At least one address line is required');
                 }
+                const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+                if (input.deliveryType === 'PICK_UP') {
+                    const serviceArea = await validateServiceArea(tx, lat, lng);
+                    if (!serviceArea) {
+                        const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
+                        throw new NotFoundError(
+                            `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                        );
+                    }
+                }
+            } catch (error: any) {
+                if (input.deliveryType === 'PICK_UP') {
+                    bookingWarning = 'Location geocoding failed, check service areas to see if your location is serviced if not choose the nearest drop off to you:';
+                } else if (input.deliveryType === 'DROP_OFF') {
+                    bookingWarning = 'Check drop off locations for the nearest place to drop off your clothes:';
+                }
+                console.warn(bookingWarning, error.message);
             }
 
             const address = await tx.profile.upsert({
@@ -281,11 +292,7 @@ const createBooking = async (
                         assignedTo: true,
                         profile: {
                             include: {
-                                user: {
-                                    select: {
-                                        id: true
-                                    }
-                                }
+                                user: true
                             }
                         }
                     },
@@ -312,13 +319,16 @@ const createBooking = async (
         throw new ConflictError('Failed to generate unique booking ID');
     }, {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-    }
-    );
+    });
+    return bookingWarning
+        ? { booking, warning: bookingWarning }
+        : { booking };
 };
 
 // for client and companyuser same approach as create
-const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<Booking> => {
-    return await prisma.$transaction(async (tx) => {
+const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<{ booking: Booking, warning?: string }>=> {
+    let bookingWarning: string | undefined;
+    const booking = await prisma.$transaction(async (tx) => {
         try {
             const whereObj = normalizeWhere(where);
             const booking = await tx.booking.findUnique({
@@ -379,20 +389,31 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             }
 
             if (input.address) {
-                const addressLine = input.address.addressLine1 || input.address.addressLine2;
-                if (!addressLine) {
-                    throw new Error('At least one address line is required');
-                }
-                const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-                if (input.deliveryType === 'PICK_UP') {
-                    const serviceArea = await validateServiceArea(tx, lat, lng);
-                    if (!serviceArea) {
-                        const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
-                        throw new NotFoundError(
-                            `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
-                        );
+                try {
+
+                    const addressLine = input.address.addressLine1 || input.address.addressLine2;
+                    if (!addressLine) {
+                        throw new Error('At least one address line is required');
+                    }
+                    const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+                    if (input.deliveryType === 'PICK_UP') {
+                        const serviceArea = await validateServiceArea(tx, lat, lng);
+                        if (!serviceArea) {
+                            const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
+                            throw new NotFoundError(
+                                `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                            );
+                        }
+                    }
+
+                } catch (error: any) {
+                    if (input.deliveryType === 'PICK_UP') {
+                        bookingWarning = 'Location geocoding failed, check service areas to see if your location is serviced if not choose the nearest drop off to you:';
+                    } else if (input.deliveryType === 'DROP_OFF') {
+                        bookingWarning = 'Check drop off locations for the nearest place to drop off your clothes:';
                     }
                 }
+
                 updateData.address = {
                     update: {
                         ...Object.fromEntries(
@@ -467,11 +488,7 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                     assignedTo: true,
                     profile: {
                         include: {
-                            user: {
-                                select: {
-                                    id: true
-                                }
-                            }
+                            user: true
                         }
                     }
                 },
@@ -498,6 +515,9 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
         }
     );
+    return bookingWarning
+        ? { booking, warning: bookingWarning }
+        : { booking };
 };
 
 const normalizeWhere = (where: any): BookingWhereUniqueInput => {
@@ -529,7 +549,11 @@ const getBooking = async (
             },
             assignedTo: true,
             service: true,
-            transactions: true
+            transactions: {
+                include: {
+                    payment: true
+                }
+            }
         },
     });
 
@@ -561,7 +585,10 @@ const listBookings = async (
     } = {},
     currentUser?: { id?: string; type?: string },
     isAdmin: boolean = false,
-) => {
+): Promise<{
+    data: BookingWithOtherModels[]
+    meta: { total: number; page: number; limit: number; totalPages: number }
+}> => {
     const paginationInput: Record<string, any> = {};
 
     if (params.page !== undefined) paginationInput.page = params.page;
@@ -605,7 +632,11 @@ const listBookings = async (
                 name: true,
             },
         },
-        transactions: true
+        transactions: {
+                include: {
+                    payment: true
+                }
+            }
     };
 
     if (params.includeProfile) {
@@ -772,7 +803,7 @@ const softDeleteBooking = async (where: BookingWhereUniqueInput | string, isAdmi
     }
 
     // mark as cancelled and set deletedAt
-    await prisma.booking.update({ where: whereObj, data: { status: 'CANCELLED', deletedAt: new Date() } as any });
+    await prisma.booking.update({ where: whereObj, data: { isActive: false, status: 'CANCELLED', deletedAt: new Date() } as any });
 };
 
 const restoreBooking = async (where: BookingWhereUniqueInput | string, isAdmin: boolean = false): Promise<Booking> => {
@@ -836,6 +867,25 @@ const getBookingSettings = async (): Promise<BookingSettings> => {
 };
 
 
+const adminHardDeleteBookings = async (isAdmin: boolean = false): Promise<string> => {
+    // Hard delete for inactive and pending bookings only to clean db
+    if (!isAdmin) {
+        throw new ForbiddenError('Forbidden action, hard delete bookings reserved for admin only');
+    }
+
+    const deletedBookings = await prisma.booking.deleteMany({ 
+        where: {
+            status: 'CANCELLED',
+            isActive: false
+        }
+    });
+
+    const message = `${deletedBookings.count} cancelled, inactive bookings were deleted`;
+
+    return message;
+};
+
+
 // payment triggers status to confirmed
 // const confirmBooking
 
@@ -848,5 +898,6 @@ export default {
     softDeleteBooking,
     restoreBooking,
     upsertBookingSettings,
-    getBookingSettings
+    getBookingSettings,
+    adminHardDeleteBookings
 };

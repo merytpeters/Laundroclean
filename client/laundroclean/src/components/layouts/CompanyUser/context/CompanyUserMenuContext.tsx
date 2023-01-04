@@ -11,10 +11,10 @@ interface MenuContextType {
   menuItems: MenuItem[];
   setMenuItems: (items: MenuItem[]) => void;
   bookingInfo?: {
-    bookingId?: string | number;
-    bookingUserId?: string | number;
+    bookingId?: string;
+    bookingUserId?: string;
   };
-  setBookingInfo?: (info: { bookingId?: string | number; bookingUserId?: string | number }) => void;
+  setBookingInfo?: (info: { bookingId?: string; bookingUserId?: string }) => void;
 }
 
 export const CompanyUserMenuContext =
@@ -36,7 +36,7 @@ interface ProviderProps {
 
 export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user }: ProviderProps) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
-  const [bookingInfo, setBookingInfoState] = useState<{ bookingId?: string | number; bookingUserId?: string | number } | undefined>(undefined);
+  const [bookingInfo, setBookingInfoState] = useState<{ bookingId?: string; bookingUserId?: string } | undefined>(undefined);
 
   const [activeMenu, setActiveMenuState] = useState<string>("overview");
 
@@ -88,7 +88,7 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
     }
   }, [setActiveMenu]);
 
-  const setBookingInfo = (info: { bookingId?: string | number; bookingUserId?: string | number }) => {
+  const setBookingInfo = (info: { bookingId?: string; bookingUserId?: string }) => {
     try {
       setBookingInfoState(info);
     } catch {

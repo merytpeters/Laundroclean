@@ -5,13 +5,22 @@ import ErrorState from "src/components/ui/ErrorState/ErrorState";
 import PaymentModal from "src/components/ui/Modals/CompanyUser/PaymentModal/PaymentModal";
 import { useAuth } from "src/context/AuthContext";
 import { useSearchParams } from "next/navigation";
+import { useGetClientbookings } from "src/hooks/booking/useBooking";
 
 
 export default function ClientPayment() {
     const { authUser, authProfile, isLoading, isError, refetch } = useAuth();
     const search = useSearchParams();
-    const bookingId = search.get("bookingId");
-    const bookingUserId = search.get("bookingUserId");
+    const bookingId = search.get("bookingId") || "";
+    const { data } = useGetClientbookings({
+        id: bookingId,
+        enabled: Boolean(bookingId)
+    });
+    const bookingUserId = data?.data && !Array.isArray(data.data)
+        ? data.data.profile?.userId
+        : undefined
+    
+    // console.log(data?.data)
 
     if (isLoading) return <FaSpinner />;
     if (isError) {

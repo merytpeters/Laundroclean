@@ -1,6 +1,6 @@
 "use client";
 
-import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
+import { CompanyUserMenuContext, useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
 import Overview from "src/components/ui/Modals/CompanyUser/OverviewModal/OverviewModal";
 import BookingModal from "src/components/ui/Modals/CompanyUser/BookingModal/BookingModal";
 import DeliveryModal from "src/components/ui/Modals/CompanyUser/DeliveryModal/DeliveryModal";
@@ -13,13 +13,24 @@ import { FaSpinner } from "react-icons/fa";
 import ErrorState from "src/components/ui/ErrorState/ErrorState";
 import CompanyUserPromotionsUI from "src/components/ui/Modals/CompanyUser/Promotions/Promotions";
 import { useAuth } from "src/context/AuthContext";
+import { useContext } from "react";
+import { useGetbookings } from "src/hooks/booking/useBooking";
 
 
 export default function StaffDashboard() {
     const { activeMenu } = useCompanyUserMenu();
+    const companyContext = useContext(CompanyUserMenuContext) as React.ContextType<typeof CompanyUserMenuContext> | undefined;
+    const bookingId = companyContext?.bookingInfo?.bookingId;
+    const { data } = useGetbookings({
+        id: bookingId,
+        enabled: Boolean(bookingId)
+    });
+    const bookingUserId = data?.data && !Array.isArray(data.data)
+        ? data.data.profile?.userId
+        : undefined
 
     const { authUser, authProfile, isLoading, isError, refetch } = useAuth();
-    
+
     if (isLoading) return <FaSpinner />;
     if (isError) {
         return (
@@ -41,7 +52,7 @@ export default function StaffDashboard() {
             {activeMenu === "delivery" && <DeliveryModal />}
             {activeMenu === "services" && <StaffServicesModal />}
             {activeMenu === "calendar" && <CalendarModal />}
-            {activeMenu === "payment" && <PaymentModal user={authUser} />}
+            {activeMenu === "payment" && <PaymentModal user={authUser} bookingId={bookingId} bookingUserId={bookingUserId}/>}
             {activeMenu === "promotions" && <CompanyUserPromotionsUI />}
             {
                 activeMenu === "settings" &&

@@ -84,11 +84,15 @@ export default function BookingForm({
         "line1" | "line2" | "new" | ""
     >("");
 
+
     const [bookingAmount, setBookingAmount] = useState<
         number | string | null
     >(null);
     const [bookingIdState, setBookingIdState] = useState<string | number | undefined>(undefined);
-    const [bookingUserIdState, setBookingUserIdState] = useState<string | number | undefined>(undefined);
+    const bookingref =
+        `/user/payment?bookingId=${bookingIdState} ?? 
+        /admin#payment?bookingId=${bookingIdState} ?? 
+        /staff#payment?bookingId=${bookingIdState} }`
 
     const deliveryOpts =
         deliveryOptions ??
@@ -410,11 +414,10 @@ export default function BookingForm({
                     const finalAmount =
                         response?.data?.finalAmount;
                     const bookingId = response.data?.id
-                    const userwithBookingId = response?.data?.profile?.user?.id
 
                     // store booking info in company menu context so PaymentModal can pick it up
                     try {
-                        companyContext?.setBookingInfo?.({ bookingId, bookingUserId: userwithBookingId });
+                        companyContext?.setBookingInfo?.({ bookingId });
                     } catch {
                         // ignore
                     }
@@ -422,7 +425,6 @@ export default function BookingForm({
                     // store locally so client flow can navigate with booking info
                     try {
                         setBookingIdState(bookingId);
-                        setBookingUserIdState(userwithBookingId);
                     } catch {
                         // ignore
                     }
@@ -998,17 +1000,17 @@ export default function BookingForm({
                         id="scheduledDate"
                         type="date"
                         min={minScheduledDeliveryDate}
-                            disabled={!bookingSettings?.data}
-                            {...formData.register("scheduledDate", {
-                                validate: (value) => {
-                                    if (!value || !bookingSettings?.data) return true;
+                        disabled={!bookingSettings?.data}
+                        {...formData.register("scheduledDate", {
+                            validate: (value) => {
+                                if (!value || !bookingSettings?.data) return true;
 
-                                    return (
-                                        value >= minScheduledDeliveryDate ||
-                                        `Delivery date must be at least ${bookingSettings.data.minPickupDays} days from today`
-                                    );
-                                },
-                            })}
+                                return (
+                                    value >= minScheduledDeliveryDate ||
+                                    `Delivery date must be at least ${bookingSettings.data.minPickupDays} days from today`
+                                );
+                            },
+                        })}
                     />
                     <label htmlFor="scheduledTime">
                         scheduled delivery Time
@@ -1172,15 +1174,15 @@ export default function BookingForm({
                                         "Amount unavailable"}
                                 </span>
 
-                                    <PaymentButton
-                                        onClose={() => setOpen(false)}
-                                        className={styles.paymentbuttonoverlay}
-                                        href={
-                                            bookingIdState
-                                                ? `/user/payment?bookingId=${bookingIdState}&bookingUserId=${bookingUserIdState ?? ""}`
-                                                : undefined
-                                        }
-                                    />
+                                <PaymentButton
+                                    onClose={() => setOpen(false)}
+                                    className={styles.paymentbuttonoverlay}
+                                    href={
+                                        bookingIdState
+                                            ? bookingref
+                                            : undefined
+                                    }
+                                />
                             </span>
                         )}
                     </div>

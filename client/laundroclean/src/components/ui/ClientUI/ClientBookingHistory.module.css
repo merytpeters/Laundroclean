@@ -26,3 +26,57 @@
 .moredetails {
     cursor: pointer;
 }
+
+/* Client Booking list styles*/
+.CurrentBookingsContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0em;
+    width: 100%;
+}
+
+.CurrentBookingsContainer h3,
+.CurrentBookingsContainer p {
+    display: flex;
+    width: 100%;
+    padding: 0 1em;
+}
+
+.bookingsBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2em 0em;
+}
+
+.bookingListHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 2em 6em;
+    width: auto;
+    font-weight: 500;
+    margin-top: 2em;
+    padding:0 1em 0 2em;
+}
+
+.bookingListHeader span {
+    display: flex;
+    gap: 1em 2em;
+}
+
+.bookingsListBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2em 1em;
+    width: auto;
+}
+
+.bookingItem {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1em 0.5em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    gap: 1em 3em;
+    background-color: #f4f1f1;
+}

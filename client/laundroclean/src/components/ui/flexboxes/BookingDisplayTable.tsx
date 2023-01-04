@@ -8,16 +8,18 @@ import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
 import { useEffect, useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
-import { useGetbookings, useGetBookingSettings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
+import { useGetbookings, useGetBookingSettings, useHardDeleteBookings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
 import { minimumPickupdaysPayload } from "src/types/booking/booking";
 import { LoadingState } from "../ErrorState/ErrorState";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { BookingDto } from "src/types/booking/booking.dto";
 import { toast } from "sonner";
+import Button from "../Button/Button";
+import { capitalilzeFirstLetter } from "src/utils/capitalize";
 
 
 // const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
-type BookingListProp = {
+export type BookingListProp = {
     mappedBookingData: BookingDto[];
 };
 
@@ -86,7 +88,7 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
                                 <button className={styles.editbtn}>
                                     <FiEdit color="blue" />
                                 </button>
-                                {user.uiRole === "ADMIN" && (
+                                {user.uiRole === "ADMIN" && bookingDetail.status === "CANCELLED" && (
                                     <button className={styles.trashbtn}>
                                         <FiTrash2 />
                                     </button>
@@ -162,6 +164,20 @@ export function BookingSettings() {
 export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
     const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
 
+    const cancelledBookings = mappedBookingData.filter((booking) => {
+        return booking.status === "CANCELLED"
+    })
+
+    const restMappedBookingData = mappedBookingData.filter((booking) => {
+        return booking.status !== "CANCELLED"
+    })
+
+    const hardDeleteMutation = useHardDeleteBookings();
+
+    const handleDeleteCancelledBookings = () => {
+        hardDeleteMutation.mutate()
+    }
+
     return (
         <section className={styles.bookingdetailsection}>
             <span className={styles.allbookingsheader}>
@@ -187,38 +203,71 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
                     <span>Assigned Staff</span>
                     <span>Actions</span>
                 </span>
-                {mappedBookingData.map((bookingDetail) => (
-                    <span key={bookingDetail.id} className={styles.bookingInfodetails}>
-                        <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
-                        <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
-                        <span>{bookingDetail.service?.name}</span>
-                        <span>
-                            {bookingDetail.transactions?.[0]?.paidAt
-                                ? formatDateTime(bookingDetail.transactions[0].paidAt)
-                                : "Unpaid"}
-                        </span>
-                        <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
-                        <span>{bookingDetail.deliveryType}</span>
-                        <span>{bookingDetail.status}</span>
-                        <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
-                        <span>
-                            {bookingDetail.assignedTo
-                                ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
-                                : "—"}
-                        </span>
-                        <span>
-                            <button className={styles.editbtn}>
-                                <FiEdit color="blue" />
-                            </button>
-
-                            <button className={styles.trashbtn}>
-                                <FiTrash2 />
-                            </button>
+                <span className={styles.bookingInfocard}>
+                    {restMappedBookingData.map((bookingDetail) => (
+                        <span key={bookingDetail.id} className={styles.bookingInfodetails}>
+                            <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
+                            <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
+                            <span>{bookingDetail.service?.name}</span>
+                            <span>
+                                {bookingDetail.transactions?.[0]?.paidAt
+                                    ? formatDateTime(bookingDetail.transactions[0].paidAt)
+                                    : "Unpaid"}
+                            </span>
+                            <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
+                            <span>{bookingDetail.deliveryType}</span>
+                            <span>{bookingDetail.status}</span>
+                            <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
+                            <span>
+                                {bookingDetail.assignedTo
+                                    ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
+                                    : "—"}
+                            </span>
+                            <span>
+                                <button className={styles.editbtn}>
+                                    <FiEdit color="blue" />
+                                </button>
 
 
+                            </span>
                         </span>
-                    </span>
-                ))}
+                    ))}
+                    {cancelledBookings?.length > 0 && (
+                        <span>
+                            <Button text="Delete All Cancelled Bookings" className={styles.cancelledbookingsDeletebtn} onClick={handleDeleteCancelledBookings} />
+                        </span>
+                    )}
+
+                    {cancelledBookings.map((bookingDetail) => (
+                        <span key={bookingDetail.id} className={styles.bookingInfodetails}>
+                            <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
+                            <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
+                            <span>{bookingDetail.service?.name}</span>
+                            <span>
+                                {bookingDetail.transactions?.[0]?.paidAt
+                                    ? formatDateTime(bookingDetail.transactions[0].paidAt)
+                                    : "Unpaid"}
+                            </span>
+                            <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
+                            <span>{bookingDetail.deliveryType}</span>
+                            <span>{bookingDetail.status}</span>
+                            <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
+                            <span>
+                                {bookingDetail.assignedTo
+                                    ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
+                                    : "—"}
+                            </span>
+                            <span>
+                                <button className={styles.editbtn}>
+                                    <FiEdit color="blue" />
+                                </button>
+
+                            </span>
+                        </span>
+                    ))}
+
+                </span>
+
 
             </span>
             <BookingDetailsOverlay isOpen={selectedBooking !== null} item={selectedBooking} onClose={() => setSelectedBooking(null)} />
@@ -235,9 +284,27 @@ interface BookingDetailsOverlayProps {
 export function BookingDetailsOverlay({
     isOpen,
     item,
-    onClose
+    onClose,
 }: BookingDetailsOverlayProps) {
-    const { user } = useCompanyUserMenu();
+    const { user, setActiveMenu, setBookingInfo } = useCompanyUserMenu();
+    const bookingId = item?.id ?? "";
+    const bookingRef = user.uiRole === "ADMIN" || user.uiRole === "STAFF"
+        ? `/admin/dashboard#payment?bookingId=${bookingId}`
+        : `/user/payment?bookingId=${bookingId}`;
+
+    const handleMakePayment = () => {
+        if (!item) return;
+
+        setBookingInfo?.({
+            bookingId: item.id,
+            bookingUserId: item.profile?.userId,
+        });
+
+        if (user.uiRole === "ADMIN" || user.uiRole === "STAFF") {
+            setActiveMenu("payment");
+        }
+    };
+
     if (!isOpen || !item) return null;
 
 
@@ -259,7 +326,8 @@ export function BookingDetailsOverlay({
                     <span className={styles.itemspan}><strong>Date Booked: </strong>
                         {item.transactions?.[0]?.paidAt
                             ? formatDateTime(item.transactions[0].paidAt)
-                            : "Unpaid"}
+                            : <span>Unpaid <Button className={styles.makepayment} text="make payment" onClick={handleMakePayment} href={user.uiRole === "ADMIN" || user.uiRole === "STAFF" ? undefined : bookingRef} /> </span>
+                        }
                     </span>
                     <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
                     <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
@@ -268,7 +336,7 @@ export function BookingDetailsOverlay({
                     <span>
                         {user.uiRole === "ADMIN" || user.id === item.assignedToId ? (
                             <span>
-                                <strong>Assigned Staff: </strong> {item.assignedTo.firstName} {item.assignedTo.lastName}
+                                <strong>Assigned Staff: </strong> {item.assignedTo?.firstName} {item.assignedTo?.lastName}
                             </span>
                         ) : (
                             ""
@@ -318,5 +386,79 @@ export function BookingDetailsOverlay({
         </div>
     )
 }
+
+export function ClientBookingDetailsOverlay({
+    isOpen,
+    item,
+    onClose,
+}: BookingDetailsOverlayProps) {
+    const [bookingIdState, setBookingIdState] = useState<string | number | undefined>(undefined);
+    const bookingId = item?.id ?? "";
+    const bookingRef = `/user/payment?bookingId=${bookingId}`;
+
+    const handleMakePayment = () => {
+        if (!item) return;
+
+        try {
+            setBookingIdState(bookingId);
+        } catch {
+            // ignore
+        }
+    };
+
+    if (!isOpen || !item) return null;
+
+
+    return (
+        <div>
+            <span className={styles.overlay}></span>
+            <span className={styles.bookingOverlay}>
+                <button onClick={onClose}>Close</button>
+                <span key={item.id} className={styles.bookingoverlayinfo}>
+                    <span className={styles.itemspan}><strong>Booking ID: </strong>{item.customBookingId}</span>
+                    <span className={styles.itemspan}><strong>Customer: </strong> {item.profile?.user?.firstName} {item.profile?.user?.lastName}</span>
+                    <span>{item.profile?.user?.email && (
+                        <span className={styles.itemspan}><strong>Email: </strong> {item.profile.user.email}</span>
+                    )} </span>
+                    <span>{item.profile?.phoneNumber && (
+                        <span className={styles.itemspan}><strong>Mobile number: </strong> {item.profile.phoneNumber}</span>
+                    )}</span>
+                    <span className={styles.itemspan}><strong>Service: </strong> {item.service?.name}</span>
+                    <span className={styles.itemspan}><strong>Date Booked: </strong>
+                        {item.transactions?.[0]?.paidAt
+                            ? formatDateTime(item.transactions[0].paidAt)
+                            : <span><Button className={styles.makepayment} text="make payment" onClick={handleMakePayment} href={
+                                bookingIdState
+                                    ? bookingRef
+                                    : undefined
+                            } /> </span>
+                        }
+                    </span>
+                    <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
+                    <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
+                    <span className={styles.itemspan}><strong>Status: </strong> {capitalilzeFirstLetter(item.status)}</span>
+                    <span className={styles.itemspan}><strong>Amount: </strong>{item.currency} {item.finalAmount}</span>
+                    <span>{item.discountAmount && (
+                        <span className={styles.itemspan}><strong>Discount: </strong>{item.discountAmount}</span>
+                    )}
+                    </span>
+                    <span>{item.weight && (
+                        <span className={styles.itemspan}><strong>Weight: </strong> {item.weight}</span>
+                    )}
+                    </span>
+                    <span>{item.itemCount && (
+                        <span className={styles.itemspan}><strong>Number of items: </strong> {item.itemCount}</span>
+                    )}</span>
+                    <span>
+                        {item.isActive === true && (
+                            <button>Active</button>
+                        )}
+                    </span>
+                </span>
+            </span>
+        </div>
+    )
+}
+
 
 // edit in display table should be for just bookingdetails.status

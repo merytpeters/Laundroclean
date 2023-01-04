@@ -86,6 +86,14 @@ export async function adminRestoreBookingService (bookingId: string): Promise<Ap
     return res
 }
 
+export async function adminHardDeleteBookingService(): Promise<ApiResponse<string> | null> {
+    const res = await adminApi.hardDeletePendingInactiveBookings();
+
+    if(!res.success || !res.message) return null;
+
+    return res
+}
+
 // client ApiServices
 export async function clientCreateBookingService (payload: BookingPayload): Promise<ApiResponse<BookingDto>> {
     const res = await clientApi.createBooking(payload);
@@ -133,6 +141,16 @@ export async function clientUpdateBookingStatusService (bookingId: string, paylo
     const res = await clientApi.updateBookingStatus(bookingId, payload);
 
     if (!res.success || !res.data) return null;
+
+    return res
+}
+
+export async function clientGetBookingSettingsService (): Promise<ApiResponse<BookingSettingsDto> | null> {
+    const res = await clientApi.getBookingSettings();
+
+    if (!res.success) {
+        throw new Error(res.message);
+    }
 
     return res
 }

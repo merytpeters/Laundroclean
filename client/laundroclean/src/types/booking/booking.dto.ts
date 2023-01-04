@@ -36,12 +36,12 @@ export type BookingDto = {
     }
     profile?: {
         user?: {
-            id: string;
             firstName?: string;
             lastName?: string;
             email: string;
         }
         phoneNumber: string;
+        userId?: string;
     }
     currency: "NAIRA" | "DOLLAR" | "POUNDS";
     unitPrice?: number;
@@ -49,7 +49,6 @@ export type BookingDto = {
     promoCodeId?: string;
     discountAmount?: number;
     finalAmount?: number;
-
     itemCount?: number;
     weight?: string;
     addressId?: string;

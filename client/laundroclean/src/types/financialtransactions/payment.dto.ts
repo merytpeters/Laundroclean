@@ -23,9 +23,10 @@ export type TransactionDto = {
     merchantAmount: number;
     paidAt: string | null;
     transactionRef: string;
+    payment: PaymentDto;
 }
 
-export type PaymentChannelAndMethodDto = 
+export type PaymentChannelAndMethodDto =
     | "BANKCARD"
     | "BANK_TRANSFER"
     | "OPAY_WALLET"
