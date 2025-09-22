@@ -55,5 +55,11 @@ A web and mobile application for a laundromat where users can book laundry servi
 - TypeScript
 - MongoDB or other database
 
+## Database Schema
+![DB Schema](docs/db-schema.png)
+
+For editing, open [db-schema.drawio](docs/db-schema.drawio) in [draw.io](https://app.diagrams.net/).
+
+
 ## License
 MIT
