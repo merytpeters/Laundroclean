@@ -31,7 +31,7 @@ jobs:
         run: npm run lint
 
       - name: TypeScript check
-        run: npx tsc --noEmit -p tsconfig.json
+        run: npx tsc --noEmit
 
       - name: Prisma generate
         run: npm run db:generate
