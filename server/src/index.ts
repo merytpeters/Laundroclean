@@ -7,16 +7,16 @@ const PORT = Number(config.PORT) || 8000;
 
 const startServer = async () => {
     try {
-        await prisma.$connect()
-        logger.info('Database Connected')
+        await prisma.$connect();
+        logger.info('Database Connected');
 
-        app.listen(PORT, "::", ()=> {
-            logger.info(`Server is running on port ${PORT}`)
-        })
+        app.listen(PORT, '::', ()=> {
+            logger.info(`Server is running on port ${PORT}`);
+        });
     } catch (err) {
-        logger.error('Unable to connect to the database', err)
-        process.exit(1)
+        logger.error('Unable to connect to the database', err);
+        process.exit(1);
     }
-}
+};
 
-startServer()
+startServer();

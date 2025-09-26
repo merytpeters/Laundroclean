@@ -1,8 +1,8 @@
-import cors from 'cors';
+// import cors from 'cors';
 import express from 'express';
 
 
-const app = express()
+const app = express();
 
 {/*app.use(
     cors({
@@ -12,12 +12,12 @@ const app = express()
 )*/}
 
 app.get('/', (req, res) => {
-    res.json({ message: "LaundroClean is running" });
-})
+    res.json({ message: 'LaundroClean is running' });
+});
 
-app.get("/health", (req, res) => {
+app.get('/health', (req, res) => {
   res.status(200).json({
-    status: "ok",
+    status: 'ok',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });
