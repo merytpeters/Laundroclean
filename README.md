@@ -55,9 +55,9 @@ A web and mobile application for a laundromat where users can book laundry servi
 - Posgresql, Prisma Orm, Supabase
 
 ## Database Schema
-![DB Schema](laundroclean/docs/db-schema.drawio)
+![DB Schema](docs/db-schema.drawio)
 
-For editing, open [db-schema.drawio](laundroclean/docs/db-schema.drawio) in [draw.io](https://app.diagrams.net/).
+For editing, open [db-schema.drawio](docs/db-schema.drawio) in [draw.io](https://app.diagrams.net/).
 
 
 ## License
