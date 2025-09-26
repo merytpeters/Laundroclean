@@ -30,11 +30,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: TypeScript check
-        run: npx tsc --noEmit
-
       - name: Prisma generate
         run: npm run db:generate
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
 
       - name: Run tests
         run: npm test
