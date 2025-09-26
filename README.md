@@ -25,7 +25,7 @@ A web and mobile application for a laundromat where users can book laundry servi
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/merytpeters/Laundroclean.git
    cd Laundroclean
    ```
 2. Install dependencies:
@@ -50,10 +50,9 @@ A web and mobile application for a laundromat where users can book laundry servi
   ```
 
 ## Technologies Used
-- React / React Native
+- React / Typescript
 - Node.js / Express
-- TypeScript
-- MongoDB or other database
+- Posgresql, Prisma Orm, Supabase
 
 ## Database Schema
 ![DB Schema](laundroclean/docs/db-schema.drawio)
