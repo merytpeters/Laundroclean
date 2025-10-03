@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../src/app.js';
+import 'dotenv/config';
 
 describe('GET /', () => {
     it('should return a running message', async ()=> {

@@ -1,4 +1,4 @@
-import { UserType, CompanyRoleTitle } from "@prisma/client"
+import { UserType, CompanyRoleTitle } from '@prisma/client';
 
 export type SessionPayload = {
     id: string

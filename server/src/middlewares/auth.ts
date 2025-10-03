@@ -56,10 +56,10 @@ class UserAuth {
             return next(new UnauthenticatedError('Not authenticated'));
         }
 
-        if (!req.user.type) {
+        if (!req.user.type || !allowedUsers.includes(req.user.type)) {
             return next(new UnauthorizedError('Access denied'));
         }
-        next()
+        next();
     };
   }
 }

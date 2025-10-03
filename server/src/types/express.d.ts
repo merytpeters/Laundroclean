@@ -1,5 +1,5 @@
-import 'express-session'
-import type { SessionPayload } from './index.ts'
+import 'express-session';
+import type { SessionPayload } from './index.ts';
 
 declare module 'express-serve-static-core' {
   interface Request {

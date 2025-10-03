@@ -1,5 +1,6 @@
 // import cors from 'cors';
 import express from 'express';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 
 const app = express();
@@ -10,6 +11,8 @@ const app = express();
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
     })
 )*/}
+
+app.use(errorHandler);
 
 app.get('/', (req, res) => {
     res.json({ message: 'LaundroClean is running' });
