@@ -8,6 +8,7 @@ const env = (variable: string): any => {
 const config = {
   NODE_ENV: env('NODE_ENV'),
   PORT: env('PORT'),
+  JWT_SECRET: env('JWT_SECRET')
 };
 
 export default config;
