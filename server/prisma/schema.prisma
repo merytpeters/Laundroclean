@@ -59,8 +59,8 @@ model Token {
 
 model Profile {
   id                          String                 @id        @default(uuid())
-  userId                      String                 @unique
-  user                        User                   @relation(fields: [userId], references: [id])
+  user_id                     String                 @unique
+  user                        User                   @relation(fields: [user_id], references: [id])
   phone_number                String?
   address_line_1              String?
   address_line_2              String?
@@ -80,8 +80,8 @@ model Profile {
 
 model Notification {
   id                          String                 @id        @default(uuid())
-  userId                      String?
-  user                        User?                   @relation(fields: [userId], references: [id])
+  user_id                     String?
+  user                        User?                   @relation(fields: [user_id], references: [id])
   types                       NotificationType[]
   title                       String?
   message                     String
@@ -136,19 +136,19 @@ enum Currency {
 
 model Booking {
   id                          String                 @id        @default(uuid())
-  profileId                   String
-  profile                     Profile                @relation("BookingProfile", fields: [profileId], references: [id])
+  profile_id                  String
+  profile                     Profile                @relation("BookingProfile", fields: [profile_id], references: [id])
   custom_booking_id           String                 @unique
-  serviceId                   String
-  service                     Service                @relation(fields: [serviceId], references: [id])
+  service_id                  String
+  service                     Service                @relation(fields: [service_id], references: [id])
   status                      BookingStatus
   delivery_type               DeliveryType
   scheduled_date              DateTime?
   pickup_time                 DateTime?
   weight                      Float?
   item_count                  Int?
-  addressId                   String?
-  address                     Profile?               @relation("BookingAddress", fields: [addressId], references: [id])
+  address_id                  String?
+  address                     Profile?               @relation("BookingAddress", fields: [address_id], references: [id])
   additional_note             String?
   created_at                  DateTime               @default(now())
   updated_at                  DateTime               @updatedAt
@@ -173,11 +173,11 @@ enum DeliveryType {
 }
 
 model BookingNotifications {
-  bookingId                 String
-  booking                   Booking                   @relation(fields: [bookingId], references: [id])
-  notificationId            String
-  notification              Notification              @relation(fields: [notificationId], references: [id])    
+  booking_id                String
+  booking                   Booking                   @relation(fields: [booking_id], references: [id])
+  notification_id           String
+  notification              Notification              @relation(fields: [notification_id], references: [id])    
 
   @@map("booking notifications")
-  @@id([bookingId, notificationId])
+  @@id([booking_id, notification_id])
 }
