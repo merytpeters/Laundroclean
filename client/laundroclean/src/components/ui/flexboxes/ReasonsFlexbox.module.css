@@ -1,0 +1,12 @@
+.reasonsbox {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 24em;
+    height: 18em;
+    box-shadow: 4px 12px 4px rgba(0, 0, 0, 0.15);
+    align-items: center;
+    border-radius: 12px;
+    gap: 2em;
+    padding: 2em 2em;
+}

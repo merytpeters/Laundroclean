@@ -1,0 +1,28 @@
+.servicesbox {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 20em;
+    height: 24em;
+    box-shadow: 4px 10px 4px rgba(0, 0, 0, 0.15);
+    align-items: center;
+    border-radius: 12px;
+    gap: 2em;
+    padding: 1em 1em;
+    border: 1px solid #5C5959;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.servicesButton {
+  --btn-bg: #0F233A;
+  --btn-color: #f5f5f5;
+  --btn-border: none;
+  --btn-width: 14em;
+  --btn-border-radius: 1rem;
+  --btn-height: 3em;
+}
