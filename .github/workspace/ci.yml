@@ -33,3 +33,24 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+  client-lint:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: client/laundroclean
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint (client)
+        run: npm run lint

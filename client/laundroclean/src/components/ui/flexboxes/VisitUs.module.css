@@ -1,0 +1,48 @@
+.visitusBox {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 28em;
+    height: 16em;
+    box-shadow: 4px 10px 4px rgba(0, 0, 0, 0.15);
+    align-items: flex-start;
+    border-radius: 12px;
+    padding: 2em 1em;
+    gap: 0.5em;
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 2em;
+}
+
+.hoursRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  white-space: nowrap;
+}
+
+.days {
+  font-weight: 500;
+  flex: 1
+}
+
+.time {
+  color: #555;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.visitusBox ul {
+  list-style-position: inside;
+  padding-left: 1.5em;
+  margin-top: 0.5em;
+}
+
+.visitusBox ul li {
+  color: #D59056;
+  line-height: 1.5;
+}
