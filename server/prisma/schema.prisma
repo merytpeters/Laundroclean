@@ -6,10 +6,178 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String                 @id      @default(uuid())
+  first_name          String?
+  last_name           String?
+  email               String                 @unique
+  password            String
+  type                UserType
+  role                CompanyRoleTitle?
+  created_at          DateTime               @default(now())
+  updated_at          DateTime               @updatedAt
+  deleted_at          DateTime?
+
+  tokens              Token[]
+  profile             Profile?
+  notifications       Notification[]
+
+  @@map("users")
+}
+
+enum UserType {
+  COMPANYUSER
+  CLIENT
+}
+
+enum CompanyRoleTitle {
+  ADMIN
+  STAFF
+  CASHIER
+}
+
+model Token {
+  id                  String                 @id        @default(uuid())
+  token               String
+  userId              String
+  user                User                   @relation(fields: [userId], references: [id])
+  expires_at          DateTime
+  revoked             Boolean                @default(false)
+  created_at          DateTime               @default(now())
+  updated_at          DateTime               @updatedAt
+
+  @@map("tokens")
+}
+
+model Profile {
+  id                          String                 @id        @default(uuid())
+  user_id                     String                 @unique
+  user                        User                   @relation(fields: [user_id], references: [id])
+  phone_number                String?
+  address_line_1              String?
+  address_line_2              String?
+  city                        String?
+  state                       String?
+  postal_code                 String?
+  payment_method_token        String?
+  created_at                  DateTime               @default(now())
+  updated_at                  DateTime               @updatedAt
+  deleted_at                  DateTime?
+
+  bookings                    Booking[]  @relation("BookingProfile")
+  addressBookings             Booking[]  @relation("BookingAddress")
+
+  @@map("profiles")
+}
+
+model Notification {
+  id                          String                 @id        @default(uuid())
+  user_id                     String?
+  user                        User?                   @relation(fields: [user_id], references: [id])
+  types                       NotificationType[]
+  title                       String?
+  message                     String
+  status                      NotificationStatus
+  sent_at                     DateTime?
+  priority                    NotificationPriority
+
+  BookingNotifications        BookingNotifications[]
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  PUSH
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Service {
+  id                          String                 @id        @default(uuid())
+  name                        String
+  description                 String
+  price                       Decimal
+  currency                    Currency
+  is_active                   Boolean                @default(false)
+  created_at                  DateTime               @default(now())
+  updated_at                  DateTime               @updatedAt
+  deleted_at                  DateTime?
+
+  bookings                    Booking[]
+
+  @@map("services")
+}
+
+enum Currency {
+  DOLLAR
+  NAIRA
+  POUNDS
+}
+
+model Booking {
+  id                          String                 @id        @default(uuid())
+  profile_id                  String
+  profile                     Profile                @relation("BookingProfile", fields: [profile_id], references: [id])
+  custom_booking_id           String                 @unique
+  service_id                  String
+  service                     Service                @relation(fields: [service_id], references: [id])
+  status                      BookingStatus
+  delivery_type               DeliveryType
+  scheduled_date              DateTime?
+  pickup_time                 DateTime?
+  weight                      Float?
+  item_count                  Int?
+  address_id                  String?
+  address                     Profile?               @relation("BookingAddress", fields: [address_id], references: [id])
+  additional_note             String?
+  created_at                  DateTime               @default(now())
+  updated_at                  DateTime               @updatedAt
+  deleted_at                  DateTime?
+
+  BookingNotifications        BookingNotifications[]
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS                @map("IN PROGRESS")
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliveryType {
+  DROP_OFF                  @map("DROP OFF")
+  PICK_UP                   @map("PICK UP")
+}
+
+model BookingNotifications {
+  booking_id                String
+  booking                   Booking                   @relation(fields: [booking_id], references: [id])
+  notification_id           String
+  notification              Notification              @relation(fields: [notification_id], references: [id])    
+
+  @@map("booking notifications")
+  @@id([booking_id, notification_id])
 }

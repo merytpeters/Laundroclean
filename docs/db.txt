@@ -1,0 +1,1 @@
+In Notifications model, userId is optional to support system wide notifications and alerts

@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" version="28.2.3">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" version="28.2.5">
   <diagram name="Page-1" id="CItlcEPvx3_oQrIEIx9l">
     <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
       <root>
@@ -94,13 +94,14 @@
         <mxCell id="09LMgy9NDITunYVVlxUH-4" value="&lt;b&gt;User&lt;/b&gt;&lt;div&gt;id&lt;br&gt;&lt;div&gt;Name&lt;div&gt;email&lt;/div&gt;&lt;div&gt;password&lt;/div&gt;&lt;div&gt;&lt;div&gt;role (enum: customer, staff, admin)&lt;/div&gt;&lt;div&gt;created_at&lt;/div&gt;&lt;div&gt;updated_at&lt;/div&gt;&lt;div&gt;deleted_at (nullable)&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
           <mxGeometry x="1450" y="570" width="150" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="09LMgy9NDITunYVVlxUH-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="09LMgy9NDITunYVVlxUH-4" target="09LMgy9NDITunYVVlxUH-1">
+        <mxCell id="09LMgy9NDITunYVVlxUH-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="09LMgy9NDITunYVVlxUH-1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="830" y="965" as="sourcePoint" />
-            <mxPoint x="730" y="950" as="targetPoint" />
+            <mxPoint x="1497.42" y="720" as="sourcePoint" />
+            <mxPoint x="859.9969230769228" y="1010" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="1488" y="965" />
-              <mxPoint x="850" y="965" />
+              <mxPoint x="1497" y="965" />
+              <mxPoint x="1020" y="965" />
+              <mxPoint x="1020" y="1010" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -129,8 +130,8 @@
         <mxCell id="09LMgy9NDITunYVVlxUH-28" value="&lt;div&gt;&lt;b&gt;Discount(order)&lt;/b&gt;&lt;/div&gt;&lt;div&gt;id (PK)&lt;/div&gt;&lt;div&gt;code (e.g. WASH10)&lt;/div&gt;&lt;div&gt;description&lt;/div&gt;&lt;div&gt;discount_type (enum: percentage, fixed)&lt;/div&gt;&lt;div&gt;discount_value&lt;/div&gt;&lt;div&gt;start_date&lt;/div&gt;&lt;div&gt;end_date&lt;/div&gt;&lt;div&gt;is_active (boolean)&lt;/div&gt;&lt;div&gt;created_at&lt;/div&gt;&lt;div&gt;updated_at&lt;/div&gt;&lt;div&gt;deleted_at (nullable)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
           <mxGeometry x="280" y="1360" width="230" height="230" as="geometry" />
         </mxCell>
-        <mxCell id="09LMgy9NDITunYVVlxUH-29" value="&lt;b&gt;Notifications&lt;/b&gt;&lt;div&gt;id (PK)&lt;br&gt;user_id (FK)&lt;br&gt;booking_id (FK, nullable)&lt;br&gt;type (enum: email, sms, push)&lt;br&gt;message&lt;br&gt;status (enum: pending, sent, failed)&lt;br&gt;sent_at (nullable)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
-          <mxGeometry x="910" y="660" width="185" height="185" as="geometry" />
+        <mxCell id="09LMgy9NDITunYVVlxUH-29" value="&lt;b&gt;Notifications&lt;/b&gt;&lt;div&gt;id (PK)&lt;br&gt;user_id (FK) (nullable)&lt;br&gt;type (enum: email, sms, push)&lt;/div&gt;&lt;div&gt;title&lt;br&gt;message&lt;br&gt;status (enum: pending, sent, failed)&lt;br&gt;sent_at (nullable)&lt;/div&gt;&lt;div&gt;priority (low, medium, high)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="880" y="680" width="185" height="185" as="geometry" />
         </mxCell>
         <mxCell id="09LMgy9NDITunYVVlxUH-30" value="&lt;b&gt;Order Log&lt;/b&gt;&lt;div&gt;id (PK)&lt;br&gt;booking_id (FK)&lt;br&gt;status (enum)&lt;br&gt;changed_at&lt;br&gt;changed_by (FK to user_id)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
           <mxGeometry x="1270" y="1400" width="190" height="190" as="geometry" />
@@ -165,6 +166,33 @@
         </mxCell>
         <mxCell id="zGKYJOA7OZuO7KECyf5l-3" value="1:M" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="zGKYJOA7OZuO7KECyf5l-2">
           <mxGeometry x="-0.2063" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-1" value="&lt;b&gt;BookingNotifications&lt;/b&gt;&lt;br&gt;&lt;div&gt;notification_id (FK)&lt;br&gt;booking_id (FK, nullable)&lt;/div&gt;&lt;div&gt;both FKs are PK&lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="485" y="760" width="185" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1.024;entryY=0.426;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="09LMgy9NDITunYVVlxUH-29" target="MIbUquPo-N0z5qhe-P_v-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-4" value="1:M" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="MIbUquPo-N0z5qhe-P_v-2">
+          <mxGeometry x="-0.1242" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.533;entryY=-0.008;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="09LMgy9NDITunYVVlxUH-29" target="09LMgy9NDITunYVVlxUH-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-7" value="M:M" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="MIbUquPo-N0z5qhe-P_v-6">
+          <mxGeometry x="-0.3042" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.392;entryY=0.018;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="MIbUquPo-N0z5qhe-P_v-1" target="09LMgy9NDITunYVVlxUH-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MIbUquPo-N0z5qhe-P_v-9" value="M:1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="MIbUquPo-N0z5qhe-P_v-8">
+          <mxGeometry x="-0.2169" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
