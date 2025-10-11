@@ -5,19 +5,267 @@
 
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
+  
+  position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 100svh;
   margin: 4rem 2rem;
-  padding: 80px;
-  gap: 64px;
   border-radius: 0.75rem;
   background-color: #FFFFFF;
+  color: #0F233A;
   font-family: var(--font-geist-sans);
 }
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.hero {
+  position: relative;
+}
+
+.heroImage {
+  border-radius: 1rem;
+  position: static;
+  margin: 4rem 9rem;
+  display: flex;
+  align-self: center;
+}
+
+.heroText {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  z-index: 2;
+  height: auto;
+  justify-content: space-evenly;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.heroText h1 strong {
+  color: #469bd3;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+.bookNowButton {
+  --btn-bg: #469bd3;
+  --btn-color: #f5f5f5;
+  --btn-border: none;
+  --btn-width: 11em;
+  --btn-border-radius: 1.1rem;
+  --btn-height: 3em;
+}
+
+.locationButton {
+  --btn-width: 11em;
+  --btn-bg: rgba(245, 245, 245, 0);
+  transition: all 0.3s ease;
+  --btn-bg: transparent;
+  --btn-color: #469bd3;
+  --btn-border: 1px solid #FFFFFF;
+  --btn-border-radius: 1.1rem;
+  --btn-height: 3em;
+}
+
+.locationButton:hover {
+  background-color: #469bd3;
+  color: white;
+}
+
+.waterdroplets {
+  display: flex;
+  align-self: center;
+  margin-top: 6rem;
+}
+
+.reasons {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  gap: 1em;
+}
+
+.reasons h2 {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.reasons p {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.reasonsflex {
+  display: flex;
+  flex-direction: row;
+  gap: 4em;
+  justify-content: space-evenly;
+  width: calc(100% - 2em);
+  margin: 2em 1em;
+}
+
+.services {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  gap: 1em;
+  background-color: #F5F5F5;
+  padding: 2em 2em;
+}
+
+.services h2 {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.services p {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.servicesflex {
+  display: flex;
+  flex-direction: row;
+  gap: 3em;
+  justify-content: space-evenly;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+}
+
+.visitUs {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  gap: 1em;
+  padding: 2em 2em;
+}
+
+.visitUs h2 {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.visitUs p {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.locationflex {
+  display: flex;
+  flex-direction: row;
+  gap: 3em;
+  justify-content: space-evenly;
+  width: calc(100% - 2em);
+  margin: 1em 1em;
+}
+
+.hoursflex {
+  border: 1px solid #D59056;
+}
+
+.directionButton {
+  --btn-color: #469bd3;
+  --btn-bg: #f5f5f5;
+  --btn-border: 1px solid #469bd3;
+  --btn-width: 11em;
+  --btn-border-radius: 0.4rem;
+  --btn-height: 3em;
+}
+
+.calltoAction {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  gap: 2em;
+  background-color: #F5F5F5;
+  padding: 3em 3em;
+}
+
+.calltoAction h2 {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.calltoAction p {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.calltoActionButtonWrap {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  width: fit-content;
+  gap: 4em;
+}
+
+.startButton {
+   --btn-width: 20em;
+  --btn-bg: #D59056;
+  transition: all 0.3s ease;
+  --btn-border-radius: 0.8rem;
+  --btn-color: #FFFFFF;
+  --btn-height: 4em;
+}
+
+.whatsApp {
+  --btn-width: 16em;
+  --btn-height: 10em;
+  --btn-bg: #469BD3;
+  transition: all 0.3s ease;
+  --btn-border-radius: 0.8rem;
+  --btn-color: #0F233A;
+  --btn-border: 1px solid #D59056;
+  --btn-height: 3em;
+}
+
+.footer {
+  position: relative;
+  width: 100%;
+  background-color: #375B84;
+  height: 20rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+}
+
 
 @media (prefers-color-scheme: dark) {
   .page {
@@ -28,19 +276,6 @@
     --button-primary-hover: #ccc;
     --button-secondary-hover: #1a1a1a;
   }
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
-}
-
-.footer {
-  grid-row-start: 3;
-  display: flex;
-  gap: 24px;
 }
 
 /* Enable hover only on non-touch devices 
