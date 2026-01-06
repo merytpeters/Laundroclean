@@ -3,8 +3,12 @@ name: CI
 on:
   push:
     branches: [main]
+    paths:
+      - 'server/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'server/**'
 
 jobs:
   express-build-and-test:
@@ -14,13 +18,8 @@ jobs:
       run:
         working-directory: server
 
-    env:
-      NODE_ENV: ${{ vars.NODE_ENV }}
-      PORT: ${{ vars.PORT }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
     steps:
+  
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -43,5 +42,9 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run tests
+        env:
+          NODE_ENV: test
+          PORT: 3000
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret' }}
         run: npm test
-

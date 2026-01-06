@@ -1,4 +1,5 @@
 const env = (variable: string): any => {
+    if (variable === 'PORT') return process.env.PORT || '3000';
     const value = process.env[variable];
 
     if (!value) throw new Error(`${variable} not set in ENV`);

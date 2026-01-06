@@ -112,7 +112,7 @@ that clean thoroughly in record time without compromising quality."
           <h2>Ready to Transform Your Laundry?</h2>
           <p>Experience laundry care with LaundroClean&apos;s premium services.</p>
           <figure className={styles.calltoActionButtonWrap}>
-            <Button text="Start Your Journey" className={styles.startButton}/>
+            <Button text="Start Your Journey" href="/signup" className={styles.startButton}/>
             <Button text="WhatsApp" href="wa.me/2348163378163" className={styles.whatsApp}/>
           </figure>
         </section>
