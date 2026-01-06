@@ -19,8 +19,8 @@ jobs:
         working-directory: server
 
     env:
-      NODE_ENV: ${{ vars.NODE_ENV }}
-      PORT: ${{ vars.PORT }}
+      NODE_ENV: ${{ vars.NODE_ENV || 'test'}}
+      PORT: ${{ vars.PORT || '3000' }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
