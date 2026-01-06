@@ -42,9 +42,9 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run tests
-        run: |
-          NODE_ENV=test \
-          PORT=3000 \
-          DATABASE_URL=${{ secrets.DATABASE_URL }} \
-          JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          npm test
+        env:
+          NODE_ENV: test
+          PORT: 3000
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret' }}
+        run: npm test
