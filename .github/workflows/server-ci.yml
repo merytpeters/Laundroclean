@@ -18,13 +18,8 @@ jobs:
       run:
         working-directory: server
 
-    env:
-      NODE_ENV: ${{ vars.NODE_ENV || 'test'}}
-      PORT: ${{ vars.PORT || '3000' }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
     steps:
+  
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -48,3 +43,8 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          NODE_ENV: ${{ vars.NODE_ENV || 'test' }}
+          PORT: ${{ vars.PORT || '3000' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
