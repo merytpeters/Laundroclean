@@ -10,3 +10,16 @@
     gap: 2em;
     padding: 2em 2em;
 }
+
+@media (max-width: 600px) {
+    .reasonsbox {
+        height: fit-content;
+        width: 14em;
+    }
+}
+
+@media (min-width: 650px) {
+    .reasonsbox {
+        height: 28em;
+    }
+}

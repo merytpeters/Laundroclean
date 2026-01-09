@@ -25,14 +25,17 @@
 
 .hero {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .heroImage {
   border-radius: 1rem;
   position: static;
-  margin: 4rem 9rem;
+  margin: auto;
   display: flex;
   align-self: center;
+  width: 80vw;
 }
 
 .heroText {
@@ -118,6 +121,7 @@
 
 .reasonsflex {
   display: flex;
+  position: relative;
   flex-direction: row;
   gap: 4em;
   justify-content: space-evenly;
@@ -294,12 +298,13 @@
     text-decoration: underline;
     text-underline-offset: 4px;
   }
-}
+}*/
 
 @media (max-width: 600px) {
   .page {
-    padding: 32px;
+    padding: 20px;
     padding-bottom: 80px;
+    margin: 2.5rem 1.5rem;
   }
 
   .main {
@@ -310,14 +315,81 @@
     text-align: center;
   }
 
-  .ctas {
-    flex-direction: column;
+  .heroImage {
+    width: 70vw;
   }
 
-  .ctas a {
-    font-size: 14px;
-    height: 40px;
-    padding: 0 16px;
+  .heroText {
+    width: 200px;
+  }
+
+  .heroText h1, .heroText h1 strong {
+    font-size: large;
+  }
+
+  .heroText p{
+    font-size: small;
+  }
+
+  .reasons {
+    align-items: center;
+  }
+
+  .reasons h2 {
+    font-size: medium;
+  }
+
+  .reasons p { 
+    font-size: small;
+  }
+
+  .reasonsflex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .services {
+    padding: 1em 1em;
+    align-items: center;
+  }
+
+  .servicesflex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .visitUs {
+    padding: 1em 1em;
+    align-items: center;
+  }
+
+  .locationflex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .calltoAction h2 {
+    font-size: medium;
+  }
+
+  .calltoAction p {
+    font-size: small;
+  }
+
+  .calltoActionButtonWrap {
+    width: 16em;
+    gap: 2em;
+  }
+
+  .startButton {
+    --btn-width: 24em;
+    --btn-height: 3em;
+    font-size: small;
+  }
+
+  .whatsApp {
+    --btn-height: 3em;
+    font-size: small;
   }
 
   a.secondary {
@@ -335,4 +407,19 @@
   .logo {
     filter: invert();
   }
-*/
+}
+
+@media (min-width: 600px) and (max-width: 1024px) {
+  .servicesflex {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: flex-start;
+  }
+
+  .servicesflex > * {
+    flex: 0 0 30%;
+    max-width: 48%;
+    margin: 1%;
+  }
+}
