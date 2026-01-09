@@ -1,12 +1,12 @@
-.signupbutton {
-    width: 200px;
+.loginbutton {
+    width: 250px;
     height: 40px;
     background-color: #000;
     border-radius: 8px;
 }
 
 .googlebutton {
-    width: 200px;
+    width: 250px;
     height: 40px;
     background-color: #000;
     border-radius: 8px;

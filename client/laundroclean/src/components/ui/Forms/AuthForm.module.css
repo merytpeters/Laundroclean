@@ -46,3 +46,47 @@
   align-self: center;
   color: #000
 }
+
+.inputWrapper {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding-right: 2.5rem;
+  box-sizing: border-box;
+}
+
+.showPasswordButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+@media (min-width: 550px) and (max-width: 900px) {
+  .form {
+    width: 400px;
+  }
+}
+
+@media (max-width: 500px) {
+  .form {
+    width: 300px;
+  }
+}

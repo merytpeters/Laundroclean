@@ -1,8 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./Header.module.css";
 import Button from "../Button/Button";
 
 export default function Header() {
+    const [menuOpen, setMenuOpen] = useState(false);
+
     return(
         <header className={styles.header}>
             <Image
@@ -14,14 +20,31 @@ export default function Header() {
             />
             <nav className={styles.nav}>
                 <ul>
-                    <li><a href="">Services</a></li>
-                    <li><a href="">Contact</a></li>
-                    <li><a href="">About</a></li>
-                    <li><a href="">Sign in</a></li>
+                    <li><Link href="">Services</Link></li>
+                    <li><Link href="">Contact</Link></li>
+                    <li><Link href="">About</Link></li>
+                    <li><Link href="/signup">Sign up</Link></li>
                 </ul>
             </nav>
             <Button text="Browse Services" className={styles.serviceButton}/>
-        </header>
 
+            <button
+            className={styles.menuButton}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+            >
+                ☰
+            </button>
+            {menuOpen && (
+                <nav className={styles.mobileNav}>
+                    <ul>
+                        <li><Link href="" onClick={() => setMenuOpen(false)}>Services</Link></li>
+                        <li><Link href="" onClick={() => setMenuOpen(false)}>Contact</Link></li>
+                        <li><Link href="" onClick={() => setMenuOpen(false)}>About</Link></li>
+                        <li><Link href="/signup" onClick={() => setMenuOpen(false)}>Sign up</Link></li>
+                    </ul>
+                </nav>
+            )}
+        </header>
     )
 }

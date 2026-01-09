@@ -2,19 +2,10 @@
 
 import AuthForm from "src/components/ui/Forms/AuthForms";
 import Button from "src/components/ui/Button/Button";
-import styles from "./signup.module.css"
+import styles from "./login.module.css"
 
-export default function Signup() {
+export default function Login() {
   const fields = [
-    {
-      label: "Name",
-      inputProps: {
-        id: "name",
-        type: "text",
-        placeholder: "Enter your name",
-        required: true,
-      },
-    },
     {
       label: "Email",
       inputProps: {
@@ -38,14 +29,14 @@ export default function Signup() {
   return (
     <>
       <AuthForm
-        title="Create An Account"
-        subtitle="Sign up to get started"
+        title="Welcome Back"
+        subtitle="Sign in to your account to book services and manage your laundry"
         fields={fields}
         actions={
           <>
-            <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
+            <Button text="Login" type="submit" className={styles.loginbutton}/>
             <span>or</span>
-            <Button text="Sign up with Google" className={styles.googlebutton} onClick={() => alert("Google signup")} />
+            <Button text="Continue with Google" className={styles.googlebutton} onClick={() => alert("Google signup")} />
           </>
         }
       />

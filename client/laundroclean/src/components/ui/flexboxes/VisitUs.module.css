@@ -46,3 +46,17 @@
   color: #D59056;
   line-height: 1.5;
 }
+
+@media (max-width: 600px) {
+  .visitusBox {
+    width: 14em;
+  }
+
+  .paragraphs {
+    width: 12em;
+  }
+
+  .hoursRow {
+    font-size: x-small;
+  }
+}

@@ -16,6 +16,7 @@
     position: absolute;
     left: 16rem;
     top: 2em;
+    width: 40%;
 }
 
 .nav ul {
@@ -24,6 +25,11 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  font-size: small;
+}
+
+.nav li {
+  width: fit-content;
 }
 
 .nav a {
@@ -35,6 +41,61 @@
   --btn-bg: #469bd3;
   --btn-color: #f5f5f5;
   --btn-border: none;
-  --btn-width: 14em;
+  --btn-width: 10em;
   --btn-height: 4em;
+}
+
+.menuButton {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  right: 2px;
+}
+
+/* Mobile Nav */
+.mobileNav {
+  position: absolute;
+  top: 100%;
+  right: 0.5%;
+  width: 50%;
+  background: white;
+  z-index: 1000;
+}
+
+.mobileNav ul {
+  list-style: none;
+  padding: 1rem;
+}
+
+.mobileNav li {
+  padding: 0.75rem 0;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem 1rem;
+  }
+
+  .logo {
+    width: 20%;
+    height: 10%;
+  }
+
+  .serviceButton {
+    --btn-border-radius: 0.2rem;
+    --btn-width: 5em;
+    --btn-height: 3em;
+    font-weight: 300;
+  }
+
+  .nav,
+  .serviceButton {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
+  }
 }

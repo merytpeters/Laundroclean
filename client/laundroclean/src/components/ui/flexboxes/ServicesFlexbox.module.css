@@ -26,3 +26,9 @@
   --btn-border-radius: 1rem;
   --btn-height: 3em;
 }
+
+@media (max-width: 600px) {
+  .servicesbox {
+    width: 14em;
+  }
+}
