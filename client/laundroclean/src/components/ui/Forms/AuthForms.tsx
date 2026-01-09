@@ -2,6 +2,7 @@
 
 import React from "react";
 import styles from "./AuthForm.module.css";
+import { usePathname } from "next/navigation";
 
 interface FieldConfig {
     label: string;
@@ -17,6 +18,8 @@ interface FormProps {
 
 
 export default function AuthForm({ title, subtitle, fields, actions }: FormProps) {
+    const pathname = usePathname();
+
     return (
         <form className={styles.form}>
                 <legend>
@@ -34,7 +37,13 @@ export default function AuthForm({ title, subtitle, fields, actions }: FormProps
                 <div className={styles.formactions}>
                     {actions}
                 </div>
-                <span>Have an Account Already ? <a href="">Login</a></span>
+                {pathname === "/signup" && <span>Have an Account Already ? &nbsp;<a href="/login"><b>Login</b></a></span>}
+                {pathname === "/login" && (
+                    <>
+                    <span>Forgot Password ?</span>
+                    <span>Don&apos;t have and account yet ? &nbsp; <a href="/signup"><b>Sign up</b></a></span>
+                    </>
+                    )}
         </form>
     )
 }
