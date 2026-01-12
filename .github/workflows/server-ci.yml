@@ -32,8 +32,8 @@ jobs:
     env:
       NODE_ENV: test
       PORT: 3000
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/laundroclean_test
+      JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret' }}
 
     defaults:
       run:
