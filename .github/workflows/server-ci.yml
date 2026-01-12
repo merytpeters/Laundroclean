@@ -14,19 +14,40 @@ jobs:
   express-build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: laundroclean_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      NODE_ENV: test
+      PORT: 3000
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
     defaults:
       run:
         working-directory: server
 
     steps:
-  
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
           cache-dependency-path: server/package-lock.json
 
       - name: Install dependencies
@@ -38,13 +59,11 @@ jobs:
       - name: Prisma generate
         run: npm run db:generate
 
+      - name: Prisma migrate (test DB)
+        run: npx prisma migrate deploy
+
       - name: TypeScript check
         run: npx tsc --noEmit
 
       - name: Run tests
-        env:
-          NODE_ENV: test
-          PORT: 3000
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret' }}
         run: npm test
