@@ -45,6 +45,17 @@ class NotFoundError extends Error {
     }
 }
 
+class ConflictError extends Error {
+    statusCode: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = 'ConflictError';
+        this.statusCode = 409;
+  }
+}
+
+
 const notFoundHandler = () => {
     throw new NotFoundError('route not found');
 };
@@ -79,4 +90,5 @@ export {
     NotFoundError,
     notFoundHandler,
     errorHandler,
+    ConflictError
 };

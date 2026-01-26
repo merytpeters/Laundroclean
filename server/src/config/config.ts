@@ -13,7 +13,9 @@ const env = (variable: string): any => {
 const config = {
   NODE_ENV: env('NODE_ENV'),
   PORT: env('PORT'),
-  JWT_SECRET: env('JWT_SECRET')
+  JWT_SECRET: env('JWT_SECRET'),
+  REFRESH_TOKEN_EXPIRES: env('REFRESH_TOKEN_EXPIRES'),
+  ACCESS_TOKEN_EXPIRES: env('ACCESS_TOKEN_EXPIRES'),
 };
 
 export default config;
