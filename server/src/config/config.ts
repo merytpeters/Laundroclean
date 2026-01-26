@@ -3,6 +3,8 @@ const env = (variable: string): any => {
 
     if (process.env.NODE_ENV === 'test') {
       if (variable === 'JWT_SECRET') return 'test_jwt_secret';
+      if (variable === 'REFRESH_TOKEN_EXPIRES') return '7d';
+      if (variable === 'ACCESS_TOKEN_EXPIRES') return '30m';
     }
     const value = process.env[variable];
 
