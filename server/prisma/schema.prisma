@@ -14,24 +14,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                  String                 @id      @default(uuid())
-  first_name          String?
-  last_name           String?
-  email               String                 @unique
-  password            String
-  type                UserType
-  role                CompanyRoleTitle?
-  created_at          DateTime               @default(now())
-  updated_at          DateTime               @updatedAt
-  deleted_at          DateTime?
 
-  tokens              Token[]
-  profile             Profile?
-  notifications       Notification[]
-
-  @@map("users")
-}
+// ENUMS
 
 enum UserType {
   COMPANYUSER
@@ -44,54 +28,10 @@ enum CompanyRoleTitle {
   CASHIER
 }
 
-model Token {
-  id                  String                 @id        @default(uuid())
-  token               String
-  userId              String
-  user                User                   @relation(fields: [userId], references: [id])
-  expires_at          DateTime
-  revoked             Boolean                @default(false)
-  created_at          DateTime               @default(now())
-  updated_at          DateTime               @updatedAt
-
-  @@map("tokens")
-}
-
-model Profile {
-  id                          String                 @id        @default(uuid())
-  user_id                     String                 @unique
-  user                        User                   @relation(fields: [user_id], references: [id])
-  phone_number                String?
-  address_line_1              String?
-  address_line_2              String?
-  city                        String?
-  state                       String?
-  postal_code                 String?
-  payment_method_token        String?
-  created_at                  DateTime               @default(now())
-  updated_at                  DateTime               @updatedAt
-  deleted_at                  DateTime?
-
-  bookings                    Booking[]  @relation("BookingProfile")
-  addressBookings             Booking[]  @relation("BookingAddress")
-
-  @@map("profiles")
-}
-
-model Notification {
-  id                          String                 @id        @default(uuid())
-  user_id                     String?
-  user                        User?                   @relation(fields: [user_id], references: [id])
-  types                       NotificationType[]
-  title                       String?
-  message                     String
-  status                      NotificationStatus
-  sent_at                     DateTime?
-  priority                    NotificationPriority
-
-  BookingNotifications        BookingNotifications[]
-
-  @@map("notifications")
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET
 }
 
 enum NotificationType {
@@ -112,72 +52,146 @@ enum NotificationPriority {
   HIGH
 }
 
-model Service {
-  id                          String                 @id        @default(uuid())
-  name                        String
-  description                 String
-  price                       Decimal
-  currency                    Currency
-  is_active                   Boolean                @default(false)
-  created_at                  DateTime               @default(now())
-  updated_at                  DateTime               @updatedAt
-  deleted_at                  DateTime?
-
-  bookings                    Booking[]
-
-  @@map("services")
-}
-
 enum Currency {
   DOLLAR
   NAIRA
   POUNDS
 }
 
-model Booking {
-  id                          String                 @id        @default(uuid())
-  profile_id                  String
-  profile                     Profile                @relation("BookingProfile", fields: [profile_id], references: [id])
-  custom_booking_id           String                 @unique
-  service_id                  String
-  service                     Service                @relation(fields: [service_id], references: [id])
-  status                      BookingStatus
-  delivery_type               DeliveryType
-  scheduled_date              DateTime?
-  pickup_time                 DateTime?
-  weight                      Float?
-  item_count                  Int?
-  address_id                  String?
-  address                     Profile?               @relation("BookingAddress", fields: [address_id], references: [id])
-  additional_note             String?
-  created_at                  DateTime               @default(now())
-  updated_at                  DateTime               @updatedAt
-  deleted_at                  DateTime?
-
-  BookingNotifications        BookingNotifications[]
-
-  @@map("bookings")
-}
-
 enum BookingStatus {
   PENDING
   CONFIRMED
-  IN_PROGRESS                @map("IN PROGRESS")
+  IN_PROGRESS  @map("IN PROGRESS")
   COMPLETED
   CANCELLED
 }
 
 enum DeliveryType {
-  DROP_OFF                  @map("DROP OFF")
-  PICK_UP                   @map("PICK UP")
+  DROP_OFF  @map("DROP OFF")
+  PICK_UP   @map("PICK UP")
+}
+
+
+// MODELS
+
+
+model User {
+  id            String              @id @default(uuid())
+  firstName     String?             @map("first_name")
+  lastName      String?             @map("last_name")
+  email         String              @unique
+  password      String
+  type          UserType
+  role          CompanyRoleTitle?
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+  deletedAt     DateTime?           @map("deleted_at")
+
+  tokens        Token[]
+  profile       Profile?
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Token {
+  id         String     @id @default(uuid())
+  token      String
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  type       TokenType
+  expiresAt  DateTime   @map("expires_at")
+  valid      Boolean    @default(true)
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+
+  @@map("tokens")
+}
+
+model Profile {
+  id                  String     @id @default(uuid())
+  userId              String     @unique @map("user_id")
+  user                User       @relation(fields: [userId], references: [id])
+  phoneNumber         String?    @map("phone_number")
+  addressLine1        String?    @map("address_line_1")
+  addressLine2        String?    @map("address_line_2")
+  city                String?
+  state               String?
+  postalCode          String?    @map("postal_code")
+  paymentMethodToken  String?    @map("payment_method_token")
+  createdAt           DateTime   @default(now()) @map("created_at")
+  updatedAt           DateTime   @updatedAt @map("updated_at")
+  deletedAt           DateTime?  @map("deleted_at")
+
+  bookings            Booking[]  @relation("BookingProfile")
+  addressBookings     Booking[]  @relation("BookingAddress")
+
+  @@map("profiles")
+}
+
+model Notification {
+  id                   String                  @id @default(uuid())
+  userId               String?                 @map("user_id")
+  user                 User?                   @relation(fields: [userId], references: [id])
+  types                NotificationType[]
+  title                String?
+  message              String
+  status               NotificationStatus
+  sentAt               DateTime?               @map("sent_at")
+  priority             NotificationPriority
+
+  bookingNotifications BookingNotifications[]
+
+  @@map("notifications")
+}
+
+model Service {
+  id         String     @id @default(uuid())
+  name       String
+  description String
+  price      Decimal
+  currency   Currency
+  isActive   Boolean    @default(false) @map("is_active")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  deletedAt  DateTime?  @map("deleted_at")
+
+  bookings   Booking[]
+
+  @@map("services")
+}
+
+model Booking {
+  id             String    @id @default(uuid())
+  profileId      String    @map("profile_id")
+  profile        Profile   @relation("BookingProfile", fields: [profileId], references: [id])
+  customBookingId String   @unique @map("custom_booking_id")
+  serviceId      String    @map("service_id")
+  service        Service   @relation(fields: [serviceId], references: [id])
+  status         BookingStatus
+  deliveryType   DeliveryType @map("delivery_type")
+  scheduledDate  DateTime?    @map("scheduled_date")
+  pickupTime     DateTime?    @map("pickup_time")
+  weight         Float?
+  itemCount      Int?         @map("item_count")
+  addressId      String?      @map("address_id")
+  address        Profile?     @relation("BookingAddress", fields: [addressId], references: [id])
+  additionalNote String?      @map("additional_note")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  deletedAt      DateTime?    @map("deleted_at")
+
+  bookingNotifications BookingNotifications[]
+
+  @@map("bookings")
 }
 
 model BookingNotifications {
-  booking_id                String
-  booking                   Booking                   @relation(fields: [booking_id], references: [id])
-  notification_id           String
-  notification              Notification              @relation(fields: [notification_id], references: [id])    
+  bookingId      String @map("booking_id")
+  booking        Booking @relation(fields: [bookingId], references: [id])
+  notificationId String @map("notification_id")
+  notification   Notification @relation(fields: [notificationId], references: [id])
 
-  @@map("booking notifications")
-  @@id([booking_id, notification_id])
+  @@map("booking_notifications")
+  @@id([bookingId, notificationId])
 }
