@@ -74,6 +74,14 @@ jobs:
       - name: Prisma generate
         run: npm run db:generate
 
+      - name: Wait for Postgres
+        run: |
+          for i in {1..40}; do
+            pg_isready -h localhost -p 5432 -U postgres && echo "Postgres ready" && break
+            echo "Waiting for Postgres... ($i/30)"
+            sleep 2
+          done
+
       - name: Prisma migrate (test DB)
         run: npx prisma migrate deploy
 
