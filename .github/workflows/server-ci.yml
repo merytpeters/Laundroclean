@@ -66,10 +66,14 @@ jobs:
       - name: Wait for Postgres
         run: |
           for i in {1..15}; do
-            nc -z postgres 5432 && echo "Postgres ready" && break
-            echo "Waiting for Postgres..."
+            pg_isready -h postgres -p 5432 -U postgres && echo "Postgres ready" && break
+            echo "Waiting for Postgres... ($i/15)"
             sleep 2
           done
+          if ! pg_isready -h postgres -p 5432 -U postgres; then
+            echo "Postgres did not start in time" >&2
+            exit 1
+          fi
 
       - name: Lint
         run: npm run lint
