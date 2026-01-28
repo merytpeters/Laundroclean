@@ -27,7 +27,7 @@ jobs:
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=30
 
     env:
       NODE_ENV: test
@@ -62,18 +62,6 @@ jobs:
           echo "JWT_SECRET=${{ secrets.JWT_SECRET || 'test_jwt_secret' }}" >> .env
           echo "REFRESH_TOKEN_EXPIRES=7d" >> .env
           echo "ACCESS_TOKEN_EXPIRES=30m" >> .env
-
-      - name: Wait for Postgres
-        run: |
-          for i in {1..35}; do
-            pg_isready -h postgres -p 5432 -U postgres && echo "Postgres ready" && break
-            echo "Waiting for Postgres... ($i/15)"
-            sleep 2
-          done
-          if ! pg_isready -h postgres -p 5432 -U postgres; then
-            echo "Postgres did not start in time" >&2
-            exit 1
-          fi
 
       - name: Lint
         run: npm run lint
