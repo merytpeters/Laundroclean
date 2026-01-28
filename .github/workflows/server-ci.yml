@@ -65,7 +65,7 @@ jobs:
 
       - name: Wait for Postgres
         run: |
-          for i in {1..15}; do
+          for i in {1..35}; do
             pg_isready -h postgres -p 5432 -U postgres && echo "Postgres ready" && break
             echo "Waiting for Postgres... ($i/15)"
             sleep 2
@@ -77,6 +77,11 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Show env for debugging
+        run: |
+          echo "DATABASE_URL=$DATABASE_URL"
+          cat .env
 
       - name: Prisma generate
         run: npm run db:generate
