@@ -55,6 +55,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Wait for Postgres
+        run: |
+          for i in {1..15}; do
+            nc -z postgres 5432 && echo "Postgres ready" && break
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+
       - name: Lint
         run: npm run lint
 
