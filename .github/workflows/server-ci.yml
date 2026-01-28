@@ -25,14 +25,14 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
+          --health-interval=5s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=30
 
     env:
       NODE_ENV: test
       PORT: 3000
-      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/laundroclean_test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/laundroclean_test
       JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret' }}
       REFRESH_TOKEN_EXPIRES: 7d
       ACCESS_TOKEN_EXPIRES: 30m
@@ -55,11 +55,32 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create .env for server
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/laundroclean_test" > .env
+          echo "NODE_ENV=test" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET || 'test_jwt_secret' }}" >> .env
+          echo "REFRESH_TOKEN_EXPIRES=7d" >> .env
+          echo "ACCESS_TOKEN_EXPIRES=30m" >> .env
+
       - name: Lint
         run: npm run lint
 
+      - name: Show env for debugging
+        run: |
+          echo "DATABASE_URL=$DATABASE_URL"
+          cat .env
+
       - name: Prisma generate
         run: npm run db:generate
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..40}; do
+            pg_isready -h localhost -p 5432 -U postgres && echo "Postgres ready" && break
+            echo "Waiting for Postgres... ($i/30)"
+            sleep 2
+          done
 
       - name: Prisma migrate (test DB)
         run: npx prisma migrate deploy

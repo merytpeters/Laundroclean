@@ -1,20 +1,26 @@
 // import cors from 'cors';
 import express from 'express';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { AuthRoutes } from './modules/auth/index.js';
 
 
 const app = express();
 
-{/*app.use(
-    cors({
-        origin: "",
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-    })
-)*/}
+// parse JSON bodies
+app.use(express.json());
 
+{/*app.use(
+  cors({
+    origin: "",
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+  })
+)
+*/}
+
+app.use('/api/auth', AuthRoutes);
 app.use(errorHandler);
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.json({ message: 'LaundroClean is running' });
 });
 

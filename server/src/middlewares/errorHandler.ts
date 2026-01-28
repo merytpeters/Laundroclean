@@ -7,7 +7,7 @@ class ValidationError extends Error {
 
     constructor(message: string) {
         super(message);
-        this.message = 'ValidationError';
+        this.name = 'ValidationError';
         this.statusCode = 400;
     }
 }
@@ -18,7 +18,7 @@ class UnauthenticatedError extends Error {
 
     constructor(message: string) {
         super(message);
-        this.message = 'UnauthenticatedError';
+        this.name = 'UnauthenticatedError';
         this.statusCode = 401;
     }
 }
@@ -29,7 +29,7 @@ class UnauthorizedError extends Error {
 
     constructor(message: string) {
         super(message);
-        this.message = 'UnauthorizedError';
+        this.name = 'UnauthorizedError';
         this.statusCode = 403;
     }
 }
@@ -40,7 +40,7 @@ class NotFoundError extends Error {
 
     constructor(message: string) {
         super(message);
-        this.message = 'NotFoundError';
+        this.name = 'NotFoundError';
         this.statusCode = 404;
     }
 }

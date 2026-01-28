@@ -10,8 +10,7 @@ const isPasswordValid = async (password: string, hash: string): Promise<boolean>
   return bcrypt.compare(password, hash);
 };
 
-
 export default {
-    hashPassword,
-    isPasswordValid
+  hashPassword,
+  isPasswordValid,
 };
