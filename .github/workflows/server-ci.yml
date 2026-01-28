@@ -25,7 +25,7 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
+          --health-interval=5s
           --health-timeout=5s
           --health-retries=30
 
@@ -57,11 +57,11 @@ jobs:
 
       - name: Create .env for server
         run: |
-          echo "DATABASE_URL=postgresql://postgres:postgres@postgres:5432/laundroclean_test" > .env
+          echo "DATABASE_URL=postgresql://postgres:postgres@postgres:5432/laundroclean_test" > server/.env
           echo "NODE_ENV=test" >> .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET || 'test_jwt_secret' }}" >> .env
-          echo "REFRESH_TOKEN_EXPIRES=7d" >> .env
-          echo "ACCESS_TOKEN_EXPIRES=30m" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET || 'test_jwt_secret' }}" >> server/.env
+          echo "REFRESH_TOKEN_EXPIRES=7d" >> server/.env
+          echo "ACCESS_TOKEN_EXPIRES=30m" >> server/.env
 
       - name: Lint
         run: npm run lint
