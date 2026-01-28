@@ -32,7 +32,7 @@ jobs:
     env:
       NODE_ENV: test
       PORT: 3000
-      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/laundroclean_test
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/laundroclean_test
       JWT_SECRET: ${{ secrets.JWT_SECRET || 'test_jwt_secret' }}
       REFRESH_TOKEN_EXPIRES: 7d
       ACCESS_TOKEN_EXPIRES: 30m
