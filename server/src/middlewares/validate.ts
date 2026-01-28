@@ -1,10 +1,10 @@
-import type { ZodSchema } from 'zod';
+import z from 'zod';
 import type { Request, Response, NextFunction } from 'express';
 import { ValidationError } from './errorHandler.js';
 
 type InputTarget = 'body' | 'params' | 'query';
 
-const validate = (schema: ZodSchema, target: InputTarget = 'body') => {
+const validate = (schema: z.ZodObject, target: InputTarget = 'body') => {
     return (req: Request, res: Response, next: NextFunction) => {
        const result = schema.safeParse(req[target]);
 

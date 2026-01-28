@@ -2,24 +2,18 @@ import z from 'zod';
 import { UserType, CompanyRoleTitle } from '@prisma/client';
 
 const profileSchema = z.object({
-    id: z.uuid(),
-    userId: z.uuid(),
-    phoneNumber: z.string().nullable().optional(),
-    addressLine1: z.string().nullable().optional(),
-    addressLine2: z.string().nullable().optional(),
-    city: z.string().nullable().optional(),
-    state: z.string().nullable().optional(),
-    postalCode: z.string().nullable().optional(),
-    paymentMethodToken: z.string().nullable().optional(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-    deletedAt: z.date().nullable().optional(),
-}).partial();
+    phoneNumber: z.string().nullable(),
+    addressLine1: z.string().nullable(),
+    addressLine2: z.string().nullable(),
+    city: z.string().nullable(),
+    state: z.string().nullable(),
+    postalCode: z.string().nullable(),
+    paymentMethodToken: z.string().nullable(),
+}).nullable();
 
 export type ProfileSchema = z.infer<typeof profileSchema>
 
 const userSchema = z.object({
-    id: z.uuid(),
     firstName: z.string().nullable().optional(),
     lastName: z.string().nullable().optional(),
     email: z.email(),
@@ -39,13 +33,25 @@ export type UserSchema = z.infer<typeof userSchema>
 const signupSchema = z.object({
   email: z.email('Email is invalid'),
   password: z.string()
-      .min(7, { message: 'Password must be a minimum of 7 letters' })
-      .refine((val) => /^[A-Z]/.test(val), { message: 'First letter must be uppercase' })
-      .refine((val) => /[!@#$%^&*]/.test(val), { message: 'Must contain at least one special character' }),
-  profile: profileSchema.partial().optional(),
+    .min(7, { message: 'Password must be a minimum of 7 letters' })
+    .refine((val) => /^[A-Z]/.test(val), { message: 'First letter must be uppercase' })
+    .refine((val) => /[!@#$%^&*]/.test(val), { message: 'Must contain at least one special character' }),
+  type: z.enum(Object.values(UserType)),
+  role: z.enum(Object.values(CompanyRoleTitle)).nullable().optional(),
+  profile: profileSchema.optional(),
 });
 
-export type SignupSchema = z.infer<typeof signupSchema>
+const signupSchemaWithRules = signupSchema.superRefine((data, ctx) => {
+  if (data.type === 'CLIENT' && data.role) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'CLIENT users cannot have a company role',
+    });
+  }
+});
+
+
+export type SignupSchema = z.infer<typeof signupSchemaWithRules>
 
 const loginSchema = signupSchema.pick({
     email: true,
@@ -76,11 +82,11 @@ export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
 
 
 export default {
-    profileSchema,
-    userSchema,
-    signupSchema,
-    loginSchema,
-    forgotPasswordSchema,
-    resetPasswordSchema,
-    changePasswordSchema
+  profileSchema,
+  userSchema,
+  signupSchema: signupSchemaWithRules,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  changePasswordSchema
 };
