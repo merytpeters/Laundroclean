@@ -58,12 +58,12 @@ jobs:
       - name: Create .env for server
         run: |
           cat > server/.env <<EOF
-          DATABASE_URL=postgresql://postgres:postgres@postgres:5432/laundroclean_test
-          NODE_ENV=test
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          REFRESH_TOKEN_EXPIRES=7d
-          ACCESS_TOKEN_EXPIRES=30m
-          EOF
+      DATABASE_URL=postgresql://postgres:postgres@postgres:5432/laundroclean_test
+      NODE_ENV=test
+      JWT_SECRET=${{ secrets.JWT_SECRET }}
+      REFRESH_TOKEN_EXPIRES=7d
+      ACCESS_TOKEN_EXPIRES=30m
+      EOF
 
       - name: Wait for Postgres
         run: |
