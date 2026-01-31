@@ -13,7 +13,8 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
-    "lint": "eslint . --ext .ts,.js"
+    "lint": "eslint . --ext .ts,.js",
+    "db:seed:admin": "node --loader ts-node/esm prisma/seed.admin.ts"
   },
   "keywords": [],
   "author": "Merit Edafe",

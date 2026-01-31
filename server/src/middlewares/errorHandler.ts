@@ -55,6 +55,16 @@ class ConflictError extends Error {
   }
 }
 
+class ForbiddenError extends Error {
+    statusCode: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = 'ForbiddenError';
+        this.statusCode = 403;
+    }
+}
+
 
 const notFoundHandler = () => {
     throw new NotFoundError('route not found');
@@ -90,5 +100,6 @@ export {
     NotFoundError,
     notFoundHandler,
     errorHandler,
-    ConflictError
+    ConflictError,
+    ForbiddenError
 };

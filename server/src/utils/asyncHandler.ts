@@ -22,7 +22,7 @@ const asyncHandler =
     >
   ) =>
   (req: Request, res: Response<APIResponse<T>>, next: NextFunction) => {
-    Promise.resolve(callback(req, res, next)).catch((err) => next(err));
+    return Promise.resolve(callback(req, res, next)).catch((err) => next(err));
   };
 
 export default asyncHandler;

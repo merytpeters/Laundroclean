@@ -86,6 +86,7 @@ model User {
   createdAt     DateTime            @default(now()) @map("created_at")
   updatedAt     DateTime            @updatedAt @map("updated_at")
   deletedAt     DateTime?           @map("deleted_at")
+  isActive      Boolean             @default(true)
 
   tokens        Token[]
   profile       Profile?

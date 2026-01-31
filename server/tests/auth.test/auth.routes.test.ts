@@ -1,155 +1,117 @@
+import { UserType, CompanyRoleTitle } from '@prisma/client';
+import AuthUtils from '../../src/modules/auth/auth.utils';
+import prisma from '../../src/config/prisma';
 import request from 'supertest';
-import app from '../../src/app.js';
-import 'dotenv/config';
+import app from '../../src/app';
 
-describe('POST /api/auth/register', () => {
-  it('registers a CLIENT user and returns tokens', async () => {
-    const email = `client+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'CLIENT'
-      });
 
-    if (res.status !== 201) console.log('DEBUG CLIENT REGISTER RESPONSE', res.body);
+const uniqueEmail = (prefix: string) =>
+    `${prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}@example.com`;
 
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data).toBeDefined();
-    expect(res.body.data.user).toBeDefined();
-    expect(res.body.data.user.email).toBe(email);
-    expect(res.body.data.user.type).toBe('CLIENT');
-    expect(typeof res.body.data.accessToken).toBe('string');
-    expect(typeof res.body.data.refreshToken).toBe('string');
-  });
+describe('Auth Routes', () => {
+    beforeEach(async () => {
+        // await prisma.user.deleteMany();
+    });
 
-  it('registers a COMPANYUSER with ADMIN role', async () => {
-    const email = `company-admin+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'COMPANYUSER',
-        role: 'ADMIN'
-      });
+    afterAll(async () => {
+        await prisma.$disconnect();
+    });
 
-    if (res.status !== 201) console.log('DEBUG COMPANY REGISTER RESPONSE', res.body);
+    describe('POST /api/v1/auth/client/register', () => {
+        it('should register a new client', async () => {
+            const email = uniqueEmail('client');
 
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data.user).toBeDefined();
-    expect(res.body.data.user.type).toBe('COMPANYUSER');
-    expect(res.body.data.user.role).toBe('ADMIN');
-    expect(typeof res.body.data.accessToken).toBe('string');
-    expect(typeof res.body.data.refreshToken).toBe('string');
-  });
+            const response = await request(app)
+                .post('/api/v1/auth/client/register')
+                .send({
+                    email,
+                    password: 'Password123!',
+                    type: UserType.CLIENT,
+                });
 
-  it('registers a COMPANYUSER with STAFF role', async () => {
-    const email = `company-staff+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'COMPANYUSER',
-        role: 'STAFF'
-      });
+            expect(response.status).toBe(201);
+            expect(response.body).toHaveProperty('data.user.email', email);
+        });
 
-    if (res.status !== 201) console.log('DEBUG COMPANY STAFF REGISTER RESPONSE', res.body);
+        it('should not allow non-client users to register', async () => {
+            const email = uniqueEmail('companyuser');
 
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data.user).toBeDefined();
-    expect(res.body.data.user.type).toBe('COMPANYUSER');
-    expect(res.body.data.user.role).toBe('STAFF');
-    expect(typeof res.body.data.accessToken).toBe('string');
-    expect(typeof res.body.data.refreshToken).toBe('string');
-  });
+            const response = await request(app)
+                .post('/api/v1/auth/client/register')
+                .send({
+                    email,
+                    password: 'Password123!',
+                    type: UserType.COMPANYUSER,
+                });
 
-  it('registers a COMPANYUSER with CASHIER role', async () => {
-    const email = `company-cashier+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'COMPANYUSER',
-        role: 'CASHIER'
-      });
+            expect(response.status).toBe(403);
+            expect(response.body).toHaveProperty('message', 'Company users cannot register here');
+        });
+    });
 
-    if (res.status !== 201) console.log('DEBUG COMPANY CASHIER REGISTER RESPONSE', res.body);
+    describe('POST /api/v1/auth/login', () => {
+        it('should login a user with valid credentials', async () => {
+            const email = uniqueEmail('user');
+            const password = 'Password123!';
 
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data.user).toBeDefined();
-    expect(res.body.data.user.type).toBe('COMPANYUSER');
-    expect(res.body.data.user.role).toBe('CASHIER');
-    expect(typeof res.body.data.accessToken).toBe('string');
-    expect(typeof res.body.data.refreshToken).toBe('string');
-  });
+            await prisma.user.create({
+                data: {
+                    email,
+                    password: await AuthUtils.hashPassword(password),
+                    type: UserType.COMPANYUSER,
+                },
+            });
 
-  it('rejects CLIENT when role is ADMIN', async () => {
-    const email = `client-badrole-admin+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'CLIENT',
-        role: 'ADMIN'
-      });
+            const response = await request(app)
+                .post('/api/v1/auth/login')
+                .send({
+                    email,
+                    password,
+                });
 
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toBeDefined();
-  });
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('data.user.email', email);
+        });
 
-  it('rejects CLIENT when role is STAFF', async () => {
-    const email = `client-badrole-staff+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'CLIENT',
-        role: 'STAFF'
-      });
+        it('should allow all user types and roles to login', async () => {
+            const users = [
+                {
+                    email: uniqueEmail('client'),
+                    password: 'Password123!',
+                    type: UserType.CLIENT,
+                },
+                {
+                    email: uniqueEmail('admin'),
+                    password: 'Password123!',
+                    type: UserType.COMPANYUSER,
+                    role: CompanyRoleTitle.ADMIN,
+                },
+                {
+                    email: uniqueEmail('staff'),
+                    password: 'Password123!',
+                    type: UserType.COMPANYUSER,
+                    role: CompanyRoleTitle.STAFF,
+                },
+            ];
 
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toBeDefined();
-  });
+            for (const user of users) {
+                await prisma.user.create({
+                    data: {
+                        ...user,
+                        password: await AuthUtils.hashPassword(user.password),
+                    },
+                });
 
-  it('rejects CLIENT when role is CASHIER', async () => {
-    const email = `client-badrole-cashier+${Date.now()}@example.com`;
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email,
-        password: 'Password1!',
-        type: 'CLIENT',
-        role: 'CASHIER'
-      });
+                const response = await request(app)
+                    .post('/api/v1/auth/login')
+                    .send({
+                        email: user.email,
+                        password: user.password,
+                    });
 
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toBeDefined();
-  });
-
-  it('returns validation error when email already exists', async () => {
-    const email = `dup+${Date.now()}@example.com`;
-    const payload = { email, password: 'Password1!', type: 'CLIENT' };
-
-    const first = await request(app).post('/api/auth/register').send(payload);
-    if (first.status !== 201) console.log('DEBUG FIRST REGISTER RESPONSE', first.body);
-    expect(first.status).toBe(201);
-
-    const second = await request(app).post('/api/auth/register').send(payload);
-    expect(second.status).toBe(400);
-    expect(second.body.success).toBe(false);
-    expect(second.body.message).toBeDefined();
-  });
+                expect(response.status).toBe(200);
+                expect(response.body).toHaveProperty('data.user.email', user.email);
+            }
+        });
+    });
 });

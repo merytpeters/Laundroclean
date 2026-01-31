@@ -104,6 +104,22 @@ class UserAuth {
   requireAdmin() {
     return this.requireRole(CompanyRoleTitle.ADMIN);
   }
+
+  requireCompanyAdmin() {
+    return (req: Request, res: Response, next: NextFunction) => {
+      this.authenticate()(req, res, (authErr?: any) => {
+        if (authErr) return next(authErr);
+        this.requireCompanyUser()(req, res, (err?: any) => {
+          if (err) return next(new UnauthorizedError('Access denied: Must be a company user'));
+          this.requireAdmin()(req, res, (err?: any) => {
+            if (err) return next(new UnauthorizedError('Access denied: Must be an admin'));
+            next();
+          });
+        });
+      });
+    };
+  }
+
 }
 
 export default new UserAuth();
