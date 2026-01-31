@@ -1,23 +1,26 @@
 import authService from './auth.service.js';
-import type { SignupSchema} from '../../validation/auth/auth.validation.js';
+import type { SignupSchema, LoginSchema} from '../../validation/auth/auth.validation.js';
 import asyncHandler from '../../utils/asyncHandler.js';
-import { ValidationError } from '../../middlewares/errorHandler.js';
 
 
-const register = asyncHandler(async (req, res) => {
+const clientRegister = asyncHandler(async (req, res) => {
     let newUser: SignupSchema = req.body;
 
-    const user = await authService.findUser({ email: newUser.email });
-    if (user) {
-        throw new ValidationError('User with this email already exists');
-    };
+    if (newUser.type === 'COMPANYUSER') {
+        return res.status(403).json({
+            success: false,
+            message: 'Company users cannot register here',
+        });
+    }
 
     const { user: savedUser, accessToken, refreshToken } = await authService.registerUser(newUser);
+
+    const { password: _password, ...userWithoutPassword } = savedUser;
 
     res.status(201).json({
         success: true,
         data: {
-            user: savedUser,
+            user: userWithoutPassword,
             accessToken,
             refreshToken
         },
@@ -25,7 +28,26 @@ const register = asyncHandler(async (req, res) => {
     });
 });
 
+const login = asyncHandler(async (req, res) => {
+    let user: LoginSchema = req.body;
+
+    const { authenticatedUser: authenticatedUser, accessToken, refreshToken } = await authService.loginUser({
+        email: user.email,
+        password: user.password,
+    });
+
+    res.status(200).json({
+        success: true,
+        data: {
+            user: authenticatedUser,
+            accessToken,
+            refreshToken,
+        },
+    });
+});
+
 
 export default {
-    register
+    clientRegister,
+    login
 };

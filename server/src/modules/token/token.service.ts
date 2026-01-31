@@ -54,12 +54,25 @@ const refreshTokenExpiry = async (
   });
 };
 
-const createAccessToken = (userId: string) => {
-  return jwt.sign({ userId }, config.JWT_SECRET, { expiresIn: config.ACCESS_TOKEN_EXPIRES });
+const createAccessToken = async (userId: string) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const payload: any = { userId };
+  if (user) {
+    payload.type = user.type;
+
+    payload.companyRoleTitle = user.role ?? null;
+  }
+  return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.ACCESS_TOKEN_EXPIRES });
 };
 
-const createRefreshToken = (userId: string) => {
-  return jwt.sign({ userId }, config.JWT_SECRET, { expiresIn: config.REFRESH_TOKEN_EXPIRES });
+const createRefreshToken = async (userId: string) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const payload: any = { userId };
+  if (user) {
+    payload.type = user.type;
+    payload.companyRoleTitle = user.role ?? null;
+  }
+  return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.REFRESH_TOKEN_EXPIRES });
 };
 
 const verifyToken = (token: string) => {

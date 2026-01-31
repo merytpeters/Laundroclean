@@ -2,6 +2,7 @@
 import express from 'express';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { AuthRoutes } from './modules/auth/index.js';
+import { AdminRoutes } from './modules/admin/index.js';
 
 
 const app = express();
@@ -17,7 +18,8 @@ app.use(express.json());
 )
 */}
 
-app.use('/api/auth', AuthRoutes);
+app.use('/api/v1/auth', AuthRoutes);
+app.use('/api/v1/admin', AdminRoutes);
 app.use(errorHandler);
 
 app.get('/api', (req, res) => {

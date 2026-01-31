@@ -1,6 +1,6 @@
 import prisma from '../../config/prisma.js';
 import type { Prisma, User } from '@prisma/client';
-import { NotFoundError, ConflictError } from '../../middlewares/errorHandler.js';
+import { NotFoundError, ConflictError, ValidationError } from '../../middlewares/errorHandler.js';
 import authUtils from './auth.utils.js';
 import tokenService from '../token/token.service.js';
 import { normalizeNullable } from '../../utils/object.js';
@@ -61,6 +61,11 @@ const deleteUser = async (where: UserWhereUniqueInput): Promise<User> => {
 
 // registerUser: orchestrates createUser + token generation
 const registerUser = async (payload: any): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
+    //find user
+    const existingUser = await findUser({ email: payload.email });
+    if (existingUser) {
+        throw new ValidationError('User with this email already exists');
+    };
     // hash password
     const hashedPassword = await authUtils.hashPassword(payload.password);
     const withPassword = { ...payload, password: hashedPassword };
@@ -76,15 +81,30 @@ const registerUser = async (payload: any): Promise<{ user: User; accessToken: st
     const user = await createUser(userCreateInput as any);
 
     // generate tokens (JWT strings)
-    const accessToken = tokenService.createAccessToken(user.id);
-    const refreshToken = tokenService.createRefreshToken(user.id);
+    const accessToken = await tokenService.createAccessToken(user.id);
+    const refreshToken = await tokenService.createRefreshToken(user.id);
 
     return { user, accessToken, refreshToken };
 };
+
+const loginUser = async (payload: any): Promise<{authenticatedUser: User; accessToken: string; refreshToken: string }> => {
+    const authenticatedUser = await findUser({email: payload.email});
+    if (!authenticatedUser) throw new NotFoundError('Invalid email or password');
+
+    const isValid = await authUtils.isPasswordValid(payload.password, authenticatedUser.password);
+    if (!isValid) throw new NotFoundError('Invalid email or password');
+
+    const accessToken = await tokenService.createAccessToken(authenticatedUser.id);
+    const refreshToken = await tokenService.createRefreshToken(authenticatedUser.id);
+
+    return { authenticatedUser, accessToken, refreshToken };
+};
+
 export default {
     findUser,
     createUser,
     updateUser,
     deleteUser,
     registerUser,
+    loginUser
 };

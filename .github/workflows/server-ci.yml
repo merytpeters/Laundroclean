@@ -62,6 +62,8 @@ jobs:
           echo "JWT_SECRET=${{ secrets.JWT_SECRET || 'test_jwt_secret' }}" >> .env
           echo "REFRESH_TOKEN_EXPIRES=7d" >> .env
           echo "ACCESS_TOKEN_EXPIRES=30m" >> .env
+          echo "ADMIN_EMAIL=test_admin@example.com" >> .env
+          echo "ADMIN_PASSWORD=Test123!" >> .env
 
       - name: Lint
         run: npm run lint
@@ -87,6 +89,9 @@ jobs:
 
       - name: TypeScript check
         run: npx tsc --noEmit
+
+      - name: Seed Admin
+        run: npm run db:seed:admin
 
       - name: Run tests
         run: npm test
