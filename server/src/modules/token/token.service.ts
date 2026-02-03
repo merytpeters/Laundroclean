@@ -4,6 +4,8 @@ import { NotFoundError } from '../../middlewares/errorHandler.js';
 import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
+import type { TokenPayload } from './token.types.js';
+import { TokenType } from '@prisma/client';
 
 
 export type TokenWhereUniqueInput = Prisma.TokenWhereUniqueInput
@@ -83,6 +85,22 @@ const verifyToken = (token: string) => {
   }
 };
 
+const saveRefreshToken = async (
+  userId: string,
+  token: string
+) => {
+  const payload: TokenPayload = {
+    userId,
+    token,
+    type: TokenType.REFRESH,
+    expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
+    valid: true,
+  };
+
+  return prisma.token.create({ data: payload });
+};
+
+
 
 export default {
   findToken,
@@ -92,5 +110,6 @@ export default {
   refreshTokenExpiry,
   createAccessToken,
   createRefreshToken,
-  verifyToken
+  verifyToken,
+  saveRefreshToken
 };

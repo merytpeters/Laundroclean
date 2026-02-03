@@ -5,6 +5,7 @@ interface TokenPayload {
    token: string;
    type: PrismaTokenType;
    expiresAt: Date;
+   valid?: boolean;
 }
 
 interface TokenResponse {

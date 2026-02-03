@@ -97,6 +97,8 @@ const loginUser = async (payload: any): Promise<{authenticatedUser: User; access
     const accessToken = await tokenService.createAccessToken(authenticatedUser.id);
     const refreshToken = await tokenService.createRefreshToken(authenticatedUser.id);
 
+    await tokenService.saveRefreshToken(authenticatedUser.id, refreshToken);
+
     return { authenticatedUser, accessToken, refreshToken };
 };
 

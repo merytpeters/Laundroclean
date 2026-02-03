@@ -11,6 +11,7 @@ const uniqueEmail = (prefix: string) =>
 
 describe('Auth Controller', () => {
     beforeEach(async () => {
+        // await prisma.token.deleteMany();
         // await prisma.user.deleteMany();
     });
 
