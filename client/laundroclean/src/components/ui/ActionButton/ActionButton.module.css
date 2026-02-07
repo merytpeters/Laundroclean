@@ -1,0 +1,16 @@
+.buttonStyle {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    background-color: var(--btn-bg, #FFFFFF);
+    color: var(--btn-color, #000000);
+    border: var(--btn-border, #B3B3B3);
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: var(--border-radius, 8px);
+    cursor: pointer;
+    font-size: medium;
+    font-weight: 900;
+    padding: 8px;
+}
