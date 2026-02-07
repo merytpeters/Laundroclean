@@ -74,4 +74,4 @@ For editing, open [db-schema.drawio](docs/db-schema.drawio) in [draw.io](https:/
 
 
 ## License
-MIT
+[License](./LICENSE)
