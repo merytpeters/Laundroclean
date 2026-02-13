@@ -5,7 +5,7 @@
   padding: 0 16px;
   height: 60px;
   background-color: inherit;
-  border: 2px solid #0F233A;
+  border: 2px solid rgba(15, 35, 58, 0.3);
   width: 100vw;
   height: 80px;
 }
@@ -20,4 +20,40 @@
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+/* Keep icons-only for controls on small screens */
+@media (max-width: 1000px) {
+  .header {
+    padding: 0 10px;
+    height: 64px;
+    width: 88vw;
+    border: none;
+  }
+
+  .leftProps { gap: 12px; }
+
+  .rightProps { gap: 8px; }
+
+  /* hide common label/text nodes inside the right controls while keeping icons */
+  .rightProps .label,
+  .rightProps .text,
+  .rightProps span.label,
+  .rightProps p.label {
+    display: none;
+  }
+
+  /* prefer showing icon elements (svg or elements with `.icon`) */
+  .rightProps .icon,
+  .rightProps svg {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 800px) {
+  .header { height: 58px; }
+  .leftProps { gap: 8px; }
+  .rightProps { gap: 6px; }
 }

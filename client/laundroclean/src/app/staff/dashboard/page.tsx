@@ -1,7 +1,7 @@
 export default function StaffDashboard () {
     return (
         <div>
-            <p>Staff Dashboard</p>
+            <p>Modals go here</p>
         </div>
     )
 }

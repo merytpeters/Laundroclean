@@ -16,10 +16,12 @@ export default async function AdminLayout({
   }*/ 
 
   return (
-    <CompanyUserLayout user={mockCompanyAdmin}>
+    <CompanyUserLayout 
+      user={mockCompanyAdmin}
+      welcomeMessage={{ title: "Admin Dashboard", message: "Manage your laundromat operations and monitor performance" }}
+      showMenu={true}
+    >
       {children}
     </CompanyUserLayout>
   );
 }
-
-

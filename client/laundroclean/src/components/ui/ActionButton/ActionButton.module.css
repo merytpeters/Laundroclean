@@ -14,3 +14,15 @@
     font-weight: 900;
     padding: 8px;
 }
+
+@media (max-width: 1024px) {
+    .buttonStyle {
+        font-size: small;
+    }
+}
+
+@media (max-width: 800px) {
+    .buttonStyle{
+        font-size: xx-small;
+    }
+}
