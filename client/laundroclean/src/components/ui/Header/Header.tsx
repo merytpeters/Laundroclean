@@ -21,7 +21,7 @@ export default function Header() {
             <nav className={styles.nav}>
                 <ul>
                     <li><Link href="">Services</Link></li>
-                    <li><Link href="">Contact</Link></li>
+                    <li><Link href="/#contact">Contact</Link></li>
                     <li><Link href="">About</Link></li>
                     <li><Link href="/signup">Sign up</Link></li>
                 </ul>
