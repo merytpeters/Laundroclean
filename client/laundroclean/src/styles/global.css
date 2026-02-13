@@ -47,3 +47,73 @@ a {
     color-scheme: dark;
   }
 }
+
+/* Responsive global typography */
+:root {
+  --font-size-base: 16px;
+  --font-scale-tablet: 0.94;
+  --font-scale-mobile: 0.88;
+
+  --line-height-base: 1.5;
+
+  --h1: 2rem;
+  --h2: 1.5rem;
+  --h3: 1.25rem;
+  --h4: 1.125rem;
+  --h5: 1rem;
+  --h6: 0.875rem;
+  --p: 1rem;
+  --small: 0.875rem;
+  --button: 0.9375rem;
+}
+
+html {
+  font-size: var(--font-size-base);
+}
+
+body {
+  line-height: var(--line-height-base);
+}
+
+h1 { font-size: var(--h1); margin-bottom: 0.5rem; }
+h2 { font-size: var(--h2); margin-bottom: 0.45rem; }
+h3 { font-size: var(--h3); margin-bottom: 0.4rem; }
+h4 { font-size: var(--h4); margin-bottom: 0.35rem; }
+h5 { font-size: var(--h5); margin-bottom: 0.3rem; }
+h6 { font-size: var(--h6); margin-bottom: 0.25rem; }
+
+p { font-size: var(--p); margin-bottom: 0.75rem; color: inherit; }
+small, .small { font-size: var(--small); }
+a { text-decoration: none; font-size: var(--p); }
+button, input[type="button"], input[type="submit"] { font-size: var(--button); }
+
+@media (max-width: 1024px) {
+  html { font-size: calc(var(--font-size-base) * var(--font-scale-tablet)); }
+  :root {
+    --h1: 1.9rem;
+    --h2: 1.4rem;
+    --h3: 1.18rem;
+    --p: 0.98rem;
+  }
+}
+
+@media (max-width: 768px) {
+  html { font-size: calc(var(--font-size-base) * var(--font-scale-mobile)); }
+  :root {
+    --h1: 1.6rem;
+    --h2: 1.25rem;
+    --h3: 1.1rem;
+    --p: 0.95rem;
+    --button: 0.9rem;
+    --small: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --h1: 1.4rem;
+    --h2: 1.15rem;
+    --h3: 1rem;
+    --p: 0.9rem;
+  }
+}

@@ -99,3 +99,39 @@
     display: block;
   }
 }
+
+/* Additional responsive refinements */
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem 0.75rem;
+    align-items: center;
+  }
+
+  .logo {
+    width: 28%;
+    height: auto;
+    margin-right: 0.5rem;
+  }
+
+  /* move nav off-screen by default and provide a mobile-friendly panel */
+  .nav {
+    display: none; /* desktop nav hidden on very small screens */
+  }
+
+  .mobileNav {
+    right: 0.5rem;
+    left: auto;
+    width: 64%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    border-radius: 8px;
+  }
+
+  .mobileNav ul {
+    padding: 0.75rem;
+  }
+
+  .mobileNav li {
+    padding: 0.6rem 0;
+    font-size: 0.95rem;
+  }
+}
