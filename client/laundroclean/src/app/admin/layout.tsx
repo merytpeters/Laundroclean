@@ -1,13 +1,27 @@
-import React from "react";
+// import { redirect } from "next/navigation";
+import CompanyUserLayout from "src/components/layouts/CompanyUser/CompanyUserLayout";
+//import { getCurrentUser } from "src/lib/auth";
+// import { CompanyUser } from "src/types/user";
+import { mockCompanyAdmin } from "src/lib/company-user/mock";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  /*const user = (await getCurrentUser()) as CompanyUser | null;
+
+  if (!user || user.type !== "COMPANYUSER") {
+    redirect("/login");
+  }*/ 
+
   return (
-    <section>
+    <CompanyUserLayout 
+      user={mockCompanyAdmin}
+      welcomeMessage={{ title: "Admin Dashboard", message: "Manage your laundromat operations and monitor performance" }}
+      showMenu={true}
+    >
       {children}
-    </section>
+    </CompanyUserLayout>
   );
 }

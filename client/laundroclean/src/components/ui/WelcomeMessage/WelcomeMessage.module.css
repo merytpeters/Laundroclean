@@ -1,0 +1,29 @@
+.welcomeMessage {
+  position: relative;
+  left: 0;
+  margin-left: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure left:0 on all screen sizes explicitly */
+@media (max-width: 1300px) {
+  .welcomeMessage {
+    left: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1023px) {
+  .welcomeMessage {
+    left: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcomeMessage {
+    left: 0;
+    margin-left: 0;
+  }
+}

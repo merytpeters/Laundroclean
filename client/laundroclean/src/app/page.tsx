@@ -25,8 +25,8 @@ export default function Home() {
               <h1>FEEL THE COMFORT IN EVERY <strong>FOLD</strong></h1>
               <p>Transform your laundry routine with our <br /> state-of-the-art facilities, <br /> smart booking system to premium care</p>
               <div className={styles.heroButtons}>
-                <Button text="Book Now" className={styles.bookNowButton} />
-                <Button text="Locate Us" className={styles.locationButton} />
+                <Button text="Book Now" className={styles.bookNowButton} href="/signup"/>
+                <Button text="Locate Us" className={styles.locationButton} href="/#location"/>
               </div>
               <Image
                 src="/img/waterdroplets.png"
@@ -97,7 +97,7 @@ that clean thoroughly in record time without compromising quality."
             />
           </figure>
         </section>
-        <section className={styles.visitUs}>
+        <section id="location" className={styles.visitUs}>
           {/*Visit us */}
           <h2>Visit Us</h2>
           <p>Conveniently located in the heart of Ibadan.</p>
@@ -111,7 +111,7 @@ that clean thoroughly in record time without compromising quality."
           <p>Join our Happy Customers</p>
           <h2>Ready to Transform Your Laundry?</h2>
           <p>Experience laundry care with LaundroClean&apos;s premium services.</p>
-          <figure className={styles.calltoActionButtonWrap}>
+          <figure id="contact" className={styles.calltoActionButtonWrap}>
             <Button text="Start Your Journey" href="/signup" className={styles.startButton}/>
             <Button text="WhatsApp" href="wa.me/2348163378163" className={styles.whatsApp}/>
           </figure>

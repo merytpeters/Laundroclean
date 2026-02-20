@@ -1,0 +1,159 @@
+.horizontalnav {
+  width: 98%;
+  padding: 0.2em 0.2em;
+  background-color: #f3f3f3;
+  border-radius: 12px;
+  position: relative;
+  height: fit-content;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+  gap: 2rem;
+  margin: 0 1rem;
+}
+
+.menuItem {
+  cursor: pointer;
+  height: fit-content;
+  padding: 0.5rem 3rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  color: #000000;
+  font-size: small;
+}
+
+.menuItem:hover {
+  background-color: #ffffff;
+}
+
+.active {
+  background-color: #ffffff;
+  font-weight: 600;
+}
+
+.hamburgerButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.hamburgerIcon {
+  width: 22px;
+  height: 2px;
+  background: #0F233A;
+  display: block;
+  position: relative;
+}
+.hamburgerIcon::before,
+.hamburgerIcon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: #0F233A;
+}
+.hamburgerIcon::before { top: -7px; }
+.hamburgerIcon::after { top: 7px; }
+
+.mobileMenu {
+  display: none;
+  position: absolute;
+  top: 58px;
+  right: 8px;
+  background: #0F233A;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  border-radius: 10px;
+  z-index: 1200;
+  min-width: 160px;
+}
+
+.mobileMenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.mobileMenu li {
+  padding: 0.6rem 1rem;
+}
+
+.mobileMenu .menuItem {
+  color: #fbfffb;
+  padding: 0.6rem 1rem;
+}
+
+.mobileMenu .menuItem:hover {
+  background: rgba(177, 177, 181, 0.119);
+}
+
+.mobileMenu .active {
+  background: rgba(255,255,255,0.08);
+  font-weight: 600;
+  color: #fbfffb;
+}
+
+.open {
+  display: block;
+}
+
+
+@media (max-width: 1300px) {
+  .menuList {
+    gap: 0;
+  }
+}
+
+@media (max-width: 1023px) {
+  .horizontalnav {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    justify-content: flex-end;
+  }
+
+  .mobileMenu {
+    right: 0;
+    top: 44px;
+    min-width: 140px;
+  }
+
+  .hamburgerButton {
+    margin: 0;
+  }
+}
+
+
+@media (max-width: 1023px) {
+  .menuList {
+    display: none;
+  }
+
+  .hamburgerButton {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobileMenu { right: 8px; top: 52px; min-width: 140px; }
+  .menuItem { padding: 0.5rem 1rem; font-size: 0.95rem; }
+}
+

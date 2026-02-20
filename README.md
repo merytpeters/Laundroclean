@@ -49,6 +49,19 @@ A web and mobile application for a laundromat where users can book laundry servi
   npm start
   ```
 
+## Contributing (by Permission Only)
+
+This project is proprietary. Contributions are only accepted from approved collaborators. 
+
+If you are an approved contributor:
+
+1. Fork the repo and create a feature branch.
+2. Add tests for new behavior and keep commits focused.
+3. Update or create Alembic migration if models change.
+4. Open a pull request to `main` with a clear description and testing notes.
+5. Follow the existing coding style. Use `ruff`, `black`, or other configured linters/formatters if available.
+
+
 ## Technologies Used
 - React / Typescript
 - Node.js / Express
@@ -61,4 +74,4 @@ For editing, open [db-schema.drawio](docs/db-schema.drawio) in [draw.io](https:/
 
 
 ## License
-MIT
+[License](./LICENSE)

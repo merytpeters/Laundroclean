@@ -206,7 +206,7 @@
   --btn-border: 1px solid #469bd3;
   --btn-width: 11em;
   --btn-border-radius: 0.4rem;
-  --btn-height: 3em;
+  --btn-height: 4em;
 }
 
 .calltoAction {
@@ -243,7 +243,7 @@
 }
 
 .startButton {
-   --btn-width: 20em;
+  --btn-width: 16em;
   --btn-bg: #D59056;
   transition: all 0.3s ease;
   --btn-border-radius: 0.8rem;
