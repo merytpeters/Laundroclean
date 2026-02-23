@@ -1,6 +1,9 @@
 import authService from './auth.service.js';
-import type { SignupSchema, LoginSchema} from '../../validation/auth/auth.validation.js';
+import tokenService from '../token/token.service.js';
+import type { SignupSchema, LoginSchema, ResetPasswordSchema } from '../../validation/auth/auth.validation.js';
 import asyncHandler from '../../utils/asyncHandler.js';
+import authUtils from './auth.utils.js';
+import { TokenType } from '@prisma/client';
 
 
 const clientRegister = asyncHandler(async (req, res) => {
@@ -46,8 +49,34 @@ const login = asyncHandler(async (req, res) => {
     });
 });
 
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token, password }: ResetPasswordSchema = req.body;
+
+    const tokenRecord = await tokenService.findToken(token);
+    if (!tokenRecord || tokenRecord.expiresAt < new Date() || tokenRecord.type !== TokenType.RESET) {
+        return res.status(403).json({
+            success: false,
+            message: 'Invalid or expired token'
+        });
+    }
+
+    await authService.updateUser(
+        { id: tokenRecord.userId },
+        { password: await authUtils.hashPassword(password), updatedAt: new Date() }
+    );
+
+    await tokenService.updateToken({ id: tokenRecord.id }, { valid: false });
+
+    return res.status(200).json({
+        success: true,
+        message: 'Password successfully updated'
+    });
+});
+
+
 
 export default {
     clientRegister,
-    login
+    login,
+    resetPassword
 };

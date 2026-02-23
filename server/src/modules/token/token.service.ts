@@ -20,12 +20,13 @@ const generateTokenString = (length = 32): string => {
 };
 
 
-const findToken = async (where: TokenWhereUniqueInput): Promise<Token | null> => {
-    const token = await prisma.token.findUnique({
-        where,
+const findToken = async (token: string): Promise<Token | null> => {
+  const where: TokenWhereUniqueInput = { token };
+    const userToken = await prisma.token.findUnique({
+        where
     });
 
-    return token;
+    return userToken;
 };
 
 const createResetToken = async (userId: string): Promise<Token> => {

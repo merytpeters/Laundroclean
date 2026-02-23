@@ -43,6 +43,19 @@
  *           type: string
  *           format: email
  *           example: jane@example.com
+ *     ResetPasswordRequest:
+ *       type: object
+ *       required:
+ *         - token
+ *         - password
+ *       properties:
+ *         token:
+ *           type: string
+ *           example: 0123456789abcdef
+ *         password:
+ *           type: string
+ *           format: password
+ *           example: NewStrongPassword!23
  *     AuthResponse:
  *       type: object
  *       properties:
@@ -142,6 +155,35 @@
  *                     example: Password reset email sent
  *         '400':
  *           description: Validation error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ErrorResponse'
+
+ *   /api/v1/auth/reset-password:
+ *     post:
+ *       tags:
+ *         - Auth
+ *       summary: Reset a user's password using a token
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResetPasswordRequest'
+ *       responses:
+ *         '200':
+ *           description: Password reset successful
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Password has been reset
+ *         '400':
+ *           description: Validation error or invalid token
  *           content:
  *             application/json:
  *               schema:

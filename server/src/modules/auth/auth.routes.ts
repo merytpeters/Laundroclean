@@ -26,5 +26,10 @@ router.post(
   emailController.requestPasswordReset
 );
 
+router.post(
+    '/reset-password',
+    authController.resetPassword
+);
+
 
 export default router;
