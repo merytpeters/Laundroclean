@@ -10,6 +10,8 @@ const env = (variable: string, defaultValue?: string): any => {
       case 'ACCESS_TOKEN_EXPIRES': return '30m';
       case 'ADMIN_EMAIL': return 'admin@dev.local';
       case 'ADMIN_PASSWORD': return 'Admin123!';
+      case 'TEMPLATES_PATH': return 'src/modules/emailService/templates';
+      // case 'RESEND_API_KEY': return 'test_api_key';
     }
   }
 
@@ -27,6 +29,11 @@ const config = {
   ACCESS_TOKEN_EXPIRES: env('ACCESS_TOKEN_EXPIRES'),
   ADMIN_PASSWORD: env('ADMIN_PASSWORD'),
   ADMIN_EMAIL: env('ADMIN_EMAIL'),
+  TEMPLATES_PATH: env('TEMPLATES_PATH'),
+  RESEND_API_KEY: env('RESEND_API_KEY'),
+  APP_NAME: env('APP_NAME'),
+  CLIENT_URL: env('CLIENT_URL'),
+  RESET_TOKEN_EXPIRES: env('RESET_TOKEN_EXPIRES'),
 };
 
 export default config;

@@ -102,11 +102,19 @@ const loginUser = async (payload: any): Promise<{authenticatedUser: User; access
     return { authenticatedUser, accessToken, refreshToken };
 };
 
+const findUserByEmail = async (email: string): Promise<User | null> => {
+    const user = await prisma.user.findUnique({
+        where: {email}
+    });
+    return user;
+};
+
 export default {
     findUser,
     createUser,
     updateUser,
     deleteUser,
     registerUser,
-    loginUser
+    loginUser,
+    findUserByEmail
 };

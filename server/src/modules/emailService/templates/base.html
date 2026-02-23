@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        {% include "styles/styles.css" %}
+    </style>
+</head>
+<body class="email-body">
+    {% block content %}
+    <section>
+    Hi {{ firstname }},
+    </section>
+    {% endblock %}
+</body>
+</html>

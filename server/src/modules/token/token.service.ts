@@ -6,12 +6,19 @@ import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import type { TokenPayload } from './token.types.js';
 import { TokenType } from '@prisma/client';
+import crypto from 'crypto';
 
 
 export type TokenWhereUniqueInput = Prisma.TokenWhereUniqueInput
 export type TokenUncheckedCreateInput = Prisma.TokenUncheckedCreateInput
 
 const REFRESH_TOKEN_EXPIRES_MS = ms(config.REFRESH_TOKEN_EXPIRES || '7d');
+const RESET_TOKEN_EXPIRES_MS = ms(config.RESET_TOKEN_EXPIRES || '60m');
+
+const generateTokenString = (length = 32): string => {
+  return crypto.randomBytes(length).toString('hex');
+};
+
 
 const findToken = async (where: TokenWhereUniqueInput): Promise<Token | null> => {
     const token = await prisma.token.findUnique({
@@ -21,9 +28,16 @@ const findToken = async (where: TokenWhereUniqueInput): Promise<Token | null> =>
     return token;
 };
 
-const createToken = async (data: TokenUncheckedCreateInput): Promise<Token> => {
+const createResetToken = async (userId: string): Promise<Token> => {
+    const tokenValue = generateTokenString();
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRES_MS);
     const token = await prisma.token.create({
-        data,
+        data: {
+          token: tokenValue,
+          userId,
+          expiresAt: expiresAt,
+          type: TokenType.RESET
+        },
     });
     return token;
 };
@@ -63,6 +77,9 @@ const createAccessToken = async (userId: string) => {
     payload.type = user.type;
 
     payload.companyRoleTitle = user.role ?? null;
+
+    payload.tokenType = TokenType.ACCESS;
+
   }
   return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.ACCESS_TOKEN_EXPIRES });
 };
@@ -73,6 +90,7 @@ const createRefreshToken = async (userId: string) => {
   if (user) {
     payload.type = user.type;
     payload.companyRoleTitle = user.role ?? null;
+    payload.tokenType = TokenType.REFRESH;
   }
   return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.REFRESH_TOKEN_EXPIRES });
 };
@@ -101,10 +119,9 @@ const saveRefreshToken = async (
 };
 
 
-
 export default {
   findToken,
-  createToken,
+  createResetToken,
   updateToken,
   refreshToken,
   refreshTokenExpiry,
