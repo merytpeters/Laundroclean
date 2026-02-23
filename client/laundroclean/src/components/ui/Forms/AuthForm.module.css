@@ -52,6 +52,15 @@
   position: relative;
 }
 
+.inputWrapper label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111;
+  display: block;
+  margin-bottom: 4px;
+}
+
+
 .passwordWrapper {
   position: relative;
   width: 100%;
