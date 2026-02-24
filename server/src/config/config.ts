@@ -11,7 +11,9 @@ const env = (variable: string, defaultValue?: string): any => {
       case 'ADMIN_EMAIL': return 'admin@dev.local';
       case 'ADMIN_PASSWORD': return 'Admin123!';
       case 'TEMPLATES_PATH': return 'src/modules/emailService/templates';
-      // case 'RESEND_API_KEY': return 'test_api_key';
+      case 'RESEND_API_KEY': return 'test_api_key';
+      case 'RESET_TOKEN_EXPIRES': return '60m';
+      case 'CLIENT_URL': return nodeEnv === 'test' ? 'http://localhost:3000' : 'http://localhost:3000';
     }
   }
 
