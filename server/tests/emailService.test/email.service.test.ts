@@ -1,9 +1,6 @@
 import { jest } from '@jest/globals';
+import config from '../../src/config/config';
 
-process.env.APP_NAME = process.env.APP_NAME || 'Laundroclean';
-process.env.RESEND_API_KEY = process.env.RESEND_API_KEY || 'test_api_key';
-process.env.CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
-process.env.RESET_TOKEN_EXPIRES = process.env.RESET_TOKEN_EXPIRES || '1h';
 
 jest.unstable_mockModule('nunjucks', () => ({
   default: { render: jest.fn().mockReturnValue('<html/>') },
@@ -29,7 +26,7 @@ describe('EmailService', () => {
     const arg = (mockSend as jest.Mock).mock.calls[0]?.[0] as any;
     expect(arg?.to).toBe('test@example.com');
     expect(arg?.from).toBe('laundroclean@yahoo.com');
-    expect(arg?.subject).toContain(process.env.APP_NAME);
+    expect(arg?.subject).toContain(config.APP_NAME);
     expect(arg?.html).toBe('<html/>');
     expect(nunjucks.render).toHaveBeenCalledWith('password-reset.html', {
       firstname: 'Test',

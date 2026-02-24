@@ -1,9 +1,6 @@
 import { jest } from '@jest/globals';
+import config from '../../src/config/config';
 
-process.env.APP_NAME = process.env.APP_NAME || 'Laundroclean';
-process.env.CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
-process.env.RESEND_API_KEY = process.env.RESEND_API_KEY || 'test_api_key';
-process.env.RESET_TOKEN_EXPIRES = process.env.RESET_TOKEN_EXPIRES || '1h';
 
 const mockFindUserByEmail = jest.fn<() => Promise<{ id: number; email: string; firstName: string } | null>>();
 jest.unstable_mockModule('../../src/modules/auth/auth.service', () => ({
@@ -43,7 +40,7 @@ describe('EmailController.requestPasswordReset', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         success: true,
-        message: expect.stringContaining(process.env.APP_NAME as string),
+        message: expect.stringContaining(config.APP_NAME as string),
       })
     );
   });
@@ -64,7 +61,7 @@ describe('EmailController.requestPasswordReset', () => {
     expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(
       user.email,
       'Jane',
-      `${process.env.CLIENT_URL}/reset-password?token=reset-token-1`
+      `${config.CLIENT_URL}/reset-password?token=reset-token-1`
     );
 
     expect(res.status).toHaveBeenCalledWith(200);
