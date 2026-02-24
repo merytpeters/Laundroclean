@@ -1,0 +1,15 @@
+.email-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn {
+    background-color: #469BD3;
+    color: #efefea;
+    height: 36px;
+    width: 50rem;
+    border-radius: 6px;
+    border: none;
+    padding: 8px;
+}

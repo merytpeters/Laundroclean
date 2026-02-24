@@ -1,9 +1,34 @@
 import { UserType, CompanyRoleTitle } from '@prisma/client';
-import AuthUtils from '../../src/modules/auth/auth.utils';
-import AuthController from '../../src/modules/auth/auth.controller';
-import prisma from '../../src/config/prisma';
 import { jest } from '@jest/globals';
+import AuthUtils from '../../src/modules/auth/auth.utils';
+import prisma from '../../src/config/prisma';
 import type { Request, Response } from 'express';
+import { TokenType } from '@prisma/client';
+
+// Mocks for token and auth services used by the controller
+const mockFindToken = jest.fn() as jest.MockedFunction<() => Promise<any | null>>;
+const mockUpdateToken = jest.fn() as jest.MockedFunction<() => Promise<void>>;
+(jest as any).unstable_mockModule('../../src/modules/token/token.service', () => ({
+    default: { findToken: mockFindToken, updateToken: mockUpdateToken },
+}));
+
+// Mock auth.service functions (registerUser, loginUser, updateUser) so controller tests are isolated
+const mockRegisterUser = jest.fn().mockImplementation(async (newUser: any) => ({
+    user: { ...newUser, id: Math.floor(Math.random() * 100000) },
+    accessToken: 'access-token',
+    refreshToken: 'refresh-token',
+}));
+const mockLoginUser = jest.fn().mockImplementation(async ({ email }: any) => ({
+    authenticatedUser: { email },
+    accessToken: 'access-token',
+    refreshToken: 'refresh-token',
+}));
+const mockUpdateUser = jest.fn() as jest.MockedFunction<() => Promise<any>>;
+(jest as any).unstable_mockModule('../../src/modules/auth/auth.service', () => ({
+    default: { registerUser: mockRegisterUser, loginUser: mockLoginUser, updateUser: mockUpdateUser },
+}));
+
+const { default: AuthController } = await import('../../src/modules/auth/auth.controller');
 
 
 const uniqueEmail = (prefix: string) =>
@@ -11,6 +36,7 @@ const uniqueEmail = (prefix: string) =>
 
 describe('Auth Controller', () => {
     beforeEach(async () => {
+        // await prisma.token.deleteMany();
         // await prisma.user.deleteMany();
     });
 
@@ -176,6 +202,65 @@ describe('Auth Controller', () => {
                     })
                 );
             }
+        });
+    });
+
+    describe('resetPassword', () => {
+        beforeEach(() => {
+            mockFindToken.mockReset();
+            mockUpdateToken.mockReset();
+            mockUpdateUser.mockReset();
+            mockRegisterUser.mockReset();
+            mockLoginUser.mockReset();
+        });
+
+        it('returns 403 for invalid or expired token', async () => {
+            mockFindToken.mockResolvedValue(null);
+
+            const req = { body: { token: 'bad-token', password: 'NewPass123!' } } as any;
+            const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+            const next = jest.fn();
+
+            await AuthController.resetPassword(req, res, next);
+
+            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    success: false,
+                    message: 'Invalid or expired token',
+                })
+            );
+        });
+
+        it('updates password and invalidates token when token is valid', async () => {
+            const tokenRecord = {
+                id: 10,
+                userId: 42,
+                expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+                type: TokenType.RESET,
+            } as any;
+
+            mockFindToken.mockResolvedValue(tokenRecord);
+            mockUpdateToken.mockResolvedValue(undefined);
+            mockUpdateUser.mockResolvedValue({});
+
+            const req = { body: { token: 'valid-token', password: 'NewPass123!' } } as any;
+            const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+            const next = jest.fn();
+
+            await AuthController.resetPassword(req, res, next);
+
+            expect(mockUpdateUser).toHaveBeenCalledWith(
+                { id: tokenRecord.userId },
+                expect.objectContaining({ password: expect.any(String), updatedAt: expect.any(Date) })
+            );
+
+            expect(mockUpdateToken).toHaveBeenCalledWith({ id: tokenRecord.id }, { valid: false });
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({ success: true, message: 'Password successfully updated' })
+            );
         });
     });
 });

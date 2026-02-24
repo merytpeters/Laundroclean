@@ -4,24 +4,41 @@ import { NotFoundError } from '../../middlewares/errorHandler.js';
 import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
+import type { TokenPayload } from './token.types.js';
+import { TokenType } from '@prisma/client';
+import crypto from 'crypto';
 
 
 export type TokenWhereUniqueInput = Prisma.TokenWhereUniqueInput
 export type TokenUncheckedCreateInput = Prisma.TokenUncheckedCreateInput
 
 const REFRESH_TOKEN_EXPIRES_MS = ms(config.REFRESH_TOKEN_EXPIRES || '7d');
+const RESET_TOKEN_EXPIRES_MS = ms(config.RESET_TOKEN_EXPIRES || '60m');
 
-const findToken = async (where: TokenWhereUniqueInput): Promise<Token | null> => {
-    const token = await prisma.token.findUnique({
-        where,
-    });
-
-    return token;
+const generateTokenString = (length = 32): string => {
+  return crypto.randomBytes(length).toString('hex');
 };
 
-const createToken = async (data: TokenUncheckedCreateInput): Promise<Token> => {
+
+const findToken = async (token: string): Promise<Token | null> => {
+  const where: TokenWhereUniqueInput = { token };
+    const userToken = await prisma.token.findUnique({
+        where
+    });
+
+    return userToken;
+};
+
+const createResetToken = async (userId: string): Promise<Token> => {
+    const tokenValue = generateTokenString();
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRES_MS);
     const token = await prisma.token.create({
-        data,
+        data: {
+          token: tokenValue,
+          userId,
+          expiresAt: expiresAt,
+          type: TokenType.RESET
+        },
     });
     return token;
 };
@@ -61,6 +78,9 @@ const createAccessToken = async (userId: string) => {
     payload.type = user.type;
 
     payload.companyRoleTitle = user.role ?? null;
+
+    payload.tokenType = TokenType.ACCESS;
+
   }
   return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.ACCESS_TOKEN_EXPIRES });
 };
@@ -71,6 +91,7 @@ const createRefreshToken = async (userId: string) => {
   if (user) {
     payload.type = user.type;
     payload.companyRoleTitle = user.role ?? null;
+    payload.tokenType = TokenType.REFRESH;
   }
   return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.REFRESH_TOKEN_EXPIRES });
 };
@@ -83,14 +104,30 @@ const verifyToken = (token: string) => {
   }
 };
 
+const saveRefreshToken = async (
+  userId: string,
+  token: string
+) => {
+  const payload: TokenPayload = {
+    userId,
+    token,
+    type: TokenType.REFRESH,
+    expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
+    valid: true,
+  };
+
+  return prisma.token.create({ data: payload });
+};
+
 
 export default {
   findToken,
-  createToken,
+  createResetToken,
   updateToken,
   refreshToken,
   refreshTokenExpiry,
   createAccessToken,
   createRefreshToken,
-  verifyToken
+  verifyToken,
+  saveRefreshToken
 };

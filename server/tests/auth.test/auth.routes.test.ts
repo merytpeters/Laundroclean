@@ -114,4 +114,26 @@ describe('Auth Routes', () => {
             }
         });
     });
+
+    describe('POST /api/v1/auth/forgot-password', () => {
+        it('returns 404 when email does not exist', async () => {
+            const response = await request(app)
+                .post('/api/v1/auth/forgot-password')
+                .send({ email: 'no-such-user@example.com' });
+
+            expect(response.status).toBe(404);
+            expect(response.body).toHaveProperty('message');
+        });
+    });
+
+    describe('POST /api/v1/auth/reset-password', () => {
+        it('returns 403 for invalid or missing token', async () => {
+            const response = await request(app)
+                .post('/api/v1/auth/reset-password')
+                .send({ token: 'invalid-token', password: 'NewPass123!' });
+
+            expect(response.status).toBe(403);
+            expect(response.body).toHaveProperty('message', 'Invalid or expired token');
+        });
+    });
 });

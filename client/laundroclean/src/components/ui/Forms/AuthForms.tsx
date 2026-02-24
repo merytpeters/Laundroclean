@@ -63,7 +63,7 @@ export default function AuthForm({ title, subtitle, fields, actions }: FormProps
             {pathname === "/signup" && <span>Have an Account Already ? &nbsp;<a href="/login"><b>Login</b></a></span>}
             {pathname === "/login" && (
                 <>
-                    <span>Forgot Password ?</span>
+                    <span><a href ="/forgot-password">Forgot Password?</a></span>
                     <span>Don&apos;t have and account yet ? &nbsp; <a href="/signup"><b>Sign up</b></a></span>
                 </>
             )}
