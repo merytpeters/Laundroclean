@@ -14,6 +14,7 @@ const env = (variable: string, defaultValue?: string): any => {
       case 'RESEND_API_KEY': return 'test_api_key';
       case 'RESET_TOKEN_EXPIRES': return '60m';
       case 'CLIENT_URL': return nodeEnv === 'test' ? 'http://localhost:3000' : 'http://localhost:3000';
+      case 'APP_NAME': return 'LaundroClean';
     }
   }
 
