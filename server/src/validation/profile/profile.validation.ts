@@ -14,6 +14,14 @@ const profileSchema = z.object({
 
 export type ProfileSchema = z.infer<typeof profileSchema>
 
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(7),
+  newPassword: z.string().min(7),
+});
+
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
+
 export default {
-  profileSchema
+  profileSchema,
+  changePasswordSchema
 };

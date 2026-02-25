@@ -6,8 +6,8 @@ export interface CustomParamsDictionary {
 };
 
 export interface PaginationQuery {
-  page?: string
-  limit?: string
+  page?: number
+  limit?: number
   search?: string
 };
 
