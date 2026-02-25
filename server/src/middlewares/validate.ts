@@ -4,7 +4,7 @@ import { ValidationError } from './errorHandler.js';
 
 type InputTarget = 'body' | 'params' | 'query';
 
-const validate = (schema: z.ZodObject, target: InputTarget = 'body') => {
+const validate = (schema: z.ZodTypeAny, target: InputTarget = 'body') => {
     return (req: Request, res: Response, next: NextFunction) => {
        const result = schema.safeParse(req[target]);
 

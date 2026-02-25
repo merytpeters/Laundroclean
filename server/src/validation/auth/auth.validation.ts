@@ -56,18 +56,10 @@ const resetPasswordSchema = z.object({
 
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>
 
-const changePasswordSchema = z.object({
-  currentPassword: z.string().min(7),
-  newPassword: z.string().min(7),
-});
-
-export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
-
 
 export default {
   signupSchema: signupSchemaWithRules,
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-  changePasswordSchema
 };
