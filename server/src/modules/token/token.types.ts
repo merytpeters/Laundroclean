@@ -1,4 +1,5 @@
 import type { TokenType as PrismaTokenType } from '@prisma/client';
+import { UserType, CompanyRoleTitle } from '@prisma/client';
 
 interface TokenPayload {
    userId: string;
@@ -15,4 +16,11 @@ interface TokenResponse {
     valid: boolean;
 }
 
-export type { TokenPayload, TokenResponse };
+interface JWTPayload {
+  id: string;
+  type: UserType;
+  companyRoleTitle?: CompanyRoleTitle | null;
+  tokenType: PrismaTokenType;
+}
+
+export type { TokenPayload, TokenResponse, JWTPayload };

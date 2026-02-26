@@ -4,7 +4,7 @@ import { NotFoundError } from '../../middlewares/errorHandler.js';
 import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import type { TokenPayload } from './token.types.js';
+import type { TokenPayload, JWTPayload } from './token.types.js';
 import { TokenType } from '@prisma/client';
 import crypto from 'crypto';
 
@@ -73,32 +73,32 @@ const refreshTokenExpiry = async (
 
 const createAccessToken = async (userId: string) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  const payload: any = { userId };
-  if (user) {
-    payload.type = user.type;
+  if (!user) throw new NotFoundError('User not found');
 
-    payload.companyRoleTitle = user.role ?? null;
-
-    payload.tokenType = TokenType.ACCESS;
-
-  }
+  const payload: JWTPayload = {
+    id: user.id,
+    type: user.type,
+    companyRoleTitle: user.role ?? null,
+    tokenType: TokenType.ACCESS,
+  };
   return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.ACCESS_TOKEN_EXPIRES });
 };
 
 const createRefreshToken = async (userId: string) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  const payload: any = { userId };
-  if (user) {
-    payload.type = user.type;
-    payload.companyRoleTitle = user.role ?? null;
-    payload.tokenType = TokenType.REFRESH;
-  }
+  if (!user) throw new NotFoundError('User not found');
+  const payload: JWTPayload = {
+    id: user.id,
+    type: user.type,
+    companyRoleTitle: user.role ?? null,
+    tokenType: TokenType.REFRESH,
+  };
   return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.REFRESH_TOKEN_EXPIRES });
 };
 
-const verifyToken = (token: string) => {
+const verifyToken = (token: string): JWTPayload => {
   try {
-    return jwt.verify(token, config.JWT_SECRET);
+    return jwt.verify(token, config.JWT_SECRET) as JWTPayload;
   } catch (_err) {
     throw new Error('Invalid token');
   }

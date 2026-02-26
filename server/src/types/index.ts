@@ -1,9 +1,9 @@
 import { UserType, CompanyRoleTitle } from '@prisma/client';
 
 export type SessionPayload = {
-    id: string
-    type: UserType
-    companyRoleTitle?: CompanyRoleTitle 
+  id: string
+  type: UserType
+  role?: CompanyRoleTitle | null
 }
 
 export interface APIResponse<T = any> {

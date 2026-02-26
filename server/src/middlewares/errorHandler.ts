@@ -52,7 +52,7 @@ class ConflictError extends Error {
         super(message);
         this.name = 'ConflictError';
         this.statusCode = 409;
-  }
+    }
 }
 
 class ForbiddenError extends Error {
@@ -62,6 +62,16 @@ class ForbiddenError extends Error {
         super(message);
         this.name = 'ForbiddenError';
         this.statusCode = 403;
+    }
+}
+
+class ProcessingError extends Error {
+    statusCode: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = 'ProcessingError';
+        this.statusCode = 500;
     }
 }
 
@@ -101,5 +111,6 @@ export {
     notFoundHandler,
     errorHandler,
     ConflictError,
-    ForbiddenError
+    ForbiddenError,
+    ProcessingError
 };

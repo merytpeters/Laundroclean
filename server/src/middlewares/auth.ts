@@ -1,14 +1,15 @@
 import jwt from 'jsonwebtoken';
 import type { Response, Request, NextFunction } from 'express';
 import { UnauthenticatedError, UnauthorizedError } from './errorHandler.js';
-import config from '../config/config.js';
-import type { SessionPayload } from '../types/index.js';
+import type { JWTPayload } from '../modules/token/token.types.js';
 import { UserType, CompanyRoleTitle } from '@prisma/client';
 import { ROLE_HIERARCHY } from '../types/index.js';
+import prisma from '../config/prisma.js';
+import tokenService from '../modules/token/token.service.js';
 
 class UserAuth {
   authenticate() {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -16,12 +17,18 @@ class UserAuth {
         }
 
         const token = authHeader.substring(7);
-        const decoded = jwt.verify(token, config.JWT_SECRET) as SessionPayload;
+        const decoded = tokenService.verifyToken(token) as JWTPayload;
 
-        if (!decoded || !decoded.type) {
+        if (!decoded || !decoded.id || !decoded.type) {
           return next(new UnauthenticatedError('Invalid token payload'));
         }
-        req.user = decoded;
+        const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+
+        if (!user || !user.isActive) {
+          return next(new UnauthorizedError('Account inactive or deleted'));
+        }
+
+        req.user = user;
 
         next();
       } catch (error) {
@@ -58,7 +65,7 @@ class UserAuth {
         return next(new UnauthorizedError('Access denied: Company user required'));
       }
 
-      if (!req.user.companyRoleTitle || !roles.includes(req.user.companyRoleTitle)) {
+      if (!req.user.role || !roles.includes(req.user.role)) {
         return next(new UnauthorizedError('Access denied: Insufficient role'));
       }
       next();
@@ -76,11 +83,11 @@ class UserAuth {
         return next(new UnauthorizedError('Access denied: Company user required'));
       }
 
-      if (!req.user.companyRoleTitle) {
+      if (!req.user.role) {
         return next(new UnauthorizedError('Access denied: No role assigned'));
       }
 
-      const userLevel = ROLE_HIERARCHY[req.user.companyRoleTitle];
+      const userLevel = ROLE_HIERARCHY[req.user.role];
       const requiredLevel = ROLE_HIERARCHY[minRole];
 
       if (userLevel < requiredLevel) {
