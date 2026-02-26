@@ -1,5 +1,5 @@
 import prisma from '../../config/prisma.js';
-import type { Prisma, User } from '@prisma/client';
+import type { Prisma, User, Profile } from '@prisma/client';
 import { NotFoundError, ConflictError, ValidationError } from '../../middlewares/errorHandler.js';
 import authUtils from './auth.utils.js';
 import tokenService from '../token/token.service.js';
@@ -62,7 +62,7 @@ const deleteUser = async (where: UserWhereUniqueInput): Promise<User> => {
 // registerUser: orchestrates createUser + token generation
 const registerUser = async (
   payload: SignupSchema
-): Promise<{ user: Omit<User, 'password'>; accessToken: string; refreshToken: string }> => {
+): Promise<{ user: Omit<User, 'password'>; profile: Profile; accessToken: string; refreshToken: string }> => {
 
   const existingUser = await findUser({ email: payload.email });
   if (existingUser) {
@@ -75,24 +75,37 @@ const registerUser = async (
 
   const user = await prisma.user.create({
     data: {
-        email: payload.email,
-        password: hashedPassword,
-        type: payload.type,
-        role: payload.role ?? null,
-        ...(parts && {
-        firstName: parts[0],
-        lastName: parts.slice(1).join(' ') || null,
-        }),
+      email: payload.email,
+      password: hashedPassword,
+      type: payload.type,
+      role: payload.role ?? null,
+      ...(parts && {
+      firstName: parts[0],
+      lastName: parts.slice(1).join(' ') || null,
+      }),
     },
-    });
+   });
 
+   const profile = await prisma.profile.create({
+    data: {
+      userId: user.id,
+      avatarUrl: null,
+      phoneNumber: null,
+      addressLine1: null,
+      addressLine2: null,
+      city: null,
+      state: null,
+      postalCode: null,
+      paymentMethodToken: null,
+    },
+   });
 
   const accessToken = await tokenService.createAccessToken(user.id);
   const refreshToken = await tokenService.createRefreshToken(user.id);
 
   const { password: _password, ...safeUser } = user;
 
-  return { user: safeUser, accessToken, refreshToken };
+  return { user: safeUser, profile, accessToken, refreshToken };
 };
 
 

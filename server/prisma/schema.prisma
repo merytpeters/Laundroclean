@@ -112,7 +112,8 @@ model Token {
 model Profile {
   id                  String     @id @default(uuid())
   userId              String     @unique @map("user_id")
-  user                User       @relation(fields: [userId], references: [id])
+  user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarUrl           String?    @map("avatar_url")
   phoneNumber         String?    @map("phone_number")
   addressLine1        String?    @map("address_line_1")
   addressLine2        String?    @map("address_line_2")

@@ -22,7 +22,7 @@ async function seedAdmin() {
 
   const password = await AuthUtils.hashPassword(ADMIN_PASSWORD);
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       email: ADMIN_EMAIL,
       password,
@@ -31,6 +31,20 @@ async function seedAdmin() {
       isActive: true,
     },
   });
+
+  const _profile = await prisma.profile.create({
+    data: {
+      userId: user.id,
+      avatarUrl: null,
+      phoneNumber: null,
+      addressLine1: null,
+      addressLine2: null,
+      city: null,
+      state: null,
+      postalCode: null,
+      paymentMethodToken: null,
+    },
+   });
 
   console.log('Admin user created successfully');
 }

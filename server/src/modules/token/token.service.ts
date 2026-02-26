@@ -116,6 +116,11 @@ const saveRefreshToken = async (
     valid: true,
   };
 
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    throw new NotFoundError('User not found');
+  }
+
   return prisma.token.create({ data: payload });
 };
 
