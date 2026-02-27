@@ -10,18 +10,18 @@ const router = express.Router();
 router.use(UserAuth.authenticate());
 
 router.get(
-    '/profile',
+    '/',
     ProfileController.getUser
 );
 
 router.patch(
-    '/profile',
+    '/',
     validate(profileValidation.profileSchema),
     ProfileController.updateProfile
 );
 
 router.patch(
-    '/profile/change-password',
+    '/change-password',
     validate(profileValidation.changePasswordSchema),
     ProfileController.changePassword
 );
