@@ -114,6 +114,7 @@ model Profile {
   userId              String     @unique @map("user_id")
   user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   avatarUrl           String?    @map("avatar_url")
+  avatarPublicId      String?    @map("avatar_public_id")
   phoneNumber         String?    @map("phone_number")
   addressLine1        String?    @map("address_line_1")
   addressLine2        String?    @map("address_line_2")

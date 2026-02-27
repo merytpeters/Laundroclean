@@ -1,4 +1,4 @@
-import { ProfileService } from '../index.js';
+import { ProfileService, MediaService } from '../index.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import type { ProfileSchema, ChangePasswordSchema } from '../../../validation/profile/profile.validation.js';
 
@@ -74,9 +74,67 @@ const softDeleteAccount = asyncHandler(async (req, res) => {
     });
 });
 
+
+export const uploadProfilePic = asyncHandler(async (req, res) => {
+    const user = req.user;
+    const userId = user?.id;
+
+    if (!user || !userId) {
+        return res.status(404).json({ 
+            success: false,
+            message: 'User not found'
+        });
+    }
+
+    if (!req.file) {
+        return res.status(400).json({ 
+            success: false,
+            message: 'No file uploaded'
+        });
+    }
+
+    const { secure_url, public_id } = await MediaService.uploadImage(
+        req.file.buffer,
+        `profile/${userId}`,
+        'profilepic'  // fixed public_id
+    );
+
+    const updatedProfile = await ProfileService.updateProfilePic(user, {
+        avatarUrl: secure_url,
+        avatarPublicId: public_id,
+    });
+
+    res.status(200).json({
+        success: true,
+        message: 'Profile picture updated successfully',
+        data: updatedProfile,
+    });
+});
+
+export const deleteProfilePic = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  if (!user?.id) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
+
+  const updatedProfile = await ProfileService.deleteProfilePic(user);
+
+  res.status(200).json({
+    success: true,
+    message: 'Profile picture deleted successfully',
+    data: updatedProfile,
+  });
+});
+
 export default {
     getUser,
     updateProfile,
     changePassword,
-    softDeleteAccount
+    softDeleteAccount,
+    uploadProfilePic,
+    deleteProfilePic
 };

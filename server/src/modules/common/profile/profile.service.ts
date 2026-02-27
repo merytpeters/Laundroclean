@@ -1,15 +1,23 @@
 import prisma from '../../../config/prisma.js';
 import type { Prisma, Profile, User } from '@prisma/client';
 import { Prisma as PrismaNamespace } from '@prisma/client';
-import type { ChangePasswordSchema, ProfileSchema } from '../../../validation/profile/profile.validation.js';
+import type { ChangePasswordSchema, ProfileSchema, ProfilePicSchema } from '../../../validation/profile/profile.validation.js';
 import { NotFoundError, ForbiddenError, ProcessingError } from '../../../middlewares/errorHandler.js';
 import { AuthUtils } from '../../auth/index.js';
 import type { SessionPayload } from '../../../types/index.js';
+import { MediaService } from '../index.js';
 
 export type ProfileCreateInput =  Prisma.ProfileCreateInput
 export type ProfileWhereUniqueInput = Prisma.ProfileWhereUniqueInput
 export type UserWhereUniqueInput = Prisma.UserWhereUniqueInput
 
+
+const userProfile = async (where: ProfileWhereUniqueInput): Promise<Profile | null> => {
+    const profile = await prisma.profile.findUnique({
+        where,
+    });
+    return profile;
+};
 
 const getActiveProfile = async (where: ProfileWhereUniqueInput): Promise<Profile | null> => {
   const profile = await prisma.profile.findUnique({
@@ -132,9 +140,63 @@ const softDeleteAccount = async (where: UserWhereUniqueInput): Promise<void> => 
 };
 
 
+const updateProfilePic = async (sessionUser: SessionPayload, payload: ProfilePicSchema): Promise<Profile> => {
+    try {
+        if (!sessionUser?.id) throw new NotFoundError('User not found');
+        const dbUser = await prisma.user.findUnique({
+            where: { id: sessionUser.id },
+        });
+        if (!dbUser) throw new NotFoundError('User not Found');
+
+        const profile = await userProfile({userId: dbUser.id});
+        if (!profile) throw new NotFoundError('Profile not Found');
+
+        const profilepic = await prisma.profile.update({
+            where: { userId: sessionUser.id},
+            data: {
+                avatarUrl: payload.avatarUrl,
+                avatarPublicId: payload.avatarPublicId
+            },
+        });
+        return profilepic;
+
+    } catch (error: any) {
+        throw new ProcessingError(error?.message || 'Failed to upload photo');
+    }
+};
+
+export const deleteProfilePic = async (sessionUser: SessionPayload): Promise<Profile> => {
+  try {
+    if (!sessionUser?.id) throw new NotFoundError('User not found');
+
+    const profile = await userProfile({ userId: sessionUser.id });
+    if (!profile) throw new NotFoundError('Profile not found');
+
+    if (profile.avatarPublicId) {
+      await MediaService.deleteImage(profile.avatarPublicId);
+    }
+
+    const updatedProfile = await prisma.profile.update({
+      where: { userId: sessionUser.id },
+      data: {
+        avatarUrl: null,
+        avatarPublicId: null,
+      },
+    });
+
+    return updatedProfile;
+  } catch (error: any) {
+    throw new ProcessingError(error?.message || 'Failed to delete profile picture');
+  }
+};
+
+
 export default {
+    userProfile,
     updateProfile,
     changePassword,
     softDeleteAccount,
-    getActiveProfile
+    getActiveProfile,
+    updateProfilePic,
+    deleteProfilePic
 };

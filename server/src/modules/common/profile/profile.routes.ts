@@ -3,6 +3,7 @@ import UserAuth from '../../../middlewares/auth.js';
 import { ProfileController } from '../index.js';
 import validate from '../../../middlewares/validate.js';
 import profileValidation from '../../../validation/profile/profile.validation.js';
+import { MediaService } from '../index.js';
 
 const router = express.Router();
 
@@ -12,7 +13,6 @@ router.get(
     '/profile',
     ProfileController.getUser
 );
-
 
 router.patch(
     '/profile',
@@ -29,6 +29,17 @@ router.patch(
 router.patch(
     '/soft-delete',
     ProfileController.softDeleteAccount
+);
+
+router.patch(
+    '/pic',
+    MediaService.fileUpload.single('avatar'),
+    ProfileController.uploadProfilePic
+);
+
+router.delete(
+  '/pic',
+  ProfileController.deleteProfilePic
 );
 
 export default router;

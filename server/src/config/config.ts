@@ -15,6 +15,7 @@ const env = (variable: string, defaultValue?: string): any => {
       case 'RESET_TOKEN_EXPIRES': return '60m';
       case 'CLIENT_URL': return nodeEnv === 'test' ? 'http://localhost:3000' : 'http://localhost:3000';
       case 'APP_NAME': return 'LaundroClean';
+      case 'CLOUDINARY_URL': return 'cloundinary_test';
     }
   }
 
@@ -37,6 +38,7 @@ const config = {
   APP_NAME: env('APP_NAME'),
   CLIENT_URL: env('CLIENT_URL'),
   RESET_TOKEN_EXPIRES: env('RESET_TOKEN_EXPIRES'),
+  CLOUDINARY_URL: env('CLOUDINARY_URL'),
 };
 
 export default config;

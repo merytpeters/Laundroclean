@@ -3,7 +3,6 @@ import z from 'zod';
 const profileSchema = z.object({
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
-  avatarUrl: z.string().nullable(),
   phoneNumber: z.string().nullable(),
   addressLine1: z.string().nullable(),
   addressLine2: z.string().nullable(),
@@ -22,7 +21,15 @@ const changePasswordSchema = z.object({
 
 export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
 
+const profilePicSchema = z.object({
+  avatarUrl: z.string(),
+  avatarPublicId: z.string()
+});
+
+export type ProfilePicSchema = z.infer<typeof profilePicSchema>
+
 export default {
   profileSchema,
-  changePasswordSchema
+  changePasswordSchema,
+  profilePicSchema
 };
