@@ -1,13 +1,11 @@
 import { v2 as cloudinary } from 'cloudinary';
 import config from '../../../config/config.js';
-import multer from 'multer';
 import streamifier from 'streamifier';
 
 cloudinary.config({
   cloudinary_url: config.CLOUDINARY_URL
 });
 
-const fileUpload = multer();
 
 const uploadImage = async (
   buffer: Buffer,
@@ -47,7 +45,6 @@ const deleteImage = async (publicId: string): Promise<void> => {
 };
 
 export default {
-    fileUpload,
     uploadImage,
     deleteImage
 };

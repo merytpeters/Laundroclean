@@ -2,8 +2,8 @@ import express from 'express';
 import UserAuth from '../../../middlewares/auth.js';
 import { ProfileController } from '../index.js';
 import validate from '../../../middlewares/validate.js';
+import upload from '../../../middlewares/media.upload.js';
 import profileValidation from '../../../validation/profile/profile.validation.js';
-import { MediaService } from '../index.js';
 
 const router = express.Router();
 
@@ -33,7 +33,7 @@ router.patch(
 
 router.patch(
     '/pic',
-    MediaService.fileUpload.single('avatar'),
+    upload.single('avatar'),
     ProfileController.uploadProfilePic
 );
 

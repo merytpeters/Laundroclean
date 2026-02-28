@@ -1,6 +1,6 @@
 import z from 'zod';
 
-const profileSchema = z.object({
+const baseProfileSchema = z.object({
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
   phoneNumber: z.string().nullable(),
@@ -10,7 +10,9 @@ const profileSchema = z.object({
   state: z.string().nullable(),
   postalCode: z.string().nullable(),
   paymentMethodToken: z.string().nullable(),
-}).nullable();
+});
+
+const profileSchema = baseProfileSchema.partial();
 
 export type ProfileSchema = z.infer<typeof profileSchema>
 
