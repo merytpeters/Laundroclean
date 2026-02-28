@@ -1,4 +1,4 @@
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
 import { jest } from '@jest/globals';
 import AuthUtils from '../../src/modules/auth/auth.utils';
 import prisma from '../../src/config/prisma';
@@ -35,9 +35,24 @@ const uniqueEmail = (prefix: string) =>
     `${prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}@example.com`;
 
 describe('Auth Controller', () => {
+    let adminRole: Awaited<ReturnType<typeof prisma.companyRoleTitle.upsert>>;
+    let staffRole: Awaited<ReturnType<typeof prisma.companyRoleTitle.upsert>>;
+
     beforeEach(async () => {
         // await prisma.token.deleteMany();
         // await prisma.user.deleteMany();
+
+        adminRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'ADMIN' },
+            update: {},
+            create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+        });
+
+        staffRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'STAFF' },
+            update: {},
+            create: { title: 'STAFF', level: 8, permissions: [] },
+        });
     });
 
     afterAll(async () => {
@@ -156,24 +171,30 @@ describe('Auth Controller', () => {
                     email: uniqueEmail('admin'),
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.ADMIN,
+                    roleId: adminRole.id,
                 },
                 {
                     email: uniqueEmail('staff'),
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.STAFF,
+                    roleId: staffRole.id,
                 },
             ];
 
             for (const user of users) {
                 // Store hashed password in DB
-                await prisma.user.create({
-                    data: {
-                        ...user,
-                        password: await AuthUtils.hashPassword(user.password),
-                    },
-                });
+                const hashed = await AuthUtils.hashPassword(user.password);
+                const data: any = {
+                    email: user.email,
+                    password: hashed,
+                    type: user.type,
+                };
+                if ((user as any).roleId) {
+
+                    data.roleId = (user as any).roleId;
+                }
+
+                await prisma.user.create({ data });
 
                 const req = {
                     body: { email: user.email, password: user.password },

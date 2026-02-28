@@ -49,6 +49,10 @@ const updateProfile = async (sessionUser: SessionPayload, payload: Partial<Profi
     if (firstName !== undefined) userUpdate.firstName = firstName;
     if (lastName !== undefined) userUpdate.lastName = lastName;
     
+    const cleanProfileFields = Object.fromEntries(
+        Object.entries(profileFields).filter(([, value]) => value !== undefined)
+    );
+    
     const profile = await prisma.profile.upsert({
         where: {userId: user.id},
         include: {
@@ -56,13 +60,13 @@ const updateProfile = async (sessionUser: SessionPayload, payload: Partial<Profi
         },
 
         update: {
-            ...profileFields,
+            ...cleanProfileFields,
             user: {
                 update: userUpdate,
             },
         },
         create: {
-            ...profileFields,
+            ...cleanProfileFields,
             user: {
                 connect: { id: user.id },
             },
@@ -72,24 +76,33 @@ const updateProfile = async (sessionUser: SessionPayload, payload: Partial<Profi
 };
 
 const changePassword = async (sessionUser: SessionPayload, payload: ChangePasswordSchema): Promise<User> => {
+    if (!sessionUser?.id) throw new NotFoundError('User not found');
+    const dbUser = await prisma.user.findUnique({
+        where: { id: sessionUser.id },
+    });
+    if (!dbUser) throw new NotFoundError('User not Found');
+
+    // Ensure account is active
+    if (!dbUser.isActive) {
+        throw new ForbiddenError('Account inactive or deleted');
+    }
+
+    const isValid = await AuthUtils.isPasswordValid(payload.currentPassword, dbUser.password);
+    if (!isValid) throw new ForbiddenError('Old password is incorrect');
+
+    const hashedPassword = await AuthUtils.hashPassword(payload.newPassword);
+
     try {
-        if (!sessionUser?.id) throw new NotFoundError('User not found');
-        const dbUser = await prisma.user.findUnique({
-            where: { id: sessionUser.id },
-        });
-        if (!dbUser) throw new NotFoundError('User not Found');
-
-        const isValid = await AuthUtils.isPasswordValid(payload.currentPassword, dbUser.password);
-        if (!isValid) throw new ForbiddenError('Old password is incorrect');
-
-        const hashedPassword = await AuthUtils.hashPassword(payload.newPassword);
-
         const updatedUser = await prisma.user.update({
-            where: { id: sessionUser.id},
-            data: { password: hashedPassword }
+            where: { id: sessionUser.id },
+            data: { password: hashedPassword },
         });
         return updatedUser;
     } catch (error: any) {
+        if (error?.code === 'P2025') {
+            throw new NotFoundError(`Failed to update user password: user id=${sessionUser.id} not found`);
+        }
+        console.error('changePassword error:', { userId: sessionUser.id, err: error?.message ?? error, stack: error?.stack });
         throw new ProcessingError(error?.message || 'Failed to change password');
     }
 };
@@ -148,19 +161,25 @@ const updateProfilePic = async (sessionUser: SessionPayload, payload: ProfilePic
         });
         if (!dbUser) throw new NotFoundError('User not Found');
 
-        const profile = await userProfile({userId: dbUser.id});
+        if (!dbUser.isActive) throw new ForbiddenError('Account inactive or deleted');
+
+        const profile = await userProfile({ userId: dbUser.id });
         if (!profile) throw new NotFoundError('Profile not Found');
 
         const profilepic = await prisma.profile.update({
-            where: { userId: sessionUser.id},
+            where: { userId: sessionUser.id },
             data: {
                 avatarUrl: payload.avatarUrl,
-                avatarPublicId: payload.avatarPublicId
+                avatarPublicId: payload.avatarPublicId,
             },
         });
         return profilepic;
 
     } catch (error: any) {
+        if (error?.code === 'P2025') {
+            throw new NotFoundError(`Failed to update profile for user id=${sessionUser?.id}`);
+        }
+        console.error('updateProfilePic error:', { userId: sessionUser?.id, err: error?.message ?? error, stack: error?.stack });
         throw new ProcessingError(error?.message || 'Failed to upload photo');
     }
 };

@@ -78,7 +78,7 @@ const registerUser = async (
       email: payload.email,
       password: hashedPassword,
       type: payload.type,
-      role: payload.role ?? null,
+      ...(payload.role ? { role: { connect: { id: Number(payload.role) } } } : {}),
       ...(parts && {
       firstName: parts[0],
       lastName: parts.slice(1).join(' ') || null,

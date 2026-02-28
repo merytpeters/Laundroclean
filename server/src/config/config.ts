@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 const env = (variable: string, defaultValue?: string): any => {
   if (variable === 'PORT') return process.env.PORT || '3000';
 
@@ -26,6 +28,7 @@ const env = (variable: string, defaultValue?: string): any => {
           throw new Error('CLOUDINARY_URL not set in ENV');
         }
         return process.env.CLOUDINARY_URL;
+      case 'ADMIN_ROLE_LEVEL': return 10;
     }
   }
 
@@ -49,6 +52,7 @@ const config = {
   CLIENT_URL: env('CLIENT_URL'),
   RESET_TOKEN_EXPIRES: env('RESET_TOKEN_EXPIRES'),
   CLOUDINARY_URL: env('CLOUDINARY_URL'),
+  ADMIN_ROLE_LEVEL: Number(env('ADMIN_ROLE_LEVEL')),
 };
 
 export default config;

@@ -22,12 +22,6 @@ enum UserType {
   CLIENT
 }
 
-enum CompanyRoleTitle {
-  ADMIN
-  STAFF
-  CASHIER
-}
-
 enum TokenType {
   ACCESS
   REFRESH
@@ -75,6 +69,16 @@ enum DeliveryType {
 // MODELS
 
 
+model CompanyRoleTitle {
+  id              Int      @id @default(autoincrement())
+  title           String   @unique
+  level           Int?
+  permissions     String[] @default([])
+  users           User[]
+
+  @@map("companyRoleTitle")
+}
+
 model User {
   id            String              @id @default(uuid())
   firstName     String?             @map("first_name")
@@ -82,7 +86,8 @@ model User {
   email         String              @unique
   password      String
   type          UserType
-  role          CompanyRoleTitle?
+  roleId        Int?
+  role          CompanyRoleTitle?   @relation(fields: [roleId], references: [id])
   createdAt     DateTime            @default(now()) @map("created_at")
   updatedAt     DateTime            @updatedAt @map("updated_at")
   deletedAt     DateTime?           @map("deleted_at")

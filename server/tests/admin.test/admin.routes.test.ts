@@ -1,4 +1,4 @@
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
 import AuthUtils from '../../src/modules/auth/auth.utils';
 import request from 'supertest';
 import app from '../../src/app';
@@ -7,16 +7,33 @@ import prisma from '../../src/config/prisma';
 
 describe('Admin Routes', () => {
     let adminToken: string;
+    let adminRole: any;
+    let staffRole: any;
 
     beforeAll(async () => {
+        // ensure clean slate for users and roles from previous runs
         await prisma.user.deleteMany();
+        await prisma.companyRoleTitle.deleteMany();
+
+        adminRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'ADMIN' },
+            update: {},
+            create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+        });
+
+        staffRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'STAFF' },
+            update: {},
+            create: { title: 'STAFF', level: 8, permissions: [] },
+        });
 
         const _admin = await prisma.user.create({
             data: {
                 email: 'admin@example.com',
                 password: await AuthUtils.hashPassword('AdminPassword123!'),
                 type: UserType.COMPANYUSER,
-                role: CompanyRoleTitle.ADMIN,
+                role: { connect: { id: adminRole.id } },
+                isActive: true,
             },
         });
 
@@ -53,7 +70,7 @@ describe('Admin Routes', () => {
                     email: 'companyuser@example.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.STAFF,
+                    role: staffRole.id,
                 });
 
             expect(response.status).toBe(201);
@@ -70,7 +87,7 @@ describe('Admin Routes', () => {
                     email: 'newadmin@example.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.ADMIN,
+                    role: adminRole.id,
                 });
 
             expect(response.status).toBe(201);

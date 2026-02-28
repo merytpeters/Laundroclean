@@ -2,10 +2,10 @@ import jwt from 'jsonwebtoken';
 import type { Response, Request, NextFunction } from 'express';
 import { UnauthenticatedError, UnauthorizedError } from './errorHandler.js';
 import type { JWTPayload } from '../modules/token/token.types.js';
-import { UserType, CompanyRoleTitle } from '@prisma/client';
-import { ROLE_HIERARCHY } from '../types/index.js';
+import { UserType } from '@prisma/client';
 import prisma from '../config/prisma.js';
 import tokenService from '../modules/token/token.service.js';
+import { PERMISSIONS } from '../constants/permissions.js';
 
 class UserAuth {
   authenticate() {
@@ -22,13 +22,16 @@ class UserAuth {
         if (!decoded || !decoded.id || !decoded.type) {
           return next(new UnauthenticatedError('Invalid token payload'));
         }
-        const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+        const user = await prisma.user.findUnique({ where: { id: decoded.id }, include: { role: true } });
 
         if (!user || !user.isActive) {
           return next(new UnauthorizedError('Account inactive or deleted'));
         }
 
-        req.user = user;
+        req.user = {
+          ...user,
+          role: user.role ? { ...user.role, level: user.role.level ?? 0 } : null,
+        };
 
         next();
       } catch (error) {
@@ -54,48 +57,46 @@ class UserAuth {
     };
   }
 
-  // Check if company user has one of the allowed roles
-  requireRole(...roles: CompanyRoleTitle[]) {
+  // Require a specific role (by title)
+  requireRole(...titles: string[]) {
     return (req: Request, res: Response, next: NextFunction) => {
-      if (!req.user) {
-        return next(new UnauthenticatedError('Not authenticated'));
-      }
-
+      if (!req.user) return next(new UnauthenticatedError('Not authenticated'));
       if (req.user.type !== UserType.COMPANYUSER) {
         return next(new UnauthorizedError('Access denied: Company user required'));
       }
-
-      if (!req.user.role || !roles.includes(req.user.role)) {
+      if (!req.user.role || !titles.includes(req.user.role.title)) {
         return next(new UnauthorizedError('Access denied: Insufficient role'));
       }
       next();
     };
   }
 
-  // Check if company user has minimum role level
-  requireMinRole(minRole: CompanyRoleTitle) {
+  requirePermission = (permission: string, minLevel?: number) => {
     return (req: Request, res: Response, next: NextFunction) => {
-      if (!req.user) {
-        return next(new UnauthenticatedError('Not authenticated'));
-      }
-
-      if (req.user.type !== UserType.COMPANYUSER) {
-        return next(new UnauthorizedError('Access denied: Company user required'));
-      }
-
-      if (!req.user.role) {
+      if (!req.user || !req.user.role) {
         return next(new UnauthorizedError('Access denied: No role assigned'));
       }
 
-      const userLevel = ROLE_HIERARCHY[req.user.role];
-      const requiredLevel = ROLE_HIERARCHY[minRole];
-
-      if (userLevel < requiredLevel) {
-        return next(new UnauthorizedError('Access denied: Insufficient privileges'));
+      if (!(permission in PERMISSIONS)) {
+        throw new Error(`Unknown permission: ${permission}`);
       }
+
+      const userRole = req.user.role;
+
+      // Level check
+      if (minLevel && (userRole.level ?? 0) < minLevel) {
+        return next(new UnauthorizedError('Access denied: Insufficient role level'));
+      }
+
+      // Permission check
+      const permissions = userRole.permissions ?? [];
+      if (!(permissions.includes('*') || permissions.includes(permission))) {
+        return next(new UnauthorizedError('Access denied: Missing permission'));
+      }
+
       next();
     };
-  }
+  };
 
   // Convenience: require CLIENT user
   requireClient() {
@@ -109,7 +110,7 @@ class UserAuth {
 
   // Convenience: ADMIN only
   requireAdmin() {
-    return this.requireRole(CompanyRoleTitle.ADMIN);
+    return this.requireRole('ADMIN');
   }
 
   requireCompanyAdmin() {

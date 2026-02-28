@@ -72,8 +72,11 @@ const refreshTokenExpiry = async (
 };
 
 const createAccessToken = async (userId: string) => {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) throw new NotFoundError('User not found');
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { role: true } });
+  if (!user) {
+    console.error('createAccessToken: user not found', { userId });
+    throw new NotFoundError('User not found');
+  }
 
   const payload: JWTPayload = {
     id: user.id,
@@ -85,8 +88,11 @@ const createAccessToken = async (userId: string) => {
 };
 
 const createRefreshToken = async (userId: string) => {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) throw new NotFoundError('User not found');
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { role: true } });
+  if (!user) {
+    console.error('createRefreshToken: user not found', { userId });
+    throw new NotFoundError('User not found');
+  }
   const payload: JWTPayload = {
     id: user.id,
     type: user.type,
@@ -118,6 +124,7 @@ const saveRefreshToken = async (
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
+    console.error('saveRefreshToken: user not found', { userId });
     throw new NotFoundError('User not found');
   }
 

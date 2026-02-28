@@ -1,22 +1,36 @@
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
 import AdminController from '../../src/modules/admin/admin.controller';
 import prisma from '../../src/config/prisma';
 import { jest } from '@jest/globals';
 import type { Request, Response } from 'express';
 
 describe('Admin Controller', () => {
-    let admin: { id: string; email: string; role: CompanyRoleTitle; };
+    let admin: { id: string; email: string; role: any };
+    let adminRole: any;
+    let staffRole: any;
     let next: jest.Mock;
 
     beforeAll(async () => {
         await prisma.user.deleteMany();
+
+        adminRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'ADMIN' },
+            update: {},
+            create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+        });
+
+        staffRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'STAFF' },
+            update: {},
+            create: { title: 'STAFF', level: 8, permissions: [] },
+        });
 
         const req = {
             body: {
                 email: 'admin@example.com',
                 password: 'AdminPassword123!',
                 type: UserType.COMPANYUSER,
-                role: CompanyRoleTitle.ADMIN,
+                role: adminRole.id,
             },
         } as unknown as Request;
         const res = {
@@ -42,7 +56,7 @@ describe('Admin Controller', () => {
                     email: 'companyuser@example.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.STAFF,
+                    role: staffRole.id,
                 },
                 user: admin,
             } as unknown as Request;
@@ -73,7 +87,7 @@ describe('Admin Controller', () => {
                     email: 'newadmin@example.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.ADMIN,
+                    role: adminRole.id,
                 },
                 user: admin,
             } as unknown as Request;

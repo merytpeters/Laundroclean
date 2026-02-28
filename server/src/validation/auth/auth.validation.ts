@@ -1,5 +1,14 @@
 import z from 'zod';
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
+
+
+const companyRoleTitle = z.object({
+  title: z.string(),
+  level: z.number().optional(),
+  permissions: z.array(z.string()).optional()
+})
+
+export type CompanyRoleTitle = z.infer<typeof companyRoleTitle>
 
 const signupSchema = z.object({
   name: z.string().optional(),
@@ -9,7 +18,7 @@ const signupSchema = z.object({
     .refine((val) => /^[A-Z]/.test(val), { message: 'First letter must be uppercase' })
     .refine((val) => /[!@#$%^&*]/.test(val), { message: 'Must contain at least one special character' }),
   type: z.enum(Object.values(UserType)),
-  role: z.enum(Object.values(CompanyRoleTitle)).nullable().optional(),
+  role: z.union([companyRoleTitle, z.number()]).nullable().optional(),
 }).transform((data) => {
   if (!data.name) return { ...data };
 
@@ -62,4 +71,5 @@ export default {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  companyRoleTitle
 };

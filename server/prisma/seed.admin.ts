@@ -22,12 +22,22 @@ async function seedAdmin() {
 
   const password = await AuthUtils.hashPassword(ADMIN_PASSWORD);
 
+  const adminRole = await prisma.companyRoleTitle.upsert({
+    where: { title: 'ADMIN' },
+    update: {},
+    create: {
+      title: 'ADMIN',
+      level: config.ADMIN_ROLE_LEVEL,
+      permissions: ['*'],
+    },
+  });
+
   const user = await prisma.user.create({
     data: {
       email: ADMIN_EMAIL,
       password,
       type: 'COMPANYUSER',
-      role: 'ADMIN',
+      role: { connect: { id: adminRole.id } },
       isActive: true,
     },
   });

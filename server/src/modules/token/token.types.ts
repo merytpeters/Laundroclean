@@ -1,5 +1,5 @@
 import type { TokenType as PrismaTokenType } from '@prisma/client';
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import type { UserType, CompanyRoleTitle } from '@prisma/client';
 
 interface TokenPayload {
    userId: string;
