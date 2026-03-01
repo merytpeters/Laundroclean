@@ -5,8 +5,9 @@ import nunjucks from 'nunjucks';
 import config from './config/config.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { AuthRoutes } from './modules/auth/index.js';
-import { AdminRoutes } from './modules/admin/index.js';
+import { AdminRoutes, RolesRoutes, AdminUsersRoutes } from './modules/admin/index.js';
 import { EmailRoutes } from './modules/emailService/index.js';
+import { ProfileRoutes } from './modules/common/index.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
@@ -42,7 +43,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.set('view engine', 'html');
 
 app.use('/api/v1/auth', AuthRoutes);
-app.use('/api/v1/admin', AdminRoutes);
+app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes);
+app.use('/api/v1/profile', ProfileRoutes);
+
 app.use(errorHandler);
 
 app.get('/api', (req, res) => {

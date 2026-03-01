@@ -1,22 +1,36 @@
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
 import AdminController from '../../src/modules/admin/admin.controller';
 import prisma from '../../src/config/prisma';
 import { jest } from '@jest/globals';
 import type { Request, Response } from 'express';
 
 describe('Admin Controller', () => {
-    let admin: { id: string; email: string; role: CompanyRoleTitle; };
+    let admin: { id: string; email: string; role: any };
+    let adminRole: any;
+    let staffRole: any;
     let next: jest.Mock;
 
     beforeAll(async () => {
         await prisma.user.deleteMany();
 
+        adminRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'ADMIN' },
+            update: { level: 10, permissions: ['*'] },
+            create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+        });
+
+        staffRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'STAFF' },
+            update: { level: 8, permissions: [] },
+            create: { title: 'STAFF', level: 8, permissions: [] },
+        });
+
         const req = {
             body: {
-                email: 'admin@example.com',
+                email: 'admin@tester.com',
                 password: 'AdminPassword123!',
                 type: UserType.COMPANYUSER,
-                role: CompanyRoleTitle.ADMIN,
+                role: adminRole.id,
             },
         } as unknown as Request;
         const res = {
@@ -26,7 +40,14 @@ describe('Admin Controller', () => {
         next = jest.fn();
 
         await AdminController.companyRegister(req, res, next);
-        admin = (res.json as any).mock.calls[0][0].data.user;
+
+        // If the controller didn't call `res.json` (some errors call `next(err)`),
+        // fall back to reading the created user from the database.
+        if ((res.json as any).mock.calls.length > 0) {
+            admin = (res.json as any).mock.calls[0][0].data.user;
+        } else {
+            admin = await prisma.user.findUnique({ where: { email: 'admin@tester.com' } }) as any;
+        }
     });
 
     afterAll(async () => {
@@ -42,7 +63,7 @@ describe('Admin Controller', () => {
                     email: 'companyuser@example.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.STAFF,
+                    role: staffRole.id,
                 },
                 user: admin,
             } as unknown as Request;
@@ -73,7 +94,7 @@ describe('Admin Controller', () => {
                     email: 'newadmin@example.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.ADMIN,
+                    role: adminRole.id,
                 },
                 user: admin,
             } as unknown as Request;

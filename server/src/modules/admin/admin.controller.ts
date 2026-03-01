@@ -13,12 +13,11 @@ const companyRegister = asyncHandler(async (req, res) => {
 
     const { user: savedUser, accessToken, refreshToken } = await authService.registerUser(newUser);
 
-    const { password: _password, ...userWithoutPassword } = savedUser;
 
     res.status(201).json({
         success: true,
         data: {
-            user: userWithoutPassword,
+            user: savedUser,
             accessToken,
             refreshToken
         },

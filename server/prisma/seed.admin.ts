@@ -22,15 +22,39 @@ async function seedAdmin() {
 
   const password = await AuthUtils.hashPassword(ADMIN_PASSWORD);
 
-  await prisma.user.create({
+  const adminRole = await prisma.companyRoleTitle.upsert({
+    where: { title: 'ADMIN' },
+    update: {},
+    create: {
+      title: 'ADMIN',
+      level: config.ADMIN_ROLE_LEVEL,
+      permissions: ['*'],
+    },
+  });
+
+  const user = await prisma.user.create({
     data: {
       email: ADMIN_EMAIL,
       password,
       type: 'COMPANYUSER',
-      role: 'ADMIN',
+      role: { connect: { id: adminRole.id } },
       isActive: true,
     },
   });
+
+  const _profile = await prisma.profile.create({
+    data: {
+      userId: user.id,
+      avatarUrl: null,
+      phoneNumber: null,
+      addressLine1: null,
+      addressLine2: null,
+      city: null,
+      state: null,
+      postalCode: null,
+      paymentMethodToken: null,
+    },
+   });
 
   console.log('Admin user created successfully');
 }

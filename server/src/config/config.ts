@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 const env = (variable: string, defaultValue?: string): any => {
   if (variable === 'PORT') return process.env.PORT || '3000';
 
@@ -11,10 +13,22 @@ const env = (variable: string, defaultValue?: string): any => {
       case 'ADMIN_EMAIL': return 'admin@dev.local';
       case 'ADMIN_PASSWORD': return 'Admin123!';
       case 'TEMPLATES_PATH': return 'src/modules/emailService/templates';
-      case 'RESEND_API_KEY': return 'test_api_key';
+      case 'RESEND_API_KEY':
+        if (!process.env.RESEND_API_KEY) {
+          if (nodeEnv === 'test') return 'mock_resend';
+          throw new Error('RESEND_API_KEY not set in ENV');
+        }
+        return process.env.RESEND_API_KEY;
       case 'RESET_TOKEN_EXPIRES': return '60m';
       case 'CLIENT_URL': return nodeEnv === 'test' ? 'http://localhost:3000' : 'http://localhost:3000';
       case 'APP_NAME': return 'LaundroClean';
+      case 'CLOUDINARY_URL': 
+        if (!process.env.CLOUDINARY_URL) {
+          if (nodeEnv === 'test') return 'mock_cloudinary';
+          throw new Error('CLOUDINARY_URL not set in ENV');
+        }
+        return process.env.CLOUDINARY_URL;
+      case 'ADMIN_ROLE_LEVEL': return 10;
     }
   }
 
@@ -37,6 +51,8 @@ const config = {
   APP_NAME: env('APP_NAME'),
   CLIENT_URL: env('CLIENT_URL'),
   RESET_TOKEN_EXPIRES: env('RESET_TOKEN_EXPIRES'),
+  CLOUDINARY_URL: env('CLOUDINARY_URL'),
+  ADMIN_ROLE_LEVEL: Number(env('ADMIN_ROLE_LEVEL')),
 };
 
 export default config;

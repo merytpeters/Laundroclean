@@ -6,10 +6,16 @@ export interface CustomParamsDictionary {
 };
 
 export interface PaginationQuery {
-  page?: string
-  limit?: string
+  page?: number
+  limit?: number
   search?: string
 };
+
+export interface UserQuery extends PaginationQuery {
+  status?: 'active' | 'inactive';
+  type?: 'client' | 'company';
+}
+
 
 const asyncHandler =
   <T = any>(

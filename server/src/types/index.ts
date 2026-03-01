@@ -1,9 +1,14 @@
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
 
 export type SessionPayload = {
-    id: string
-    type: UserType
-    companyRoleTitle?: CompanyRoleTitle 
+  id: string
+  type: UserType
+  role?: {
+    id: number;
+    title: string;
+    level: number;
+    permissions?: string[];
+  } | null;
 }
 
 export interface APIResponse<T = any> {
@@ -14,15 +19,3 @@ export interface APIResponse<T = any> {
 }
 
 export type AllowedUserTypes = UserType | UserType[];
-export type AllowedRoles = CompanyRoleTitle | CompanyRoleTitle[];
-
-export const ROLE_HIERARCHY: Record<CompanyRoleTitle, number> = {
-  ADMIN: 3,
-  STAFF: 2,
-  CASHIER: 1
-};
-
-export type RoutePermission = {
-  userTypes: UserType[];
-  roles?: CompanyRoleTitle[];
-};

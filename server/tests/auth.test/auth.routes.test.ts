@@ -1,4 +1,4 @@
-import { UserType, CompanyRoleTitle } from '@prisma/client';
+import { UserType } from '@prisma/client';
 import AuthUtils from '../../src/modules/auth/auth.utils';
 import prisma from '../../src/config/prisma';
 import request from 'supertest';
@@ -9,8 +9,22 @@ const uniqueEmail = (prefix: string) =>
     `${prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}@example.com`;
 
 describe('Auth Routes', () => {
+    let adminRole: any;
+    let staffRole: any;
     beforeEach(async () => {
         // await prisma.user.deleteMany();
+
+        adminRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'ADMIN' },
+            update: { level: 10, permissions: ['*'] },
+            create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+        });
+
+        staffRole = await prisma.companyRoleTitle.upsert({
+            where: { title: 'STAFF' },
+            update: { level: 8, permissions: [] },
+            create: { title: 'STAFF', level: 8, permissions: [] },
+        });
     });
 
     afterAll(async () => {
@@ -84,13 +98,13 @@ describe('Auth Routes', () => {
                     email: uniqueEmail('admin'),
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.ADMIN,
+                    roleId: adminRole.id,
                 },
                 {
                     email: uniqueEmail('staff'),
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: CompanyRoleTitle.STAFF,
+                    roleId: staffRole.id,
                 },
             ];
 

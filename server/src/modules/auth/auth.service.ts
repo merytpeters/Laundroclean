@@ -1,9 +1,9 @@
 import prisma from '../../config/prisma.js';
-import type { Prisma, User } from '@prisma/client';
+import type { Prisma, User, Profile } from '@prisma/client';
 import { NotFoundError, ConflictError, ValidationError } from '../../middlewares/errorHandler.js';
 import authUtils from './auth.utils.js';
 import tokenService from '../token/token.service.js';
-import { normalizeNullable } from '../../utils/object.js';
+import type { SignupSchema } from '../../validation/auth/auth.validation.js';
 
 export type UserWhereInput = Prisma.UserWhereInput
 export type UserWhereUniqueInput = Prisma.UserWhereUniqueInput
@@ -60,32 +60,54 @@ const deleteUser = async (where: UserWhereUniqueInput): Promise<User> => {
 
 
 // registerUser: orchestrates createUser + token generation
-const registerUser = async (payload: any): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
-    //find user
-    const existingUser = await findUser({ email: payload.email });
-    if (existingUser) {
-        throw new ValidationError('User with this email already exists');
-    };
-    // hash password
-    const hashedPassword = await authUtils.hashPassword(payload.password);
-    const withPassword = { ...payload, password: hashedPassword };
+const registerUser = async (
+  payload: SignupSchema
+): Promise<{ user: Omit<User, 'password'>; profile: Profile; accessToken: string; refreshToken: string }> => {
 
-    // normalize nullable fields
-    const normalized = normalizeNullable(withPassword, ['role', 'profile']);
+  const existingUser = await findUser({ email: payload.email });
+  if (existingUser) {
+    throw new ValidationError('User with this email already exists');
+  }
 
-    // remove undefined and null values to satisfy Prisma exactOptionalPropertyTypes
-    const userCreateInput = Object.fromEntries(
-        Object.entries(normalized).filter(([, value]) => value !== undefined && value !== null)
-    ) as Prisma.UserCreateInput;
+  const hashedPassword = await authUtils.hashPassword(payload.password);
 
-    const user = await createUser(userCreateInput as any);
+  const parts = payload.name?.trim().split(' ');
 
-    // generate tokens (JWT strings)
-    const accessToken = await tokenService.createAccessToken(user.id);
-    const refreshToken = await tokenService.createRefreshToken(user.id);
+  const user = await prisma.user.create({
+    data: {
+      email: payload.email,
+      password: hashedPassword,
+      type: payload.type,
+      ...(payload.role ? { role: { connect: { id: Number(payload.role) } } } : {}),
+      ...(parts && {
+      firstName: parts[0],
+      lastName: parts.slice(1).join(' ') || null,
+      }),
+    },
+   });
 
-    return { user, accessToken, refreshToken };
+   const profile = await prisma.profile.create({
+    data: {
+      userId: user.id,
+      avatarUrl: null,
+      phoneNumber: null,
+      addressLine1: null,
+      addressLine2: null,
+      city: null,
+      state: null,
+      postalCode: null,
+      paymentMethodToken: null,
+    },
+   });
+
+  const accessToken = await tokenService.createAccessToken(user.id);
+  const refreshToken = await tokenService.createRefreshToken(user.id);
+
+  const { password: _password, ...safeUser } = user;
+
+  return { user: safeUser, profile, accessToken, refreshToken };
 };
+
 
 const loginUser = async (payload: any): Promise<{authenticatedUser: User; accessToken: string; refreshToken: string }> => {
     const authenticatedUser = await findUser({email: payload.email});
