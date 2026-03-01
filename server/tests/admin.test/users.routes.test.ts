@@ -21,7 +21,7 @@ describe('Admin Users Routes', () => {
 
     const _admin = await prisma.user.create({
       data: {
-        email: 'admin@example.com',
+        email: 'admin@test.com',
         password: await AuthUtils.hashPassword('AdminPassword123!'),
         type: UserType.COMPANYUSER,
         role: { connect: { id: adminRole.id } },
@@ -32,7 +32,7 @@ describe('Admin Users Routes', () => {
 
     const response = await request(app)
       .post('/api/v1/auth/login')
-      .send({ email: 'admin@example.com', password: 'AdminPassword123!' });
+      .send({ email: 'admin@test.com', password: 'AdminPassword123!' });
 
     adminToken =
       response.body?.data?.accessToken ?? response.body?.accessToken ?? response.body?.token ?? response.body?.access_token;

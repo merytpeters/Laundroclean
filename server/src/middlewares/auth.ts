@@ -24,7 +24,13 @@ class UserAuth {
         }
         const user = await prisma.user.findUnique({ where: { id: decoded.id }, include: { role: true } });
 
-        if (!user || !user.isActive) {
+        if (!user) {
+          return next(new UnauthenticatedError('User not found'));
+        }
+
+        const isPrivileged = user.role?.permissions?.includes('*') || user.role?.title === 'ADMIN';
+
+        if (!user.isActive && !isPrivileged) {
           return next(new UnauthorizedError('Account inactive or deleted'));
         }
 

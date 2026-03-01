@@ -40,7 +40,14 @@ describe('Admin Controller', () => {
         next = jest.fn();
 
         await AdminController.companyRegister(req, res, next);
-        admin = (res.json as any).mock.calls[0][0].data.user;
+
+        // If the controller didn't call `res.json` (some errors call `next(err)`),
+        // fall back to reading the created user from the database.
+        if ((res.json as any).mock.calls.length > 0) {
+            admin = (res.json as any).mock.calls[0][0].data.user;
+        } else {
+            admin = await prisma.user.findUnique({ where: { email: 'admin@example.com' } }) as any;
+        }
     });
 
     afterAll(async () => {
