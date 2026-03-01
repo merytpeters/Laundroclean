@@ -16,10 +16,12 @@ describe('Admin Users Controller', () => {
     await prisma.profile.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
 
+    const ROLE_ADMIN = `ADMIN_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+
     adminRole = await prisma.companyRoleTitle.upsert({
-      where: { title: 'ADMIN' },
+      where: { title: ROLE_ADMIN },
       update: { level: 10, permissions: ['*'] },
-      create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+      create: { title: ROLE_ADMIN, level: 10, permissions: ['*'] },
     });
 
     const resCreate = await prisma.user.create({

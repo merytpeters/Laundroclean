@@ -28,9 +28,7 @@ class UserAuth {
           return next(new UnauthenticatedError('User not found'));
         }
 
-        const isPrivileged = user.role?.permissions?.includes('*') || user.role?.title === 'ADMIN';
-
-        if (!user.isActive && !isPrivileged) {
+        if (!user.isActive && user.role?.title !== 'ADMIN') {
           return next(new UnauthorizedError('Account inactive or deleted'));
         }
 

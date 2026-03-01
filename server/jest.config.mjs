@@ -1,6 +1,7 @@
 export default {
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
+  globalSetup: "<rootDir>/tests/jest.global-setup.mjs",
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
