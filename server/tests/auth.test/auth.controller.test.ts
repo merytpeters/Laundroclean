@@ -32,7 +32,7 @@ const { default: AuthController } = await import('../../src/modules/auth/auth.co
 
 
 const uniqueEmail = (prefix: string) =>
-    `${prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}@example.com`;
+    `${prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}@testguru.com`;
 
 describe('Auth Controller', () => {
     let adminRole: Awaited<ReturnType<typeof prisma.companyRoleTitle.upsert>>;

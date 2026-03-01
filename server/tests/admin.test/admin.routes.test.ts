@@ -29,7 +29,7 @@ describe('Admin Routes', () => {
 
         const _admin = await prisma.user.create({
             data: {
-                email: 'admin@example.com',
+                email: 'admin@testmonkey.com',
                 password: await AuthUtils.hashPassword('AdminPassword123!'),
                 type: UserType.COMPANYUSER,
                 role: { connect: { id: adminRole.id } },
@@ -40,7 +40,7 @@ describe('Admin Routes', () => {
         const response = await request(app)
             .post('/api/v1/auth/login')
             .send({
-                email: 'admin@example.com',
+                email: 'admin@testmonkey.com',
                 password: 'AdminPassword123!',
             });
 
@@ -67,14 +67,14 @@ describe('Admin Routes', () => {
                 .send({
                     firstName: 'Company',
                     lastName: 'User',
-                    email: 'companyuser@example.com',
+                    email: 'companyuser@exampletest.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
                     role: staffRole.id,
                 });
 
             expect(response.status).toBe(201);
-            expect(response.body).toHaveProperty('data.user.email', 'companyuser@example.com');
+            expect(response.body).toHaveProperty('data.user.email', 'companyuser@exampletest.com');
         });
 
         it('should allow admin to create another admin', async () => {
@@ -84,14 +84,14 @@ describe('Admin Routes', () => {
                 .send({
                     firstName: 'New',
                     lastName: 'Admin',
-                    email: 'newadmin@example.com',
+                    email: 'newadmin@exampletest.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
                     role: adminRole.id,
                 });
 
             expect(response.status).toBe(201);
-            expect(response.body).toHaveProperty('data.user.email', 'newadmin@example.com');
+            expect(response.body).toHaveProperty('data.user.email', 'newadmin@exampletest.com');
         });
     });
 });

@@ -27,7 +27,7 @@ describe('Admin Controller', () => {
 
         const req = {
             body: {
-                email: 'admin@example.com',
+                email: 'admin@tester.com',
                 password: 'AdminPassword123!',
                 type: UserType.COMPANYUSER,
                 role: adminRole.id,
@@ -46,7 +46,7 @@ describe('Admin Controller', () => {
         if ((res.json as any).mock.calls.length > 0) {
             admin = (res.json as any).mock.calls[0][0].data.user;
         } else {
-            admin = await prisma.user.findUnique({ where: { email: 'admin@example.com' } }) as any;
+            admin = await prisma.user.findUnique({ where: { email: 'admin@tester.com' } }) as any;
         }
     });
 
