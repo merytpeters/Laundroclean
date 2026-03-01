@@ -1,11 +1,13 @@
 import prisma from '../../../config/prisma.js';
-import type { Prisma, Profile, User } from '@prisma/client';
+import type { Prisma, Profile } from '@prisma/client';
 import { Prisma as PrismaNamespace } from '@prisma/client';
 import type { ChangePasswordSchema, ProfileSchema, ProfilePicSchema } from '../../../validation/profile/profile.validation.js';
 import { NotFoundError, ForbiddenError, ProcessingError } from '../../../middlewares/errorHandler.js';
 import { AuthUtils } from '../../auth/index.js';
 import type { SessionPayload } from '../../../types/index.js';
 import { MediaService } from '../index.js';
+import { safeUserSelect } from '../../../constants/safeUser.js';
+import type { SafeProfileWithUser, SafeUser } from '../../../constants/safeUser.js';
 
 export type ProfileCreateInput =  Prisma.ProfileCreateInput
 export type ProfileWhereUniqueInput = Prisma.ProfileWhereUniqueInput
@@ -19,11 +21,13 @@ const userProfile = async (where: ProfileWhereUniqueInput): Promise<Profile | nu
     return profile;
 };
 
-const getActiveProfile = async (where: ProfileWhereUniqueInput): Promise<Profile | null> => {
+const getActiveProfile = async (where: ProfileWhereUniqueInput): Promise<SafeProfileWithUser | null> => {
   const profile = await prisma.profile.findUnique({
     where,
     include: {
-      user: true,
+      user: {
+        select: safeUserSelect,
+      }
     },
   });
 
@@ -35,7 +39,7 @@ const getActiveProfile = async (where: ProfileWhereUniqueInput): Promise<Profile
 };
 
 
-const updateProfile = async (sessionUser: SessionPayload, payload: Partial<ProfileSchema>): Promise<Profile> => {
+const updateProfile = async (sessionUser: SessionPayload, payload: Partial<ProfileSchema>): Promise<SafeProfileWithUser> => {
     if (!sessionUser?.id) throw new NotFoundError('User not found');
 
     const user = await prisma.user.findUnique({
@@ -72,10 +76,16 @@ const updateProfile = async (sessionUser: SessionPayload, payload: Partial<Profi
             },
         }
     });
-    return profile;
+
+    const { password: _, ...safeUser } = profile.user;
+
+    return {
+        ...profile,
+        user: safeUser,
+    };
 };
 
-const changePassword = async (sessionUser: SessionPayload, payload: ChangePasswordSchema): Promise<User> => {
+const changePassword = async (sessionUser: SessionPayload, payload: ChangePasswordSchema): Promise<SafeUser> => {
     if (!sessionUser?.id) throw new NotFoundError('User not found');
     const dbUser = await prisma.user.findUnique({
         where: { id: sessionUser.id },
@@ -97,7 +107,8 @@ const changePassword = async (sessionUser: SessionPayload, payload: ChangePasswo
             where: { id: sessionUser.id },
             data: { password: hashedPassword },
         });
-        return updatedUser;
+        const { password: _, ...safeUser } = updatedUser;
+        return safeUser;
     } catch (error: any) {
         if (error?.code === 'P2025') {
             throw new NotFoundError(`Failed to update user password: user id=${sessionUser.id} not found`);
@@ -166,14 +177,14 @@ const updateProfilePic = async (sessionUser: SessionPayload, payload: ProfilePic
         const profile = await userProfile({ userId: dbUser.id });
         if (!profile) throw new NotFoundError('Profile not Found');
 
-        const profilepic = await prisma.profile.update({
+        const updatedProfile = await prisma.profile.update({
             where: { userId: sessionUser.id },
             data: {
                 avatarUrl: payload.avatarUrl,
                 avatarPublicId: payload.avatarPublicId,
             },
         });
-        return profilepic;
+        return updatedProfile;
 
     } catch (error: any) {
         if (error?.code === 'P2025') {
