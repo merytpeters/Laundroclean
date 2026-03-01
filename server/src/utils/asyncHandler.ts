@@ -11,6 +11,12 @@ export interface PaginationQuery {
   search?: string
 };
 
+export interface UserQuery extends PaginationQuery {
+  status?: 'active' | 'inactive';
+  type?: 'client' | 'company';
+}
+
+
 const asyncHandler =
   <T = any>(
     callback: RequestHandler<

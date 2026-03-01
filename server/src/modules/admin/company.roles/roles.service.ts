@@ -1,4 +1,4 @@
-import prisma from "../../../config/prisma.js";
+import prisma from '../../../config/prisma.js';
 
 const createRole = async (data: { title: string; level?: number | null; permissions?: string[] | null }) => {
   const createData: any = {

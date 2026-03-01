@@ -12,9 +12,9 @@ describe('Roles Routes', () => {
     await prisma.user.deleteMany();
 
     const adminRole = await prisma.companyRoleTitle.upsert({
-        where: { title: 'ADMIN' },
-        update: {},
-        create: { title: 'ADMIN', level: 10, permissions: ['*'] },
+      where: { title: 'ADMIN' },
+      update: { level: 10, permissions: ['*'] },
+      create: { title: 'ADMIN', level: 10, permissions: ['*'] },
     });
 
 

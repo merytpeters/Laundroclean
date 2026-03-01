@@ -6,7 +6,7 @@ const companyRoleTitle = z.object({
   title: z.string(),
   level: z.number().optional(),
   permissions: z.array(z.string()).optional()
-})
+});
 
 export type CompanyRoleTitle = z.infer<typeof companyRoleTitle>
 

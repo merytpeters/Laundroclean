@@ -17,13 +17,13 @@ describe('Admin Routes', () => {
 
         adminRole = await prisma.companyRoleTitle.upsert({
             where: { title: 'ADMIN' },
-            update: {},
+            update: { level: 10, permissions: ['*'] },
             create: { title: 'ADMIN', level: 10, permissions: ['*'] },
         });
 
         staffRole = await prisma.companyRoleTitle.upsert({
             where: { title: 'STAFF' },
-            update: {},
+            update: { level: 8, permissions: [] },
             create: { title: 'STAFF', level: 8, permissions: [] },
         });
 
