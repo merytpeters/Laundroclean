@@ -5,7 +5,6 @@ import type { JWTPayload } from '../modules/token/token.types.js';
 import { UserType } from '@prisma/client';
 import prisma from '../config/prisma.js';
 import tokenService from '../modules/token/token.service.js';
-import { PERMISSIONS } from '../constants/permissions.js';
 
 class UserAuth {
   authenticate() {
@@ -79,10 +78,6 @@ class UserAuth {
     return (req: Request, res: Response, next: NextFunction) => {
       if (!req.user || !req.user.role) {
         return next(new UnauthorizedError('Access denied: No role assigned'));
-      }
-
-      if (!(permission in PERMISSIONS)) {
-        throw new Error(`Unknown permission: ${permission}`);
       }
 
       const userRole = req.user.role;
