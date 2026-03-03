@@ -91,4 +91,38 @@ describe('Admin Users Controller', () => {
     const called = (resGood.json as jest.Mock).mock.calls[0][0] as { data: { isActive: boolean } };
     expect(called.data.isActive).toBe(true);
   });
+
+  it('restoreUserController returns 404 when userId missing', async () => {
+    const req = { params: {} } as unknown as Request;
+    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+    await AdminUsersController.restoreUserController(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('restoreUserController returns 403 when actor not admin', async () => {
+    const user = await prisma.user.findUnique({ where: { email: 'c2@example.com' } });
+    const req = { params: { userId: user?.id }, user: { role: { title: 'NOT_ADMIN' } } } as unknown as Request;
+    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+    await AdminUsersController.restoreUserController(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('restoreUserController restores soft-deleted user when actor is ADMIN', async () => {
+    const user = await prisma.user.findUnique({ where: { email: 'c2@example.com' } });
+    if (!user) throw new Error('Test user not found');
+
+    // simulate soft-delete
+    await prisma.user.update({ where: { id: user.id }, data: { deletedAt: new Date(), isActive: false } });
+    await prisma.profile.updateMany({ where: { userId: user.id }, data: { deletedAt: new Date() } });
+
+    const req = { params: { userId: user.id }, user: { role: { title: 'ADMIN' } } } as unknown as Request;
+    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+
+    await AdminUsersController.restoreUserController(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    const called = (res.json as jest.Mock).mock.calls[0][0] as { data: any };
+    expect(called.data).toBeDefined();
+    expect(called.data.isActive).toBe(true);
+  });
 });

@@ -122,4 +122,21 @@ describe('Admin Users Routes', () => {
     expect(res.status).toBe(200);
     expect(res.body.data.isActive).toBe(false);
   });
+
+  it('lets admin restore a deleted/inactive user', async () => {
+    const user = await prisma.user.findUnique({ where: { email: 'client.inactive@example.com' } });
+    if (!user) throw new Error('Test user not found');
+
+    // mark as deleted to simulate a soft-deleted user
+    await prisma.user.update({ where: { id: user.id }, data: { deletedAt: new Date(), isActive: false } });
+    await prisma.profile.updateMany({ where: { userId: user.id }, data: { deletedAt: new Date() } });
+
+    const res = await request(app)
+      .patch(`/api/v1/admin/users/${user.id}/restore`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body.data.isActive).toBe(true);
+  });
 });

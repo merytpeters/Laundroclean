@@ -61,8 +61,26 @@ const setUserActiveStatusController = asyncHandler(async (req, res) => {
     });
 });
 
+const restoreUserController = asyncHandler(async (req, res) => {
+    const userId = req.params.userId;
+    const actor = req.user;
+
+    if (!userId) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (!actor || !actor.role || actor.role.title !== 'ADMIN') {
+        return res.status(403).json({ success: false, message: 'Forbidden: Admins only' });
+    }
+
+    const restored = await AdminUsersService.restoreUser(userId, actor.role.title);
+
+    return res.status(200).json({ success: true, message: 'User restored successfully', data: restored });
+});
+
 export default {
     getProfile,
     getUsersController,
-    setUserActiveStatusController
+    setUserActiveStatusController,
+    restoreUserController
 };

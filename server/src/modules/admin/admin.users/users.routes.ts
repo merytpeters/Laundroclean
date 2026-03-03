@@ -15,6 +15,8 @@ router.get(
 router.get('/users', AdminUsersController.getUsersController);
 
 router.patch('/users/:userId/status', AdminUsersController.setUserActiveStatusController);
+ 
+router.patch('/users/:userId/restore', AdminUsersController.restoreUserController);
 
 
 export default router;
