@@ -11,6 +11,16 @@ export const PERMISSIONS = {
     UPDATE: 'role:update',
     DELETE: 'role:delete',
   },
+  SERVICE: {
+    VIEW: 'service:view',
+    CREATE: 'service:create',
+    UPDATE: 'service:update',
+    DELETE: 'service:delete',
+  },
+  SERVICEPRICE: {
+    VIEW: 'serviceprice:view',
+    CREATE: 'serviceprice:create', // used to create new + deactivate old
+  },
   BOOKING: {
     VIEW: 'booking:view',
     CREATE: 'booking:create',
