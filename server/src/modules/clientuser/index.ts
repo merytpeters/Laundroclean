@@ -1,0 +1,1 @@
+export  { default as ClientServiceRoutes } from './clientuser.routes/service.routes.js';

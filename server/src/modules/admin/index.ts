@@ -7,3 +7,4 @@ export { default as RolesService } from './company.roles/roles.service.js';
 export { default as AdminUsersService } from './admin.users/users.services.js';
 export { default as AdminUsersController } from './admin.users/users.controller.js';
 export { default as AdminUsersRoutes } from './admin.users/users.routes.js';
+export { default as AdminServiceRoutes } from './admin.routes/service.routes.js';

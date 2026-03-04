@@ -1,4 +1,4 @@
-import { LaundrocleanservicesService } from './index.js';
+import LaundrocleanservicesService from './service.service.js';
 import type { ServiceSchema, UpdateServiceSchema } from '../../validation/laundrocleanservices/services.validation.js';
 import asyncHandler from '../../utils/asyncHandler.js';
 import { ValidationError } from '../../middlewares/errorHandler.js';
@@ -16,7 +16,7 @@ const companyCreateServiceController = asyncHandler(async (req, res) => {
 });
 
 const companyUpdateServiceController = asyncHandler(async (req, res) => {
-    const serviceId = req.params.id;
+    const serviceId = (req.params as any).serviceId ?? req.params.id;
     const serviceData: UpdateServiceSchema = req.body;
 
     const updatedService = await LaundrocleanservicesService.updateService({id: serviceId}, serviceData);
@@ -30,7 +30,7 @@ const companyUpdateServiceController = asyncHandler(async (req, res) => {
 
 // get active service for both company user and client
 const getActiveServiceById = asyncHandler(async (req, res) => {
-    const serviceId = req.params.id;
+    const serviceId = (req.params as any).serviceId ?? req.params.id;
 
     const service = await LaundrocleanservicesService.getActiveServiceById({id: serviceId});
 
@@ -41,9 +41,9 @@ const getActiveServiceById = asyncHandler(async (req, res) => {
     });
 });
 
-// get active and inactive service for company users only
+// get active and inactive service for admin only
 const companyGetServiceById = asyncHandler(async (req, res) => {
-    const serviceId = req.params.id;
+    const serviceId = (req.params as any).serviceId ?? req.params.id;
 
     const service = await LaundrocleanservicesService.getServiceById({id: serviceId});
 
@@ -68,28 +68,56 @@ const searchActiveServices = asyncHandler(async (req, res) => {
     });
 });
 
+// admin only
 const companySoftDeleteServices = asyncHandler(async (req, res) => {
-    const { ids } = req.body;
+    const { ids } = req.body || {};
+    const serviceId = (req.params as any)?.serviceId;
 
+
+    if (serviceId) {
+        // Soft delete single by id
+        try {
+            const result = await LaundrocleanservicesService.softDeleteServices({
+                id: serviceId,
+                isActive: true
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: 'Service soft deleted successfully',
+                data: result
+            });
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    // Soft delete multiple
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
         throw new ValidationError('Please provide services to delete');
     }
 
-    const result = await LaundrocleanservicesService.softDeleteServices({
-        id: { in: ids },
-        isActive: true
-    });
+    try {
+        const result = await LaundrocleanservicesService.softDeleteServices({
+            id: { in: ids },
+            isActive: true
+        });
 
-    res.status(200).json({
-        success: true,
-        message: 'Services soft deleted successfully',
-        data: {
-        deletedCount: result.count
-        }
-    });
+        res.status(200).json({
+            success: true,
+            message: 'Services soft deleted successfully',
+            data: {
+                deletedCount: result.count
+            }
+        });
+    } catch (err: any) {
+         
+        console.error('Error soft-deleting multiple services:', err?.message || err);
+        throw err;
+    }
 });
 
-
+// for admin only
 const companySearchAllServices = asyncHandler(async (req, res) => {
     const searchQuery = req?.query;
 
@@ -104,7 +132,7 @@ const companySearchAllServices = asyncHandler(async (req, res) => {
 });
 
 const companyRestoreService = asyncHandler(async (req, res) => {
-    const serviceId = req.params.id;
+    const serviceId = (req.params as any).serviceId ?? req.params.id;
 
     const service_restored = await LaundrocleanservicesService.restoreService({id: serviceId});
 

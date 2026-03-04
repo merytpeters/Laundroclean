@@ -58,10 +58,10 @@ describe('Public Service Routes', () => {
         expect(res.body.data).toHaveProperty('name', 'Wash & Fold');
     });
 
-    it('GET /api/v1/services/:id should return 500 for inactive service (service not found wrapped)', async () => {
+    it('GET /api/v1/services/:id should return 404 for inactive service (service not found wrapped)', async () => {
         const res = await request(app).get(`/api/v1/services/${inactiveService.id}`);
 
-        expect(res.status).toBe(500);
+        expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('message');
     });
 });

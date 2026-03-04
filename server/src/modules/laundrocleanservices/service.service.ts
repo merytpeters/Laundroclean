@@ -30,7 +30,8 @@ const createService = async(payload: ServiceSchema): Promise<Service> => {
                 `Validation failed: ${error.issues.map(e => e.message).join(', ')}`
             );
         }
-    throw new ProcessingError(error?.message || 'Failed to create service');
+        if (error instanceof NotFoundError) throw error;
+        throw new ProcessingError(error?.message || 'Failed to create service');
     }
 };
 
@@ -55,6 +56,7 @@ const updateService = async(where: ServiceWhereUniqueInput, payload: UpdateServi
         if (error instanceof z.ZodError) {
             throw new ValidationError(`Validation failed: ${error.issues.map(e => e.message).join(', ')}`);
         }
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to update service');
     }
 };
@@ -89,6 +91,7 @@ const getActiveServiceById = async(
             }))
         };
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to fetch service');
     }
 };
@@ -118,6 +121,7 @@ const getServiceById = async(
             }))
         };
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to fetch service');
     }
 };
@@ -164,6 +168,7 @@ const searchActiveServices = async(
             }
         };
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to fetch active services');
     }
 };
@@ -182,6 +187,7 @@ const softDeleteServices = async(
         });
         return result;
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to soft delete services');
     }
 };
@@ -223,6 +229,7 @@ const searchAllServices = async(
             }
         };
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to search all services');
     }
 };
@@ -244,6 +251,7 @@ const restoreService = async(
 
         return restored;
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to restore service');
     }
 };
@@ -266,6 +274,7 @@ const restoreManyServices = async(
 
         return result;
     } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
         throw new ProcessingError(error?.message || 'Failed to restore services');
     }
 };
