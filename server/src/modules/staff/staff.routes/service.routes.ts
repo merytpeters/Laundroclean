@@ -3,6 +3,7 @@ import UserAuth from '../../../middlewares/auth.js';
 import LaundrocleanservicesController from '../../laundrocleanservices/service.controller.js';
 import { ServiceValidation } from '../../../validation/index.js';
 import validate from '../../../middlewares/validate.js';
+import { PERMISSIONS } from '../../../constants/permissions.js';
 
 
 const router = Router();
@@ -13,26 +14,26 @@ router.use(UserAuth.requireCompanyUser());
 router.post(
     '/services',
     validate(ServiceValidation.serviceSchema),
-    UserAuth.requirePermission('service:create'),
+    UserAuth.requirePermission(PERMISSIONS.SERVICE.CREATE),
     LaundrocleanservicesController.companyCreateServiceController
 );
 
 router.patch(
     '/services/:serviceId',
     validate(ServiceValidation.updateServiceSchema),
-    UserAuth.requirePermission('service:update'),
+    UserAuth.requirePermission(PERMISSIONS.SERVICE.UPDATE),
     LaundrocleanservicesController.companyUpdateServiceController
 );
 
 router.get(
     '/services/:serviceId',
-    UserAuth.requirePermission('service:view'),
+    UserAuth.requirePermission(PERMISSIONS.SERVICE.VIEW),
     LaundrocleanservicesController.getActiveServiceById
 );
 
 router.get(
     '/services',
-    UserAuth.requirePermission('service:view'),
+    UserAuth.requirePermission(PERMISSIONS.SERVICE.VIEW),
     LaundrocleanservicesController.searchActiveServices,
 );
 
