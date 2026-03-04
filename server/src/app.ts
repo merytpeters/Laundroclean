@@ -11,6 +11,7 @@ import { ProfileRoutes } from './modules/common/index.js';
 import { LaundrocleanservicesRoutes } from './modules/laundrocleanservices/index.js';
 import { StaffServiceRoutes } from './modules/staff/index.js';
 import { ClientServiceRoutes } from './modules/clientuser/index.js';
+import { ServicepriceRoutes } from './modules/serviceprice/index.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
@@ -50,6 +51,7 @@ app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, StaffServiceRoutes);
 app.use('/api/v1/profile', ProfileRoutes);
 app.use('/api/v1/services', LaundrocleanservicesRoutes);
+app.use('/api/v1/service-price', ServicepriceRoutes);
 app.use('/api/v1/staff', StaffServiceRoutes);
 app.use('/api/v1/client', ClientServiceRoutes);
 
