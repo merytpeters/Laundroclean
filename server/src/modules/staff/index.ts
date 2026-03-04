@@ -1,0 +1,1 @@
+export { default as StaffServiceRoutes } from './staff.routes/service.routes.js';

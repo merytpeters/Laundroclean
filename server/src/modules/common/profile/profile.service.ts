@@ -121,47 +121,60 @@ const changePassword = async (sessionUser: SessionPayload, payload: ChangePasswo
 const softDeleteAccount = async (where: UserWhereUniqueInput): Promise<void> => {
     const now = new Date();
 
-
-    const relatedModels = [
-        { model: 'Profile', foreignKey: 'userId' },
-        { model: 'Token', foreignKey: 'userId' },
-        { model: 'Notification', foreignKey: 'userId' },
-
-    ];
-
     try {
-        const relatedUpdates = relatedModels.map((m) =>
-        (prisma as any)[m.model.toLowerCase()].updateMany({
-            where: { [m.foreignKey]: (where as any).id }, 
-            data: { deletedAt: now },
-        })
+        const profile = await prisma.profile.findUnique({ where: { userId: (where as any).id } });
+
+        const updates: any[] = [];
+
+        updates.push(
+            prisma.user.update({
+                where,
+                data: { isActive: false, deletedAt: now },
+            })
         );
 
-        await prisma.$transaction([
-        prisma.user.update({
-            where,
-            data: { isActive: false },
-        }),
-        ...relatedUpdates,
-        ]);
-
-        const profile = await prisma.profile.findUnique({
-            where: { userId: (where as any).id },
-        });
-
         if (profile) {
-            await prisma.booking.updateMany({ where: { profileId: profile.id }, data: { deletedAt: now } });
+            updates.push(
+                prisma.profile.update({
+                    where: { id: profile.id },
+                    data: { deletedAt: now },
+                })
+            );
+
+            updates.push(
+                prisma.booking.updateMany({
+                    where: { profileId: profile.id },
+                    data: { deletedAt: now, isActive: false },
+                })
+            );
         }
+
+        updates.push(
+            prisma.token.updateMany({
+                where: { userId: (where as any).id },
+                data: { expiresAt: now },
+            })
+        );
+
+        updates.push(
+            prisma.notification.deleteMany({
+                where: { userId: (where as any).id },
+            })
+        );
+
+        await prisma.$transaction(updates);
+
     } catch (error: any) {
         if (
-        error instanceof PrismaNamespace.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
+            error instanceof PrismaNamespace.PrismaClientKnownRequestError &&
+            error.code === 'P2025'
         ) {
-        throw new NotFoundError('User not found');
+            throw new NotFoundError('User not found');
         }
         throw new ProcessingError(error?.message || 'Failed to delete user');
     }
 };
+
 
 
 const updateProfilePic = async (sessionUser: SessionPayload, payload: ProfilePicSchema): Promise<Profile> => {

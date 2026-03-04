@@ -65,6 +65,12 @@ enum DeliveryType {
   PICK_UP   @map("PICK UP")
 }
 
+enum PricingType {
+  PER_KG        @map("PER KG")
+  PER_ITEM      @map("PER ITEM")
+  FLAT_RATE     @map("FLAT RATE")
+}
+
 
 // MODELS
 
@@ -118,6 +124,7 @@ model Profile {
   id                  String     @id @default(uuid())
   userId              String     @unique @map("user_id")
   user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isTemp              Boolean    @default(false)
   avatarUrl           String?    @map("avatar_url")
   avatarPublicId      String?    @map("avatar_public_id")
   phoneNumber         String?    @map("phone_number")
@@ -154,40 +161,70 @@ model Notification {
 }
 
 model Service {
-  id         String     @id @default(uuid())
-  name       String
-  description String
-  price      Decimal
-  currency   Currency
-  isActive   Boolean    @default(false) @map("is_active")
-  createdAt  DateTime   @default(now()) @map("created_at")
-  updatedAt  DateTime   @updatedAt @map("updated_at")
-  deletedAt  DateTime?  @map("deleted_at")
+  id            String           @id @default(uuid())
+  name          String
+  description   String
+  isActive      Boolean          @default(true) @map("is_active")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+  deletedAt     DateTime?        @map("deleted_at")
 
-  bookings   Booking[]
+  bookings      Booking[]
+  prices        ServicePrice[]
 
   @@map("services")
 }
 
+model ServicePrice {
+  id            String        @id @default(uuid())
+  serviceId     String        @map("service_id")
+  service       Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  amount        Decimal
+  currency      Currency
+  pricingType   PricingType   @map("pricing_type")
+
+  isActive      Boolean       @default(true) @map("is_active")
+
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@index([serviceId, isActive])
+  @@map("service_prices")
+}
+
+
 model Booking {
-  id             String    @id @default(uuid())
-  profileId      String    @map("profile_id")
-  profile        Profile   @relation("BookingProfile", fields: [profileId], references: [id])
-  customBookingId String   @unique @map("custom_booking_id")
-  serviceId      String    @map("service_id")
-  service        Service   @relation(fields: [serviceId], references: [id])
-  status         BookingStatus
-  deliveryType   DeliveryType @map("delivery_type")
-  scheduledDate  DateTime?    @map("scheduled_date")
-  pickupTime     DateTime?    @map("pickup_time")
-  weight         Float?
-  itemCount      Int?         @map("item_count")
-  addressId      String?      @map("address_id")
-  address        Profile?     @relation("BookingAddress", fields: [addressId], references: [id])
-  additionalNote String?      @map("additional_note")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
-  deletedAt      DateTime?    @map("deleted_at")
+  id                String           @id @default(uuid())
+  profileId         String           @map("profile_id")
+  profile           Profile          @relation("BookingProfile", fields: [profileId], references: [id])
+  customBookingId   String          @unique @map("custom_booking_id")
+
+  serviceId         String           @map("service_id")
+  service           Service          @relation(fields: [serviceId], references: [id])
+
+  unitPrice         Decimal          @map("unit_price")
+  currency          Currency
+  pricingType       PricingType      @map("pricing_type")
+  totalAmount       Decimal          @map("total_amount")
+
+  status            BookingStatus
+
+  deliveryType      DeliveryType     @map("delivery_type")
+  scheduledDate     DateTime?        @map("scheduled_date")
+  pickupTime        DateTime?        @map("pickup_time")
+
+  weight            Float?
+  itemCount         Int?             @map("item_count")
+
+  addressId         String?          @map("address_id")
+  address           Profile?         @relation("BookingAddress", fields: [addressId], references: [id])
+  additionalNote    String?          @map("additional_note")
+
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+  deletedAt         DateTime?        @map("deleted_at")
+  isActive          Boolean          @default(true)
 
   bookingNotifications BookingNotifications[]
 

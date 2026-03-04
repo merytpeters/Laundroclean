@@ -18,11 +18,10 @@ const options: Options = {
       },
     ],
   },
-  apis: [
-    isProduction
-      ? 'dist/modules/**/*.docs.js'
-      : 'src/modules/**/*.docs.ts',
-    ]
+  apis: isProduction
+    ? ['dist/modules/**/*.docs.js', 'dist/modules/**/*.docs.*.js']
+    : ['src/modules/**/*.docs.ts', 'src/modules/**/*.docs.*.ts'],
+  
 };
 
 const swaggerSpec = swaggerJsdoc(options);

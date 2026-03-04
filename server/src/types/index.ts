@@ -11,11 +11,18 @@ export type SessionPayload = {
   } | null;
 }
 
+export interface PaginationMeta {
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
 export interface APIResponse<T = any> {
   success: boolean
   data?: T
   message?: string
-  total?: number
+  meta?: PaginationMeta
 }
 
 export type AllowedUserTypes = UserType | UserType[];

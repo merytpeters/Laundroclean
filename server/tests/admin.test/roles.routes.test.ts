@@ -51,7 +51,7 @@ describe('Roles Routes', () => {
     const response = await request(app)
       .post('/api/v1/admin/company-roles')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ title: 'Manager', level: 2, permissions: ['read'] });
+      .send({ title: 'Manager', level: 2, permissions: ['user:view'] });
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('data.role.title', 'MANAGER');
