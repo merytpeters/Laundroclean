@@ -13,18 +13,15 @@
  *       properties:
  *         name:
  *           type: string
- *           example: Acme Admin
+ *           example: Acme staff
  *         email:
  *           type: string
  *           format: email
- *           example: admin@acme.example
+ *           example: staff@acme.example
  *         password:
  *           type: string
  *           format: password
  *           example: StrongPass!23
- *         companyId:
- *           type: string
- *           example: 123e4567-e89b-12d3-a456-426614174000
  *     AuthResponse:
  *       type: object
  *       properties:
@@ -111,7 +108,46 @@
  *     ServiceListResponse:
  *       type: array
  *       items:
- *         $ref: '#/components/schemas/ServiceResponse'
+ *       $ref: '#/components/schemas/ServiceResponse'
+ *
+ *     CompanyRoleRequest:
+ *       type: object
+ *       required:
+ *         - title
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: Manager
+ *         level:
+ *           type: integer
+ *           example: 2
+ *         permissions:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: ["read:bookings", "manage:staff"]
+ *     CompanyRoleResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: 123e4567-e89b-12d3-a456-426614174000
+ *         title:
+ *           type: string
+ *         permissions:
+ *           type: array
+ *           items:
+ *             type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     CompanyRoleListResponse:
+ *       type: array
+ *       items:
+ *         $ref: '#/components/schemas/CompanyRoleResponse'
 
  * tags:
  *   - name: Admin
@@ -150,41 +186,7 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *
- *     CompanyRoleRequest:
- *       type: object
- *       required:
- *         - title
- *       properties:
- *         title:
- *           type: string
- *           example: Manager
- *         permissions:
- *           type: array
- *           items:
- *             type: string
- *           example: ["read:bookings", "manage:staff"]
- *     CompanyRoleResponse:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: 123e4567-e89b-12d3-a456-426614174000
- *         title:
- *           type: string
- *         permissions:
- *           type: array
- *           items:
- *             type: string
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- *     CompanyRoleListResponse:
- *       type: array
- *       items:
- *         $ref: '#/components/schemas/CompanyRoleResponse'
+ *
  *
  * /api/v1/admin/company-roles:
  *   post:
