@@ -16,6 +16,12 @@ const profileSchema = baseProfileSchema.partial();
 
 export type ProfileSchema = z.infer<typeof profileSchema>
 
+const tempProfileSchema = profileSchema.extend({
+  isTemp: z.boolean().optional(),
+});
+
+export type TempProfileSchema = z.infer<typeof tempProfileSchema>
+
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(7),
   newPassword: z.string().min(7),
@@ -31,6 +37,7 @@ const profilePicSchema = z.object({
 export type ProfilePicSchema = z.infer<typeof profilePicSchema>
 
 export default {
+  tempProfileSchema,
   profileSchema,
   changePasswordSchema,
   profilePicSchema

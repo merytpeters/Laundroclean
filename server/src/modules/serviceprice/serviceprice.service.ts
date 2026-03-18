@@ -50,7 +50,26 @@ const createServicePrice = async(
 	}
 };
 
+const getServicePrice = async(servicePriceInput: { serviceId: string }) => {
+	const price = await prisma.servicePrice.findFirst({
+		where: {
+			serviceId: servicePriceInput.serviceId,
+			isActive: true,
+		},
+		orderBy: {
+			createdAt: 'desc',
+		},
+	});
+
+	if (!price) {
+		throw new NotFoundError('Active service price not found');
+	}
+
+	return price;
+};
+
 export default {
 	createServicePrice,
+	getServicePrice
 };
 
