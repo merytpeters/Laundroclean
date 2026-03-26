@@ -18,5 +18,30 @@ router.post(
    BookingController.createBookingController
 );
 
+router.get(
+    '/bookings',
+    UserAuth.requirePermission(PERMISSIONS.BOOKING.VIEW),
+    BookingController.listBookingsController
+);
+
+router.patch(
+    '/bookings/:bookingId',
+    validate(BookingValidation.updateBookingSchema),
+    UserAuth.requirePermission(PERMISSIONS.BOOKING.UPDATE),
+    BookingController.updateBookingController
+);
+
+router.get(
+    '/bookings/:bookingId',
+    UserAuth.requirePermission(PERMISSIONS.BOOKING.VIEW),
+    BookingController.getBookingController);
+
+router.patch(
+    '/bookings-status/:bookingId',
+    validate(BookingValidation.updateBookingStatusSchema),
+    UserAuth.requirePermission(PERMISSIONS.BOOKING.UPDATESTATUS),
+    BookingController.updateBookingStatusController
+);
+
 
 export default router;

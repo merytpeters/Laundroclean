@@ -5,7 +5,7 @@ import nunjucks from 'nunjucks';
 import config from './config/config.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { AuthRoutes } from './modules/auth/index.js';
-import { AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes } from './modules/admin/index.js';
+import { AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes } from './modules/admin/index.js';
 import { EmailRoutes } from './modules/emailService/index.js';
 import { ProfileRoutes } from './modules/common/index.js';
 import { LaundrocleanservicesRoutes } from './modules/laundrocleanservices/index.js';
@@ -48,7 +48,7 @@ app.set('view engine', 'html');
 
 app.use('/api/v1/auth', AuthRoutes);
 // important that AdminServiceRoutes comes before StaffServiceRoutes if not express does not hit all routes
-app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, StaffServiceRoutes, StaffBookingRoutes);
+app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes, StaffServiceRoutes);
 app.use('/api/v1/profile', ProfileRoutes);
 app.use('/api/v1/services', LaundrocleanservicesRoutes);
 app.use('/api/v1/service-price', ServicepriceRoutes);

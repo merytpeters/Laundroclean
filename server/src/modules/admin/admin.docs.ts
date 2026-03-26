@@ -872,6 +872,386 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ * /api/v1/admin/bookings:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Get list of bookings for the company
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: profileId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: List of bookings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookingListResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ * /api/v1/admin/booking:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: Create a booking on behalf of a client (admin/company user)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateBookingRequest'
+ *     responses:
+ *       '201':
+ *         description: Booking created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookingResponse'
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ * /api/v1/admin/bookings/{bookingId}:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Get booking details by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Booking details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookingResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Update booking (admin/company user)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateBookingRequest'
+ *     responses:
+ *       '200':
+ *         description: Updated booking
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookingResponse'
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Cancel (delete) a booking
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '204':
+ *         description: Booking cancelled (no content)
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ * components:
+ *   schemas:
+ *     CreateBookingRequest:
+ *       type: object
+ *       required:
+ *         - profileId
+ *         - deliveryType
+ *         - serviceId
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Optional contact email for the booking
+ *         profileId:
+ *           type: string
+ *           format: uuid
+ *         address:
+ *           type: object
+ *           description: Optional temporary address object
+ *         deliveryType:
+ *           type: string
+ *           description: Delivery type enum
+ *         serviceId:
+ *           type: string
+ *           format: uuid
+ *         scheduledDate:
+ *           type: string
+ *           format: date-time
+ *         pickupTime:
+ *           type: string
+ *         weight:
+ *           type: number
+ *         itemCount:
+ *           type: integer
+ *         additionalNotes:
+ *           type: string
+ *     UpdateBookingRequest:
+ *       type: object
+ *       properties:
+ *         address:
+ *           type: object
+ *         deliveryType:
+ *           type: string
+ *         scheduledDate:
+ *           type: string
+ *           format: date-time
+ *         pickupTime:
+ *           type: string
+ *         weight:
+ *           type: number
+ *         itemCount:
+ *           type: integer
+ *         additionalNotes:
+ *           type: string
+ *     BookingResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         customBookingId:
+ *           type: string
+ *         status:
+ *           type: string
+ *         profile:
+ *           type: object
+ *           description: Profile object of the booking owner
+ *         serviceId:
+ *           type: string
+ *         unitPrice:
+ *           type: number
+ *           format: float
+ *         currency:
+ *           type: string
+ *         pricingType:
+ *           type: string
+ *         totalAmount:
+ *           type: number
+ *           format: float
+ *         deliveryType:
+ *           type: string
+ *         scheduledDate:
+ *           type: string
+ *           format: date-time
+ *         pickupTime:
+ *           type: string
+ *         itemCount:
+ *           type: integer
+ *         weight:
+ *           type: number
+ *         additionalNote:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     BookingListResponse:
+ *       type: object
+ *       properties:
+ *         data:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/BookingResponse'
+ *         meta:
+ *           type: object
+ *           properties:
+ *             total:
+ *               type: integer
+ *             page:
+ *               type: integer
+ *             limit:
+ *               type: integer
+ *             totalPages:
+ *               type: integer
+ *     BookingStatusRequest:
+ *       type: object
+ *       required:
+ *         - status
+ *       properties:
+ *         status:
+ *           type: string
+ *           description: New booking status (e.g., PENDING, CONFIRMED, CANCELLED, COMPLETED)
+ *
+ * /api/v1/admin/bookings-status/{bookingId}:
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Update booking status (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/BookingStatusRequest'
+ *     responses:
+ *       '200':
+ *         description: Updated booking
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookingResponse'
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /api/v1/admin/bookings/{bookingId}/restore:
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Restore a soft-deleted booking (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Booking restored
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BookingResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 
 export {};
+

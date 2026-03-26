@@ -17,7 +17,9 @@ const createBookingSchema = z.object({
 
 export type CreateBookingSchema = z.infer<typeof createBookingSchema>
 
-const updateBookingSchema = createBookingSchema.partial();
+const updateSchema = createBookingSchema.partial();
+
+const updateBookingSchema = updateSchema.omit({ email: true, profileId:true, serviceId: true});
 
 export type UpdateBookingSchema = z.infer<typeof updateBookingSchema>
 
