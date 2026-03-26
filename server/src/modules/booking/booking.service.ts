@@ -136,12 +136,14 @@ const createBooking = async (
                 throw new Error('At least one address line is required');
             }
             const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-            const serviceArea = await validateServiceArea(tx, lat, lng);
-            if (!serviceArea) {
-                const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
-                throw new UnauthorizedError(
-                    `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}`
-                );
+            if (input.deliveryType === 'PICK_UP') {
+                const serviceArea = await validateServiceArea(tx, lat, lng);
+                if (!serviceArea) {
+                    const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
+                    throw new NotFoundError(
+                        `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                    );
+                }
             }
             const address = await tx.profile.create({
                 data: {
@@ -236,12 +238,14 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                 throw new Error('At least one address line is required');
             }
             const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-            const serviceArea = await validateServiceArea(prisma, lat, lng);
-            if (!serviceArea) {
-                const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, prisma);
-                throw new UnauthorizedError(
-                    `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}`
-                );
+            if (input.deliveryType === 'PICK_UP') {
+                const serviceArea = await validateServiceArea(prisma, lat, lng);
+                if (!serviceArea) {
+                    const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, prisma);
+                    throw new NotFoundError(
+                        `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                    );
+                }
             }
             updateData.address = {
                 update: {
