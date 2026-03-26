@@ -10,10 +10,16 @@ describe('ServicePrice Routes', () => {
   let service: any;
 
   beforeAll(async () => {
-    await prisma.user.deleteMany();
-    await prisma.companyRoleTitle.deleteMany();
+    // cleanup dependent tables first
+    await prisma.bookingNotifications.deleteMany();
+    await prisma.notification.deleteMany();
+    await prisma.booking.deleteMany();
     await prisma.servicePrice.deleteMany();
     await prisma.service.deleteMany();
+    await prisma.token.deleteMany();
+    await prisma.profile.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.companyRoleTitle.deleteMany();
 
     adminRole = await prisma.companyRoleTitle.upsert({
       where: { title: 'ADMIN' },

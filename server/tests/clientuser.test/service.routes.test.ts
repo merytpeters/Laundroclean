@@ -9,8 +9,15 @@ describe('ClientUser Service Routes', () => {
     let service: any;
 
     beforeAll(async () => {
-        await prisma.user.deleteMany();
+        // clean dependent tables first to avoid FK errors
+        await prisma.bookingNotifications.deleteMany();
+        await prisma.notification.deleteMany();
+        await prisma.booking.deleteMany();
+        await prisma.servicePrice.deleteMany();
         await prisma.service.deleteMany();
+        await prisma.token.deleteMany();
+        await prisma.profile.deleteMany();
+        await prisma.user.deleteMany();
 
         await prisma.user.create({
             data: {

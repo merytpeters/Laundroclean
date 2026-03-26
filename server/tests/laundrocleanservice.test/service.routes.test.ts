@@ -7,8 +7,15 @@ describe('Public Service Routes', () => {
     let inactiveService: any;
 
     beforeAll(async () => {
-        // clean existing services
+        // clean existing services and dependents
+        await prisma.bookingNotifications.deleteMany();
+        await prisma.notification.deleteMany();
+        await prisma.booking.deleteMany();
+        await prisma.servicePrice.deleteMany();
         await prisma.service.deleteMany();
+        await prisma.token.deleteMany();
+        await prisma.profile.deleteMany();
+        await prisma.user.deleteMany();
 
         activeService = await prisma.service.create({
             data: {
