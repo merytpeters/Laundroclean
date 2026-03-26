@@ -138,7 +138,7 @@ const createBooking = async (
             const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
             const serviceArea = await validateServiceArea(tx, lat, lng);
             if (!serviceArea) {
-                const nearest = await BookingUtils.nearestPickupPoint(lat, lng, tx);
+                const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
                 throw new UnauthorizedError(
                     `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}`
                 );
@@ -238,7 +238,7 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
             const serviceArea = await validateServiceArea(prisma, lat, lng);
             if (!serviceArea) {
-                const nearest = await BookingUtils.nearestPickupPoint(lat, lng, prisma);
+                const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, prisma);
                 throw new UnauthorizedError(
                     `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}`
                 );

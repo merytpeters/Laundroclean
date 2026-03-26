@@ -214,7 +214,7 @@ model ServiceArea {
 }
 
 
-model PickupPoint {
+model DropOffPoint {
   id            String  @id @default(cuid())
   name          String
   address       String
@@ -222,7 +222,7 @@ model PickupPoint {
   lng           Float?
   isActive      Boolean @default(true)
 
-  @@map("pickup_point")
+  @@map("dropoff_point")
 }
 
 

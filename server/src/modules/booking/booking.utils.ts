@@ -83,7 +83,7 @@ const haversineDistance = (lat1: number, lng1: number, lat2: number, lng2: numbe
 /**
  * Find nearest active pickup point to given coordinates
  */
-const nearestPickupPoint = async (lat: number, lng: number, tx: Prisma.TransactionClient) => {
+const nearestDropOffPoint = async (lat: number, lng: number, tx: Prisma.TransactionClient) => {
   // Fetch all active pickup points with coordinates
   const points = await tx.pickupPoint.findMany({
     where: {
@@ -116,5 +116,5 @@ export default {
   randomPassword,
   generateCustomBookingId,
   geocodeAddress,
-  nearestPickupPoint
+  nearestDropOffPoint
 };
