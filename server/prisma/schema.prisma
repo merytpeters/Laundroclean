@@ -201,6 +201,31 @@ model ServicePrice {
   @@map("service_prices")
 }
 
+model ServiceArea {
+  id            String             @id  @default(uuid())
+  name          String
+  isActive      Boolean            @default(true)
+  latMin        Float?
+  latMax        Float?
+  lngMin        Float?
+  lngMax        Float?
+
+  @@map("service_area")
+}
+
+
+model PickupPoint {
+  id            String  @id @default(cuid())
+  name          String
+  address       String
+  lat           Float?
+  lng           Float?
+  isActive      Boolean @default(true)
+
+  @@map("pickup_point")
+}
+
+
 
 model Booking {
   id                String           @id @default(uuid())

@@ -45,6 +45,25 @@ const PricingService = {
     },
 };
 
+const validateServiceArea = async (tx: Prisma.TransactionClient, lat: number, lng: number) => {
+    const area = await tx.serviceArea.findFirst({
+        where: {
+            isActive: true,
+            latMin: { lte: lat },
+            latMax: { gte: lat },
+            lngMin: { lte: lng },
+            lngMax: { gte: lng },
+        },
+    });
+
+    if (!area) {
+        throw new UnauthorizedError('Service not available in this area');
+    }
+
+    return area;
+};
+
+
 const createBooking = async (
   input: CreateBookingInput,
   email?: string
@@ -112,6 +131,18 @@ const createBooking = async (
         let addressId: string | null = null;
 
         if (input.address) {
+            const addressLine = input.address.addressLine1 || input.address.addressLine2;
+            if (!addressLine) {
+                throw new Error('At least one address line is required');
+            }
+            const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+            const serviceArea = await validateServiceArea(tx, lat, lng);
+            if (!serviceArea) {
+                const nearest = await BookingUtils.nearestPickupPoint(lat, lng, tx);
+                throw new UnauthorizedError(
+                    `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}`
+                );
+            }
             const address = await tx.profile.create({
                 data: {
                     ...Object.fromEntries(
@@ -200,6 +231,18 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
         const updateData: Prisma.BookingUpdateInput = {};
         
         if (input.address) {
+            const addressLine = input.address.addressLine1 || input.address.addressLine2;
+            if (!addressLine) {
+                throw new Error('At least one address line is required');
+            }
+            const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+            const serviceArea = await validateServiceArea(prisma, lat, lng);
+            if (!serviceArea) {
+                const nearest = await BookingUtils.nearestPickupPoint(lat, lng, prisma);
+                throw new UnauthorizedError(
+                    `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}`
+                );
+            }
             updateData.address = {
                 update: {
                     ...Object.fromEntries(

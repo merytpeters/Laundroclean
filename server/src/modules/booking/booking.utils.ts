@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.js';
+import { Prisma } from '@prisma/client';
 
 const randomEmail = (): string => {
   const email = `user_${crypto.randomUUID().slice(0, 8)}@temporaryuser.com`;
@@ -44,8 +45,76 @@ const generateCustomBookingId = async (): Promise<string> => {
 };
 
 
+
+const geocodeAddress = async (address: string) => {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  if (!data || data.length === 0) {
+    throw new Error('Unable to geocode address');
+  }
+
+  return {
+    lat: parseFloat(data[0].lat),
+    lng: parseFloat(data[0].lon),
+  };
+};
+
+
+/**
+ * Calculate distance between two coordinates in kilometers
+ */
+const haversineDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+  const R = 6371; // Earth radius in km
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLng = (lng2 - lng1) * (Math.PI / 180);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * (Math.PI / 180)) *
+    Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLng / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+/**
+ * Find nearest active pickup point to given coordinates
+ */
+const nearestPickupPoint = async (lat: number, lng: number, tx: Prisma.TransactionClient) => {
+  // Fetch all active pickup points with coordinates
+  const points = await tx.pickupPoint.findMany({
+    where: {
+      isActive: true,
+      lat: { not: null },
+      lng: { not: null },
+    },
+  });
+
+  if (!points.length) return null;
+
+  // Find the nearest one
+  let nearest = points[0]!;
+  let minDistance = haversineDistance(lat, lng, nearest.lat!, nearest.lng!);
+
+  for (const p of points.slice(1)) {
+    const dist = haversineDistance(lat, lng, p.lat!, p.lng!);
+    if (dist < minDistance) {
+      nearest = p;
+      minDistance = dist;
+    }
+  }
+
+  return nearest;
+};
+
+
 export default {
   randomEmail,
   randomPassword,
-  generateCustomBookingId
+  generateCustomBookingId,
+  geocodeAddress,
+  nearestPickupPoint
 };
