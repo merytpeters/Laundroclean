@@ -25,19 +25,30 @@ const updateDropoffPointController = asyncHandler(async (req, res) => {
 
 const getDropoffPointController = asyncHandler(async (req, res) => {
 	const { dropoffId } = req.params;
-	const q = req.query as any;
+	const q = (req.query ?? {}) as any;
 	const params: { isActive?: boolean; search?: string } = {};
+
 	if (q.isActive !== undefined) {
-		const isActive = q.isActive === 'false' ? false : q.isActive === 'true' ? true : undefined;
-		if (isActive !== undefined) params.isActive = isActive;
-	}
-	if (q.search !== undefined) params.search = String(q.search);
+        const isActive =
+            q.isActive === 'false' ? false : q.isActive === 'true' ? true : undefined;
+        if (isActive !== undefined) params.isActive = isActive;
+    }
 
-	const isAdmin = req.user?.role?.title === 'ADMIN';
+    if (q.search !== undefined) params.search = String(q.search);
 
-	const drop = await DropOffPointService.getDropoffPoint(dropoffId, params, Boolean(isAdmin));
+    const isAdmin = req.user?.role?.title === 'ADMIN';
 
-	return res.status(200).json({ success: true, data: drop, message: 'Dropoff point retrieved successfully' });
+    const drop = await DropOffPointService.getDropoffPoint(
+        dropoffId,
+        params,
+        Boolean(isAdmin)
+    );
+
+    return res.status(200).json({
+        success: true,
+        data: drop,
+        message: 'Dropoff point retrieved successfully',
+    });
 });
 
 const listDropoffPointsController = asyncHandler(async (req, res) => {

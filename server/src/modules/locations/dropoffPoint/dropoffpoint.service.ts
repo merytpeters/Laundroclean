@@ -83,21 +83,12 @@ const getDropoffPoint = async (
     params: { search?: string; isActive?: boolean } = {},
     isAdmin: boolean = false
 ): Promise<DropOffPoint> => {
-
-    if (!isAdmin) {
-        params.isActive = true;
-    }
+    const isActiveFilter = isAdmin ? params.isActive : true;
 
     const findWhereInput: any = typeof where === 'string' ? { id: where } : { ...where };
-    if (params.isActive !== undefined) findWhereInput.isActive = params.isActive;
+    if (typeof isActiveFilter === 'boolean') findWhereInput.isActive = isActiveFilter;
 
-    let dropoffpoint: DropOffPoint | null = null;
-    const hasOnlyId = Object.keys(findWhereInput).length === 1 && Object.prototype.hasOwnProperty.call(findWhereInput, 'id');
-    if (hasOnlyId) {
-        dropoffpoint = await prisma.dropOffPoint.findUnique({ where: { id: findWhereInput.id } });
-    } else {
-        dropoffpoint = await prisma.dropOffPoint.findFirst({ where: findWhereInput });
-    }
+    const dropoffpoint = await prisma.dropOffPoint.findFirst({ where: findWhereInput });
 
     if (!dropoffpoint) throw new NotFoundError('Dropoff point not found.');
 
