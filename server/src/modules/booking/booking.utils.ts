@@ -85,7 +85,7 @@ const haversineDistance = (lat1: number, lng1: number, lat2: number, lng2: numbe
  */
 const nearestDropOffPoint = async (lat: number, lng: number, tx: Prisma.TransactionClient) => {
   // Fetch all active pickup points with coordinates
-  const points = await tx.pickupPoint.findMany({
+  const points = await tx.dropOffPoint.findMany({
     where: {
       isActive: true,
       lat: { not: null },
@@ -110,11 +110,30 @@ const nearestDropOffPoint = async (lat: number, lng: number, tx: Prisma.Transact
   return nearest;
 };
 
+const enforceMinPickup = async (
+  pickupTime: Date | null,
+  tx: Prisma.TransactionClient
+): Promise<Date> => {
+  const setting = await tx.bookingSetting.findUnique({ where: { id: 1 } });
+  const minDays = setting?.minPickupDays ?? 3;
+
+  const now = new Date();
+  const minPickupDate = new Date();
+  minPickupDate.setDate(now.getDate() + minDays);
+
+  if (!pickupTime || pickupTime < minPickupDate) {
+    return minPickupDate;
+  }
+  return pickupTime;
+};
+
+
 
 export default {
   randomEmail,
   randomPassword,
   generateCustomBookingId,
   geocodeAddress,
-  nearestDropOffPoint
+  nearestDropOffPoint,
+  enforceMinPickup
 };

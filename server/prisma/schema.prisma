@@ -264,6 +264,15 @@ model Booking {
   @@map("bookings")
 }
 
+model BookingSetting {
+  id                     Int          @id @default(autoincrement())
+  minPickupDays          Int          @default(3)
+  updatedAt              DateTime     @updatedAt
+
+  @@map("booking_settings")
+}
+
+
 model BookingNotifications {
   bookingId      String @map("booking_id")
   booking        Booking @relation(fields: [bookingId], references: [id])

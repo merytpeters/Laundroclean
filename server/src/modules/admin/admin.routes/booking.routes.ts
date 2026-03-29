@@ -17,6 +17,8 @@ router.post(
     BookingController.createBookingController
 );
 
+router.patch('/booking-settings', BookingController.updateBookingSettings);
+
 router.get('/bookings/:bookingId', BookingController.getBookingController);
 
 router.patch(

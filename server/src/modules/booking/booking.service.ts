@@ -162,6 +162,7 @@ const createBooking = async (
         for (let i = 0; i < 3; i++) {
             try {
                 const customBookingId = await BookingUtils.generateCustomBookingId();
+                const scheduledPickupDay = await BookingUtils.enforceMinPickup(input.scheduledDate ?? null, tx);
 
                 return await tx.booking.create({
                     data: {
@@ -169,7 +170,7 @@ const createBooking = async (
                         serviceId: input.serviceId,
 
                         deliveryType: input.deliveryType,
-                        scheduledDate: input.scheduledDate ?? null,
+                        scheduledDate: scheduledPickupDay ?? null,
                         pickupTime: input.pickupTime ?? null,
 
                         weight: input.weight ?? null,
@@ -198,84 +199,90 @@ const createBooking = async (
 };
 
 // for client and companyuser same approach as create
-const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput): Promise<Booking> => {
-    try{
-        const booking = await prisma.booking.findUnique({
-            where,
-            include: {
-                profile: true
-            }
-        });
+const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<Booking> => {
+    return await prisma.$transaction(async (tx) => {
+        try {
+            const whereObj = normalizeWhere(where);
+            const booking = await tx.booking.findUnique({
+                where: whereObj,
+                include: {
+                    profile: true
+                }
+            });
 
-        if (!booking) {
+            if (!booking) {
+                throw new NotFoundError('Booking not found');
+            }
+
+            const price = await ServicepriceService.getServicePrice({
+                serviceId: booking?.serviceId,
+            });
+
+            if (!price) {
+                throw new NotFoundError('Service price not found');
+            }
+
+            // 3. Compute quantity (use pricing type from the price snapshot)
+            const quantity = PricingService.computeQuantity({
+                pricingType: price.pricingType,
+                weight: input.weight,
+                itemCount: input.itemCount,
+            });
+
+            // 4. Pricing
+            const unitPrice = price.amount;
+            const totalAmount = unitPrice.mul(quantity);
+
+            const updateData: Prisma.BookingUpdateInput = {};
+            
+            if (input.address) {
+                const addressLine = input.address.addressLine1 || input.address.addressLine2;
+                if (!addressLine) {
+                    throw new Error('At least one address line is required');
+                }
+                const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+                if (input.deliveryType === 'PICK_UP') {
+                    const serviceArea = await validateServiceArea(tx, lat, lng);
+                    if (!serviceArea) {
+                        const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
+                        throw new NotFoundError(
+                            `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                        );
+                    }
+                }
+                updateData.address = {
+                    update: {
+                        ...Object.fromEntries(
+                            Object.entries(input.address).filter(([_, v]) => v !== undefined)
+                        ),
+                        userId: booking.profile.userId,
+                    },
+                };
+            }
+            
+            if (input.deliveryType !== undefined) updateData.deliveryType = input.deliveryType;
+            if (input.scheduledDate !== undefined) {
+                const scheduledPickupDay = await BookingUtils.enforceMinPickup(input.scheduledDate ?? null, tx);
+                updateData.scheduledDate = scheduledPickupDay;
+            }
+            if (input.additionalNotes !== undefined) updateData.additionalNote = input.additionalNotes;
+            if (input.pickupTime !== undefined) updateData.pickupTime = input.pickupTime;
+            if (input.itemCount !== undefined) updateData.itemCount = input.itemCount;
+            
+            updateData.unitPrice = unitPrice;
+            updateData.currency = price.currency;
+            updateData.pricingType = price.pricingType;
+            updateData.totalAmount = totalAmount;
+
+            const updatedbooking = await tx.booking.update({
+                where: whereObj,
+                data: updateData
+            });
+            return updatedbooking;
+        } catch (_error: any) {
             throw new NotFoundError('Booking not found');
         }
-
-        const price = await ServicepriceService.getServicePrice({
-            serviceId: booking?.serviceId,
-        });
-
-        if (!price) {
-            throw new NotFoundError('Service price not found');
-        }
-
-        // 3. Compute quantity (use pricing type from the price snapshot)
-        const quantity = PricingService.computeQuantity({
-            pricingType: price.pricingType,
-            weight: input.weight,
-            itemCount: input.itemCount,
-        });
-
-        // 4. Pricing
-        const unitPrice = price.amount;
-        const totalAmount = unitPrice.mul(quantity);
-
-        const updateData: Prisma.BookingUpdateInput = {};
-        
-        if (input.address) {
-            const addressLine = input.address.addressLine1 || input.address.addressLine2;
-            if (!addressLine) {
-                throw new Error('At least one address line is required');
-            }
-            const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-            if (input.deliveryType === 'PICK_UP') {
-                const serviceArea = await validateServiceArea(prisma, lat, lng);
-                if (!serviceArea) {
-                    const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, prisma);
-                    throw new NotFoundError(
-                        `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
-                    );
-                }
-            }
-            updateData.address = {
-                update: {
-                    ...Object.fromEntries(
-                        Object.entries(input.address).filter(([_, v]) => v !== undefined)
-                    ),
-                    userId: booking.profile.userId,
-                },
-            };
-        }
-        
-        if (input.deliveryType !== undefined) updateData.deliveryType = input.deliveryType;
-        if (input.scheduledDate !== undefined) updateData.scheduledDate = input.scheduledDate;
-        if (input.additionalNotes !== undefined) updateData.additionalNote = input.additionalNotes;
-        if (input.pickupTime !== undefined) updateData.pickupTime = input.pickupTime;
-        if (input.itemCount !== undefined) updateData.itemCount = input.itemCount;
-        
-        updateData.unitPrice = unitPrice;
-        updateData.currency = price.currency;
-        updateData.pricingType = price.pricingType;
-        updateData.totalAmount = totalAmount;
-
-        const updatedbooking = await prisma.booking.update({
-            where,
-            data: updateData
-        });
-        return updatedbooking;
-    } catch (_error: any) {
-        throw new NotFoundError('Booking not found');
-    }
+    });
 };
 
 const normalizeWhere = (where: any): BookingWhereUniqueInput => {
@@ -463,6 +470,26 @@ const restoreBooking = async (where: BookingWhereUniqueInput | string, isAdmin: 
 
     return updated;
 };
+interface BookingSettingsInput {
+  minPickupDays: number;
+}
+
+const upsertBookingSettings = async (
+  input: BookingSettingsInput
+) => {
+  if (typeof input.minPickupDays !== 'number' || input.minPickupDays < 0) {
+    throw new Error('minPickupDays must be a positive number');
+  }
+
+  const settings = await prisma.bookingSetting.upsert({
+    where: { id: 1 },
+    update: { minPickupDays: input.minPickupDays },
+    create: { id: 1, minPickupDays: input.minPickupDays },
+  });
+
+  return settings;
+};
+
 
 
 // payment triggers status to confirmed
@@ -476,4 +503,5 @@ export default {
     updateBookingStatus,
     softDeleteBooking,
     restoreBooking,
+    upsertBookingSettings
 };

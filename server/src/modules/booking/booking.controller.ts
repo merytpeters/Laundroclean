@@ -119,6 +119,23 @@ const restoreBookingController = asyncHandler(async (req, res) => {
     });
 });
 
+const updateBookingSettings = asyncHandler(async (req, res) => {
+    try {
+        const { minPickupDays } = req.body;
+
+        const updatedSettings = await BookingService.upsertBookingSettings({ minPickupDays });
+
+        return res.status(200).json({
+            success: true,
+            data: updatedSettings,
+            message: 'Booking settings updated successfully'
+        });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ success: false, message: `Failed to update booking settings: ${err.message}` });
+    }
+});
+
 export default {
     createBookingController,
     updateBookingController,
@@ -126,5 +143,6 @@ export default {
     listBookingsController,
     updateBookingStatusController,
     cancelBookingController,
-    restoreBookingController
+    restoreBookingController,
+    updateBookingSettings
 };

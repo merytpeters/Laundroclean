@@ -8,7 +8,7 @@ describe('Booking Controller', () => {
     let client: any;
     let clientProfile: any;
     let service: any;
-    let servicePrice: any;
+    let _servicePrice: any;
     let next: jest.Mock;
 
     beforeAll(async () => {
@@ -46,7 +46,7 @@ describe('Booking Controller', () => {
 
         service = await prisma.service.create({ data: { name: 'Wash', description: 'Wash service' } });
 
-        servicePrice = await prisma.servicePrice.create({
+        _servicePrice = await prisma.servicePrice.create({
             data: {
                 serviceId: service.id,
                 amount: '100',

@@ -78,6 +78,24 @@
  *         isActive:
  *           type: boolean
  *           example: true
+ *
+ *     BookingSettingsRequest:
+ *       type: object
+ *       required:
+ *         - minPickupDays
+ *       properties:
+ *         minPickupDays:
+ *           type: integer
+ *           example: 2
+ *     BookingSettingsResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         minPickupDays:
+ *           type: integer
+ *           example: 2
 
  *     ServiceRequest:
  *       type: object
@@ -272,6 +290,8 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *
+ 
  *   patch:
  *     tags:
  *       - Admin
@@ -771,37 +791,31 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+
+ * /api/v1/admin/booking-settings:
  *   patch:
  *     tags:
  *       - Admin
- *     summary: Soft delete a single service for the company
+ *     summary: Upsert booking settings (admin only)
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: serviceId
- *         required: true
- *         schema:
- *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/BookingSettingsRequest'
  *     responses:
  *       '200':
- *         description: Service soft-deleted
+ *         description: Booking settings updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ServiceResponse'
+ *               $ref: '#/components/schemas/BookingSettingsResponse'
+ *       '400':
+ *         description: Validation error
  *       '401':
  *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       '404':
- *         description: Not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
 
  * /api/v1/admin/services/all-services/{serviceId}/restore:
  *   patch:
