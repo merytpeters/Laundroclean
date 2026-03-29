@@ -1,7 +1,7 @@
 import { UserType } from '@prisma/client';
 import AdminController from '../../src/modules/admin/admin.controller';
 import prisma from '../../src/config/prisma';
-import { jest } from '@jest/globals';
+import { jest, describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import type { Request, Response } from 'express';
 
 describe('Admin Controller', () => {
@@ -11,6 +11,14 @@ describe('Admin Controller', () => {
     let next: jest.Mock;
 
     beforeAll(async () => {
+        // ensure dependent tables cleaned first
+        await prisma.bookingNotifications.deleteMany();
+        await prisma.notification.deleteMany();
+        await prisma.booking.deleteMany();
+        await prisma.servicePrice.deleteMany();
+        await prisma.service.deleteMany();
+        await prisma.token.deleteMany();
+        await prisma.profile.deleteMany();
         await prisma.user.deleteMany();
 
         adminRole = await prisma.companyRoleTitle.upsert({

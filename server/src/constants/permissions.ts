@@ -25,6 +25,7 @@ export const PERMISSIONS = {
     VIEW: 'booking:view',
     CREATE: 'booking:create',
     UPDATE: 'booking:update',
+    UPDATESTATUS: 'bookingstatus:update',
     DELETE: 'booking:delete',
   }
 };

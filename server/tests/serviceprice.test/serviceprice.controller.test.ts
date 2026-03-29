@@ -8,8 +8,15 @@ describe('ServicePrice Controller', () => {
   let next: jest.Mock;
 
   beforeAll(async () => {
+    // clean dependent tables first
+    await prisma.bookingNotifications.deleteMany();
+    await prisma.notification.deleteMany();
+    await prisma.booking.deleteMany();
     await prisma.servicePrice.deleteMany();
     await prisma.service.deleteMany();
+    await prisma.token.deleteMany();
+    await prisma.profile.deleteMany();
+    await prisma.user.deleteMany();
 
     service = await prisma.service.create({
       data: { name: 'Test Service', description: 'Service for controller tests' },

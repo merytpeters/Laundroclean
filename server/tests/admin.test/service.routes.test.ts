@@ -9,10 +9,16 @@ describe('Admin Services Routes', () => {
     let adminRole: any;
 
     beforeAll(async () => {
-        // ensure clean slate for users, roles and services
+        // ensure clean slate for dependent data to avoid FK constraints
+        await prisma.bookingNotifications.deleteMany();
+        await prisma.notification.deleteMany();
+        await prisma.booking.deleteMany();
+        await prisma.servicePrice.deleteMany();
+        await prisma.service.deleteMany();
+        await prisma.token.deleteMany();
+        await prisma.profile.deleteMany();
         await prisma.user.deleteMany();
         await prisma.companyRoleTitle.deleteMany();
-        await prisma.service.deleteMany();
 
         adminRole = await prisma.companyRoleTitle.upsert({
             where: { title: 'ADMIN' },
@@ -49,7 +55,14 @@ describe('Admin Services Routes', () => {
     });
 
     afterAll(async () => {
+        // tear down in safe order
+        await prisma.bookingNotifications.deleteMany();
+        await prisma.notification.deleteMany();
+        await prisma.booking.deleteMany();
+        await prisma.servicePrice.deleteMany();
         await prisma.service.deleteMany();
+        await prisma.token.deleteMany();
+        await prisma.profile.deleteMany();
         await prisma.user.deleteMany();
         await prisma.companyRoleTitle.deleteMany();
         await prisma.$disconnect();

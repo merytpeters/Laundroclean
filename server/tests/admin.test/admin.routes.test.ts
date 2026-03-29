@@ -12,6 +12,13 @@ describe('Admin Routes', () => {
 
     beforeAll(async () => {
         // ensure clean slate for users and roles from previous runs
+        await prisma.bookingNotifications.deleteMany();
+        await prisma.notification.deleteMany();
+        await prisma.booking.deleteMany();
+        await prisma.servicePrice.deleteMany();
+        await prisma.service.deleteMany();
+        await prisma.token.deleteMany();
+        await prisma.profile.deleteMany();
         await prisma.user.deleteMany();
         await prisma.companyRoleTitle.deleteMany();
 

@@ -75,6 +75,16 @@ class ProcessingError extends Error {
     }
 }
 
+class UnprocessableError extends Error {
+    statusCode: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = 'Unprocessable Entity';
+        this.statusCode = 422;
+    }
+}
+
 
 const notFoundHandler = () => {
     throw new NotFoundError('route not found');
@@ -112,5 +122,6 @@ export {
     errorHandler,
     ConflictError,
     ForbiddenError,
-    ProcessingError
+    ProcessingError,
+    UnprocessableError
 };

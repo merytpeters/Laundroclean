@@ -55,9 +55,17 @@ enum Currency {
 enum BookingStatus {
   PENDING
   CONFIRMED
-  IN_PROGRESS  @map("IN PROGRESS")
+  IN_PROGRESS                             @map("IN PROGRESS")
   COMPLETED
   CANCELLED
+  DELIVERED
+
+  CUSTOMER_DROPPED_OFF_AT_POINT           @map("CUSTOMER DROPPED OFF AT POINT")
+  CUSTOMER_PICKED_UP_FROM_POINT           @map("CUSTOMER PICKED UP FROM POINT")
+
+  COMPANY_PICKED_UP_FROM_CUSTOMER         @map("COMPANY PICKED UP FROM CUSTOMER")
+  COMPANY_PICKED_UP_FROM_POINT            @map("COMPANY PICKED UP FROM POINT")
+  COMPANY_DROPPED_OFF_AT_POINT            @map("COMPANY DROPPED OFF AT POINT")
 }
 
 enum DeliveryType {
@@ -193,6 +201,31 @@ model ServicePrice {
   @@map("service_prices")
 }
 
+model ServiceArea {
+  id            String             @id  @default(uuid())
+  name          String             @unique
+  isActive      Boolean            @default(true)
+  latMin        Float?
+  latMax        Float?
+  lngMin        Float?
+  lngMax        Float?
+
+  @@map("service_area")
+}
+
+
+model DropOffPoint {
+  id            String              @id @default(uuid())
+  name          String              @unique
+  address       String
+  lat           Float?
+  lng           Float?
+  isActive      Boolean             @default(true)
+
+  @@map("dropoff_point")
+}
+
+
 
 model Booking {
   id                String           @id @default(uuid())
@@ -230,6 +263,15 @@ model Booking {
 
   @@map("bookings")
 }
+
+model BookingSetting {
+  id                     Int          @id @default(autoincrement())
+  minPickupDays          Int          @default(3)
+  updatedAt              DateTime     @updatedAt
+
+  @@map("booking_settings")
+}
+
 
 model BookingNotifications {
   bookingId      String @map("booking_id")

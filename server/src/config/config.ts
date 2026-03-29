@@ -29,6 +29,8 @@ const env = (variable: string, defaultValue?: string): any => {
         }
         return process.env.CLOUDINARY_URL;
       case 'ADMIN_ROLE_LEVEL': return 10;
+      case 'GEOCODER_USER_AGENT': return 'Laundrocleantestmap';
+      case 'APP_VERSION': return '1.0.0';
     }
   }
 
@@ -53,6 +55,8 @@ const config = {
   RESET_TOKEN_EXPIRES: env('RESET_TOKEN_EXPIRES'),
   CLOUDINARY_URL: env('CLOUDINARY_URL'),
   ADMIN_ROLE_LEVEL: Number(env('ADMIN_ROLE_LEVEL')),
+  GEOCODER_USER_AGENT: env('GEOCODER_USER_AGENT'),
+  APP_VERSION: Number(env('APP_VERSION')),
 };
 
 export default config;
