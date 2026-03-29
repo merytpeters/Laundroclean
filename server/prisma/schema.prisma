@@ -203,7 +203,7 @@ model ServicePrice {
 
 model ServiceArea {
   id            String             @id  @default(uuid())
-  name          String
+  name          String             @unique
   isActive      Boolean            @default(true)
   latMin        Float?
   latMax        Float?
@@ -215,12 +215,12 @@ model ServiceArea {
 
 
 model DropOffPoint {
-  id            String  @id @default(cuid())
-  name          String
+  id            String              @id @default(uuid())
+  name          String              @unique
   address       String
   lat           Float?
   lng           Float?
-  isActive      Boolean @default(true)
+  isActive      Boolean             @default(true)
 
   @@map("dropoff_point")
 }
