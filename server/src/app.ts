@@ -12,6 +12,7 @@ import { LaundrocleanservicesRoutes } from './modules/laundrocleanservices/index
 import { StaffServiceRoutes, StaffBookingRoutes } from './modules/staff/index.js';
 import { ClientServiceRoutes, ClientBookingRoutes } from './modules/clientuser/index.js';
 import { ServicepriceRoutes } from './modules/serviceprice/index.js';
+import { DropOffPointRoutes } from './modules/locations/index.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
@@ -54,6 +55,7 @@ app.use('/api/v1/services', LaundrocleanservicesRoutes);
 app.use('/api/v1/service-price', ServicepriceRoutes);
 app.use('/api/v1/staff', StaffServiceRoutes, StaffBookingRoutes);
 app.use('/api/v1/client', ClientServiceRoutes, ClientBookingRoutes);
+app.use('/api/v1/dropoffpoint', DropOffPointRoutes);
 
 app.use(errorHandler);
 

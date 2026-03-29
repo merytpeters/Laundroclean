@@ -27,6 +27,13 @@ export const PERMISSIONS = {
     UPDATE: 'booking:update',
     UPDATESTATUS: 'bookingstatus:update',
     DELETE: 'booking:delete',
+  },
+  DROPOFF: {
+    VIEW: 'dropoff:view',
+    CREATE: 'dropoff:create',
+    UPDATE: 'dropoff:update',
+    DELETE: 'dropoff:delete',
+    ACTIVATE: 'dropoff:makeactive',
   }
 };
 

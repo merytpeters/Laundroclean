@@ -1,8 +1,8 @@
 import prisma from '../../../config/prisma.js';
 import type { Prisma, DropOffPoint } from '@prisma/client';
 import type { DropOffPointSchema, UpdateDropoffPointSchema } from '../../../validation/location/location.validation.js';
-import { DropOffPointUtils } from '../index.js';
-import { NotFoundError, ProcessingError, ValidationError, ConflictError, UnauthorizedError } from '../../../middlewares/errorHandler.js';
+import DropOffPointUtils from '../dropoffPoint/dropoffpoint.utils.js';
+import { NotFoundError, ProcessingError, ValidationError, ConflictError } from '../../../middlewares/errorHandler.js';
 import { getPagination } from '../../common/pagination/paginate.js';
 
 type DropOffPointInput = DropOffPointSchema;
@@ -84,16 +84,20 @@ const getDropoffPoint = async (
     isAdmin: boolean = false
 ): Promise<DropOffPoint> => {
 
-    if (params.isActive === false && !isAdmin) {
-        throw new UnauthorizedError('Only admins can view inactive dropoff points');
+    if (!isAdmin) {
+        params.isActive = true;
     }
 
-    const findWhereInput: any = typeof where === 'string' ? { id: where } : where;
+    const findWhereInput: any = typeof where === 'string' ? { id: where } : { ...where };
     if (params.isActive !== undefined) findWhereInput.isActive = params.isActive;
 
-    const dropoffpoint = await prisma.dropOffPoint.findUnique({
-        where: findWhereInput
-    });
+    let dropoffpoint: DropOffPoint | null = null;
+    const hasOnlyId = Object.keys(findWhereInput).length === 1 && Object.prototype.hasOwnProperty.call(findWhereInput, 'id');
+    if (hasOnlyId) {
+        dropoffpoint = await prisma.dropOffPoint.findUnique({ where: { id: findWhereInput.id } });
+    } else {
+        dropoffpoint = await prisma.dropOffPoint.findFirst({ where: findWhereInput });
+    }
 
     if (!dropoffpoint) throw new NotFoundError('Dropoff point not found.');
 
@@ -114,8 +118,8 @@ const listDropoffPoints = async (
     
     const { page, limit, skip } = getPagination(paginationInput);
 
-    if (params.isActive === false && !isAdmin) {
-        throw new UnauthorizedError('Only admins can view inactive dropoff points');
+    if (!isAdmin) {
+        params.isActive = true;
     }
 
     const whereInput: any = {};
