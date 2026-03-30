@@ -10,7 +10,7 @@ const createDropoffPointController = asyncHandler(async (req, res) => {
 	return res.status(201).json({
 		success: true,
 		data: created,
-		message: 'Dropoff point created successfully'
+		message: `${created.name} dropoff point created successfully`
 	});
 });
 
