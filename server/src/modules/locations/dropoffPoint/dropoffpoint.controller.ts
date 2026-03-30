@@ -20,7 +20,7 @@ const updateDropoffPointController = asyncHandler(async (req, res) => {
 
 	const updated = await DropOffPointService.updateDropoffPoint(input as any, { id: dropoffId });
 
-	return res.status(200).json({ success: true, data: updated, message: 'Dropoff point updated successfully' });
+	return res.status(200).json({ success: true, data: updated, message: `${updated.name} dropoff point updated successfully` });
 });
 
 const getDropoffPointController = asyncHandler(async (req, res) => {
@@ -47,7 +47,7 @@ const getDropoffPointController = asyncHandler(async (req, res) => {
     return res.status(200).json({
         success: true,
         data: drop,
-        message: 'Dropoff point retrieved successfully',
+        message: `${drop.name} dropoff point retrieved successfully`,
     });
 });
 
@@ -76,7 +76,7 @@ const makeInactiveController = asyncHandler(async (req, res) => {
 
 	const updated = await DropOffPointService.makeInactive({ id: dropoffId });
 
-	return res.status(200).json({ success: true, data: updated, message: 'Dropoff point made inactive' });
+	return res.status(200).json({ success: true, data: updated, message: `${updated.name} dropoff point made inactive` });
 });
 
 const makeActiveController = asyncHandler(async (req, res) => {
@@ -84,7 +84,7 @@ const makeActiveController = asyncHandler(async (req, res) => {
 
 	const updated = await DropOffPointService.makeActive({ id: dropoffId });
 
-	return res.status(200).json({ success: true, data: updated, message: 'Dropoff point made active' });
+	return res.status(200).json({ success: true, data: updated, message: `${updated.name} dropoff point made active` });
 });
 
 export default {
