@@ -29,12 +29,17 @@ export const PERMISSIONS = {
     DELETE: 'booking:delete',
   },
   DROPOFF: {
-    VIEW: 'dropoff:view',
     CREATE: 'dropoff:create',
     UPDATE: 'dropoff:update',
     DELETE: 'dropoff:delete',
     ACTIVATE: 'dropoff:makeactive',
-  }
+  },
+  SERVICEAREA: {
+    CREATE: 'servicearea:create',
+    UPDATE: 'servicearea:update',
+    DELETE: 'servicearea:delete',
+    ACTIVATE: 'servicearea:makeactive',
+  },
 };
 
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS)
