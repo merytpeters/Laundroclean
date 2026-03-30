@@ -96,14 +96,14 @@ describe('DropoffPoint Routes', () => {
 
         // admin deactivate
         const inactiveRes = await request(app)
-            .post(`/api/v1/dropoffpoint/${created.id}/inactive`)
+            .patch(`/api/v1/dropoffpoint/${created.id}/inactive`)
             .set('Authorization', `Bearer ${adminToken}`);
 
         expect(inactiveRes.status).toBe(200);
 
         // admin reactivate
         const activeRes = await request(app)
-            .post(`/api/v1/dropoffpoint/${created.id}/active`)
+            .patch(`/api/v1/dropoffpoint/${created.id}/active`)
             .set('Authorization', `Bearer ${adminToken}`);
 
         expect(activeRes.status).toBe(200);

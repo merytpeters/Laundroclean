@@ -164,7 +164,7 @@
  *         description: Not found
  *
  * /api/v1/dropoffpoint/{dropoffId}/inactive:
- *   post:
+ *   patch:
  *     tags:
  *       - Locations
  *     summary: Make a dropoff point inactive (company admin)
@@ -185,7 +185,7 @@
  *         description: Not found
  *
  * /api/v1/dropoffpoint/{dropoffId}/active:
- *   post:
+ *   patch:
  *     tags:
  *       - Locations
  *     summary: Reactivate a dropoff point (company user)

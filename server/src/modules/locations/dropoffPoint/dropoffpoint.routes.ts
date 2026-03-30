@@ -35,14 +35,14 @@ router.get(
 	DropOffPointController.getDropoffPointController
 );
 
-router.post(
+router.patch(
 	'/:dropoffId/inactive',
     UserAuth.requireCompanyUser(),
 	UserAuth.requirePermission(PERMISSIONS.DROPOFF.DELETE),
 	DropOffPointController.makeInactiveController
 );
 
-router.post(
+router.patch(
 	'/:dropoffId/active',
     UserAuth.requireCompanyUser(),
 	UserAuth.requirePermission(PERMISSIONS.DROPOFF.ACTIVATE),
