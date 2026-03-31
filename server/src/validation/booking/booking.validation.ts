@@ -13,6 +13,8 @@ const createBookingSchema = z.object({
     weight: z.float64().optional(),
     itemCount: z.number().optional(),
     additionalNotes: z.string().optional(),
+    assignedToId: z.uuid().nullable().optional(),
+    timeSlotId: z.uuid().nullable().optional(),
 });
 
 export type CreateBookingSchema = z.infer<typeof createBookingSchema>
