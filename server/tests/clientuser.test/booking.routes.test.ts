@@ -57,6 +57,8 @@ describe('Client Booking Routes', () => {
       deliveryType: 'PICK_UP',
       serviceId: service.id,
       weight: 3,
+      scheduledDate: '2026-04-14T10:00:00Z',
+      pickupTime: '2026-04-23T10:00:00Z'
     };
 
     const res = await request(app).post('/api/v1/client/booking').set('Authorization', `Bearer ${clientToken}`).send(payload);

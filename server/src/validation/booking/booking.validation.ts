@@ -9,7 +9,7 @@ const createBookingSchema = z.object({
     deliveryType: z.enum(DeliveryType),
     serviceId: z.uuid(),
     scheduledDate: z.coerce.date().optional(),
-    pickupTime: z.string().optional(),
+    pickupTime: z.coerce.date().optional(),
     weight: z.float64().optional(),
     itemCount: z.number().optional(),
     additionalNotes: z.string().optional(),
