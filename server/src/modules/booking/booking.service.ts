@@ -319,7 +319,10 @@ const getBooking = async (
 
     const booking = await prisma.booking.findUnique({
         where: whereObj,
-        include: { profile: true },
+        include: { 
+            profile: true,
+            assignedTo: true,
+        },
     });
 
     if (!booking) throw new NotFoundError('Booking not found');
@@ -371,7 +374,7 @@ const listBookings = async (
 
     const [total, data] = await Promise.all([
         prisma.booking.count({ where }),
-        prisma.booking.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+        prisma.booking.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' }, include: { assignedTo: true} }),
     ]);
 
     const totalPages = Math.ceil(total / limit) || 1;
