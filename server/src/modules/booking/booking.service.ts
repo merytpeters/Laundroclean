@@ -481,7 +481,7 @@ const upsertBookingSettings = async (
     throw new Error('minPickupDays must be a positive number');
   }
 
-  const settings = await prisma.bookingSetting.upsert({
+  const settings = await prisma.bookingSettings.upsert({
     where: { id: 1 },
     update: { minPickupDays: input.minPickupDays },
     create: { id: 1, minPickupDays: input.minPickupDays },

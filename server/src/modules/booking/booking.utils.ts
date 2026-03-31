@@ -114,7 +114,7 @@ const enforceMinPickup = async (
   pickupTime: Date | null,
   tx: Prisma.TransactionClient
 ): Promise<Date> => {
-  const setting = await tx.bookingSetting.findUnique({ where: { id: 1 } });
+  const setting = await tx.bookingSettings.findUnique({ where: { id: 1 } });
   const minDays = setting?.minPickupDays ?? 3;
 
   const now = new Date();
