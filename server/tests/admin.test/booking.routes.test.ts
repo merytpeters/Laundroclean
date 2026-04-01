@@ -117,16 +117,16 @@ describe('Admin Booking Routes', () => {
 
   it('GET /api/v1/admin/bookings should list bookings', async () => {
     const res = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
-    const bookings = res.body.data
+    const bookings = res.body.data;
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
     expect(Array.isArray(res.body.data)).toBe(true);
     bookings.forEach((b: any) => {
-      expect(b).toHaveProperty("assignedTo");
+      expect(b).toHaveProperty('assignedTo');
       if (b.assignedTo !== null) {
         expect(b.assignedTo.id).toBeDefined();
       }
-    })
+    });
   });
 
   it('GET /api/v1/admin/bookings/:bookingId should return booking details', async () => {

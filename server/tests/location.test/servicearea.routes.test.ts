@@ -6,7 +6,7 @@ import app from '../../src/app';
 import prisma from '../../src/config/prisma';
 import DropOffPointUtils from '../../src/modules/locations/dropoffPoint/dropoffpoint.utils';
 
-describe('DropoffPoint Routes', () => {
+describe('ServiceArea Routes', () => {
     let adminToken: string;
     let clientToken: string;
     let adminRole: any;
@@ -22,7 +22,7 @@ describe('DropoffPoint Routes', () => {
         await prisma.profile.deleteMany();
         await prisma.user.deleteMany();
         await prisma.companyRoleTitle.deleteMany();
-        await prisma.dropOffPoint.deleteMany();
+        await prisma.serviceArea.deleteMany();
 
         adminRole = await prisma.companyRoleTitle.upsert({
             where: { title: 'ADMIN' },
@@ -32,7 +32,7 @@ describe('DropoffPoint Routes', () => {
 
         const admin = await prisma.user.create({
             data: {
-                email: 'admin@dropoffroutes.test',
+                email: 'admin@servicearearoutes.test',
                 password: await AuthUtils.hashPassword('AdminPass123!'),
                 type: UserType.COMPANYUSER,
                 role: { connect: { id: adminRole.id } },
@@ -42,7 +42,7 @@ describe('DropoffPoint Routes', () => {
 
         const client = await prisma.user.create({
             data: {
-                email: 'client@dropoffroutes.test',
+                email: 'client@servicearearoutes.test',
                 password: await AuthUtils.hashPassword('ClientPass123!'),
                 type: UserType.CLIENT,
                 isActive: true,
@@ -62,34 +62,26 @@ describe('DropoffPoint Routes', () => {
         await prisma.$disconnect();
     });
 
-    it('admin can create and update dropoff; client can list and get', async () => {
-        // create
+    it('admin can create and update service area; client can list and get; bounds applied', async () => {
+        // mock bounds for initial create
+        jest.spyOn(DropOffPointUtils, 'getAreaBound').mockResolvedValueOnce({ minLat: 10, maxLat: 20, minLon: 30, maxLon: 40 } as any);
+
         const createRes = await request(app)
-            .post('/api/v1/dropoffpoint')
+            .post('/api/v1/servicearea')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Route Point', address: '10 Route St' });
+            .send({ name: 'Route Area' });
 
         expect(createRes.status).toBe(201);
         const created = createRes.body.data;
         expect(created).toHaveProperty('id');
-
-        // client should not be allowed to create
-        const clientCreate = await request(app)
-            .post('/api/v1/dropoffpoint')
-            .set('Authorization', `Bearer ${clientToken}`)
-            .send({ name: 'Client Point', address: '1 Client St' });
-        expect([401, 403]).toContain(clientCreate.status);
-
-        // duplicate create should return 409
-        const dupRes = await request(app)
-            .post('/api/v1/dropoffpoint')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Route Point', address: '10 Route St' });
-        expect(dupRes.status).toBe(409);
+        expect(created.latMin).toBe(10);
+        expect(created.latMax).toBe(20);
+        expect(created.lngMin).toBe(30);
+        expect(created.lngMax).toBe(40);
 
         // client list
         const listRes = await request(app)
-            .get('/api/v1/dropoffpoint')
+            .get('/api/v1/servicearea')
             .set('Authorization', `Bearer ${clientToken}`);
 
         expect(listRes.status).toBe(200);
@@ -97,73 +89,55 @@ describe('DropoffPoint Routes', () => {
 
         // client get
         const getRes = await request(app)
-            .get(`/api/v1/dropoffpoint/${created.id}`)
+            .get(`/api/v1/servicearea/${created.id}`)
             .set('Authorization', `Bearer ${clientToken}`);
 
         expect(getRes.status).toBe(200);
 
+        // mock bounds for update
+        jest.spyOn(DropOffPointUtils, 'getAreaBound').mockResolvedValueOnce({ minLat: 50, maxLat: 60, minLon: 70, maxLon: 80 } as any);
+
         // admin update
         const updateRes = await request(app)
-            .patch(`/api/v1/dropoffpoint/${created.id}`)
+            .patch(`/api/v1/servicearea/${created.id}`)
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Route Point Updated' });
+            .send({ name: 'Route Area Updated' });
 
         expect(updateRes.status).toBe(200);
-
-        // update address -> attempt to mock geocoder returning null to cover edge case
-        jest.spyOn(DropOffPointUtils, 'getLatLonFromAddress').mockResolvedValueOnce(null as any);
-        const updateAddrRes = await request(app)
-            .patch(`/api/v1/dropoffpoint/${created.id}`)
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ address: 'Unknown Address' });
-        expect(updateAddrRes.status).toBe(200);
-        const updatedAddr = updateAddrRes.body.data;
-        // geocoder may or may not be mocked depending on module instance; accept either null or number
-        expect(updatedAddr.lat === null || typeof updatedAddr.lat === 'number').toBeTruthy();
-        expect(updatedAddr.lng === null || typeof updatedAddr.lng === 'number').toBeTruthy();
-        jest.restoreAllMocks();
+        const updated = updateRes.body.data;
+        expect(updated.latMin).toBe(50);
+        expect(updated.latMax).toBe(60);
+        expect(updated.lngMin).toBe(70);
+        expect(updated.lngMax).toBe(80);
 
         // admin deactivate
         const inactiveRes = await request(app)
-            .patch(`/api/v1/dropoffpoint/${created.id}/inactive`)
+            .patch(`/api/v1/servicearea/${created.id}/inactive`)
             .set('Authorization', `Bearer ${adminToken}`);
 
         expect(inactiveRes.status).toBe(200);
 
-        // client should not be able to fetch inactive dropoff (should 404)
-        const clientGetInactive = await request(app)
-            .get(`/api/v1/dropoffpoint/${created.id}`)
-            .set('Authorization', `Bearer ${clientToken}`);
-        expect(clientGetInactive.status).toBe(404);
-
-        // ensure deactivated item is not present in client list
-        const listAfterInactive = await request(app)
-            .get('/api/v1/dropoffpoint')
-            .set('Authorization', `Bearer ${clientToken}`);
-        expect(listAfterInactive.status).toBe(200);
-        const ids = (listAfterInactive.body.data || []).map((d: any) => d.id);
-        expect(ids).not.toContain(created.id);
-
         // admin reactivate
         const activeRes = await request(app)
-            .patch(`/api/v1/dropoffpoint/${created.id}/active`)
+            .patch(`/api/v1/servicearea/${created.id}/active`)
             .set('Authorization', `Bearer ${adminToken}`);
 
         expect(activeRes.status).toBe(200);
 
-        // after reactivate, item should be listed for client
-        const listAfterActive = await request(app)
-            .get('/api/v1/dropoffpoint')
-            .set('Authorization', `Bearer ${clientToken}`);
-        expect(listAfterActive.status).toBe(200);
-        const ids2 = (listAfterActive.body.data || []).map((d: any) => d.id);
-        expect(ids2).toContain(created.id);
+        // create area with no bounds (edge case)
+        jest.spyOn(DropOffPointUtils, 'getAreaBound').mockResolvedValueOnce(null as any);
 
-        // invalid payload should return 400
-        const badCreate = await request(app)
-            .post('/api/v1/dropoffpoint')
+        const createNoBounds = await request(app)
+            .post('/api/v1/servicearea')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({});
-        expect(badCreate.status).toBe(400);
+            .send({ name: 'NoBounds Area' });
+
+        expect(createNoBounds.status).toBe(201);
+        const nb = createNoBounds.body.data;
+        expect(nb).toHaveProperty('id');
+        expect(nb.latMin).toBeNull();
+        expect(nb.latMax).toBeNull();
+        expect(nb.lngMin).toBeNull();
+        expect(nb.lngMax).toBeNull();
     });
 });
