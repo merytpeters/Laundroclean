@@ -40,6 +40,18 @@ export const PERMISSIONS = {
     DELETE: 'servicearea:delete',
     ACTIVATE: 'servicearea:makeactive',
   },
+  CALENDAR: {
+    VIEW: 'calendar:view',
+    CREATE: 'calendar:create',
+    UPDATE: 'calendar:update',
+    DELETE: 'calendar:delete',
+  },
+  TIMESLOT: {
+    VIEW: 'timeslot:view',
+    CREATE: 'timeslot:create',
+    UPDATE: 'timeslot:update',
+    DELETE: 'timeslot:delete',
+  },
 };
 
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS)

@@ -5,11 +5,11 @@ import nunjucks from 'nunjucks';
 import config from './config/config.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { AuthRoutes } from './modules/auth/index.js';
-import { AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes } from './modules/admin/index.js';
+import { AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes, AdminCalendarRoutes } from './modules/admin/index.js';
 import { EmailRoutes } from './modules/emailService/index.js';
 import { ProfileRoutes } from './modules/common/index.js';
 import { LaundrocleanservicesRoutes } from './modules/laundrocleanservices/index.js';
-import { StaffServiceRoutes, StaffBookingRoutes } from './modules/staff/index.js';
+import { StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes } from './modules/staff/index.js';
 import { ClientServiceRoutes, ClientBookingRoutes } from './modules/clientuser/index.js';
 import { ServicepriceRoutes } from './modules/serviceprice/index.js';
 import { DropOffPointRoutes } from './modules/locations/index.js';
@@ -50,11 +50,11 @@ app.set('view engine', 'html');
 
 app.use('/api/v1/auth', AuthRoutes);
 // important that AdminServiceRoutes comes before StaffServiceRoutes if not express does not hit all routes
-app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes, StaffServiceRoutes);
+app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes, StaffServiceRoutes, AdminCalendarRoutes);
 app.use('/api/v1/profile', ProfileRoutes);
 app.use('/api/v1/services', LaundrocleanservicesRoutes);
 app.use('/api/v1/service-price', ServicepriceRoutes);
-app.use('/api/v1/staff', StaffServiceRoutes, StaffBookingRoutes);
+app.use('/api/v1/staff', StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes);
 app.use('/api/v1/client', ClientServiceRoutes, ClientBookingRoutes);
 app.use('/api/v1/dropoffpoint', DropOffPointRoutes);
 app.use('/api/v1/servicearea', ServiceAreaRoutes);
