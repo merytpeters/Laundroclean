@@ -17,6 +17,8 @@ describe('Admin Users Routes', () => {
     await prisma.service.deleteMany();
     await prisma.token.deleteMany();
     await prisma.profile.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
 

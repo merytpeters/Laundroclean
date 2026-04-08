@@ -16,7 +16,12 @@ describe('Roles Routes', () => {
     await prisma.service.deleteMany();
     await prisma.token.deleteMany();
     await prisma.profile.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
+    await prisma.companyRoleTitle.deleteMany();
 
     const adminRole = await prisma.companyRoleTitle.upsert({
       where: { title: 'ADMIN' },
@@ -55,13 +60,14 @@ describe('Roles Routes', () => {
   });
 
   it('should allow admin to create a company role', async () => {
+    const title = `Manager_${Date.now()}`;
     const response = await request(app)
       .post('/api/v1/admin/company-roles')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ title: 'Manager', level: 2, permissions: ['user:view'] });
+      .send({ title, level: 2, permissions: ['user:view'] });
 
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('data.role.title', 'MANAGER');
+    expect(response.body).toHaveProperty('data.role.title', title.toUpperCase());
   });
 
   it('should list roles and return a specific role by id, update and delete it', async () => {

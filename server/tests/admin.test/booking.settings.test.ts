@@ -10,6 +10,8 @@ describe('Admin Booking Settings', () => {
   beforeAll(async () => {
     await prisma.bookingSettings.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
 
     const adminRole = await prisma.companyRoleTitle.create({
@@ -32,6 +34,8 @@ describe('Admin Booking Settings', () => {
 
   afterAll(async () => {
     await prisma.bookingSettings.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
     await prisma.$disconnect();

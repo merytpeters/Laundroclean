@@ -61,6 +61,8 @@ describe('Profile Routes (integration)', () => {
   });
 
   afterAll(async () => {
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany({ where: { email: { contains: 'profile-' } } });
     await prisma.$disconnect();
   });

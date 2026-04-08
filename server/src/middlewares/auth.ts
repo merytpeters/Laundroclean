@@ -137,8 +137,11 @@ class UserAuth {
       const q: any = req.query || {};
       const currentUserId = req.user?.id as string | undefined;
       if (!q.userId) {
-        q.userId = currentUserId;
-        req.query = q;
+        try {
+          (req.query as any).userId = currentUserId;
+        } catch (e) {
+          // fallback: do not reassign req.query (some environments provide a getter-only property)
+        }
         return next();
       }
       if (q.userId === currentUserId) return next();
