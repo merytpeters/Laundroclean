@@ -5,6 +5,8 @@ import type { JWTPayload } from '../modules/token/token.types.js';
 import { UserType } from '@prisma/client';
 import prisma from '../config/prisma.js';
 import tokenService from '../modules/token/token.service.js';
+import CalendarService from '../modules/admin/companyuser.calendar/calendar.service.js';
+import { PERMISSIONS } from '../constants/permissions.js';
 
 class UserAuth {
   authenticate() {
@@ -124,6 +126,61 @@ class UserAuth {
           });
         });
       });
+    };
+  }
+
+  // Allow access when the requesting user is the owner of the staff calendar(s)
+  // For list endpoints: if `userId` query param is missing, default to the current user.
+  // If provided and differs from the requester, require the calendar:view permission.
+  allowOwnOrPermissionForCalendarList() {
+    return (req: Request, res: Response, next: NextFunction) => {
+      const q: any = req.query || {};
+      const currentUserId = req.user?.id as string | undefined;
+      if (!q.userId) {
+        try {
+          (req.query as any).userId = currentUserId;
+        } catch (e) {
+          // fallback: do not reassign req.query (some environments provide a getter-only property)
+        }
+        return next();
+      }
+      if (q.userId === currentUserId) return next();
+      return this.requirePermission(PERMISSIONS.CALENDAR.VIEW)(req, res, next);
+    };
+  }
+
+  // Allow access to a single calendar if the requester is the owner; otherwise require permission.
+  allowOwnOrPermissionForCalendarById() {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { calendarId } = req.params as any;
+        const currentUserId = req.user?.id as string | undefined;
+        const calendar = await CalendarService.getStaffCalendar({ id: calendarId }, false);
+        if (!calendar) return res.status(404).json({ success: false, message: 'Staff calendar not found' });
+        if (calendar.userId === currentUserId) return next();
+        return this.requirePermission(PERMISSIONS.CALENDAR.VIEW)(req, res, next);
+      } catch (err) {
+        return next(err);
+      }
+    };
+  }
+
+  // Allow access to a single timeslot if the requester owns the parent calendar; otherwise require permission.
+  allowOwnOrPermissionForTimeslotById() {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { timeslotId } = req.params as any;
+        const currentUserId = req.user?.id as string | undefined;
+        const slot = await CalendarService.getTimeSlot(timeslotId, false);
+        if (!slot) return res.status(404).json({ success: false, message: 'Time slot not found' });
+
+        const parentCalendar = await CalendarService.getStaffCalendar({ id: slot.staffCalendarId }, false);
+        if (parentCalendar && parentCalendar.userId === currentUserId) return next();
+
+        return this.requirePermission(PERMISSIONS.TIMESLOT.VIEW)(req, res, next);
+      } catch (err) {
+        return next(err);
+      }
     };
   }
 

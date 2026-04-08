@@ -187,7 +187,10 @@ const createBooking = async (
 
                         status: 'PENDING',
                         customBookingId,
+                        assignedToId: input.assignedToId ?? null,
+                        timeSlotId: input.timeSlotId ?? null,
                     },
+                    include: { assignedTo: true }
                 });
             } catch (error: any) {
                 if (error.code !== 'P2002') throw error;
@@ -206,7 +209,8 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             const booking = await tx.booking.findUnique({
                 where: whereObj,
                 include: {
-                    profile: true
+                    profile: true,
+                    assignedTo: true,
                 }
             });
 
@@ -268,6 +272,20 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             if (input.additionalNotes !== undefined) updateData.additionalNote = input.additionalNotes;
             if (input.pickupTime !== undefined) updateData.pickupTime = input.pickupTime;
             if (input.itemCount !== undefined) updateData.itemCount = input.itemCount;
+            if (input.assignedToId !== undefined) {
+                if (input.assignedToId === null) {
+                    updateData.assignedTo = { disconnect: true };
+                } else {
+                    updateData.assignedTo = { connect: { id: input.assignedToId } };
+                }
+            }
+            if (input.timeSlotId !== undefined) {
+                if (input.timeSlotId === null) {
+                    updateData.timeSlot = { disconnect: true };
+                } else {
+                    updateData.timeSlot = {connect: { id: input.timeSlotId} };
+                }
+            }
             
             updateData.unitPrice = unitPrice;
             updateData.currency = price.currency;
@@ -276,7 +294,8 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
 
             const updatedbooking = await tx.booking.update({
                 where: whereObj,
-                data: updateData
+                data: updateData,
+                include: { assignedTo: true }
             });
             return updatedbooking;
         } catch (_error: any) {
@@ -300,7 +319,10 @@ const getBooking = async (
 
     const booking = await prisma.booking.findUnique({
         where: whereObj,
-        include: { profile: true },
+        include: { 
+            profile: true,
+            assignedTo: true,
+        },
     });
 
     if (!booking) throw new NotFoundError('Booking not found');
@@ -352,7 +374,7 @@ const listBookings = async (
 
     const [total, data] = await Promise.all([
         prisma.booking.count({ where }),
-        prisma.booking.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+        prisma.booking.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' }, include: { assignedTo: true} }),
     ]);
 
     const totalPages = Math.ceil(total / limit) || 1;
@@ -481,7 +503,7 @@ const upsertBookingSettings = async (
     throw new Error('minPickupDays must be a positive number');
   }
 
-  const settings = await prisma.bookingSetting.upsert({
+  const settings = await prisma.bookingSettings.upsert({
     where: { id: 1 },
     update: { minPickupDays: input.minPickupDays },
     create: { id: 1, minPickupDays: input.minPickupDays },

@@ -8,8 +8,10 @@ describe('Admin Booking Settings', () => {
   let adminToken: string;
 
   beforeAll(async () => {
-    await prisma.bookingSetting.deleteMany();
+    await prisma.bookingSettings.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
 
     const adminRole = await prisma.companyRoleTitle.create({
@@ -31,7 +33,9 @@ describe('Admin Booking Settings', () => {
   });
 
   afterAll(async () => {
-    await prisma.bookingSetting.deleteMany();
+    await prisma.bookingSettings.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
     await prisma.$disconnect();
@@ -47,7 +51,7 @@ describe('Admin Booking Settings', () => {
     expect(res.body.data).toHaveProperty('minPickupDays', 7);
 
     // verify persisted
-    const record = await prisma.bookingSetting.findUnique({ where: { id: 1 } });
+    const record = await prisma.bookingSettings.findUnique({ where: { id: 1 } });
     expect(record).toBeTruthy();
     expect(record?.minPickupDays).toBe(7);
   });

@@ -1267,5 +1267,278 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
+/**
+ * @swagger
+ *
+ * components:
+ *   schemas:
+ *     StaffCalendarRequest:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - date
+ *       properties:
+ *         userId:
+ *           type: string
+ *           format: uuid
+ *         date:
+ *           type: string
+ *           format: date
+ *         notes:
+ *           type: string
+ *         timeSlots:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/TimeSlotRequest'
+ *     StaffCalendarResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         userId:
+ *           type: string
+ *         date:
+ *           type: string
+ *           format: date
+ *         notes:
+ *           type: string
+ *         timeSlots:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/TimeSlotResponse'
+ *     TimeSlotRequest:
+ *       type: object
+ *       required:
+ *         - staffCalendarId
+ *         - startTime
+ *         - endTime
+ *       properties:
+ *         staffCalendarId:
+ *           type: string
+ *           format: uuid
+ *         startTime:
+ *           type: string
+ *           format: date-time
+ *         endTime:
+ *           type: string
+ *           format: date-time
+ *         maxBookings:
+ *           type: integer
+ *         notes:
+ *           type: string
+ *     TimeSlotResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         staffCalendarId:
+ *           type: string
+ *         startTime:
+ *           type: string
+ *           format: date-time
+ *         endTime:
+ *           type: string
+ *           format: date-time
+ *         maxBookings:
+ *           type: integer
+ *         notes:
+ *           type: string
+ *
+ * /api/v1/admin/staff-calendars:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: Create a staff calendar (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StaffCalendarRequest'
+ *     responses:
+ *       '201':
+ *         description: Staff calendar created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StaffCalendarResponse'
+ *       '400':
+ *         description: Validation error
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: List staff calendars
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       '200':
+ *         description: List of staff calendars
+ *
+ * /api/v1/admin/staff-calendars/{calendarId}:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Get a staff calendar by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: calendarId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Staff calendar
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StaffCalendarResponse'
+ *       '404':
+ *         description: Not found
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Update a staff calendar
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: calendarId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StaffCalendarRequest'
+ *     responses:
+ *       '200':
+ *         description: Updated staff calendar
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Delete a staff calendar (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: calendarId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '204':
+ *         description: Deleted
+ *
+ * /api/v1/admin/timeslots:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: Create a timeslot (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TimeSlotRequest'
+ *     responses:
+ *       '201':
+ *         description: Time slot created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TimeSlotResponse'
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: List timeslots
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: staffCalendarId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: List of timeslots
+ *
+ * /api/v1/admin/timeslots/{timeslotId}:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Get a timeslot by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: timeslotId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Time slot
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TimeSlotResponse'
+ *       '404':
+ *         description: Not found
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Update a timeslot
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: timeslotId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TimeSlotRequest'
+ *     responses:
+ *       '200':
+ *         description: Updated timeslot
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Delete a timeslot (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: timeslotId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '204':
+ *         description: Deleted
+ */
+
 export {};
 

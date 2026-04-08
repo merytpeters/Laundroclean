@@ -9,6 +9,10 @@ export default async function globalSetup() {
     await prisma.notification.deleteMany();
     await prisma.booking.deleteMany();
 
+    // delete timeslots and staff calendars before users to avoid FK constraint
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
+
     // service prices depend on service; delete prices before services
     await prisma.servicePrice.deleteMany();
     await prisma.service.deleteMany();

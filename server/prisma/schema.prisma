@@ -94,22 +94,24 @@ model CompanyRoleTitle {
 }
 
 model User {
-  id            String              @id @default(uuid())
-  firstName     String?             @map("first_name")
-  lastName      String?             @map("last_name")
-  email         String              @unique
-  password      String
-  type          UserType
-  roleId        Int?
-  role          CompanyRoleTitle?   @relation(fields: [roleId], references: [id])
-  createdAt     DateTime            @default(now()) @map("created_at")
-  updatedAt     DateTime            @updatedAt @map("updated_at")
-  deletedAt     DateTime?           @map("deleted_at")
-  isActive      Boolean             @default(true)
+  id                  String              @id @default(uuid())
+  firstName           String?             @map("first_name")
+  lastName            String?             @map("last_name")
+  email               String              @unique
+  password            String
+  type                UserType
+  roleId              Int?
+  role                CompanyRoleTitle?   @relation(fields: [roleId], references: [id])
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  deletedAt           DateTime?           @map("deleted_at")
+  isActive            Boolean             @default(true)
 
-  tokens        Token[]
-  profile       Profile?
-  notifications Notification[]
+  tokens              Token[]
+  profile             Profile?
+  notifications       Notification[]
+  assignedBookings    Booking[]           @relation("AssignedBookings")
+  staffCalendar       StaffCalendar[]
 
   @@map("users")
 }
@@ -210,7 +212,7 @@ model ServiceArea {
   lngMin        Float?
   lngMax        Float?
 
-  @@map("service_area")
+  @@map("service_areas")
 }
 
 
@@ -222,7 +224,7 @@ model DropOffPoint {
   lng           Float?
   isActive      Boolean             @default(true)
 
-  @@map("dropoff_point")
+  @@map("dropoff_points")
 }
 
 
@@ -231,7 +233,7 @@ model Booking {
   id                String           @id @default(uuid())
   profileId         String           @map("profile_id")
   profile           Profile          @relation("BookingProfile", fields: [profileId], references: [id])
-  customBookingId   String          @unique @map("custom_booking_id")
+  customBookingId   String           @unique @map("custom_booking_id")
 
   serviceId         String           @map("service_id")
   service           Service          @relation(fields: [serviceId], references: [id])
@@ -259,17 +261,55 @@ model Booking {
   deletedAt         DateTime?        @map("deleted_at")
   isActive          Boolean          @default(true)
 
+  assignedToId      String?
+  assignedTo        User?            @relation("AssignedBookings", fields: [assignedToId], references: [id])
+
+  timeSlotId        String?
+  timeSlot          TimeSlot?        @relation("TimeSlotBookings", fields: [timeSlotId], references: [id])
+
   bookingNotifications BookingNotifications[]
 
   @@map("bookings")
 }
 
-model BookingSetting {
+model BookingSettings {
   id                     Int          @id @default(autoincrement())
   minPickupDays          Int          @default(3)
   updatedAt              DateTime     @updatedAt
 
   @@map("booking_settings")
+}
+
+model StaffCalendar {
+  id                    String          @id @default(uuid())
+  userId                String
+  user                  User            @relation(fields: [userId], references: [id])
+
+  date                  DateTime
+  notes                 String?
+  
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  timeSlots             TimeSlot[]
+
+  @@map("staff_calendar")
+}
+
+model TimeSlot {
+  id                    String              @id @default(uuid())
+  staffCalendarId       String
+  staffCalendar         StaffCalendar       @relation(fields: [staffCalendarId], references: [id])
+  startTime             DateTime
+  endTime               DateTime
+  notes                 String?
+  maxBookings           Int                 @default(5)
+  bookings              Booking[]           @relation("TimeSlotBookings")
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@map("timeslots")
 }
 
 

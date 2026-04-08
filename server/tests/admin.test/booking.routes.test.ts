@@ -10,6 +10,7 @@ describe('Admin Booking Routes', () => {
   let clientProfile: any;
   let service: any;
   let _servicePrice: any;
+  let staff: any;
 
   beforeAll(async () => {
     // clean dependent tables
@@ -20,6 +21,8 @@ describe('Admin Booking Routes', () => {
     await prisma.service.deleteMany();
     await prisma.token.deleteMany();
     await prisma.profile.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
 
@@ -33,6 +36,20 @@ describe('Admin Booking Routes', () => {
         password: await AuthUtils.hashPassword('AdminPass123!'),
         type: UserType.COMPANYUSER,
         role: { connect: { id: adminRole.id } },
+        isActive: true,
+      },
+    });
+
+    const staffRole = await prisma.companyRoleTitle.create({
+      data: { title: 'WASHER', level: 6, permissions: [''] },
+    });
+
+    staff = await prisma.user.create({
+      data: {
+        email: 'staff-booking-assign@test.com',
+        password: await AuthUtils.hashPassword('StaffPass123!'),
+        type: UserType.COMPANYUSER,
+        role: { connect: { id: staffRole.id } },
         isActive: true,
       },
     });
@@ -83,11 +100,35 @@ describe('Admin Booking Routes', () => {
     expect(res.body.data).toHaveProperty('id');
   });
 
+  it('POST /api/v1/admin/booking should create a booking for a client and assign a staff', async () => {
+    const payload = {
+      email: client.email,
+      profileId: clientProfile.id,
+      deliveryType: 'PICK_UP',
+      serviceId: service.id,
+      weight: 2,
+      assignedToId: staff.id
+    };
+
+    const res = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${adminToken}`).send(payload);
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('success', true);
+    expect(res.body.data).toHaveProperty('id');
+    expect(res.body.data.assignedTo).toBeDefined();
+  });
+
   it('GET /api/v1/admin/bookings should list bookings', async () => {
     const res = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
+    const bookings = res.body.data;
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
     expect(Array.isArray(res.body.data)).toBe(true);
+    bookings.forEach((b: any) => {
+      expect(b).toHaveProperty('assignedTo');
+      if (b.assignedTo !== null) {
+        expect(b.assignedTo.id).toBeDefined();
+      }
+    });
   });
 
   it('GET /api/v1/admin/bookings/:bookingId should return booking details', async () => {
@@ -97,6 +138,7 @@ describe('Admin Booking Routes', () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
     expect(res.body.data).toHaveProperty('id', booking.id);
+    expect(res.body.data.assignedTo).toBeDefined();
   });
 
   it('PATCH /api/v1/admin/booking/:bookingId should update booking', async () => {
@@ -110,5 +152,33 @@ describe('Admin Booking Routes', () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
     expect(res.body.data).toHaveProperty('id', booking.id);
+  });
+
+  it('PATCH /api/v1/admin/booking/:bookingId should update booking and unassign staff', async () => {
+    const list = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
+    const booking = list.body.data[0];
+    const res = await request(app)
+      .patch(`/api/v1/admin/booking/${booking.id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ additionalNotes: 'Please handle with care', weight: booking.weight ?? 2, assignedToId: null });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body.data).toHaveProperty('id', booking.id);
+    expect(res.body.data.assignedTo).toBeNull();
+  });
+
+  it('PATCH /api/v1/admin/booking/:bookingId should update booking and reassign staff', async () => {
+    const list = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
+    const booking = list.body.data[0];
+    const res = await request(app)
+      .patch(`/api/v1/admin/booking/${booking.id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ additionalNotes: 'Please handle with care', weight: booking.weight ?? 2, assignedToId: staff.id });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body.data).toHaveProperty('id', booking.id);
+    expect(res.body.data.assignedTo).toBeDefined();
   });
 });

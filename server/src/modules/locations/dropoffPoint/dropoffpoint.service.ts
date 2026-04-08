@@ -1,8 +1,8 @@
 import prisma from '../../../config/prisma.js';
 import type { Prisma, DropOffPoint } from '@prisma/client';
 import type { DropOffPointSchema, UpdateDropoffPointSchema } from '../../../validation/location/location.validation.js';
-import { DropOffPointUtils } from '../index.js';
-import { NotFoundError, ProcessingError, ValidationError, ConflictError, UnauthorizedError } from '../../../middlewares/errorHandler.js';
+import DropOffPointUtils from '../dropoffPoint/dropoffpoint.utils.js';
+import { NotFoundError, ProcessingError, ValidationError, ConflictError } from '../../../middlewares/errorHandler.js';
 import { getPagination } from '../../common/pagination/paginate.js';
 
 type DropOffPointInput = DropOffPointSchema;
@@ -83,17 +83,12 @@ const getDropoffPoint = async (
     params: { search?: string; isActive?: boolean } = {},
     isAdmin: boolean = false
 ): Promise<DropOffPoint> => {
+    const isActiveFilter = isAdmin ? params.isActive : true;
 
-    if (params.isActive === false && !isAdmin) {
-        throw new UnauthorizedError('Only admins can view inactive dropoff points');
-    }
+    const findWhereInput: any = typeof where === 'string' ? { id: where } : { ...where };
+    if (typeof isActiveFilter === 'boolean') findWhereInput.isActive = isActiveFilter;
 
-    const findWhereInput: any = typeof where === 'string' ? { id: where } : where;
-    if (params.isActive !== undefined) findWhereInput.isActive = params.isActive;
-
-    const dropoffpoint = await prisma.dropOffPoint.findUnique({
-        where: findWhereInput
-    });
+    const dropoffpoint = await prisma.dropOffPoint.findFirst({ where: findWhereInput });
 
     if (!dropoffpoint) throw new NotFoundError('Dropoff point not found.');
 
@@ -114,8 +109,8 @@ const listDropoffPoints = async (
     
     const { page, limit, skip } = getPagination(paginationInput);
 
-    if (params.isActive === false && !isAdmin) {
-        throw new UnauthorizedError('Only admins can view inactive dropoff points');
+    if (!isAdmin) {
+        params.isActive = true;
     }
 
     const whereInput: any = {};

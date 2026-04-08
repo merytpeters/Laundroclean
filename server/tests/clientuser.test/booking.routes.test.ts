@@ -19,6 +19,8 @@ describe('Client Booking Routes', () => {
     await prisma.service.deleteMany();
     await prisma.token.deleteMany();
     await prisma.profile.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
 
@@ -46,6 +48,8 @@ describe('Client Booking Routes', () => {
     await prisma.service.deleteMany();
     await prisma.token.deleteMany();
     await prisma.profile.deleteMany();
+    await prisma.timeSlot.deleteMany();
+    await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
     await prisma.$disconnect();
@@ -57,6 +61,8 @@ describe('Client Booking Routes', () => {
       deliveryType: 'PICK_UP',
       serviceId: service.id,
       weight: 3,
+      scheduledDate: '2026-04-14T10:00:00Z',
+      pickupTime: '2026-04-23T10:00:00Z'
     };
 
     const res = await request(app).post('/api/v1/client/booking').set('Authorization', `Bearer ${clientToken}`).send(payload);
