@@ -5,10 +5,14 @@ import type { Request } from 'express';
 import config from '../config/config.js';
 import { getRedis } from './redis.js';
 
-const redis = getRedis();
-
 const makeStore = (prefix: string) => {
+  // In test environment we avoid using Redis and let the in-memory store be used
+  if (config.NODE_ENV === 'test') return undefined as any;
+
   try {
+    const redis = getRedis();
+    if (!redis) throw new Error('Redis client not available');
+
     return new RedisStore({
       sendCommand: (...args: string[]) => {
         const fn = redis.call as unknown as (
@@ -21,8 +25,7 @@ const makeStore = (prefix: string) => {
   } catch (err) {
     // if Redis or RedisStore cannot be used in this environment (CI/test without redis),
     // fall back to the default in-memory store so tests run reliably.
-     
-    console.warn('RedisStore not available, falling back to memory store for rate limiting:', (err instanceof Error ? err.message : String(err)) || err);
+    // suppress noisy warnings in CI/tests
     return undefined as any;
   }
 };
@@ -70,13 +73,18 @@ export const authLimiter = routeLimiter('auth', {
 
 // Helper to clear rate limit keys used by the stores (useful for tests)
 export const resetRateLimit = async (prefix?: string) => {
+  // Avoid attempting Redis operations in test CI where Redis may be unavailable.
+  if (config.NODE_ENV === 'test') return;
+
+  const redis = getRedis();
+  if (!redis) return;
+
   try {
     const pattern = prefix ? `rl:${prefix}:*` : 'rl:*';
     // collect keys using SCAN to avoid blocking Redis on large datasets
     const keys: string[] = [];
     let cursor = '0';
     do {
-       
       const res = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', '100');
       // res is [cursor, keys[]]
       // @ts-ignore
@@ -87,18 +95,17 @@ export const resetRateLimit = async (prefix?: string) => {
     } while (cursor !== '0');
 
     if (keys.length > 0) {
-       
       await redis.del(...keys);
     }
   } catch (err) {
-     
-    console.warn('Could not reset rate limit keys (Redis may be unavailable):', (err instanceof Error ? err.message : String(err)) || err);
+    // swallow errors to avoid noisy warnings in CI
   }
 };
 
 // Close the internal Redis client used by the rate limiter (tests/global teardown)
 export const closeRateLimiter = async () => {
   try {
+    const redis = getRedis();
     // prefer graceful quit
     if (redis && typeof redis.quit === 'function') {
       await redis.quit();
@@ -106,7 +113,6 @@ export const closeRateLimiter = async () => {
       redis.disconnect();
     }
   } catch (err) {
-     
-    console.warn('Error closing rate limiter Redis client:', (err instanceof Error ? err.message : String(err)) || err);
+    // ignore close errors
   }
 };

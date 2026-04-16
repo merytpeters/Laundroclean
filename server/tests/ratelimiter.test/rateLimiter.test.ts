@@ -10,7 +10,9 @@ describe('Rate limiter middlewares', () => {
   beforeAll(async () => {
     // clear redis keys used by rate limiter to ensure clean slate
     try {
-      await redis.flushdb();
+      if (redis) {
+        await redis.flushdb();
+      }
     } catch (err) {
       // if redis not available tests may still run against memory; let failures surface
       // but swallow error here to avoid crashing before tests
@@ -20,7 +22,9 @@ describe('Rate limiter middlewares', () => {
   });
 
   afterAll(async () => {
-    await redis.disconnect();
+    if (redis) {
+      await redis.disconnect();
+    }
   });
 
   it('authLimiter should block after configured max failed attempts', async () => {
