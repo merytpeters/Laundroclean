@@ -14,7 +14,7 @@ export const getRedis = () => {
     } catch (err) {
       // If the client cannot be constructed, ensure we return null
       // and let callers handle the lack of Redis gracefully.
-      // eslint-disable-next-line no-console
+       
       console.warn('Failed to create Redis client:', (err instanceof Error ? err.message : String(err)) || err);
       redis = null;
     }
