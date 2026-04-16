@@ -31,6 +31,17 @@ const env = (variable: string, defaultValue?: string): any => {
       case 'ADMIN_ROLE_LEVEL': return 10;
       case 'GEOCODER_USER_AGENT': return 'Laundrocleantestmap';
       case 'APP_VERSION': return '1.0.0';
+      case 'REDIS_URL': return 'redis://localhost:6379';
+      case 'RL_GLOBAL_WINDOW_MS': return 900000;
+      case 'RL_GLOBAL_MAX': return nodeEnv === 'test' ? 1000000 : 100;
+      case 'RL_BOOKING_WINDOW_MS': return 60000;
+      case 'RL_BOOKING_MAX': return 5;
+      case 'RL_AUTH_WINDOW_MS': return 900000;
+      case 'RL_AUTH_MAX': return 10;
+      // case 'RL_MACHINE_WINDOW_MS': return 60000
+      // case 'RL_MACHINE_MAX': return 30
+      // case 'RL_PAYMENT_WINDOW_MS': return 300000
+      // case 'RL_PAYMENT_MAX': return 3
     }
   }
 
@@ -57,6 +68,17 @@ const config = {
   ADMIN_ROLE_LEVEL: Number(env('ADMIN_ROLE_LEVEL')),
   GEOCODER_USER_AGENT: env('GEOCODER_USER_AGENT'),
   APP_VERSION: Number(env('APP_VERSION')),
+  REDIS_URL: env('REDIS_URL'),
+  RL_GLOBAL_WINDOW_MS: Number(env('RL_GLOBAL_WINDOW_MS')),
+  RL_GLOBAL_MAX: Number(env('RL_GLOBAL_MAX')),
+  RL_BOOKING_WINDOW_MS: Number(env('RL_BOOKING_WINDOW_MS')),
+  RL_BOOKING_MAX: Number(env('RL_BOOKING_MAX')),
+  // RL_MACHINE_WINDOW_MS: Number(env('RL_MACHINE_WINDOW_MS')),
+  // RL_MACHINE_MAX: Number(env('RL_MACHINE_MAX')),
+  // RL_PAYMENT_WINDOW_MS: Number(env('RL_PAYMENT_WINDOW_MS')),
+  // RL_PAYMENT_MAX: Number(env('RL_PAYMENT_MAX')),
+  RL_AUTH_WINDOW_MS: Number(env('RL_AUTH_WINDOW_MS')),
+  RL_AUTH_MAX: Number(env('RL_AUTH_MAX')),
 };
 
 export default config;

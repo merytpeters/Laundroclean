@@ -3,6 +3,7 @@ import AuthValidation from '../../../validation/auth/auth.validation.js';
 import validate from '../../../middlewares/validate.js';
 import UserAuth from '../../../middlewares/auth.js';
 import { AdminController} from '../index.js';
+import { authLimiter } from '../../../middlewares/rateLimiter.js';
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.use(UserAuth.requireCompanyAdmin());
 
 router.post(
     '/company-user/register',
+    authLimiter,
     validate(AuthValidation.signupSchema),
     AdminController.companyRegister
 );
