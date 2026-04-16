@@ -16,6 +16,7 @@ import { DropOffPointRoutes } from './modules/locations/index.js';
 import { ServiceAreaRoutes } from './modules/locations/index.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
+import { globalLimiter } from './middlewares/rateLimiter.js';
 
 
 const app = express();
@@ -39,6 +40,8 @@ app.use(express.json());
   })
 )
 */}
+
+app.use(globalLimiter);
 
 {/* EmailRoutes and static css for test purpose */}
 app.use(express.static(path.join(templatesPath, 'styles')));

@@ -1,7 +1,9 @@
 export default {
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
-  globalSetup: "<rootDir>/tests/jest.global-setup.mjs",
+  globalSetup: "<rootDir>/tests/jest.global-setup.ts",
+  setupFilesAfterEnv: ["<rootDir>/tests/jest.ratelimiter-setup.mjs"],
+  globalTeardown: "<rootDir>/tests/jest.global-teardown.ts",
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",

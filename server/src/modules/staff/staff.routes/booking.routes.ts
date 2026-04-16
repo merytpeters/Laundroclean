@@ -4,6 +4,7 @@ import validate from '../../../middlewares/validate.js';
 import { BookingValidation } from '../../../validation/index.js';
 import { BookingController } from '../../booking/index.js';
 import { PERMISSIONS } from '../../../constants/permissions.js';
+import { bookingLimiter } from '../../../middlewares/rateLimiter.js';
 
 
 const router = Router();
@@ -13,6 +14,7 @@ router.use(UserAuth.requireCompanyUser());
 
 router.post(
     '/booking',
+   bookingLimiter,
    validate(BookingValidation.createBookingSchema),
    UserAuth.requirePermission(PERMISSIONS.BOOKING.CREATE),
    BookingController.createBookingController
