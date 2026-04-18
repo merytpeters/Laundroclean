@@ -114,4 +114,58 @@ describe('Roles Routes', () => {
     expect(delRes.status).toBe(200);
     expect(delRes.body).toHaveProperty('success', true);
   });
+
+  it('should assign roles to staff and reflect permissions on users', async () => {
+    // create two roles: one with limited permissions and one with all permissions
+    const laundryRole = await prisma.companyRoleTitle.create({
+      data: {
+        title: `LAUNDRY_MANAGER_${Date.now()}`,
+        level: 2,
+        permissions: ['service:view', 'booking:create'],
+      },
+    });
+
+    const allRole = await prisma.companyRoleTitle.create({
+      data: {
+        title: `ALL_MANAGER_${Date.now()}`,
+        level: 9,
+        permissions: ['*'],
+      },
+    });
+
+    const hashed = await AuthUtils.hashPassword('ManagerPass123!');
+
+    // create two company users and attach roles
+    const staff1 = await prisma.user.create({
+      data: {
+        email: `mgr1_${Date.now()}@example.com`,
+        password: hashed,
+        type: UserType.COMPANYUSER,
+        role: { connect: { id: laundryRole.id } },
+        isActive: true,
+      },
+    });
+
+    const staff2 = await prisma.user.create({
+      data: {
+        email: `mgr2_${Date.now()}@example.com`,
+        password: hashed,
+        type: UserType.COMPANYUSER,
+        role: { connect: { id: allRole.id } },
+        isActive: true,
+      },
+    });
+
+    // reload users with role included and assert permissions
+    const u1 = await prisma.user.findUnique({ where: { id: staff1.id }, include: { role: true } });
+    const u2 = await prisma.user.findUnique({ where: { id: staff2.id }, include: { role: true } });
+
+    expect(u1).toBeDefined();
+    expect(u1?.role).toBeDefined();
+    expect(u1?.role?.permissions).toEqual(expect.arrayContaining(['service:view', 'booking:create']));
+
+    expect(u2).toBeDefined();
+    expect(u2?.role).toBeDefined();
+    expect(u2?.role?.permissions).toEqual(expect.arrayContaining(['*']));
+  });
 });
