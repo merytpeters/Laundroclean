@@ -9,6 +9,11 @@ const makeStore = (prefix: string) => {
   // In test environment we avoid using Redis and let the in-memory store be used
   if (config.NODE_ENV === 'test') return undefined as any;
 
+  // Also avoid using Redis in CI environments (GitHub Actions, other CI)
+  // to prevent constructing Redis-backed stores during CI runs where
+  // Redis may be unavailable.
+  if (process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') return undefined as any;
+
   try {
     const redis = getRedis();
     if (!redis) throw new Error('Redis client not available');
