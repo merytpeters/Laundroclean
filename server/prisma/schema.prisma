@@ -182,6 +182,9 @@ model Service {
   bookings      Booking[]
   prices        ServicePrice[]
 
+  // One optional promo code may be tied to a service
+  promoCodes    PromoCode[]
+
   @@map("services")
 }
 
@@ -269,6 +272,12 @@ model Booking {
 
   bookingNotifications BookingNotifications[]
 
+  // Promo fields: record applied promo immutably at booking time
+  promoCodeId       String?          @map("promo_code_id")
+  promoCode         PromoCode?       @relation(fields: [promoCodeId], references: [id])
+  discountAmount    Decimal?         @map("discount_amount")
+  finalAmount       Decimal?         @map("final_amount")
+
   @@map("bookings")
 }
 
@@ -321,4 +330,33 @@ model BookingNotifications {
 
   @@map("booking_notifications")
   @@id([bookingId, notificationId])
+}
+
+
+enum PromoType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+model PromoCode {
+  id                      String          @id @default(uuid())
+  code                    String          @unique
+  description             String?
+  serviceId               String
+  service                 Service         @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  bookings                Booking[]
+  type                    PromoType
+  value                   Decimal
+  currency                Currency?
+  isActive                Boolean         @default(true)
+  startsAt                DateTime?
+  expiresAt               DateTime?
+  usageLimit              Int?
+  perUserLimit            Int?
+  timesUsed               Int             @default(0)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  deletedAt               DateTime?
+
+  @@map("promo_codes")
 }

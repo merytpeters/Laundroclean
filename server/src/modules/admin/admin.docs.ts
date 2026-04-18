@@ -1540,5 +1540,179 @@
  *         description: Deleted
  */
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     PromoCodeRequest:
+ *       type: object
+ *       required:
+ *         - code
+ *         - serviceId
+ *         - type
+ *         - value
+ *       properties:
+ *         code:
+ *           type: string
+ *           example: SPRING10
+ *         description:
+ *           type: string
+ *         serviceId:
+ *           type: string
+ *         type:
+ *           type: string
+ *           enum: [PERCENTAGE, FIXED_AMOUNT]
+ *         value:
+ *           type: number
+ *           example: 10
+ *         currency:
+ *           type: string
+ *           enum: [DOLLAR, NAIRA, POUNDS]
+ *         startsAt:
+ *           type: string
+ *           format: date-time
+ *         expiresAt:
+ *           type: string
+ *           format: date-time
+ *         usageLimit:
+ *           type: integer
+ *         perUserLimit:
+ *           type: integer
+ *         isActive:
+ *           type: boolean
+ *     PromoCodeResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         code:
+ *           type: string
+ *         description:
+ *           type: string
+ *         serviceId:
+ *           type: string
+ *         type:
+ *           type: string
+ *         value:
+ *           type: number
+ *         currency:
+ *           type: string
+ *         isActive:
+ *           type: boolean
+ *         startsAt:
+ *           type: string
+ *           format: date-time
+ *         expiresAt:
+ *           type: string
+ *           format: date-time
+ *     PromoCodeListResponse:
+ *       type: array
+ *       items:
+ *         $ref: '#/components/schemas/PromoCodeResponse'
+ *
+ * /api/v1/admin/promocodes:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: Create a promo code for a service (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PromoCodeRequest'
+ *     responses:
+ *       '201':
+ *         description: Promo created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PromoCodeResponse'
+ *       '400':
+ *         description: Validation error
+ *       '401':
+ *         description: Unauthorized
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: List promo codes (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: List of promo codes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PromoCodeListResponse'
+ *
+ * /api/v1/admin/promocodes/{id}:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Get a promo code by id (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Promo details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PromoCodeResponse'
+ *       '404':
+ *         description: Not found
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Update a promo code (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PromoCodeRequest'
+ *     responses:
+ *       '200':
+ *         description: Updated promo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PromoCodeResponse'
+ *       '404':
+ *         description: Not found
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Delete (deactivate) a promo code (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Deleted
+ */
+
 export {};
 
