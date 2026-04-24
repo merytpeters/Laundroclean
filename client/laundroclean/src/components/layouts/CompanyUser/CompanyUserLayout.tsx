@@ -99,6 +99,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
 export default function CompanyUserLayout(props: CompanyUserLayoutProps) {
   return (
     <CompanyUserMenuProvider
+      user={props.user}
       initialMenuItems={props.user.role ? roleConfig[props.user.role].menuItems : []}
     >
       <LayoutContent {...props} />

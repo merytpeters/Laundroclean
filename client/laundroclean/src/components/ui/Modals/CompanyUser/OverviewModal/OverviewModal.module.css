@@ -1,0 +1,16 @@
+.overviewmodalcontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 4rem;
+}
+
+.statcardbox {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 220px);
+    gap: 2rem;
+    align-items: flex-start;
+    justify-content: start;
+    justify-items: start;
+    width: 100%;
+}

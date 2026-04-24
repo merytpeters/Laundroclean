@@ -1,21 +1,15 @@
-/*import { useState, useEffect } from "react";
-import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
-*/
+"use client";
 
+import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
+
+import Overview from "src/components/ui/Modals/CompanyUser/OverviewModal/OverviewModal"
 
 export default function AdminDashboard () {
-    /*const { activeMenu } = useCompanyUserMenu();
-    const [openModal, setOpenModal] = useState<string | null>(null);
+    const { activeMenu } = useCompanyUserMenu();
 
-  // Whenever menu changes, open corresponding modal
-  useEffect(() => {
-    setOpenModal(activeMenu);
-  }, [activeMenu]);
-
-  const closeModal = () => setOpenModal(null); */
     return (
         <div>
-           Page Modals go here
+          {activeMenu === "overview" && <Overview />}
         </div>
     )
 }

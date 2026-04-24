@@ -1,7 +1,14 @@
+"use client";
+
+import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
+
+import Overview from "src/components/ui/Modals/CompanyUser/OverviewModal/OverviewModal"
+
 export default function StaffDashboard () {
+    const { activeMenu } = useCompanyUserMenu();
     return (
         <div>
-            <p>Modals go here</p>
+            {activeMenu === "overview" && <Overview />}
         </div>
     )
 }
