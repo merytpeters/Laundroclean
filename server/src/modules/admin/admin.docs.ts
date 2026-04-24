@@ -1714,5 +1714,105 @@
  *         description: Deleted
  */
 
+/**
+ * @swagger
+ * /api/v1/admin/analysis/promousages:
+ *   get:
+ *     tags:
+ *       - Admin - PromoUsage
+ *     security:
+ *       - bearerAuth: []
+ *     summary: List promo usage records
+ *     responses:
+ *       '200':
+ *         description: Successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *
+ * /api/v1/admin/analysis/promousages/{id}:
+ *   get:
+ *     tags:
+ *       - Admin - PromoUsage
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Get a promo usage record
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *   delete:
+ *     tags:
+ *       - Admin - PromoUsage
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Delete a promo usage record
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '204':
+ *         description: Deleted
+ */
+
+/**
+ * @swagger
+ * /api/v1/admin/analysis/promousages/user:
+ *   get:
+ *     tags:
+ *       - Admin - PromoUsage
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Get promo usage for a specific user and promo code
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: promoCodeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ */
+
 export {};
 

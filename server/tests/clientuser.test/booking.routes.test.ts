@@ -36,6 +36,9 @@ describe('Client Booking Routes', () => {
       data: { serviceId: service.id, amount: '150', currency: 'NAIRA', pricingType: 'PER_KG', isActive: true },
     });
 
+    // create a promo for client tests
+    await prisma.promoCode.create({ data: { code: 'CLIENTPROMO', serviceId: service.id, type: 'FIXED_AMOUNT', value: 500, isActive: true } });
+
     const res = await request(app).post('/api/v1/auth/login').send({ email: client.email, password: 'ClientPass123!' });
     clientToken = res.body?.data?.accessToken ?? res.body?.accessToken ?? res.body?.token;
   });
@@ -52,6 +55,8 @@ describe('Client Booking Routes', () => {
     await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
+    await prisma.promoUsage.deleteMany();
+    await prisma.promoCode.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -69,6 +74,31 @@ describe('Client Booking Routes', () => {
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('success', true);
     expect(res.body.data).toHaveProperty('id');
+  });
+
+  it('POST /api/v1/client/booking should create booking with promo code and track usage', async () => {
+    const payload = {
+      profileId: clientProfile.id,
+      deliveryType: 'PICK_UP',
+      serviceId: service.id,
+      weight: 2,
+      promoCode: 'CLIENTPROMO'
+    };
+
+    const res = await request(app).post('/api/v1/client/booking').set('Authorization', `Bearer ${clientToken}`).send(payload);
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('success', true);
+    const booking = res.body.data;
+    expect(booking).toHaveProperty('serviceId', service.id);
+    expect(booking).toHaveProperty('promoCodeId');
+    expect(booking).toHaveProperty('discountAmount');
+    expect(booking.promoCodeId).toBeTruthy();
+
+    const promo = await prisma.promoCode.findUnique({ where: { code: 'CLIENTPROMO' } });
+    expect(promo).toBeTruthy();
+    expect(booking.promoCodeId).toBe(promo!.id);
+    const usage = await prisma.promoUsage.findFirst({ where: { promoCodeId: promo!.id, userId: client.id } });
+    expect(usage).toBeNull();
   });
 
   it('GET /api/v1/client/bookings should list client bookings', async () => {

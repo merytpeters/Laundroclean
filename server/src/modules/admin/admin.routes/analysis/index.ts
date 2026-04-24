@@ -1,0 +1,1 @@
+export { default as AdminPromoUsageRoutes } from './promousage.routes.js';

@@ -58,6 +58,7 @@ enum BookingStatus {
   IN_PROGRESS                             @map("IN PROGRESS")
   COMPLETED
   CANCELLED
+  IN_TRANSIT                              @map("IN TRANSIT")
   DELIVERED
 
   CUSTOMER_DROPPED_OFF_AT_POINT           @map("CUSTOMER DROPPED OFF AT POINT")
@@ -112,6 +113,7 @@ model User {
   notifications       Notification[]
   assignedBookings    Booking[]           @relation("AssignedBookings")
   staffCalendar       StaffCalendar[]
+  promoUsages         PromoUsage[]
 
   @@map("users")
 }
@@ -357,6 +359,21 @@ model PromoCode {
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
   deletedAt               DateTime?
+  promoUsages             PromoUsage[]
 
   @@map("promo_codes")
+}
+
+model PromoUsage {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promoCodeId String
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  timesUsed   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("promo_usages")
+  @@index([userId, promoCodeId])
 }

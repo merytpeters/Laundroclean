@@ -6,6 +6,8 @@ import { AuthUtils } from '../auth/index.js';
 import { NotFoundError, ConflictError, UnauthorizedError, ForbiddenError } from '../../middlewares/errorHandler.js';
 import type { CreateBookingSchema, UpdateBookingSchema, UpdateBookingStatusSchema } from '../../validation/booking/booking.validation.js';
 import { ServicepriceService } from '../serviceprice/index.js';
+import { PromoService, PromoUsageService } from '../promocode/index.js';
+import { BookingTransitions } from './booking.transitions.js';
 import { getPagination } from '../common/pagination/paginate.js';
 
 type CreateBookingInput = CreateBookingSchema;
@@ -158,11 +160,40 @@ const createBooking = async (
             addressId = address.id;
         }
 
-        // 6. Retry booking creation
+        // 6. Apply promo (if any) and then retry booking creation
         for (let i = 0; i < 3; i++) {
             try {
                 const customBookingId = await BookingUtils.generateCustomBookingId();
                 const scheduledPickupDay = await BookingUtils.enforceMinPickup(input.scheduledDate ?? null, tx);
+
+                // Promo application: check provided promo code, calculate discount and adjust totals
+                let promoCodeId: string | null = null;
+                let discountAmount: any = null;
+                let finalAmount: any = totalAmount;
+
+                if ((input as any).promoCode) {
+                    const promo = await PromoService.getPromoByCodeForService(input.serviceId, (input as any).promoCode);
+                    if (!promo) {
+                        throw new UnauthorizedError('Invalid or expired promo code');
+                    }
+
+                    // enforce overall usage limit
+                    if (promo.usageLimit !== null && promo.timesUsed >= promo.usageLimit) {
+                        throw new ConflictError('Promo usage limit reached');
+                    }
+
+                    // enforce per-user limit via PromoUsage
+                    const usage = await tx.promoUsage.findFirst({ where: { promoCodeId: promo.id, userId: user.id} });
+                    if (promo.perUserLimit !== null && (usage?.timesUsed ?? 0) >= promo.perUserLimit) {
+                        throw new ConflictError('User promo code usage limit reached');
+                    }
+
+                    // Do not enforce or increment usage here; usage is applied when booking is CONFIRMED.
+                    const calc = PromoService.calculateDiscount(Number(totalAmount), promo as any);
+                    discountAmount = calc.discount;
+                    finalAmount = calc.finalAmount;
+                    promoCodeId = promo.id;
+                }
 
                 return await tx.booking.create({
                     data: {
@@ -184,6 +215,9 @@ const createBooking = async (
                         currency: price.currency,
                         pricingType: price.pricingType,
                         totalAmount,
+                        promoCodeId: promoCodeId,
+                        discountAmount: discountAmount,
+                        finalAmount: finalAmount,
 
                         status: 'PENDING',
                         customBookingId,
@@ -238,6 +272,30 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             const totalAmount = unitPrice.mul(quantity);
 
             const updateData: Prisma.BookingUpdateInput = {};
+
+            // Promo application on update: if promoCode provided, validate and apply
+            if ((input as any).promoCode) {
+                const promo = await PromoService.getPromoByCodeForService(booking.serviceId, (input as any).promoCode);
+                if (!promo) {
+                    throw new UnauthorizedError('Invalid or expired promo code');
+                }
+
+                // enforce overall usage limit
+                if (promo.usageLimit !== null && promo.timesUsed >= promo.usageLimit) {
+                    throw new ConflictError('Promo usage limit reached');
+                }
+
+                // enforce per-user limit via PromoUsage
+                const usage = await tx.promoUsage.findFirst({ where: { promoCodeId: promo.id, userId: booking.profile.userId } });
+                if (promo.perUserLimit !== null && (usage?.timesUsed ?? 0) >= promo.perUserLimit) {
+                    throw new ConflictError('User promo code usage limit reached');
+                }
+
+                const calc = PromoService.calculateDiscount(Number(totalAmount), promo as any);
+                updateData.discountAmount = calc.discount as any;
+                updateData.finalAmount = calc.finalAmount as any;
+                updateData.promoCode = { connect: { id: promo.id } } as any;
+            }
             
             if (input.address) {
                 const addressLine = input.address.addressLine1 || input.address.addressLine2;
@@ -420,9 +478,9 @@ const updateBookingStatus = async (
     ];
 
     if (currentUser?.type === 'CLIENT') {
-        if (!clientAllowedStatuses.includes(input.status)) {
+        if (!clientAllowedStatuses.includes(input.status) && input.status !== 'CONFIRMED') {
             throw new UnauthorizedError(
-                `Clients may only update status to: ${clientAllowedStatuses.join(', ')}`
+                `Clients may only update status to: ${clientAllowedStatuses.join(', ')} or CONFIRMED via payment`
             );
         }
     }
@@ -441,10 +499,53 @@ const updateBookingStatus = async (
         }
     }
 
-    const updateData: Prisma.BookingUpdateInput = { status: input.status };
-    if (input.status === 'CANCELLED') {
-        updateData.deletedAt = new Date();
+    // Enforce allowed transitions
+    const allowedNext = BookingTransitions[booking.status as keyof typeof BookingTransitions] || [];
+    if (booking.status !== input.status && !allowedNext.includes(input.status as any)) {
+        throw new UnauthorizedError(`Invalid status transition from ${booking.status} to ${input.status}`);
     }
+
+    // Only admins may manually set a booking to CONFIRMED. Normal confirmation flow is handled by payment processing.
+    if (input.status === 'CONFIRMED' && !isAdmin) {
+        throw new UnauthorizedError('Only admin users can manually set booking status to CONFIRMED');
+    }
+
+    // If confirming and there is a promo snapshot, enforce limits and increment usage transactionally
+    if (input.status === 'CONFIRMED') {
+        return await prisma.$transaction(async (tx) => {
+            // re-fetch booking under tx to ensure fresh data
+            const b = await tx.booking.findUnique({ where: whereObj, include: { profile: true } });
+            if (!b) throw new NotFoundError('Booking not found');
+
+            // if booking has a promo attached, validate and increment usage now
+            if (b.promoCodeId) {
+                const promo = await tx.promoCode.findUnique({ where: { id: b.promoCodeId } });
+                if (!promo) throw new NotFoundError('Promo not found');
+
+                if (promo.usageLimit !== null && promo.timesUsed >= promo.usageLimit) {
+                    throw new ConflictError('Promo usage limit reached');
+                }
+
+                const usage = await tx.promoUsage.findFirst({ where: { promoCodeId: promo.id, userId: b.profile.userId } });
+                if (promo.perUserLimit !== null && (usage?.timesUsed ?? 0) >= promo.perUserLimit) {
+                    throw new ConflictError('User promo code usage limit reached');
+                }
+
+                await tx.promoCode.update({ where: { id: promo.id }, data: { timesUsed: { increment: 1 } } });
+                await PromoUsageService.incrementUsage(tx, b.profile.userId, promo.id);
+            }
+
+            const updateData: Prisma.BookingUpdateInput = { status: input.status };
+            if (input.status === 'CANCELLED') updateData.deletedAt = new Date();
+
+            const updated = await tx.booking.update({ where: whereObj, data: updateData });
+            return updated;
+        });
+    }
+
+    // For other allowed transitions, perform a simple update
+    const updateData: Prisma.BookingUpdateInput = { status: input.status };
+    if (input.status === 'CANCELLED') updateData.deletedAt = new Date();
 
     const updated = await prisma.booking.update({ where: whereObj, data: updateData });
     return updated;

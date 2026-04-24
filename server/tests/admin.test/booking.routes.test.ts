@@ -66,6 +66,10 @@ describe('Admin Booking Routes', () => {
     _servicePrice = await prisma.servicePrice.create({
       data: { serviceId: service.id, amount: '100', currency: 'NAIRA', pricingType: 'PER_KG', isActive: true },
     });
+    // create a promo for the service
+    await prisma.promoCode.create({
+      data: { code: 'ADMINPROMO', serviceId: service.id, type: 'PERCENTAGE', value: 10, isActive: true },
+    });
 
     // login admin to obtain token
     const res = await request(app).post('/api/v1/auth/login').send({ email: admin.email, password: 'AdminPass123!' });
@@ -82,6 +86,8 @@ describe('Admin Booking Routes', () => {
     await prisma.profile.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
+    await prisma.promoUsage.deleteMany();
+    await prisma.promoCode.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -117,11 +123,40 @@ describe('Admin Booking Routes', () => {
     expect(res.body.data.assignedTo).toBeDefined();
   });
 
+  it('POST /api/v1/admin/booking should create a booking for a client with a promo code', async () => {
+    const payload = {
+      email: client.email,
+      profileId: clientProfile.id,
+      deliveryType: 'PICK_UP',
+      serviceId: service.id,
+      weight: 2,
+      promoCode: 'ADMINPROMO'
+    };
+
+    const res = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${adminToken}`).send(payload);
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('success', true);
+    const booking = res.body.data;
+    expect(booking).toHaveProperty('serviceId', service.id);
+    expect(booking).toHaveProperty('promoCodeId');
+    expect(booking).toHaveProperty('discountAmount');
+    expect(booking.promoCodeId).toBeTruthy();
+
+    const promo = await prisma.promoCode.findUnique({ where: { code: 'ADMINPROMO' } });
+    expect(promo).toBeTruthy();
+    expect(booking.promoCodeId).toBe(promo!.id);
+
+    const usage = await prisma.promoUsage.findFirst({ where: { promoCodeId: promo!.id, userId: client.id } });
+    expect(usage).toBeNull();
+  });
+
   it('GET /api/v1/admin/bookings should list bookings', async () => {
     const res = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
     const bookings = res.body.data;
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
+    await prisma.promoUsage.deleteMany();
+    await prisma.promoCode.deleteMany();
     expect(Array.isArray(res.body.data)).toBe(true);
     bookings.forEach((b: any) => {
       expect(b).toHaveProperty('assignedTo');
