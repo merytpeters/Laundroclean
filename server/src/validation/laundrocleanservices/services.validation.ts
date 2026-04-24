@@ -5,6 +5,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 const serviceSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     description: z.string().min(1, 'Description is required'),
+    maxDailyBookings: z.number().int().nonnegative().optional(),
 });
 
 export type ServiceSchema = z.infer<typeof serviceSchema>
@@ -12,7 +13,8 @@ export type ServiceSchema = z.infer<typeof serviceSchema>
 const updateServiceSchema = z.object({
     name: z.string().min(1, 'Name cannot be empty').optional(),
     description: z.string().min(1, 'Description cannot be empty').optional(),
-    isActive: z.boolean().optional()
+    isActive: z.boolean().optional(),
+    maxDailyBookings: z.number().int().nonnegative().optional()
 });
 
 export type UpdateServiceSchema = z.infer<typeof updateServiceSchema>;

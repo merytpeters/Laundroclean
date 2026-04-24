@@ -166,6 +166,27 @@ const createBooking = async (
                 const customBookingId = await BookingUtils.generateCustomBookingId();
                 const scheduledPickupDay = await BookingUtils.enforceMinPickup(input.scheduledDate ?? null, tx);
 
+                // Enforce per-service daily booking limit (if set)
+                const svc = await tx.service.findUnique({ where: { id: input.serviceId } });
+                if (svc && svc.maxDailyBookings !== null && svc.maxDailyBookings !== undefined) {
+                    const scheduled = scheduledPickupDay ?? new Date();
+                    const dayStart = new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate(), 0, 0, 0));
+                    const dayEnd = new Date(dayStart);
+                    dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+
+                    const existingCount = await tx.booking.count({
+                        where: {
+                            serviceId: input.serviceId,
+                            scheduledDate: { gte: dayStart, lt: dayEnd },
+                            status: { not: 'CANCELLED' }
+                        }
+                    });
+
+                    if (existingCount >= svc.maxDailyBookings) {
+                        throw new ConflictError('Daily booking limit reached for this service');
+                    }
+                }
+
                 // Promo application: check provided promo code, calculate discount and adjust totals
                 let promoCodeId: string | null = null;
                 let discountAmount: any = null;
@@ -349,6 +370,35 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             updateData.currency = price.currency;
             updateData.pricingType = price.pricingType;
             updateData.totalAmount = totalAmount;
+
+            // Enforce per-service daily booking limit when changing service or scheduled date
+            const targetServiceId = (input as any).serviceId ?? booking.serviceId;
+            const targetScheduled = (input as any).scheduledDate !== undefined
+                ? await BookingUtils.enforceMinPickup(input.scheduledDate ?? null, tx)
+                : booking.scheduledDate;
+
+            if (targetServiceId && targetScheduled) {
+                const svc = await tx.service.findUnique({ where: { id: targetServiceId } });
+                if (svc && svc.maxDailyBookings !== null && svc.maxDailyBookings !== undefined) {
+                    const scheduled = targetScheduled as Date;
+                    const dayStart = new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate(), 0, 0, 0));
+                    const dayEnd = new Date(dayStart);
+                    dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+
+                    const existingCount = await tx.booking.count({
+                        where: {
+                            serviceId: targetServiceId,
+                            scheduledDate: { gte: dayStart, lt: dayEnd },
+                            status: { not: 'CANCELLED' },
+                            id: { not: booking.id }
+                        }
+                    });
+
+                    if (existingCount >= svc.maxDailyBookings) {
+                        throw new ConflictError('Daily booking limit reached for this service');
+                    }
+                }
+            }
 
             const updatedbooking = await tx.booking.update({
                 where: whereObj,

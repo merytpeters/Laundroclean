@@ -112,6 +112,10 @@
  *         isActive:
  *           type: boolean
  *           example: true
+ *         maxDailyBookings:
+ *           type: integer
+ *           description: Maximum number of bookings allowed per service per day (optional)
+ *           example: 1
  *     ServiceResponse:
  *       type: object
  *       properties:
@@ -123,10 +127,13 @@
  *           type: string
  *         isActive:
  *           type: boolean
+ *         maxDailyBookings:
+ *           type: integer
+ *           description: Maximum number of bookings allowed per service per day
  *     ServiceListResponse:
  *       type: array
  *       items:
- *       $ref: '#/components/schemas/ServiceResponse'
+ *         $ref: '#/components/schemas/ServiceResponse'
  *
  *     CompanyRoleRequest:
  *       type: object

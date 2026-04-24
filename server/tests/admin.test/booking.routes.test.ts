@@ -216,4 +216,38 @@ describe('Admin Booking Routes', () => {
     expect(res.body.data).toHaveProperty('id', booking.id);
     expect(res.body.data.assignedTo).toBeDefined();
   });
+
+  it('Admin can set maxDailyBookings and booking is limited per day', async () => {
+    // create a separate admin user and service with a daily limit
+    let adminRole2 = await prisma.companyRoleTitle.findUnique({ where: { title: 'ADMIN' } });
+    if (!adminRole2) {
+      adminRole2 = await prisma.companyRoleTitle.create({ data: { title: 'ADMIN', level: 10, permissions: ['*'] } });
+    }
+    const admin2 = await prisma.user.create({ data: { email: 'admin-limit@test.com', password: await AuthUtils.hashPassword('AdminPass123!'), type: 'COMPANYUSER', role: { connect: { id: adminRole2.id } }, isActive: true } });
+
+    const client2 = await prisma.user.create({ data: { email: 'client-limit@test.com', password: await AuthUtils.hashPassword('ClientPass123!'), type: 'CLIENT' } });
+    const clientProfile2 = await prisma.profile.create({ data: { userId: client2.id, phoneNumber: '0800000099' } });
+
+    const serviceWithLimit = await prisma.service.create({ data: { name: 'LimitService', description: 'Service with limit', maxDailyBookings: 1 } });
+    await prisma.servicePrice.create({ data: { serviceId: serviceWithLimit.id, amount: '100', currency: 'NAIRA', pricingType: 'PER_KG', isActive: true } });
+
+    const loginRes = await request(app).post('/api/v1/auth/login').send({ email: admin2.email, password: 'AdminPass123!' });
+    const admin2Token = loginRes.body?.data?.accessToken ?? loginRes.body?.accessToken ?? loginRes.body?.token;
+
+    const payload = {
+      email: client2.email,
+      profileId: clientProfile2.id,
+      deliveryType: 'PICK_UP',
+      serviceId: serviceWithLimit.id,
+      weight: 2,
+    };
+
+    const r1 = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${admin2Token}`).send(payload);
+    expect(r1.status).toBe(201);
+
+    const r2 = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${admin2Token}`).send(payload);
+    expect(r2.status).toBe(409);
+    expect(r2.body).toHaveProperty('success', false);
+    expect(r2.body.message).toMatch(/Daily booking limit reached/i);
+  });
 });

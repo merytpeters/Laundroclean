@@ -173,19 +173,20 @@ model Notification {
 }
 
 model Service {
-  id            String           @id @default(uuid())
-  name          String
-  description   String
-  isActive      Boolean          @default(true) @map("is_active")
-  createdAt     DateTime         @default(now()) @map("created_at")
-  updatedAt     DateTime         @updatedAt @map("updated_at")
-  deletedAt     DateTime?        @map("deleted_at")
+  id                    String           @id @default(uuid())
+  name                  String
+  description           String
+  maxDailyBookings      Int?             @map("max_daily_bookings")
+  isActive              Boolean          @default(true) @map("is_active")
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+  deletedAt             DateTime?        @map("deleted_at")
 
-  bookings      Booking[]
-  prices        ServicePrice[]
+  bookings              Booking[]
+  prices                ServicePrice[]
 
   // One optional promo code may be tied to a service
-  promoCodes    PromoCode[]
+  promoCodes            PromoCode[]
 
   @@map("services")
 }
