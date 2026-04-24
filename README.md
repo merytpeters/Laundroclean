@@ -37,13 +37,15 @@ A web and mobile application for a laundromat where users can book laundry servi
 3. Set up environment variables as needed.
 
 ### Running the App
-- For development:
   ```bash
   npm run dev
   # or
   yarn dev
   ```
-- For production build:
+  - Start Redis (in a separate terminal):
+   ```bash
+   redis-server
+   ```
   ```bash
   npm run build
   npm start

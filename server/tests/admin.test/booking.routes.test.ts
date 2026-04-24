@@ -66,6 +66,10 @@ describe('Admin Booking Routes', () => {
     _servicePrice = await prisma.servicePrice.create({
       data: { serviceId: service.id, amount: '100', currency: 'NAIRA', pricingType: 'PER_KG', isActive: true },
     });
+    // create a promo for the service
+    await prisma.promoCode.create({
+      data: { code: 'ADMINPROMO', serviceId: service.id, type: 'PERCENTAGE', value: 10, isActive: true },
+    });
 
     // login admin to obtain token
     const res = await request(app).post('/api/v1/auth/login').send({ email: admin.email, password: 'AdminPass123!' });
@@ -82,6 +86,8 @@ describe('Admin Booking Routes', () => {
     await prisma.profile.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
+    await prisma.promoUsage.deleteMany();
+    await prisma.promoCode.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -117,11 +123,40 @@ describe('Admin Booking Routes', () => {
     expect(res.body.data.assignedTo).toBeDefined();
   });
 
+  it('POST /api/v1/admin/booking should create a booking for a client with a promo code', async () => {
+    const payload = {
+      email: client.email,
+      profileId: clientProfile.id,
+      deliveryType: 'PICK_UP',
+      serviceId: service.id,
+      weight: 2,
+      promoCode: 'ADMINPROMO'
+    };
+
+    const res = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${adminToken}`).send(payload);
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('success', true);
+    const booking = res.body.data;
+    expect(booking).toHaveProperty('serviceId', service.id);
+    expect(booking).toHaveProperty('promoCodeId');
+    expect(booking).toHaveProperty('discountAmount');
+    expect(booking.promoCodeId).toBeTruthy();
+
+    const promo = await prisma.promoCode.findUnique({ where: { code: 'ADMINPROMO' } });
+    expect(promo).toBeTruthy();
+    expect(booking.promoCodeId).toBe(promo!.id);
+
+    const usage = await prisma.promoUsage.findFirst({ where: { promoCodeId: promo!.id, userId: client.id } });
+    expect(usage).toBeNull();
+  });
+
   it('GET /api/v1/admin/bookings should list bookings', async () => {
     const res = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
     const bookings = res.body.data;
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
+    await prisma.promoUsage.deleteMany();
+    await prisma.promoCode.deleteMany();
     expect(Array.isArray(res.body.data)).toBe(true);
     bookings.forEach((b: any) => {
       expect(b).toHaveProperty('assignedTo');
@@ -180,5 +215,39 @@ describe('Admin Booking Routes', () => {
     expect(res.body).toHaveProperty('data');
     expect(res.body.data).toHaveProperty('id', booking.id);
     expect(res.body.data.assignedTo).toBeDefined();
+  });
+
+  it('Admin can set maxDailyBookings and booking is limited per day', async () => {
+    // create a separate admin user and service with a daily limit
+    let adminRole2 = await prisma.companyRoleTitle.findUnique({ where: { title: 'ADMIN' } });
+    if (!adminRole2) {
+      adminRole2 = await prisma.companyRoleTitle.create({ data: { title: 'ADMIN', level: 10, permissions: ['*'] } });
+    }
+    const admin2 = await prisma.user.create({ data: { email: 'admin-limit@test.com', password: await AuthUtils.hashPassword('AdminPass123!'), type: 'COMPANYUSER', role: { connect: { id: adminRole2.id } }, isActive: true } });
+
+    const client2 = await prisma.user.create({ data: { email: 'client-limit@test.com', password: await AuthUtils.hashPassword('ClientPass123!'), type: 'CLIENT' } });
+    const clientProfile2 = await prisma.profile.create({ data: { userId: client2.id, phoneNumber: '0800000099' } });
+
+    const serviceWithLimit = await prisma.service.create({ data: { name: 'LimitService', description: 'Service with limit', maxDailyBookings: 1 } });
+    await prisma.servicePrice.create({ data: { serviceId: serviceWithLimit.id, amount: '100', currency: 'NAIRA', pricingType: 'PER_KG', isActive: true } });
+
+    const loginRes = await request(app).post('/api/v1/auth/login').send({ email: admin2.email, password: 'AdminPass123!' });
+    const admin2Token = loginRes.body?.data?.accessToken ?? loginRes.body?.accessToken ?? loginRes.body?.token;
+
+    const payload = {
+      email: client2.email,
+      profileId: clientProfile2.id,
+      deliveryType: 'PICK_UP',
+      serviceId: serviceWithLimit.id,
+      weight: 2,
+    };
+
+    const r1 = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${admin2Token}`).send(payload);
+    expect(r1.status).toBe(201);
+
+    const r2 = await request(app).post('/api/v1/admin/booking').set('Authorization', `Bearer ${admin2Token}`).send(payload);
+    expect(r2.status).toBe(409);
+    expect(r2.body).toHaveProperty('success', false);
+    expect(r2.body.message).toMatch(/Daily booking limit reached/i);
   });
 });

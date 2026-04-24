@@ -6,8 +6,7 @@ import CalendarController from './calendar.controller.js';
 
 const router = express.Router();
 
-router.use(UserAuth.authenticate());
-router.use(UserAuth.requireAdmin());
+router.use(UserAuth.requireCompanyAdmin());
 
 // Staff calendars
 router.post(

@@ -4,7 +4,7 @@ import { LaundrocleanservicesController } from '../../laundrocleanservices/index
 
 const router = Router();
 
-router.use(UserAuth.requireAdmin());
+router.use(UserAuth.requireCompanyAdmin());
 
 router.get(
     '/services/all-services/:serviceId',

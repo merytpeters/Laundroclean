@@ -6,10 +6,12 @@ let redis: Redis | null = null;
 export const getRedis = () => {
   if (!redis) {
     try {
-      // Reduce retries and disable offline queue to avoid long hangs
+      // Reduce retries; keep offline queue enabled so callers using
+      // the client (e.g. rate limiter) won't throw when Redis is
+      // temporarily unavailable.
       redis = new Redis(config.REDIS_URL as string, {
         maxRetriesPerRequest: 1,
-        enableOfflineQueue: false,
+        enableOfflineQueue: true,
       });
     } catch (err) {
       // If the client cannot be constructed, ensure we return null

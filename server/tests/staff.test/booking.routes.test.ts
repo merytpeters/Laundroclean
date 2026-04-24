@@ -53,6 +53,9 @@ describe('Staff Booking Routes', () => {
       data: { serviceId: service.id, amount: '80', currency: 'NAIRA', pricingType: 'PER_KG', isActive: true },
     });
 
+    // create a promo for staff test
+    await prisma.promoCode.create({ data: { code: 'STAFFPROMO', serviceId: service.id, type: 'PERCENTAGE', value: 15, isActive: true } });
+
     const res = await request(app).post('/api/v1/auth/login').send({ email: staffUser.email, password: 'StaffPass123!' });
     staffToken = res.body?.data?.accessToken ?? res.body?.accessToken ?? res.body?.token;
   });
@@ -69,6 +72,8 @@ describe('Staff Booking Routes', () => {
     await prisma.staffCalendar.deleteMany();
     await prisma.user.deleteMany();
     await prisma.companyRoleTitle.deleteMany();
+    await prisma.promoUsage.deleteMany();
+    await prisma.promoCode.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -91,5 +96,31 @@ describe('Staff Booking Routes', () => {
     const res = await request(app).get('/api/v1/staff/bookings').set('Authorization', `Bearer ${staffToken}`);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
+  });
+
+  it('POST /api/v1/staff/booking should create a booking with a promo code', async () => {
+    const payload = {
+      email: client.email,
+      profileId: clientProfile.id,
+      deliveryType: 'PICK_UP',
+      serviceId: service.id,
+      weight: 1,
+      promoCode: 'STAFFPROMO'
+    };
+
+    const res = await request(app).post('/api/v1/staff/booking').set('Authorization', `Bearer ${staffToken}`).send(payload);
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('success', true);
+    const booking = res.body.data;
+    expect(booking).toHaveProperty('serviceId', service.id);
+    expect(booking).toHaveProperty('promoCodeId');
+    expect(booking).toHaveProperty('discountAmount');
+    expect(booking.promoCodeId).toBeTruthy();
+
+    const promo = await prisma.promoCode.findUnique({ where: { code: 'STAFFPROMO' } });
+    expect(promo).toBeTruthy();
+    expect(booking.promoCodeId).toBe(promo!.id);
+    const usage = await prisma.promoUsage.findFirst({ where: { promoCodeId: promo!.id, userId: client.id } });
+    expect(usage).toBeNull();
   });
 });

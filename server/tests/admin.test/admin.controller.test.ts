@@ -15,10 +15,13 @@ describe('Admin Controller', () => {
         await prisma.bookingNotifications.deleteMany();
         await prisma.notification.deleteMany();
         await prisma.booking.deleteMany();
+        await prisma.timeSlot.deleteMany();
+        await prisma.staffCalendar.deleteMany();
         await prisma.servicePrice.deleteMany();
         await prisma.service.deleteMany();
         await prisma.token.deleteMany();
         await prisma.profile.deleteMany();
+        await prisma.companyRoleTitle.deleteMany();
         await prisma.user.deleteMany();
 
         adminRole = await prisma.companyRoleTitle.upsert({

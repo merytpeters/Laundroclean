@@ -8,6 +8,7 @@ const createBookingSchema = z.object({
     address: profileValidation.tempProfileSchema.optional(),
     deliveryType: z.enum(DeliveryType),
     serviceId: z.uuid(),
+    promoCode: z.string().optional(),
     scheduledDate: z.coerce.date().optional(),
     pickupTime: z.coerce.date().optional(),
     weight: z.float64().optional(),

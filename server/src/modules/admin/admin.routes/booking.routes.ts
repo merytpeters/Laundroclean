@@ -8,7 +8,7 @@ import { bookingLimiter } from '../../../middlewares/rateLimiter.js';
 
 const router = Router();
 
-router.use(UserAuth.requireAdmin());
+router.use(UserAuth.requireCompanyAdmin());
 
 router.get('/bookings', BookingController.listBookingsController);
 

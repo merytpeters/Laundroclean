@@ -21,6 +21,7 @@ const createService = async(payload: ServiceSchema): Promise<Service> => {
         const data: ServiceCreateInput = {
             name: validatedData.name,
             description: validatedData.description,
+            ...(validatedData.maxDailyBookings !== undefined ? { maxDailyBookings: validatedData.maxDailyBookings } : {}),
         };
         const service = await prisma.service.create({ data });
         return service;
@@ -44,6 +45,10 @@ const updateService = async(where: ServiceWhereUniqueInput, payload: UpdateServi
         const data: ServiceUpdateInput = Object.fromEntries(
             Object.entries(payload).filter(([, value]) => value !== undefined)
         );
+        // ensure explicit null/number handling for maxDailyBookings
+        if ((payload as any).maxDailyBookings === null) {
+            (data as any).maxDailyBookings = null;
+        }
         if (data.isActive === false) {
             data.deletedAt = now;
         }

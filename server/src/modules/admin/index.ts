@@ -9,6 +9,7 @@ export { default as AdminUsersController } from './admin.users/users.controller.
 export { default as AdminUsersRoutes } from './admin.users/users.routes.js';
 export { default as AdminServiceRoutes } from './admin.routes/service.routes.js';
 export { default as AdminBookingRoutes } from './admin.routes/booking.routes.js';
+export { default as AdminPromoRoutes } from './admin.routes/promocode.routes.js';
 export { default as CalendarService } from './companyuser.calendar/calendar.service.js';
 export { default as CalendarController } from './companyuser.calendar/calendar.controller.js';
 export { default as AdminCalendarRoutes } from './companyuser.calendar/calendar.routes.js';
