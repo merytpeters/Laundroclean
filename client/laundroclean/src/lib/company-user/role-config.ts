@@ -21,7 +21,7 @@ export interface StatConfig {
 export const roleConfig: Record<Role, RoleConfig> = {
   [Role.ADMIN]: {
     dashboardText: "Admin Dashboard",
-    dashboardHref: "/admin",
+    dashboardHref: "/admin/dashboard",
     showNotifications: true,
     settingsHref: "/admin/control-panel",
     settingsAction: "CONTROL PANEL",
@@ -43,7 +43,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
   },
   [Role.STAFF]: {
     dashboardText: "Staff Dashboard",
-    dashboardHref: "/staff",
+    dashboardHref: "/staff/dashboard",
     showNotifications: true,
     settingsHref: "/settings",
     settingsAction: "SETTINGS",
