@@ -23,3 +23,37 @@
     gap: 10%;
     width: 100%
 }
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .statcardbox {
+        gap: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .infosection {
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+    }
+}
+
+@media (min-width: 801px) and (max-width: 1200px) {
+    .statcardbox {
+        gap: 4rem;
+    }
+}
+
+/* Tweak for 1200-1366px so stat cards don't get cut off at ~1280px */
+@media (min-width: 1200px) and (max-width: 1366px) {
+    .statcardbox {
+        gap: 4rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+        align-items: start;
+    }
+
+    .overviewmodalcontainer {
+        padding: 0 1.5em; /* reduce horizontal padding to give more room */
+        gap: 3.5rem;
+    }
+}

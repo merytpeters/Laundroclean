@@ -20,8 +20,17 @@ body {
   scrollbar-width: none;
 }
 
-body::-webkit-scrollbar {
-  display: none;
+/* Hide scrollbars globally while keeping scrolling functional */
+html, body, * {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 * {

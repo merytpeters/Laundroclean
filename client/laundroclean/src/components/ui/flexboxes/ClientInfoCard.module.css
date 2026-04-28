@@ -126,3 +126,54 @@
     color: inherit;
     text-decoration: none;
 }
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .clientInfocardcontainer {
+        padding: 1rem;
+        max-width: 100%;
+    }
+
+    .clientInfocardcontainer h4 {
+        font-size: 1rem;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .clientInfocardcontainer span {
+        font-size: 0.75rem;
+    }
+
+    .clientinfo {
+        gap: 0.5rem;
+        max-height: calc(70vh - 6rem);
+    }
+
+    .infoitem {
+        padding: 0.75em;
+        font-size: x-small;
+    }
+
+    .infosecondrow {
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
+    .profilepicicon {
+        padding: 0.25em;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .clientInfocardcontainer {
+        padding: 1.25rem;
+        max-width: 520px;
+    }
+
+    .clientinfo {
+        max-height: calc(65vh - 7rem);
+    }
+
+    .infoitem {
+        font-size: smaller;
+    }
+}
