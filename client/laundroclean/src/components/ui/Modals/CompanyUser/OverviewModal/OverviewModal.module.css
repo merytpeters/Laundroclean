@@ -1,0 +1,59 @@
+.overviewmodalcontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2em;
+    gap: 4em;
+    margin-bottom: 2rem;
+}
+
+.statcardbox {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 220px);
+    gap: 7rem;
+    align-items: flex-start;
+    justify-content: start;
+    justify-items: start;
+    width: 100%;
+}
+
+.infosection {
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
+    width: 100%
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .statcardbox {
+        gap: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .infosection {
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+    }
+}
+
+@media (min-width: 801px) and (max-width: 1200px) {
+    .statcardbox {
+        gap: 4rem;
+    }
+}
+
+/* Tweak for 1200-1366px so stat cards don't get cut off at ~1280px */
+@media (min-width: 1200px) and (max-width: 1366px) {
+    .statcardbox {
+        gap: 4rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+        align-items: start;
+    }
+
+    .overviewmodalcontainer {
+        padding: 0 1.5em; /* reduce horizontal padding to give more room */
+        gap: 3.5rem;
+    }
+}

@@ -18,7 +18,7 @@ export default async function StaffLayout({
   return (
     <CompanyUserLayout 
       user={mockCompanyStaff}
-      welcomeMessage={{ title: "Staff Dashboard", message: "Manage your laundromat operations" }}
+      welcomeMessage={{ title: "Staff Dashboard", message: "Manage your laundromat duties" }}
     >
       {children}
     </CompanyUserLayout>

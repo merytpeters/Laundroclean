@@ -1,7 +1,6 @@
 import { Role } from "src/types/role";
 import { MenuItem } from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 
-
 export type SettingsActionType = "SETTINGS" | "CONTROL PANEL";
 
 export interface RoleConfig {
@@ -11,12 +10,25 @@ export interface RoleConfig {
   settingsHref: string;
   settingsAction: SettingsActionType;
   menuItems: MenuItem[];
+  statCards?: StatConfig[];
+  clientInfoCardTitle: string,
+  clientInfoCardMessage: string,
+}
+
+export interface InfoHeaderConfig {
+  title: string;
+  subheading: string;
+}
+
+export interface StatConfig {
+  title: string;
+  key: string;
 }
 
 export const roleConfig: Record<Role, RoleConfig> = {
   [Role.ADMIN]: {
     dashboardText: "Admin Dashboard",
-    dashboardHref: "/admin",
+    dashboardHref: "/admin/dashboard",
     showNotifications: true,
     settingsHref: "/admin/control-panel",
     settingsAction: "CONTROL PANEL",
@@ -29,10 +41,18 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {label: "Ratings", key: "ratings"},
       {label: "Analytics", key: "analytics"}
     ],
+    statCards: [
+      {title: "Today's Revenue", key: "dailyRevenue"},
+      {title: "Active Bookings", key: "activeBookings"},
+      {title: "Total Active Client", key: "activeClient"},
+      {title: "Customer Satisfaction", key: "customerSatisfaction"}
+    ],
+    clientInfoCardTitle : "Customers",
+    clientInfoCardMessage: "All Customers",
   },
   [Role.STAFF]: {
     dashboardText: "Staff Dashboard",
-    dashboardHref: "/staff",
+    dashboardHref: "/staff/dashboard",
     showNotifications: true,
     settingsHref: "/settings",
     settingsAction: "SETTINGS",
@@ -42,20 +62,13 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {label: "Delivery", key: "delivery"},
       {label: "Payment", key: "payment"},
       {label: "Chat", key: "chat"},
+      {label: "Calendar", key: "calendar"}
     ],
-  },
-  [Role.CASHIER]: {
-    dashboardText: "Cashier Dashboard",
-    dashboardHref: "/cashier",
-    showNotifications: true,
-    settingsHref: "/settings",
-    settingsAction: "SETTINGS",
-    menuItems: [
-      {label: "Overview", key: "overview"},
-      {label: "Bookings", key: "bookings"},
-      {label: "Delivery", key: "delivery"},
-      {label: "Payment", key: "payment"},
-      {label: "Chat", key: "chat"},
+    statCards: [
+      {title: "Active Bookings", key: "activeBookings"},
+      {title: "Customer Satisfaction", key: "customerSatisfaction"}
     ],
+    clientInfoCardTitle : "Customers Assigned",
+    clientInfoCardMessage: "Assigned Customers",
   },
 };

@@ -4,7 +4,7 @@ import styles from "./ReasonsFlexbox.module.css"
 
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 
-interface ReasonsFlexboxProps {
+export interface ReasonsFlexboxProps {
     icon: string | StaticImport;
     header: string;
     text: string;
