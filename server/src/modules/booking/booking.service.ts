@@ -607,11 +607,11 @@ const softDeleteBooking = async (where: BookingWhereUniqueInput | string, isAdmi
     const booking = await prisma.booking.findUnique({ where: whereObj });
     if (!booking) throw new NotFoundError('Booking not found');
 
-    // Clients can only cancel when booking status is PENDING or COMPLETED
+    // Clients can only cancel when booking status is PENDING
     if (!isAdmin) {
-        const allowed = ['PENDING', 'COMPLETED'];
+        const allowed = ['PENDING'];
         if (!allowed.includes(booking.status)) {
-            throw new ForbiddenError('Clients may only cancel bookings in PENDING or COMPLETED status');
+            throw new ForbiddenError('Clients may only cancel bookings in PENDING status');
         }
     }
 
