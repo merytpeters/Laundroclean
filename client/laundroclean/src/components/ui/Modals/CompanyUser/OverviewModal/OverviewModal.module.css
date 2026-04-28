@@ -2,15 +2,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 4rem;
+    padding: 0 2em;
+    gap: 4em;
+    margin-bottom: 2rem;
 }
 
 .statcardbox {
     display: grid;
     grid-template-columns: repeat(auto-fit, 220px);
-    gap: 2rem;
+    gap: 7rem;
     align-items: flex-start;
     justify-content: start;
     justify-items: start;
     width: 100%;
+}
+
+.infosection {
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
+    width: 100%
 }
