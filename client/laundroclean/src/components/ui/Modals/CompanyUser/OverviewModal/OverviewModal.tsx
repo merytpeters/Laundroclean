@@ -6,46 +6,13 @@ import { statMeta } from "src/components/ui/StatMeta";
 import styles from "./OverviewModal.module.css"
 import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
 import { mapDeliveryType, mapBookingStatus } from "src/types/bookingStatus";
+import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
+import { stats, bookingScheduleData, clientInfoData } from "./OverviewMockData";
 
 export default function Overview() {
     const { user } = useCompanyUserMenu();
 
     const config = roleConfig[user.role];
-    const stats = {}; // Replace with actual stats data source
-    const bookingScheduleData = [
-        {
-            id: "1",
-            time: "09:00 AM",
-            customerName: "John Doe",
-            serviceType: "Laundry Wash",
-            status: "COMPLETED",
-            deliveryType: "DROP_OFF"
-        },
-        {
-            id: "2",
-            time: "09:00 AM",
-            customerName: "Michael Doe",
-            serviceType: "Laundry Wash",
-            status: "CUSTOMER_PICKED_UP_FROM_POINT",
-            deliveryType: "PICK_UP"
-        },
-        {
-            id: "3",
-            time: "10:00 AM",
-            customerName: "John Doe",
-            serviceType: "Laundry Wash",
-            status: "COMPANY_DROPPED_OFF_AT_POINT",
-            deliveryType: "DROP_OFF"
-        },
-        {
-            id: "4",
-            time: "09:00 AM",
-            customerName: "John Doe",
-            serviceType: "Laundry Wash",
-            status: "DELIVERED",
-            deliveryType: "PICK_UP"
-        },
-    ]
 
     const mappedDelivery =bookingScheduleData.map((item) => ({
         ...item,
@@ -60,6 +27,13 @@ export default function Overview() {
     }))
 
     console.log(mappedSchedule);
+    
+
+    const clientInfoHeaderData = {
+        header: config.clientInfoCardTitle,
+        subheading: config.clientInfoCardMessage,
+    }
+
     
     return (
         <div className={styles.overviewmodalcontainer}>
@@ -82,7 +56,10 @@ export default function Overview() {
                
             <section aria-label="Information Section" className={styles.infosection}>
                 <ScheduleCard items={mappedSchedule}/>
-                Customer Info
+                <ClientInfoCard
+                  title={clientInfoHeaderData}
+                  items={clientInfoData}
+                />
             </section>
         </div>
     );

@@ -11,6 +11,13 @@ export interface RoleConfig {
   settingsAction: SettingsActionType;
   menuItems: MenuItem[];
   statCards?: StatConfig[];
+  clientInfoCardTitle: string,
+  clientInfoCardMessage: string,
+}
+
+export interface InfoHeaderConfig {
+  title: string;
+  subheading: string;
 }
 
 export interface StatConfig {
@@ -39,7 +46,9 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Active Bookings", key: "activeBookings"},
       {title: "Total Active Client", key: "activeClient"},
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
-    ]
+    ],
+    clientInfoCardTitle : "Customers",
+    clientInfoCardMessage: "All Customers",
   },
   [Role.STAFF]: {
     dashboardText: "Staff Dashboard",
@@ -58,6 +67,8 @@ export const roleConfig: Record<Role, RoleConfig> = {
     statCards: [
       {title: "Active Bookings", key: "activeBookings"},
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
-    ]
+    ],
+    clientInfoCardTitle : "Customers Assigned",
+    clientInfoCardMessage: "Assigned Customers",
   },
 };

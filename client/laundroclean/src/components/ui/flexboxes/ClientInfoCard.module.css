@@ -1,0 +1,99 @@
+.clientInfocardcontainer {
+    display : block;
+    max-width: 650px;
+    max-height: 470px;
+    height: fit-content;
+    width: 100%;
+    background-color: var(--foreground);
+    color: black;
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+ .clientInfocardcontainer span {
+    color : #B3B3B3;
+    font-size: small;
+}
+
+.clientinfo {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+    gap: 1rem;
+}
+
+.infoitem {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #B3B3B3;
+    padding: 1em;
+    border-radius: 10px;
+    max-height: 65px;
+    font-size: smaller;
+    gap: 0.5em;
+}
+
+.infofirstrow {
+    display: flex;
+    gap: 1em;
+}
+
+.profilepicicon {
+    display: flex;
+    padding: 0.5em;
+    border-radius: 6px;
+    align-items: center;
+    width: fit-content;
+}
+
+.infofirstinlinerow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.customername {
+    color: rgb(15, 15, 15) !important;
+}
+
+.status {
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 6px;
+    padding: 0.1em 1.3em;
+    align-items: center;
+}
+
+.active {
+    color: #ffffff !important;
+    background-color: rgb(42, 124, 51) !important;
+    width: fit-content;
+}
+
+
+.inactive {
+    color: #fffefe !important;
+    background-color: rgb(211, 45, 45) !important;
+    width: fit-content;
+}
+
+.infosecondrow {
+    display: flex;
+    padding-left: 3em;
+    padding-right: 2em;
+    justify-content: space-between;
+}
+
+.infosecondinlinerow {
+    display: flex;
+}
+
+.viewmore {
+    position: relative;
+    display: flex;
+    margin-bottom: 0;
+    justify-content: flex-end;
+    padding: 1em;
+    font-weight: bold;
+    font-size: small;
+}
