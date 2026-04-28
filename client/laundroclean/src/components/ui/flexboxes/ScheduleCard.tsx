@@ -49,6 +49,7 @@ export default function ScheduleCard ({items}: DailyScheduleProps) {
                 ))}
 
             </section>
+            <p className={styles.viewmore}>view more</p>
         </div>
     )
 }
