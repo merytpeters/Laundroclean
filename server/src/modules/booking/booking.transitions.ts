@@ -1,7 +1,7 @@
 import { BookingStatus } from '@prisma/client';
 
 export const BookingTransitions: Record<BookingStatus, BookingStatus[]> = {
-  [BookingStatus.PENDING]: [BookingStatus.CONFIRMED],
+  [BookingStatus.PENDING]: [BookingStatus.CANCELLED, BookingStatus.CONFIRMED],
 
   [BookingStatus.CONFIRMED]: [
     BookingStatus.COMPANY_PICKED_UP_FROM_CUSTOMER,
@@ -25,9 +25,9 @@ export const BookingTransitions: Record<BookingStatus, BookingStatus[]> = {
 
   [BookingStatus.CUSTOMER_PICKED_UP_FROM_POINT]: [BookingStatus.DELIVERED],
 
-  [BookingStatus.DELIVERED]: [BookingStatus.COMPLETED],
+  [BookingStatus.COMPLETED]: [BookingStatus.DELIVERED],
 
-  [BookingStatus.COMPLETED]: [],
+  [BookingStatus.DELIVERED]: [],
 
   [BookingStatus.CANCELLED]: [],
 };
