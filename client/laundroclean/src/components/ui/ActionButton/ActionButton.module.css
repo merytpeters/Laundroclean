@@ -10,8 +10,8 @@
     gap: 8px;
     border-radius: var(--border-radius, 8px);
     cursor: pointer;
-    font-size: medium;
-    font-weight: 900;
+    font-size: small;
+    font-weight: 600;
     padding: 8px;
 }
 

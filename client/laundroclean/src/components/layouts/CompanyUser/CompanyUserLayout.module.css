@@ -8,8 +8,8 @@
 }
 
 .iconStyle {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 18px;
   color: black;
 }
 
@@ -29,7 +29,7 @@
 
 .contentWrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: 100vw;
 }
 
 

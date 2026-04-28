@@ -33,7 +33,7 @@ export default function AppHeaderMenu({
   }, []);
 
   return (
-    <nav className={styles.horizontalnav} ref={rootRef}>
+    <nav aria-label="Main navigation" className={styles.horizontalnav} ref={rootRef}>
       <button
         className={styles.hamburgerButton}
         aria-expanded={open}
