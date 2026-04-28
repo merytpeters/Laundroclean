@@ -1,0 +1,134 @@
+.schedulecardcontainer {
+    display : block;
+    max-width: 650px;
+    max-height: 470px;
+    width: 100%;
+    background-color: var(--foreground);
+    color: black;
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+ .schedulecardcontainer span {
+    color : #B3B3B3;
+    font-size: small;
+}
+
+.dailyschedule {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+    gap: 1rem;
+}
+
+.dailyitem {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #B3B3B3;
+    padding: 1em;
+    border-radius: 10px;
+    max-height: 65px;
+    font-size: smaller;
+}
+
+.firstrow {
+    display: flex;
+    gap: 1em;
+}
+
+.icon {
+    display: flex;
+    background-color: rgba(70, 155, 211, 0.4);
+    padding: 0.5em;
+    border-radius: 6px;
+    align-items: center;
+    width: fit-content;
+}
+
+.icon svg {
+    color: #469BD3;
+}
+
+.firstinlinerow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.time {
+    color: rgb(15, 15, 15) !important;
+}
+
+.status {
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 6px;
+    padding: 0.1em 1.3em;
+    align-items: center;
+}
+
+.in_progress {
+    background-color: #e3e0e0;
+    color: rgb(15, 15, 15) !important;
+    width: fit-content;
+}
+
+.payment_made {
+    color: #e3e0e0;
+    background-color: rgb(15, 15, 15) !important;
+    width: fit-content;
+}
+
+.delivered {
+    color: #ffffff !important;
+    background-color: rgb(42, 124, 51) !important;
+    width: fit-content;
+}
+
+.in_transit {
+    color: #0f0f0f !important;
+    background-color: rgb(200, 187, 68) !important;
+    width: fit-content;
+}
+
+.needs_rider {
+    color: #0f0f0f !important;
+    background-color: rgb(199, 96, 36) !important;
+    width: fit-content;
+}
+
+.awaiting_drop_off {
+    color: #0f0f0f !important;
+    background-color: rgb(36, 177, 199) !important;
+    width: fit-content;
+}
+
+.at_dropoff_point {
+    color: #0f0f0f !important;
+    background-color: rgb(152, 111, 154) !important;
+    width: fit-content;
+}
+
+.pending {
+    color: #fffefe !important;
+    background-color: rgb(82, 65, 82) !important;
+    width: fit-content;
+}
+
+.cancelled {
+    color: #fffefe !important;
+    background-color: rgb(211, 45, 45) !important;
+    width: fit-content;
+}
+
+.secondrow {
+    display: flex;
+    padding-left: 3em;
+    padding-right: 16em;
+    justify-content: space-between;
+}
+
+.secondinlinerow {
+    display: flex;
+    gap: 2em;
+}
