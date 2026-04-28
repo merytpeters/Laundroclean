@@ -13,17 +13,17 @@ export function mapDeliveryType(deliveryType: string) : DeliveryType {
 
 type BookingStatus = 
    | "pending"
-   | "completed"
+   | "awaiting delivery"
    | "in-progress"
    | "awaiting drop off"
    | "cancelled"
    | "in-transit"
-   | "at pickup-point"
+   | "at dropoff-point"
    | "customer picked up"
    | "picked from doorstep"
    | "delivered to doorstep"
-   | "collected from pickup location"
-   | "rider dropped off"
+   | "collected from dropoff location"
+   | "returned to dropoff location"
    | "delivered"
    | "needs rider"
    | "payment made"
@@ -37,10 +37,13 @@ export const statusClassMap: Record<string, string> = {
     "delivered": "delivered",
     "in-transit": "in_transit",
     "needs rider": "needs_rider",
-    "at pickup-point": "at_pickup_point",
-    "collected from pickup location": "in_transit",
+    "at dropoff-point": "at_dropoff_point",
+    "collected from dropoff location": "in_transit",
     "picked from doorstep": "in_transit",
-    "customer picked up": "delivered"
+    "customer picked up": "delivered",
+    "cancelled": "cancelled",
+    "awaiting delivery": "delivered",
+    "returned to dropoff location": "delivered"
 }
 
 export function mapBookingStatus(status: string, meta?: {deliveryType?: DeliveryType}) : BookingStatus {
@@ -55,9 +58,9 @@ export function mapBookingStatus(status: string, meta?: {deliveryType?: Delivery
             }
             return "awaiting drop off";
         case "CUSTOMER_DROPPED_OFF_AT_POINT":
-            return "at pickup-point";
+            return "at dropoff-point";
         case "COMPANY_PICKED_UP_FROM_POINT":
-            return "collected from pickup location";
+            return "collected from dropoff location";
         case "COMPANY_PICKED_UP_FROM_CUSTOMER":
             return "picked from doorstep";
         case "IN_TRANSIT":
@@ -65,11 +68,11 @@ export function mapBookingStatus(status: string, meta?: {deliveryType?: Delivery
         case "IN_PROGRESS":
             return "in-progress";
         case "COMPLETED":
-            return "completed";
+            return "awaiting delivery";
         case "CUSTOMER_PICKED_UP_FROM_POINT":
             return "customer picked up";
         case "COMPANY_DROPPED_OFF_AT_POINT":
-            return "rider dropped off";
+            return "returned to dropoff location";
         case "DELIVERED":
             if (meta?.deliveryType === "pick up") {
                 return "delivered to doorstep";
@@ -81,3 +84,18 @@ export function mapBookingStatus(status: string, meta?: {deliveryType?: Delivery
             throw new Error(`Unknown status: ${status}`)
     }
 }
+
+export const BookingStatusDropDownOptions = [
+    { value:  "PENDING", label: "pending"},
+    { value:  "CONFIRMED", label: "confirmed"},
+    { value:  "IN_PROGRESS", label: "in-progress"},
+    { value:  "COMPLETED", label: "completed"},
+    { value:  "CANCELLED", label: "cancelled"},
+    { value:  "IN_TRANSIT", label: "in-transit"},         
+    { value:  "DELIVERED", label: "delivered"},
+    { value:  "CUSTOMER_DROPPED_OFF_AT_POINT", label: "customer dropped off"},
+    { value:  "CUSTOMER_PICKED_UP_FROM_POINT", label: "customer picked up"},
+    { value:  "COMPANY_PICKED_UP_FROM_CUSTOMER", label: "delivered to doorstep"},
+    { value:  "COMPANY_PICKED_UP_FROM_POINT", label: "collected from dropoff location"},
+    { value:  "COMPANY_DROPPED_OFF_AT_POINT", label: "returned to dropoff location"},
+]
