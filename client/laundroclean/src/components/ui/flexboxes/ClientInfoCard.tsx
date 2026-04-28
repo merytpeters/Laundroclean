@@ -1,6 +1,7 @@
 "use client";
-import { FaUser, FaEllipsisH } from "react-icons/fa";
+import { FaUserCircle, FaEllipsisH } from "react-icons/fa";
 import styles from "./ClientInfoCard.module.css"
+import { useState } from "react";
 
 type ClientInfoItem = {
     id: string;
@@ -21,16 +22,18 @@ type ClientInfoProps = {
 }
 
 export default function ClientInfoCard ({title, items}: ClientInfoProps) {
+    const [expanded, setExpanded] = useState(false);
+
     return (
         <div className={styles.clientInfocardcontainer}>
             <h4>{title.header}</h4>
             <span>{title.subheading}</span>
             
-            <section aria-label="Client Info Card" className={styles.clientinfo}>
+            <section aria-label="Client Info Card" className={`${styles.clientinfo} ${expanded ? styles.expanded : ""}`}>
                 {items.map((item)=> (
                     <div key={item.id} className={styles.infoitem}>
+                        <span className={styles.profilepicicon}><FaUserCircle size={30}/></span>
                         <div className={styles.infofirstrow}>
-                            <span className={styles.profilepicicon}><FaUser size={12}/></span>
                             <span className={styles.infofirstinlinerow}>
                                 <span className={styles.customername}>
                                     {item.customerName}
@@ -39,16 +42,19 @@ export default function ClientInfoCard ({title, items}: ClientInfoProps) {
                                     {item.clientStatus}
                                 </span>
                             </span>
-                        </div>
-                        <div className={styles.infosecondrow}>
-                            <span>{item.email}</span>
-                            <span className={styles.infosecondinlinerow}><FaEllipsisH size={10}/></span>
+                        
+                            <div className={styles.infosecondrow}>
+                                <span>{item.email}</span>
+                                <span className={styles.infosecondinlinerow}><FaEllipsisH size={10}/></span>
+                            </div>
                         </div>
                     </div>
                 ))}
-
+            
             </section>
-            <p className={styles.viewmore}>view more</p>
+            <div className={styles.actions}>
+                <button onClick={() => setExpanded(!expanded)} className={styles.viewmore}>{ expanded ? "view less" : "view more" }</button>
+            </div>
         </div>
     )
 }

@@ -33,6 +33,14 @@ export const bookingScheduleData = [
         status: "DELIVERED",
         deliveryType: "PICK_UP"
     },
+    {
+        id: "5",
+        time: "09:00 AM",
+        customerName: "linda Doe",
+        serviceType: "Laundry Wash",
+        status: "CONFIRMED",
+        deliveryType: "PICK_UP"
+    },
 ]    
 
     
@@ -57,6 +65,12 @@ export const clientInfoData = [
     },
     {
         id: "4",
+        customerName: "Merlin Doe",
+        email: "merlin@test.com",
+        clientStatus: "active"
+    },
+    {
+        id: "5",
         customerName: "Merlin Doe",
         email: "merlin@test.com",
         clientStatus: "active"
