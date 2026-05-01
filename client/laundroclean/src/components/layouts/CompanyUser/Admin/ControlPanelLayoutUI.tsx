@@ -1,4 +1,4 @@
-import ControlPanelSidebar from "./ControlPanelSidebar"
+import ControlPanelSidebar from "../../../ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar"
 
 export default function ControlPanelLayoutComponent () {
     return (
