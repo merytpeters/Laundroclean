@@ -1,0 +1,29 @@
+.cplayoutcontainer {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    transition: grid-template-columns 0.3s ease;
+    height: 100vh;
+}
+
+.cplsidebarcontainer {
+    display: flex;
+    overflow: hidden;
+    border: 1px solid;
+    border-radius: 8px;
+    margin: 2rem;
+    background-color: var(--foreground);
+}
+
+.cpbody {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    margin-top: 3rem;
+    gap: 1rem;
+}
+
+.cpsearchbar {
+    display: flex;
+    border: 1px solid blue;
+    border-radius: 4px;
+}

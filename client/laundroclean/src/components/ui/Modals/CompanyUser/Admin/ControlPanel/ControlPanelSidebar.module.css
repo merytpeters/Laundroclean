@@ -1,0 +1,103 @@
+.nav {
+    display: flex;
+    background-color: inherit;
+    color: #0F233A;
+    width: 100%;
+    margin: 4rem 0;
+}
+
+.navlist {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    padding: 2em;
+    
+}
+
+.navitem {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: #eae8e8;
+    padding: 0.5em;
+    border-radius: 2px;
+    font-size: smaller;
+    padding: 0.5em 1em;
+}
+
+.open {}
+
+.label {
+    width: 100%;
+    text-align: center;
+}
+
+.icon {
+    margin-left: 1em;
+}
+
+.navtrigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    width: 80%;
+    box-sizing: border-box;
+    flex-direction: column;
+    border: 1px solid #eee;
+    background: #eae8e8;
+    border-radius: 4px;
+    z-index: 10;
+    padding: 0.25rem 0;
+    gap: 1em;
+}
+
+.navitem.open .dropdown {
+    display: flex;
+}
+
+.dropdown li {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    width: 100%;
+    background-color: #eae8e8;
+}
+
+.dropdown li:hover {
+    background: #f5f5f5;
+}
+
+.chevron {
+    transition: transform 0.2s ease;
+}
+
+.navitem.open .chevron {
+    transform: rotate(180deg);
+}
+
+.navitem:hover {
+    color: #000
+}
+
+.navitem.active {
+    font-weight: 600;
+    color: #000;
+}
