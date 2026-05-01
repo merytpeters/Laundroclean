@@ -1,8 +1,10 @@
+import ControlPanelSidebar from "./ControlPanelSidebar"
+
 export default function ControlPanelLayoutComponent () {
     return (
         <div>
             <section>
-                Sidebar
+                <ControlPanelSidebar /> 
             </section>
             <section>
                 searchbar
