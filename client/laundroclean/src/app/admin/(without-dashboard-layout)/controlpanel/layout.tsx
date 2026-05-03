@@ -16,10 +16,12 @@ export default async function ControlPanelLayout ({children} : {children: React.
                 <section className={styles.cpsearchbar}>
                     <SearchBar />
                 </section>
-
-                {children}
+                <section className={styles.cplpagechildren}>
+                    {children}
+                </section>
+                
             </section>
-            
+
         </div>
     )
 }

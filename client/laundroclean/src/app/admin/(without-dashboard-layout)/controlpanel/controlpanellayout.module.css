@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 350px 1fr;
     transition: grid-template-columns 0.3s ease;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .cplsidebarcontainer {
@@ -12,7 +12,7 @@
     border-radius: 8px;
     margin: 2rem;
     background-color: var(--foreground);
-    height: 80vh;
+    min-height: 80vh;
 }
 
 .cpbody {
@@ -25,6 +25,16 @@
 
 .cpsearchbar {
     display: flex;
-    border: 1px solid blue;
+    background-color: #0F233A;
+    border: 1px solid #0F233A;
     border-radius: 4px;
+    align-items: center;
+    max-height: 5vh;
+}
+
+.cplpagechildren {
+    display: flex;
+    background: var(--foreground);
+    min-height: 70vh;
+    border-radius: 8px;
 }
