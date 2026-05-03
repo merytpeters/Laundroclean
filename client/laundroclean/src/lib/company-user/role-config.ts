@@ -30,7 +30,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
     dashboardText: "Admin Dashboard",
     dashboardHref: "/admin/dashboard",
     showNotifications: true,
-    settingsHref: "/admin/control-panel",
+    settingsHref: "/admin/controlpanel",
     settingsAction: "CONTROL PANEL",
     menuItems: [
       {label: "Overview", key: "overview"},

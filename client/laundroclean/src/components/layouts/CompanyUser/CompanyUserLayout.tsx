@@ -30,7 +30,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
 
   return (
       <div className={styles.layoutContainer}>
-        <AppHeader
+        {user?.role === "STAFF" && <AppHeader
           userButton={
             config && (
               <ActionButton
@@ -40,6 +40,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
               />
             )
           }
+        
 
           notificationButton={
             config?.showNotifications ? (
@@ -69,7 +70,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
               />
             )
           }
-        />
+        />}
 
        {welcomeMessage && (
         <div className={styles.welcomeWrapper}>

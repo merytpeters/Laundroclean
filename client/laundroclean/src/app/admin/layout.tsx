@@ -1,27 +1,63 @@
-// import { redirect } from "next/navigation";
-import CompanyUserLayout from "src/components/layouts/CompanyUser/CompanyUserLayout";
-//import { getCurrentUser } from "src/lib/auth";
-// import { CompanyUser } from "src/types/user";
-import { mockCompanyAdmin } from "src/lib/company-user/mock";
+"use client";
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  /*const user = (await getCurrentUser()) as CompanyUser | null;
+import AppHeader from 'src/components/ui/AppHeader/AppHeader';
+import ActionButton from 'src/components/ui/ActionButton/ActionButton';
+import styles from '../../components/layouts/CompanyUser/CompanyUserLayout.module.css';
+import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
+import { roleConfig } from 'src/lib/company-user/role-config';
+import { mockCompanyAdmin } from 'src/lib/company-user/mock';
 
-  if (!user || user.type !== "COMPANYUSER") {
-    redirect("/login");
-  }*/ 
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+    const user = mockCompanyAdmin;
+    const config = roleConfig[user.role];
+    const isControlPanel = config.settingsAction === "CONTROL PANEL";
 
-  return (
-    <CompanyUserLayout 
-      user={mockCompanyAdmin}
-      welcomeMessage={{ title: "Admin Dashboard", message: "Manage your laundromat operations and monitor performance" }}
-      showMenu={true}
-    >
-      {children}
-    </CompanyUserLayout>
-  );
-}
+
+    return (
+        <div>
+            <div className={styles.layoutContainer}>
+                <AppHeader
+                    userButton={
+                        config && (
+                        <ActionButton
+                            text={config.dashboardText}
+                            href={config.dashboardHref}
+                            className={styles.dashboardButton}
+                        />
+                        )
+                    }
+                
+
+                    notificationButton={
+                        config?.showNotifications ? (
+                        <ActionButton
+                            icon={<BellIcon className={styles.iconStyle} />}
+                            text="Notifications"
+                            className={styles.iconButton}
+                        // onClick={() => console.log("Open notifications")}
+                        />
+                        ) : null
+                    }
+
+                    settingsOrControlPanelButton={
+                        config && (
+                        <ActionButton
+                            icon={
+                            isControlPanel ? (
+                                <WrenchScrewdriverIcon className={styles.iconStyle} />
+                            ) :
+                                (
+                                <Cog6ToothIcon className={styles.iconStyle} />
+                                )
+                            }
+                            text={isControlPanel ? "Control Panel" : "Settings"}
+                            href={config.settingsHref}
+                            className={styles.iconButton}
+                        />
+                        )
+                    }
+                />
+            </div>
+            {children}
+        </div>
+)}

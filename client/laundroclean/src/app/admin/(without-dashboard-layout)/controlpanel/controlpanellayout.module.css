@@ -1,0 +1,168 @@
+.cplayoutcontainer {
+    display: grid;
+    transition: grid-template-columns 0.3s ease;
+    min-height: 100vh;
+    width: 100vw;
+}
+
+.cplayoutcontainer.open {
+    grid-template-columns: 25vw 1fr;
+}
+
+.cplayoutcontainer.closed {
+    grid-template-columns: 60px 1fr;
+}
+
+.sidebaraside {
+    display: flex;
+    flex-direction: row;
+    margin: 2rem 1rem;
+    gap: 0;
+    max-width: 25vw;
+}
+
+.cplsidebarcontainer {
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 8px;
+    background-color: var(--foreground);
+    min-height: 80vh;
+    width: 100%;
+    transition: width 0.3s ease;
+}
+
+.cplsidebarcontainer.closed {
+    width: 0.5em;
+}
+
+.toggleBtn {
+    display: flex;
+    left: 230px;
+    z-index: 10;
+    height: fit-content;
+    margin-top: 2rem;
+    border: none;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    background: var(--foreground);
+    border-radius: 50%;
+    font-size: 18px;
+    transform: rotate(0deg);
+}
+
+.cplsidebarcontainer.closed + .toggleBtn .circle{
+    transform: rotate(180deg);
+}
+
+.cpbody {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    margin-top: 3rem;
+    margin-left: 0.2rem;
+    gap: 1rem;
+}
+
+.cpsearchbar {
+    display: flex;
+    background-color: #0F233A;
+    border: 1px solid #0F233A;
+    border-radius: 4px;
+    align-items: center;
+    max-height: 5vh;
+}
+
+.cplpagechildren {
+    display: flex;
+    background: var(--foreground);
+    min-height: 85vh;
+    border-radius: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 750px) {
+    .cplayoutcontainer {
+        grid-template-columns: 1fr;
+    }
+
+    /* Sidebar becomes an off-canvas panel */
+    .cplsidebarcontainer {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 80vw;
+        max-width: 300px;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease, width 0.25s ease;
+        z-index: 60;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        overflow-y: auto;
+    }
+
+    /* When layout state is open, slide the sidebar in */
+    .cplayoutcontainer.open .cplsidebarcontainer {
+        transform: translateX(0);
+    }
+
+    /* Closed state keeps content full width */
+    .cplayoutcontainer.closed .cplsidebarcontainer {
+        transform: translateX(-100%);
+    }
+
+    /* Make toggle button fixed and visible on small screens */
+    .toggleBtn {
+        position: fixed;
+        left: 1rem;
+        top: 3rem;
+        transform: none;
+        z-index: 70;
+        background: var(--foreground);
+    }
+
+    .cpbody {
+        margin-top: 3.5rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Tablet: narrower but persistent sidebar */
+    .cplayoutcontainer.open {
+        grid-template-columns: minmax(30vw, 200px) 1fr;
+    }
+
+    .cplayoutcontainer.closed {
+        grid-template-columns: 40px 1fr;
+    }
+
+    .cplsidebarcontainer {
+        transition: width 0.25s ease;
+    }
+
+    .cplsidebarcontainer.closed {
+        width: 80px;
+        min-width: 15px;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* Desktop: keep the existing wide behaviour but ensure smooth transitions */
+    .cplayoutcontainer.open {
+        grid-template-columns: minmax(25vw, 250px) 1fr;
+    }
+
+    .cplayoutcontainer.closed {
+        grid-template-columns: minmax(1em, 60px) 1fr;
+    }
+}
