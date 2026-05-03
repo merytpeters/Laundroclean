@@ -7,11 +7,12 @@
 
 .cplsidebarcontainer {
     display: flex;
-    overflow: hidden;
-    border: 1px solid;
+    overflow-x: hidden;
+    overflow-y: auto;
     border-radius: 8px;
     margin: 2rem;
     background-color: var(--foreground);
+    height: 80vh;
 }
 
 .cpbody {
