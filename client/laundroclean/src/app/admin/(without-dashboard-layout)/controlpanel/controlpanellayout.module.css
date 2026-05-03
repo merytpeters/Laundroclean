@@ -35,6 +35,6 @@
 .cplpagechildren {
     display: flex;
     background: var(--foreground);
-    min-height: 70vh;
+    min-height: 85vh;
     border-radius: 8px;
 }
