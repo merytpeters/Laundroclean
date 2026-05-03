@@ -1,14 +1,24 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import ControlPanelSidebar from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 import styles from './controlpanellayout.module.css'
 import SearchBar from "src/components/ui/SearchBar/SearchBar";
 
-export default async function ControlPanelLayout ({children} : {children: React.ReactNode}) {
+export default function ControlPanelLayout ({children} : {children: React.ReactNode}) {
+    const [open, setOpen] = useState(false);
     return (
-        <div className={styles.cplayoutcontainer}>
+        <div className={`${styles.cplayoutcontainer} ${open ? styles.open : styles.closed}`}>
+            <aside className={styles.sidebaraside}>
+                <section className={`${styles.cplsidebarcontainer} ${open ? styles.open: styles.closed}`}>
+                    <ControlPanelSidebar /> 
+                </section>
 
-            <aside className={styles.cplsidebarcontainer}>
-                <ControlPanelSidebar /> 
+                <button onClick={() => setOpen(prev => !prev)} className={styles.toggleBtn}> 
+                    <span className={styles.circle}>
+                        &gt;
+                    </span> 
+                </button>
             </aside>
 
             <section className={styles.cpbody}>
