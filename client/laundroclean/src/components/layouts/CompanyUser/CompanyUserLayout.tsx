@@ -8,7 +8,8 @@ import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from "@heroicons/react
 import AppHeaderMenu from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 import { CompanyUserMenuProvider, useCompanyUserMenu } from "./context/CompanyUserMenuContext";
 import WelcomeMessage from "src/components/ui/WelcomeMessage/WelcomeMessage";
-import styles from './CompanyUserLayout.module.css'
+import styles from './CompanyUserLayout.module.css';
+import BackButton from "src/components/ui/Button/BackButton";
 
 interface CompanyUserLayoutProps {
   user: CompanyUser;
@@ -69,6 +70,10 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
                   className={styles.iconButton}
               />
             )
+          }
+
+          backbutton={
+            <BackButton />
           }
         />}
 

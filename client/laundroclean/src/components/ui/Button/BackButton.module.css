@@ -1,0 +1,23 @@
+.button {
+    width: 6em;
+    border-radius: 8px;
+    background: #0F233A;
+    padding: 1em;
+    font-weight: 800;
+    font-size: small;
+    z-index: 20;
+}
+
+@media (max-width: 750px) {
+    .button {
+        width: 4em;
+        font-weight: 600;
+        font-size: xx-small;
+    }
+}
+
+@media (max-width: 380px) {
+    .button {
+        font-size: 0.6rem;
+    }
+}

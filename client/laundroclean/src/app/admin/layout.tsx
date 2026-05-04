@@ -6,6 +6,7 @@ import styles from '../../components/layouts/CompanyUser/CompanyUserLayout.modul
 import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { roleConfig } from 'src/lib/company-user/role-config';
 import { mockCompanyAdmin } from 'src/lib/company-user/mock';
+import BackButton from 'src/components/ui/Button/BackButton';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const user = mockCompanyAdmin;
@@ -55,6 +56,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             className={styles.iconButton}
                         />
                         )
+                    }
+
+                    backbutton={
+                        <BackButton />
                     }
                 />
             </div>
