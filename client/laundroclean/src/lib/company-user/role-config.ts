@@ -13,6 +13,7 @@ export interface RoleConfig {
   statCards?: StatConfig[];
   clientInfoCardTitle: string,
   clientInfoCardMessage: string,
+  AdminCPStatCards?: StatConfig[];
 }
 
 export interface InfoHeaderConfig {
@@ -49,6 +50,12 @@ export const roleConfig: Record<Role, RoleConfig> = {
     ],
     clientInfoCardTitle : "Customers",
     clientInfoCardMessage: "All Customers",
+    AdminCPStatCards: [
+      {title: "Total Revenue", key: "totalRevenue"},
+      {title: "Total Staff", key: "totalStaff"},
+      {title: "Total Users", key: "totalUsers"},
+      {title: "Total Fulfilled Bookings", key: "totalFulfilledBookings"},
+    ]
   },
   [Role.STAFF]: {
     dashboardText: "Staff Dashboard",
