@@ -41,10 +41,17 @@
   font-size: 16px;
 }
 
+.form select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+}
+
 .form span {
   display: flex;
   align-self: center;
-  color: #000
 }
 
 .inputWrapper {

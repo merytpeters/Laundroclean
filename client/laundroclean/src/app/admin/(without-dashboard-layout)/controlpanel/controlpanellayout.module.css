@@ -88,6 +88,7 @@
     background: var(--foreground);
     min-height: 85vh;
     border-radius: 8px;
+    font-size: small;
 }
 
 /* Responsive adjustments */

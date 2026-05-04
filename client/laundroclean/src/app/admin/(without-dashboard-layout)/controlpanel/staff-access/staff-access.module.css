@@ -1,0 +1,21 @@
+.staffaccesscontainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    gap: 6em;
+    margin-top: 2em;
+    margin-bottom: 2rem;
+    color: #000;
+    width: 100%;
+}
+
+.headertab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+
+

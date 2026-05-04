@@ -1,0 +1,29 @@
+.stafftab {
+    display: flex;
+    flex-direction: column;
+}
+
+.addstaffbtn {
+    display: flex;
+    width: 10em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}
+
+.staffsignup {
+    display: flex;
+    width: 32em;
+
+}
+
+.signupbutton {
+    width: 200px;
+    height: 40px;
+    background-color: #0F233A;
+    border-radius: 8px;
+    color: var(--foreground) !important;
+}

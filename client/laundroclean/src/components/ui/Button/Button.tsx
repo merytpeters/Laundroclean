@@ -10,6 +10,7 @@ type ButtonProps = {
   href?: string;
   tel?: string;
   type?: "button" | "submit" | "reset";
+  icon?: React.ReactNode
 };
 
 export default function Button({
@@ -19,6 +20,7 @@ export default function Button({
   tel,
   href,
   type = "button",
+  icon,
 }: ButtonProps) {
   const buttonClasses = clsx(styles.button, className);
 
@@ -44,7 +46,8 @@ export default function Button({
 
   return (
     <button type={type} className={buttonClasses} onClick={onClick}>
-      {text}
+      { icon && <span>{icon}</span>}
+      <span>{text}</span>
     </button>
   );
 }
