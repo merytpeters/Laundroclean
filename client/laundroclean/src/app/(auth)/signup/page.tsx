@@ -3,15 +3,22 @@
 import AuthForm from "src/components/ui/Forms/AuthForms";
 import Button from "src/components/ui/Button/Button";
 import styles from "./signup.module.css"
+import { useState } from "react";
 
 export default function Signup() {
-  const fields = [
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+  })
+
+  const getFields = (handleNameSplit: (arg0: any) => any) => [
     {
       label: "Name",
       inputProps: {
         id: "name",
         type: "text",
-        placeholder: "Enter your name",
+        placeholder: "Enter your first and last names",
+        onChange: (e: { target: { value: any; }; }) => handleNameSplit(e.target.value),
         required: true,
       },
     },
@@ -35,12 +42,27 @@ export default function Signup() {
     },
   ];
 
+  const handleNameSplit = (val: string) => {
+    const name = val.trim();
+    const index = name.indexOf(' ');
+
+    if (index === -1) {
+      setFormData({ ...formData, firstName: name, lastName: ''})
+    } else {
+      setFormData({
+        ...formData,
+        firstName: name.substring(0, index),
+        lastName: name.substring(index + 1),
+      })
+    }
+  }
+
   return (
     <>
       <AuthForm
         title="Create An Account"
         subtitle="Sign up to get started"
-        fields={fields}
+        fields={getFields(handleNameSplit)}
         actions={
           <>
             <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
