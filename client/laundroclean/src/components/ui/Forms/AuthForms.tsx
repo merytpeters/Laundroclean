@@ -31,7 +31,7 @@ export default function AuthForm({ title, subtitle, fields, actions }: FormProps
     return (
         <form className={styles.form}>
             <legend>
-                <h2>{title}</h2>
+                <h4>{title}</h4>
                 <p>{subtitle}</p>
             </legend>
 

@@ -25,6 +25,7 @@ export default function StaffAccess () {
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
+                      className={`${styles.tabbtn} ${activeTab === tab.key ? styles.active : ""}`}
                     >
                         {tab.label}
                     </button>

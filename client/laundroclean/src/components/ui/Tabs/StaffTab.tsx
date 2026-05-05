@@ -1,12 +1,14 @@
 "use client";
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 import styles from './StaffTab.module.css';
 import Button from 'src/components/ui/Button/Button';
 import AuthForm from 'src/components/ui/Forms/AuthForms';
 import { useState } from 'react';
 import { useRoles } from 'src/app/admin/hooks/roles/useRoles';
+import SearchBar from '../SearchBar/SearchBar';
 
 export default function StaffTab () {
+    const [open, setOpen] = useState(false);
     const { data: roles, loading } = useRoles();
     const [formData, setFormData] = useState({
         firstName: '',
@@ -47,6 +49,7 @@ export default function StaffTab () {
             inputProps: {
                 id: "role",
                 type: "select",
+                required: true,
             },
             options: roles,
         },
@@ -76,26 +79,33 @@ export default function StaffTab () {
     if (loading) return <p>Loading</p>
     return (
         <section className={styles.stafftab}>
-            <span>
-                <input type="text" name="" id="" placeholder="Search staff here..."/>
+            <div className={styles.actionsWrap}>
+                <Button icon={open ? <FaTimes /> : <FaPlus />} text={open ? "Cancel" : "Add Staff"} className={open ? styles.cancelbtn : styles.addstaffbtn} onClick={() => setOpen(!open)}/> 
+                
+                <div className={`${styles.panel} ${open ? styles.open : ''}`}>
+                    <span className={styles.staffsignup}>
+                        <AuthForm
+                            title="Staff Registration"
+                            subtitle="Add a new staff"
+                            fields={getFields(handleNameSplit)}
+                            actions={
+                            <>
+                                <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
+                            </>
+                            }
+                        />
+                    </span>
+
+                    <span> Send staff invite</span>
+                </div>
+            </div>
+
+            <span className={styles.localsearchfilter}>
+                <SearchBar />
                 <select name="filters" id=""></select>
             </span>
             
-
-            <Button icon={<FaPlus />} text="Add staff" className={styles.addstaffbtn}/>
-            <span className={styles.staffsignup}>
-                <AuthForm
-                    title="Staff Registration"
-                    subtitle="Add a new staff"
-                    fields={getFields(handleNameSplit)}
-                    actions={
-                    <>
-                        <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
-                    </>
-                    }
-                />
-            </span>
-            <span> Send staff invite</span>
+            
         </section>
     )
 }
