@@ -1,0 +1,44 @@
+.staffaccesscontainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    gap: 1em;
+    margin-top: 2em;
+    margin-bottom: 2rem;
+    color: #000;
+    width: 100%;
+}
+
+.headertab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    border-radius: 10px;
+    background-color: #f3f3f3;
+    height: fit-content;
+    padding: 0.3em 0.3em;
+}
+
+.tabbtn {
+    border: none;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: fit-content;
+    padding: 0.5rem 2rem;
+    border-radius: 12px;
+    background: transparent;
+    font-weight: 600;
+}
+
+.tabbtn:hover {
+    background: aliceblue;
+}
+
+.active {
+    background: var(--foreground);
+}
+
+

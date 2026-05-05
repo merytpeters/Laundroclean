@@ -1,4 +1,4 @@
-import { FaMoneyBillWave, FaClipboardList, FaUsers, FaStar } from "react-icons/fa";
+import { FaMoneyBillWave, FaClipboardList, FaUsers, FaStar, FaShirtsinbulk } from "react-icons/fa";
 
 export const statMeta = {
   dailyRevenue: {
@@ -22,3 +22,29 @@ export const statMeta = {
     text: ""
   }
 };
+
+export const AdminCPStatMeta = {
+  totalRevenue: {
+    icon: FaMoneyBillWave,
+    unit: "₦",
+    text: ""
+  },
+
+  totalStaff: {
+    icon: FaUsers,
+    unit: "",
+    text: ""
+  },
+
+  totalUsers: {
+    icon: FaUsers,
+    unit: "",
+    text: ""
+  },
+
+  totalFulfilledBookings: {
+    icon: FaShirtsinbulk,
+    unit: "",
+    text: "",
+  }
+}

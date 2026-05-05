@@ -5,9 +5,15 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "./AuthForm.module.css";
 import { usePathname } from "next/navigation";
 
+export type SelectOption = {
+    label: string;
+    value: string;
+}
+
 interface FieldConfig {
     label: string;
     inputProps: React.InputHTMLAttributes<HTMLInputElement>;
+    options?: SelectOption[];
 }
 
 interface FormProps {
@@ -25,22 +31,34 @@ export default function AuthForm({ title, subtitle, fields, actions }: FormProps
     return (
         <form className={styles.form}>
             <legend>
-                <h2>{title}</h2>
+                <h4>{title}</h4>
                 <p>{subtitle}</p>
             </legend>
 
             {fields.map((field, index) => {
                 const isPassword = field.inputProps.type === "password";
+                const isSelect = field.inputProps.type === "select";
 
                 return (
                     <div key={index} className={styles.inputWrapper}>
                         <label htmlFor={field.inputProps.id}>{field.label}</label>
 
                         <div className={styles.passwordWrapper}>
-                            <input
-                                {...field.inputProps}
-                                type={isPassword ? (showPassword ? "text" : "password") : field.inputProps.type}
-                            />
+                            {isSelect ? (
+                                <select id={field.inputProps.id} name={field.inputProps.name} defaultValue="">
+                                    {field.options?.map((opt) => (
+                                        <option key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                ) : (
+                                    <input 
+                                        {...field.inputProps}
+                                        type={isPassword ? (showPassword ? "text" : "password") : field.inputProps.type}
+                                    />
+                                )
+                            }
 
                             {isPassword && (
                                 <button
@@ -53,6 +71,8 @@ export default function AuthForm({ title, subtitle, fields, actions }: FormProps
                                 </button>
                             )}
                         </div>
+
+                        
                     </div>
                 );
             })}

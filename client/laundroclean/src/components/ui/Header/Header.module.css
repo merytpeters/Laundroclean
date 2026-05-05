@@ -9,14 +9,14 @@
 }
 
 .logo {
-    height: auto;
+  height: auto;
 }
 
 .nav {
-    position: absolute;
-    left: 16rem;
-    top: 2em;
-    width: 40%;
+  position: absolute;
+  left: 16rem;
+  top: 2em;
+  width: 40%;
 }
 
 .nav ul {
@@ -25,7 +25,6 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  font-size: small;
 }
 
 .nav li {
@@ -34,6 +33,7 @@
 
 .nav a {
   text-decoration: none;
+  font-size: smaller; 
 }
 
 .serviceButton {

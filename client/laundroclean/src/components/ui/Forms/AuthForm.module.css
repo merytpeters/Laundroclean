@@ -32,6 +32,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  font-size: small;
 }
 
 .form input {
@@ -39,12 +40,22 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 16px;
+  font-size: smaller;
+}
+
+.form select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  font-size: smaller;
 }
 
 .form span {
   display: flex;
   align-self: center;
-  color: #000
+  font-size: small;
 }
 
 .inputWrapper {
@@ -58,6 +69,7 @@
   color: #111;
   display: block;
   margin-bottom: 4px;
+  font-size: smaller;
 }
 
 

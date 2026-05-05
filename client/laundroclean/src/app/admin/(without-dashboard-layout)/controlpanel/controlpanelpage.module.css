@@ -1,0 +1,91 @@
+.cpoverviewcontainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    padding: 0 2em;
+    gap: 6em;
+    margin-top: 2em;
+    margin-bottom: 2rem;
+    color: #000;
+    width: 100%;
+}
+
+.statcardbox {
+    grid-column:  1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: flex-start;
+    justify-content: start;
+    justify-items: start;
+    width: 100%;
+}
+
+.quickactions {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    z-index: 20;
+    padding: 1em;
+}
+
+.quickactions p {
+    font-weight: 600;
+}
+
+.quickactionsbtns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+}
+
+.newrolebtn {
+    width: 12em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    height: 3em;
+    align-items: center;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}
+
+.addstaffbtn {
+    width: 10em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}
+
+.newpromobtn {
+    width: 14em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    height: 3em;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}
+
+.viewreportbtn {
+    width: 10em;
+    background: #e9a872;
+    color: var(--foreground);
+    border-radius: 18px;
+    height: 3em;
+    align-items: center;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}
+
+.insights {
+    grid-column: 1 / -1;
+}

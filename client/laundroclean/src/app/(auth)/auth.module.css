@@ -7,5 +7,17 @@
   min-width: 90vw;
   display: flex;
   justify-content: center;
-  align-items: center;  
+  flex-direction: column;  
+  gap: 2em;
+  padding: 2em;
+}
+
+.backbutton {
+  display: flex;
+  width: fit-content;
+}
+
+.mainform {
+  display: flex;
+  align-self: center;
 }
