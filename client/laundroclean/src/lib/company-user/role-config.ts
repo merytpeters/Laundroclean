@@ -14,6 +14,8 @@ export interface RoleConfig {
   clientInfoCardTitle: string,
   clientInfoCardMessage: string,
   AdminCPStatCards?: StatConfig[];
+  BookingStatCards?: StatConfig[];
+  DeliveryStatCards?: StatConfig[];
 }
 
 export interface InfoHeaderConfig {
@@ -55,6 +57,16 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Total Staff", key: "totalStaff"},
       {title: "Total Users", key: "totalUsers"},
       {title: "Total Fulfilled Bookings", key: "totalFulfilledBookings"},
+    ],
+    BookingStatCards: [
+      {title: "Today's Bookings", key: "dailyBookings"},
+      {title: "in Progress", key: "inprogressBookings"},
+      {title: "Pending Bookings", key: "pendingBookings"},
+      {title: "Today's Fulfilled Orders", key: "dailyFulfilledOrders"}
+    ],
+    DeliveryStatCards: [
+      {title: "Today's Pending Deliveries", key: "pendingDeliveries"},
+      {title: "Today's Pending Pickups", key: "pendingPickups"},
     ]
   },
   [Role.STAFF]: {
@@ -77,5 +89,14 @@ export const roleConfig: Record<Role, RoleConfig> = {
     ],
     clientInfoCardTitle : "Customers Assigned",
     clientInfoCardMessage: "Assigned Customers",
+    BookingStatCards: [
+      {title: "Today's Bookings", key: "dailyBookings"},
+      {title: "in Progress", key: "inprogressBookings"},
+      {title: "Pending Bookings", key: "pendingBookings"},
+    ],
+    DeliveryStatCards: [
+      {title: "Assigned Deliveries", key: "pendingDeliveries"},
+      {title: "Assigned Pickups", key: "pendingPickups"},
+    ]
   },
 };

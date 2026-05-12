@@ -47,6 +47,7 @@ export default function Overview() {
                             header={card.title}
                             text={meta?.text}
                             icon={meta?.icon}
+                            iconColor={meta.iconColor}
                             unit={meta?.unit}
                             value={stats[card.key as keyof typeof stats]}
                         />

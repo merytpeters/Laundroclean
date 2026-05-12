@@ -14,11 +14,16 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    width: 100%;
-    border-radius: 10px;
+    width: 98%;
+    border-radius: 12px;
     background-color: #f3f3f3;
     height: fit-content;
-    padding: 0.3em 0.3em;
+    padding: 0.2em 0.2em;
+}
+
+/* Make header a containing block so the select dropdown anchors correctly */
+.headertab {
+    position: relative;
 }
 
 .tabbtn {
@@ -27,18 +32,132 @@
     cursor: pointer;
     transition: all 0.2s ease;
     height: fit-content;
-    padding: 0.5rem 2rem;
+    padding: 0.3rem 3rem;
     border-radius: 12px;
     background: transparent;
     font-weight: 600;
+    font-size: small;
 }
 
 .tabbtn:hover {
-    background: aliceblue;
+    background: #ffffff;
 }
 
 .active {
     background: var(--foreground);
+}
+
+/* Responsive styles for staff-access page (down to ~300px) */
+@media (max-width: 1300px) {
+    .staffaccesscontainer {
+        padding: 1.5em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .headertab {
+        padding: 0.5em;
+    }
+    .tabbtn {
+        padding: 0.3rem 2rem;
+    }
+}
+
+/* Mobile select for switching tabs: hidden on desktop, visible on smaller screens */
+.tabSelect {
+    display: none;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(15, 35, 58, 0.08);
+    background: var(--foreground);
+    font-weight: 600;
+    font-size: small;
+    position: relative; /* ensure it participates in stacking */
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    /* hide the button list and show the select on small screens */
+    .tabbtn {
+        display: none;
+    }
+    .tabSelect {
+        display: block;
+        /* restore native appearance so the platform dropdown anchors correctly */
+        appearance: auto;
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+        margin-top: 0.5rem; /* nudge the select lower so its dropdown opens lower */
+        align-self: stretch;
+    }
+}
+
+@media (max-width: 768px) {
+    .headertab {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+    .tabbtn {
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem 1rem;
+        font-size: smaller;
+    }
+    .active {
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tabbtn {
+        padding: 0.4rem 0.6rem;
+        font-size: x-small;
+    }
+}
+
+@media (max-width: 350px) {
+    .headertab {
+        padding: 0.25rem;
+    }
+    .tabbtn {
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Prevent tab content from overflowing on narrow screens (300-600px).
+   Allow horizontal scroll for wide children and ensure images/tables scale. */
+@media (min-width: 300px) and (max-width: 600px) {
+    .staffaccesscontainer {
+        padding: 0.75rem;
+    }
+
+    /* Wrap content area and allow scroll when needed */
+    .staffaccesscontainer > section {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Constrain common wide elements inside the tab content */
+    .staffaccesscontainer img,
+    .staffaccesscontainer table,
+    .staffaccesscontainer pre,
+    .staffaccesscontainer code,
+    .staffaccesscontainer .responsive {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        box-sizing: border-box;
+    }
+
+    /* Ensure any direct children don't overflow due to fixed widths */
+    .staffaccesscontainer > section > * {
+        min-width: 0;
+        box-sizing: border-box;
+    }
 }
 
 

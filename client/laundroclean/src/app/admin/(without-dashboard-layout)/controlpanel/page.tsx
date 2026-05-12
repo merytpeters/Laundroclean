@@ -28,6 +28,7 @@ export default function ControlPanel () {
                             text={meta?.text}
                             icon={meta?.icon}
                             unit={meta?.unit}
+                            iconColor={meta?.iconColor}
                             value={stats[card.key as keyof typeof stats]}
                         />
                     );
