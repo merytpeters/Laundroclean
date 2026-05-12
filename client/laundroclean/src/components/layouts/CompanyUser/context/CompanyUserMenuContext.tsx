@@ -1,13 +1,13 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { MenuItem } from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 import { CompanyUser } from "src/types/user";
 
 interface MenuContextType {
   user: CompanyUser;
-  activeMenu: string | null;
-  setActiveMenu: (key: string | null) => void;
+  activeMenu: string; // never null; defaults to last-clicked or 'overview'
+  setActiveMenu: (key: string) => void;
   menuItems: MenuItem[];
   setMenuItems: (items: MenuItem[]) => void;
 }
@@ -30,8 +30,27 @@ interface ProviderProps {
 }
 
 export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user }: ProviderProps) => {
-  const [activeMenu, setActiveMenu] = useState<string | null>("overview");
   const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
+
+  const [activeMenu, setActiveMenuState] = useState<string>("overview");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("companyUserActiveMenu");
+      if (saved) setActiveMenuState(saved);
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  const setActiveMenu = (key: string) => {
+    try {
+      localStorage.setItem("companyUserActiveMenu", key);
+    } catch (e) {
+      // ignore
+    }
+    setActiveMenuState(key);
+  };
 
   return (
     <CompanyUserMenuContext.Provider value={{ user, activeMenu, setActiveMenu, menuItems, setMenuItems }}>

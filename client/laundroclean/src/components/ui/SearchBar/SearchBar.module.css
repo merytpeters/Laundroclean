@@ -22,4 +22,52 @@
 .searchicon {
     color: #0F233A;
     height: 90%;
+    margin: 0 1em;
+}
+
+.localsearchbox {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #eae8e8;
+    width: 22em;
+    align-items: center;
+    color: #eae8e8;
+    border-radius: 10px;
+    padding: 0.4em;
+    margin: 0.6em 2em;
+    height: 70%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.localsearchbox input {
+    border: none;
+    background: inherit;
+    width: 60%;
+    height: 90%;
+    outline: none;
+}
+
+.dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #eae8e800;
+    width: 12em;
+    background-color: #eae8e800;
+    border-radius: 8px;
+    padding: 0.2em 0.5em;
+    margin: 0.6em 2em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    height: 1.8em;
+}
+
+.dropdown select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background: inherit;
+    width: 100%;
+    outline: none;
+    padding: 0.2em;
 }

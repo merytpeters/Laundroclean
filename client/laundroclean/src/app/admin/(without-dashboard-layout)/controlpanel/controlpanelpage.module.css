@@ -89,3 +89,83 @@
 .insights {
     grid-column: 1 / -1;
 }
+
+/* Responsive: collapse two-column layout into single column on smaller viewports */
+@media (max-width: 1300px) {
+    .cpoverviewcontainer {
+        gap: 4rem;
+        padding: 0 1.5em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .cpoverviewcontainer {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .statcardbox {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    .quickactions {
+        grid-column: 1 / -1;
+        padding: 0.5em;
+    }
+}
+
+/* Ensure stat cards display in two columns between 700px and 800px */
+@media (min-width: 700px) and (max-width: 800px) {
+    .statcardbox {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .statcardbox {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .quickactionsbtns {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .newrolebtn, .addstaffbtn, .newpromobtn, .viewreportbtn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .cpoverviewcontainer {
+        padding: 0.5em;
+        gap: 1rem;
+    }
+    .quickactions p {
+        font-size: smaller;
+    }
+}
+
+/* Strong override: force stat cards into two columns between 700px and 800px
+   placed last so it takes precedence over earlier rules */
+@media (min-width: 700px) and (max-width: 800px) {
+    .statcardbox {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+    }
+    /* Align quick actions buttons the same way (two columns) */
+    .quickactions {
+        grid-column: 1 / -1;
+        padding: 0.5em;
+    }
+    .quickactionsbtns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        width: 100%;
+    }
+    .newrolebtn, .addstaffbtn, .newpromobtn, .viewreportbtn {
+        width: 100% !important;
+    }
+}

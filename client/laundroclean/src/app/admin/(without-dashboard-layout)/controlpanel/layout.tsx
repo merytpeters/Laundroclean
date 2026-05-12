@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import ControlPanelSidebar from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 import styles from './controlpanellayout.module.css'
-import SearchBar from "src/components/ui/SearchBar/SearchBar";
+import { SearchBar } from "src/components/ui/SearchBar/SearchBar";
 
 export default function ControlPanelLayout ({children} : {children: React.ReactNode}) {
     const [open, setOpen] = useState(false);

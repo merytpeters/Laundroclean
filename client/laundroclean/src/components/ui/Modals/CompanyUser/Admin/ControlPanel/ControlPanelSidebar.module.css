@@ -259,3 +259,81 @@
         display: block;
     }
 }
+
+/* Additional responsive ranges for widths down to ~300px */
+@media (max-width: 1300px) {
+    .navlist {
+        padding: 1.5rem;
+        gap: 1.25rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .nav {
+        margin: 3rem 0;
+    }
+    .navlist {
+        gap: 1rem;
+    }
+    .label {
+        font-size: smaller;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav {
+        padding: 0.75rem;
+    }
+    .navlist {
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    .navitem {
+        flex-direction: row;
+        align-items: center;
+        padding: 0.5em;
+    }
+    .icon {
+        margin-left: 0.5em;
+        width: 2.5rem;
+    }
+    .label {
+        text-align: left;
+        padding-left: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .navitem .dropdown {
+        position: absolute;
+        left: 0;
+        top: calc(100% + 0.25rem);
+        width: calc(100% - 1rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .navlist {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+    .label {
+        font-size: x-small;
+    }
+    .navitem .dropdown li {
+        padding: 6px 8px;
+    }
+}
+
+@media (max-width: 350px) {
+    .label {
+        display: none;
+    }
+    .icon {
+        margin-left: 0.25em;
+    }
+    .navitem {
+        padding: 0.3em;
+    }
+}

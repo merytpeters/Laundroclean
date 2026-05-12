@@ -22,7 +22,7 @@
 .menuItem {
   cursor: pointer;
   height: fit-content;
-  padding: 0.5rem 3rem;
+  padding: 0.3rem 3rem;
   border-radius: 12px;
   transition: all 0.2s ease;
   color: #000000;

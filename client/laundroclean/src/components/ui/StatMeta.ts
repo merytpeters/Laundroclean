@@ -1,25 +1,39 @@
-import { FaMoneyBillWave, FaClipboardList, FaUsers, FaStar, FaShirtsinbulk } from "react-icons/fa";
+import { 
+  FaMoneyBillWave,
+  FaClipboardList,
+  FaUsers,
+  FaStar,
+  FaShirtsinbulk,
+  FaCalendar,
+  FaClock,
+  FaTshirt,
+  FaTruck
+} from "react-icons/fa";
 
 export const statMeta = {
   dailyRevenue: {
     icon: FaMoneyBillWave,
     unit: "₦",
-    text: ""
+    text: "",
+    iconColor: "#2a7c33"
   },
   activeBookings: {
     icon: FaClipboardList,
     unit: "",
-    text: ""
+    text: "",
+    iconColor: "#0f233a"
   },
   activeClient: {
     icon: FaUsers,
     unit: "",
-    text: ""
+    text: "",
+    iconColor: "#0f233a"
   },
   customerSatisfaction: {
     icon: FaStar,
     unit: "",
-    text: ""
+    text: "",
+    iconColor: "#ffd700"
   }
 };
 
@@ -27,24 +41,71 @@ export const AdminCPStatMeta = {
   totalRevenue: {
     icon: FaMoneyBillWave,
     unit: "₦",
-    text: ""
+    text: "",
+    iconColor: "#2a7c33"
   },
 
   totalStaff: {
     icon: FaUsers,
     unit: "",
-    text: ""
+    text: "",
+    iconColor: "#0f233a"
   },
 
   totalUsers: {
     icon: FaUsers,
     unit: "",
-    text: ""
+    text: "",
+    iconColor: "#0f233a"
   },
 
   totalFulfilledBookings: {
     icon: FaShirtsinbulk,
     unit: "",
     text: "",
+    iconColor: ""
+  }
+}
+
+export const BookingStatMeta = {
+  dailyBookings: {
+    icon: FaCalendar,
+    unit: "",
+    text: "",
+    iconColor: "#469BD3"
+  },
+  inprogressBookings: {
+    icon: FaClock,
+    unit: "",
+    text: "",
+    iconColor: "#d59056"
+  },
+  pendingBookings: {
+    icon: FaTshirt,
+    unit: "",
+    text: "",
+    iconColor: ""
+  },
+  dailyFulfilledOrders: {
+    icon: FaShirtsinbulk,
+    unit: "",
+    text: "",
+    iconColor: "#0f233a"
+  }
+}
+
+
+export const DeliveryStatMeta = {
+  pendingDeliveries: {
+    icon: FaTruck,
+    unit: "",
+    text: "",
+    iconColor: "#0f233a"
+  },
+  pendingPickups: {
+    icon: FaTruck,
+    unit: "",
+    text: "",
+    iconColor: "#0f233a"
   }
 }

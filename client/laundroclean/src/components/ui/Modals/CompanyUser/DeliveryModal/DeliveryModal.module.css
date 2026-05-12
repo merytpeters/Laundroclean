@@ -1,0 +1,71 @@
+.deliverymodalcontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2em;
+    gap: 2em;
+    margin-bottom: 2rem;
+    background: var(--foreground);
+    min-height: 85vh;
+    border-radius: 8px;
+    font-size: small;
+    margin: 1.5em;
+}
+
+.statcardbox {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 220px);
+    gap: 7rem;
+    align-items: flex-start;
+    justify-content: start;
+    justify-items: start;
+    width: 100%;
+}
+
+/* Responsive breakpoints: 1300px down to ~300px */
+@media (max-width: 1300px) {
+    .deliverymodalcontainer {
+        padding: 1.5em;
+        gap: 1.5em;
+    }
+    .statcardbox {
+        gap: 3rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .statcardbox {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .deliverymodalcontainer {
+        padding: 1em;
+    }
+    .statcardbox {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .statcardbox {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .deliverymodalcontainer {
+        padding: 0.6em;
+        gap: 0.6em;
+        font-size: smaller;
+    }
+}
+
+@media (max-width: 360px) {
+    .deliverymodalcontainer {
+        padding: 0.4em;
+        gap: 0.5em;
+    }
+}

@@ -8,9 +8,9 @@ interface WelcomeMessageProps {
 export default function WelcomeMessage({ title, message}: WelcomeMessageProps) {
     return (
         <div className={styles.welcomeMessage}>
-            <h2>
+            <h3>
                 {title}
-            </h2>
+            </h3>
             <span>{message}</span>
         </div>
     )

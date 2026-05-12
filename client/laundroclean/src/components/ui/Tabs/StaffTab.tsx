@@ -5,7 +5,7 @@ import Button from 'src/components/ui/Button/Button';
 import AuthForm from 'src/components/ui/Forms/AuthForms';
 import { useState } from 'react';
 import { useRoles } from 'src/app/admin/hooks/roles/useRoles';
-import SearchBar from '../SearchBar/SearchBar';
+import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
 
 export default function StaffTab () {
     const [open, setOpen] = useState(false);
@@ -101,8 +101,8 @@ export default function StaffTab () {
             </div>
 
             <span className={styles.localsearchfilter}>
-                <SearchBar />
-                <select name="filters" id=""></select>
+                <LocalSearchBar placeholder="Find Staff" />
+                <FilterSearch />
             </span>
             
             

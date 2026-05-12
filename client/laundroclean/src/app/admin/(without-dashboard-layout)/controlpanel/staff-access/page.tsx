@@ -21,6 +21,19 @@ export default function StaffAccess () {
     return (
         <div className={styles.staffaccesscontainer}>
             <section className={styles.headertab}>
+                {/* Mobile-friendly select shown on small screens */}
+                <select
+                    className={styles.tabSelect}
+                    value={activeTab}
+                    onChange={(e) => setActiveTab(e.target.value as TabKey)}
+                    aria-label="Select tab"
+                >
+                    {tabs.map((tab) => (
+                        <option key={tab.key} value={tab.key}>{tab.label}</option>
+                    ))}
+                </select>
+
+                {/* Desktop buttons (hidden on small screens via CSS) */}
                 {tabs.map((tab) => (
                     <button
                       key={tab.key}
@@ -30,7 +43,6 @@ export default function StaffAccess () {
                         {tab.label}
                     </button>
                 ))}
-                
             </section>
             <section>
                 {tabs.find((t) => t.key === activeTab)?.component}

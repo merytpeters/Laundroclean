@@ -1,0 +1,321 @@
+.bookingmodalcontainer {
+    display: grid;
+    align-items: center;
+    gap: 4em;
+    padding: 1em;
+    margin-bottom: 2rem;
+    background: var(--foreground);
+    min-height: 85vh;
+    border-radius: 8px;
+    font-size: small;
+    margin: 1.5em;
+    position: relative;
+}
+
+.bookingrowgrid {
+    display: flex;
+    flex-direction: row;
+    margin: 2em;
+}
+
+.statcardbox {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 220px);
+    gap: 1.5rem;
+    align-items: flex-start;
+    justify-content: start;
+    justify-items: start;
+    width: 80%;
+    z-index: 25;
+    font-size: xx-small;
+}
+
+.bookingstatcard {
+    width: 12em;
+    box-shadow: 6px 8px 6px 6px rgba(0, 0, 0, 0.15);
+}
+
+.searchsection {
+    display: flex;
+    flex-direction: column;
+    padding: auto;
+    height: 60%;
+}
+
+.searchicons {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    height: 60%
+}
+
+.addnewbtn {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    gap: 1em;
+    justify-items: flex-end;
+    align-items: center;
+    width: fit-content;
+    color: #555;
+    font-size: small;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    padding: 1em;
+    margin: 1em 4em;
+    right: 0;
+}
+
+.tablesection {
+    width: 100%;
+}
+
+/* Responsive breakpoints: widths from 1300px down to ~300px */
+@media (max-width: 1300px) {
+    .bookingmodalcontainer {
+        padding: 0.75em;
+        gap: 3em;
+    }
+    .statcardbox {
+        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .bookingrowgrid {
+        margin: 1.5em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .bookingmodalcontainer {
+        min-height: 70vh;
+    }
+    .statcardbox {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .searchsection {
+        height: auto;
+    }
+    .bookingstatcard {
+        width: 11rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .bookingmodalcontainer {
+        padding: 1em;
+        gap: 2em;
+    }
+    .bookingrowgrid {
+        flex-direction: column;
+        margin: 1em;
+    }
+    .statcardbox {
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+    }
+    /* Keep search on top and stats below */
+    .searchsection {
+        order: 0;
+        width: 100%;
+    }
+    .statcardbox {
+        order: 1;
+    }
+    .addnewbtn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        margin: 0;
+        z-index: 60;
+        max-width: calc(100% - 2rem);
+    }
+    .searchicons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .bookingstatcard {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .statcardbox {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .bookingmodalcontainer {
+        padding: 0.5em;
+        font-size: smaller;
+        min-height: auto;
+    }
+    .addnewbtn {
+        padding: 0.6em;
+        font-size: small;
+    }
+    /* ensure search visible on top */
+    .searchsection { order: 0; width: 100%; }
+    .statcardbox { order: 1; }
+}
+
+@media (max-width: 360px) {
+    .addnewbtn {
+        font-size: x-small;
+        padding: 0.4em;
+    }
+}
+
+/* Prevent horizontal overflow for narrow viewports; allow horizontal scroll for tables but hide scrollbar */
+@media (max-width: 1024px) {
+    .bookingmodalcontainer {
+        overflow-x: hidden;
+    }
+    .statcardbox {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .statcardbox > * {
+        min-width: 0; /* allow children to shrink */
+    }
+    .tablesection {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none; /* IE/Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+    .tablesection::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/WebKit */
+    }
+}
+
+@media (max-width: 480px) {
+    .statcardbox {
+        overflow-x: auto;
+    }
+    .statcardbox::-webkit-scrollbar,
+    .tablesection::-webkit-scrollbar {
+        display: none;
+    }
+    .addnewbtn {
+        right: 1rem;
+        left: auto;
+        max-width: calc(100% - 2rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Fix spacing and searchbar shape for medium screens (800px - 1024px) */
+@media (min-width: 800px) and (max-width: 1024px) {
+    .bookingrowgrid {
+        gap: 1.5rem;
+        margin: 1.5em;
+        align-items: flex-start;
+        flex-direction: column; /* put search on top, stats below */
+    }
+
+    /* Ensure search area appears first */
+    .searchsection {
+        order: 0;
+        width: 100%;
+    }
+
+    .statcardbox {
+        order: 1;
+        gap: 2rem;
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr); /* two columns for rows of two */
+        align-items: stretch;
+    }
+
+    .statcardbox > * {
+        margin-bottom: 0.5rem;
+    }
+
+    .searchsection {
+        height: auto;
+        padding: 0.25em 0;
+    }
+
+    .searchicons {
+        height: auto;
+        flex-direction: row;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    /* Ensure search controls can shrink and don't become squares */
+    .searchicons > * {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    /* Target common input/button elements inside the search area */
+    .searchicons input,
+    .searchicons button,
+    .searchicons .searchbox {
+        min-width: 0;
+        height: auto;
+    }
+
+    /* Keep tables section horizontally scrollable if needed */
+    .tablesection {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Tweak for slightly smaller tablets/large phones (600px - 800px) */
+@media (min-width: 600px) and (max-width: 799px) {
+    .bookingrowgrid {
+        gap: 1rem;
+        margin: 1em;
+        flex-direction: column;
+    }
+    .statcardbox {
+        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+    }
+    .searchicons {
+        gap: 0.75rem;
+        align-items: center;
+    }
+    .searchicons > * { min-width: 0; }
+    /* Show search above stats */
+    .searchsection { order: 0; width: 100%; }
+    .statcardbox { order: 1; }
+}
+
+/* Ensure very small screens keep spacing */
+@media (max-width: 599px) {
+    .bookingrowgrid { gap: 0.75rem; }
+    .statcardbox { gap: 0.5rem; }
+    .searchicons { gap: 0.5rem; }
+    .searchsection { order: 0; width: 100%; }
+    .statcardbox { order: 1; }
+}
+
+/* Fix: prevent .addnewbtn overlapping searchbox between ~300px and 600px */
+@media (min-width: 300px) and (max-width: 600px) {
+    .addnewbtn {
+        position: relative; /* place in document flow */
+        top: auto;
+        right: auto;
+        left: auto;
+        margin: 0 1rem 0 auto;
+        max-width: 100%;
+        width: auto;
+        z-index: 40;
+        justify-self: end;
+    }
+
+    /* ensure search sits above and has room */
+    .searchsection { order: 0; width: 100%; padding-bottom: 0.5rem; }
+    .statcardbox { order: 1; }
+
+    /* add a little bottom spacing so button doesn't butt against search */
+    .searchicons { margin-bottom: 0.5rem; }
+}
