@@ -1,16 +1,18 @@
 import styles from './WelcomeMessage.module.css'
+import { FaUserCircle } from 'react-icons/fa';
 
 interface WelcomeMessageProps {
-    title: string;
+    name: string;
     message: string;
 }
 
-export default function WelcomeMessage({ title, message}: WelcomeMessageProps) {
+export default function WelcomeMessage({ name, message}: WelcomeMessageProps) {
     return (
         <div className={styles.welcomeMessage}>
-            <h3>
-                {title}
-            </h3>
+            <span className={styles.profilepic}>
+                <FaUserCircle size={45}/>
+            </span>
+            <h4>Welcome, {name} </h4>
             <span>{message}</span>
         </div>
     )

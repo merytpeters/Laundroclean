@@ -14,7 +14,7 @@ import BackButton from "src/components/ui/Button/BackButton";
 interface CompanyUserLayoutProps {
   user: CompanyUser;
   children: React.ReactNode;
-  welcomeMessage?: { title: string; message: string };
+  welcomeMessage?: { name: string; message: string };
   showMenu?: boolean;
 }
 
@@ -80,7 +80,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
        {welcomeMessage && (
         <div className={styles.welcomeWrapper}>
           <WelcomeMessage
-            title={welcomeMessage.title}
+            name={welcomeMessage.name}
             message={welcomeMessage.message}
           />
         </div>
