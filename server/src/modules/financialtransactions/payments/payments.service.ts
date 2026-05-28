@@ -290,11 +290,12 @@ class PaymentsService {
           providerRef: payload.providerRef,
         },
         include: {
-          transaction: true,
-          include: {
-            booking: true
-          }
-        }
+          transaction: {
+            include: {
+              booking: true,
+            },
+          },
+        },
       });
 
       if (!payment) {
