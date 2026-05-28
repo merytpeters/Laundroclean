@@ -303,7 +303,7 @@ model Booking {
   discountAmount    Decimal?         @map("discount_amount")
   finalAmount       Decimal?         @map("final_amount")
   bookingNotifications          BookingNotifications[]
-  Transaction                   Transaction?
+  Transaction                   Transaction[]
 
   @@map("bookings")
 }
@@ -408,7 +408,7 @@ model PromoUsage {
 model Transaction {
   id                      String                  @id @default(uuid())
 
-  bookingId               String                  @unique
+  bookingId               String
   userId                  String
 
   booking                 Booking                 @relation(fields: [bookingId], references: [id])
@@ -419,16 +419,14 @@ model Transaction {
 
   currency                Currency                @default(NAIRA)
 
-  provider                PaymentProvider?
-  providerRef             String                  @unique
-
   status                  TransactionStatus       @default(PENDING)
 
   paidAt                  DateTime?
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
+  transactionRef          String                  @unique
 
-  payment                 Payment?
+  payment                 Payment[]
   // refunds                 Refund[]
   // disputes                Dispute[]
 
@@ -437,7 +435,7 @@ model Transaction {
 
 model Payment {
   id                            String                  @id @default(uuid())
-  transactionId                 String                  @unique
+  transactionId                 String
   transaction                   Transaction             @relation(fields: [transactionId], references: [id])
 
   provider                      PaymentProvider
@@ -479,6 +477,7 @@ model PaymentEvent {
   createdAt                     DateTime                @default(now())
 
   @@map("payment events")
+  @@unique([providerRef, eventType])
 }
 
 

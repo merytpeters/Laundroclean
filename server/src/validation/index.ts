@@ -7,3 +7,4 @@ export { default as LocationValidation } from './location/location.validation.js
 export { default as CompanyUserCalendarValidation } from './companyuser.calendar/calendar.validation.js';
 export { default as PaymentValidation } from './financialtransactions/payment.validation.js';
 export { default as TransactionValidation } from './financialtransactions/transactions.validation.js';
+export { default as WebhookValidation } from './financialtransactions/webhook.validation.js';
