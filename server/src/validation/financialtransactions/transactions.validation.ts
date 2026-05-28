@@ -1,5 +1,5 @@
 import z from 'zod';
-import { TransactionStatus } from '@prisma/client';
+// import { TransactionStatus } from '@prisma/client';
 
 const createtransactionSchema = z.object({
     bookingId: z.uuid(),
@@ -8,15 +8,15 @@ const createtransactionSchema = z.object({
 
 export type CreateTransactionSchema = z.infer<typeof createtransactionSchema>
 
-const updateTransactionSchema = z.object({
+/*const updateTransactionSchema = z.object({
   status: z.enum(TransactionStatus).optional(),
   paidAt: z.date().optional(),
   providerRef: z.string().optional(),
 });
 
-export type UpdateTransactionSchema = z.infer<typeof updateTransactionSchema>
+export type UpdateTransactionSchema = z.infer<typeof updateTransactionSchema>*/
 
 export default {
     createtransactionSchema,
-    updateTransactionSchema
+    //updateTransactionSchema
 };

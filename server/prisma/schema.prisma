@@ -91,7 +91,7 @@ enum TransactionStatus {
   FAILED
   CANCELLED
   REFUNDED
-  PARTIALLY_REFUNDED   @map("PARTIALLY REFUNDED" )
+  PARTIALLY_REFUNDED
 }
 
 enum PaymentStatus {
@@ -100,6 +100,9 @@ enum PaymentStatus {
   SUCCESS
   FAILED
   REVERSED
+  EXPIRED
+  ABANDONED
+  REFUNDED
 }
 
 

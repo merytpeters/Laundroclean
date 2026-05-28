@@ -12,7 +12,7 @@ const updatePaymentFromWebhookSchema = z.object({
 export type UpdatePaymentFromWebhookSchema = z.infer<typeof updatePaymentFromWebhookSchema>
 
 const handleWebhookSchema = paymentValidation.createPaymentEventSchema.extend({
-    updatePaymentFromWebhookSchema
+    paymentUpdate: updatePaymentFromWebhookSchema,
 });
 export type HandleWebhookSchema = z.infer<typeof handleWebhookSchema>
 

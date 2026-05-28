@@ -1,6 +1,5 @@
 import z from 'zod';
 import { PaymentProvider, PaymentStatus, Currency } from '@prisma/client';
-import transactionsValidation from './transactions.validation.js';
 
 const createPaymentSchema = z.object({
     transactionId: z.uuid(),
@@ -25,7 +24,8 @@ const updatePaymentSchema = z.object({
 export type UpdatePaymentSchema = z.infer<typeof updatePaymentSchema>
 
 const initiatePaymentSchema = createPaymentSchema.extend({
-    ...transactionsValidation.createtransactionSchema.shape
+  bookingId: z.uuid(),
+  userId: z.uuid(),
 });
 
 export type InitiatePaymentSchema = z.infer<typeof initiatePaymentSchema>
