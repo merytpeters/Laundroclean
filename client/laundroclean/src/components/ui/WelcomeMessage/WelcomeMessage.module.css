@@ -1,9 +1,19 @@
 .welcomeMessage {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
   left: 0;
   margin-left: 0;
   width: 100%;
   box-sizing: border-box;
+}
+
+.profilepic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 5em;
 }
 
 /* Ensure left:0 on all screen sizes explicitly */

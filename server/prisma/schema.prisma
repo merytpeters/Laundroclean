@@ -80,6 +80,31 @@ enum PricingType {
   FLAT_RATE     @map("FLAT RATE")
 }
 
+enum PaymentProvider {
+  PAYSTACK
+  OPAY
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentStatus {
+  INITIATED
+  PENDING
+  SUCCESS
+  FAILED
+  REVERSED
+  EXPIRED
+  ABANDONED
+  REFUNDED
+}
+
 
 // MODELS
 
@@ -206,7 +231,7 @@ model ServicePrice {
   updatedAt     DateTime      @updatedAt @map("updated_at")
 
   @@index([serviceId, isActive])
-  @@map("service_prices")
+  @@map("service prices")
 }
 
 model ServiceArea {
@@ -218,7 +243,7 @@ model ServiceArea {
   lngMin        Float?
   lngMax        Float?
 
-  @@map("service_areas")
+  @@map("service areas")
 }
 
 
@@ -230,7 +255,7 @@ model DropOffPoint {
   lng           Float?
   isActive      Boolean             @default(true)
 
-  @@map("dropoff_points")
+  @@map("dropoff points")
 }
 
 
@@ -273,13 +298,15 @@ model Booking {
   timeSlotId        String?
   timeSlot          TimeSlot?        @relation("TimeSlotBookings", fields: [timeSlotId], references: [id])
 
-  bookingNotifications BookingNotifications[]
+  
 
   // Promo fields: record applied promo immutably at booking time
   promoCodeId       String?          @map("promo_code_id")
   promoCode         PromoCode?       @relation(fields: [promoCodeId], references: [id])
   discountAmount    Decimal?         @map("discount_amount")
   finalAmount       Decimal?         @map("final_amount")
+  bookingNotifications          BookingNotifications[]
+  Transaction                   Transaction[]
 
   @@map("bookings")
 }
@@ -289,7 +316,7 @@ model BookingSettings {
   minPickupDays          Int          @default(3)
   updatedAt              DateTime     @updatedAt
 
-  @@map("booking_settings")
+  @@map("booking settings")
 }
 
 model StaffCalendar {
@@ -305,7 +332,7 @@ model StaffCalendar {
 
   timeSlots             TimeSlot[]
 
-  @@map("staff_calendar")
+  @@map("staff calendar")
 }
 
 model TimeSlot {
@@ -331,7 +358,7 @@ model BookingNotifications {
   notificationId String @map("notification_id")
   notification   Notification @relation(fields: [notificationId], references: [id])
 
-  @@map("booking_notifications")
+  @@map("booking notifications")
   @@id([bookingId, notificationId])
 }
 
@@ -362,7 +389,7 @@ model PromoCode {
   deletedAt               DateTime?
   promoUsages             PromoUsage[]
 
-  @@map("promo_codes")
+  @@map("promo codes")
 }
 
 model PromoUsage {
@@ -375,6 +402,96 @@ model PromoUsage {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@map("promo_usages")
+  @@map("promo usages")
   @@index([userId, promoCodeId])
 }
+
+// Financial models
+
+model Transaction {
+  id                      String                  @id @default(uuid())
+
+  bookingId               String
+  userId                  String
+
+  booking                 Booking                 @relation(fields: [bookingId], references: [id])
+
+  paidAmount              Int
+  platformFee             Int                     @default(0)
+  merchantAmount          Int                     @default(0)
+
+  currency                Currency                @default(NAIRA)
+
+  status                  TransactionStatus       @default(PENDING)
+
+  paidAt                  DateTime?
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  transactionRef          String                  @unique
+
+  payment                 Payment[]
+  // refunds                 Refund[]
+  // disputes                Dispute[]
+
+  @@map("transactions")
+}
+
+model Payment {
+  id                            String                  @id @default(uuid())
+  transactionId                 String
+  transaction                   Transaction             @relation(fields: [transactionId], references: [id])
+
+  provider                      PaymentProvider
+  providerRef                   String                  @unique
+
+  status                        PaymentStatus           @default(INITIATED)
+
+  amount                        Int
+  channel                       String?
+
+  authorization                 Json?
+  currency                      Currency                @default(NAIRA)
+
+  initiatedAt                   DateTime                @default(now())
+  paidAt                        DateTime?
+
+  updatedAt                     DateTime                @updatedAt
+  events                        PaymentEvent[]
+
+  @@map("payments")
+}
+
+
+model PaymentEvent {
+  id                            String                  @id @default(uuid())
+
+  paymentId                     String?
+  payment                       Payment?                @relation(fields: [paymentId], references: [id])
+
+  provider                      PaymentProvider
+
+  eventType                     String
+  providerRef                   String?
+
+  payload                       Json
+
+  signature                     String?
+  processed                     Boolean                 @default(false)
+  createdAt                     DateTime                @default(now())
+
+  @@map("payment events")
+  @@unique([providerRef, eventType])
+}
+
+
+// model Refund
+// model Dispute
+// model Expense
+// enum ExpenseCategory
+
+
+
+// FUTURE Features
+// model Wallet - later feature
+// model Invoice - later feature
+// model LedgerEntry
