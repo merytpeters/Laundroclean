@@ -12,7 +12,6 @@ export function useRoles () {
             setData([
                 {label: "Admin", value: "admin"},
                 {label: "Staff", value: "staff"},
-                {label: "Cashier", value: "cashier"},
             ]);
             setLoading(false)
         }, 500);
