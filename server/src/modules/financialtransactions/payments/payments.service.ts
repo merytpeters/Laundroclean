@@ -87,6 +87,38 @@ class PaymentsService {
     return true;
   }
 
+  async getPaymentByTransactionId(transactionId: string) {
+
+  }
+
+  async getPaymentByProviderRef(providerRef: string) {
+
+  }
+
+  async getTransactionByBookingId(bookingId: string) {
+
+  }
+
+  async getPaymentStatusByBookingId(bookingId: string) {
+
+  }
+
+  async getPaymentEvents(providerRef: string) {
+
+  }
+
+  async listPaymentsByUser(userId: string) {
+
+  }
+
+  async listTransactionsByStatus(status: TransactionStatus) {
+
+  }
+
+  async getPaymentTimeline(transactionId: string) {
+    
+  }
+
   // PRIVATE METHODS
 
   private async createTransaction(payload: CreateTransactionSchema): Promise<Transaction> {
