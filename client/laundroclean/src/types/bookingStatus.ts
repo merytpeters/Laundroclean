@@ -1,4 +1,4 @@
-type DeliveryType = "drop off" | "pick up"
+export type DeliveryType = "drop off" | "pick up"
 
 export function mapDeliveryType(deliveryType: string) : DeliveryType {
     switch(deliveryType) {

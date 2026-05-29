@@ -1,6 +1,7 @@
 .clientbookingcontainer {
     display: flex;
     color: black;
+    font-size: small;
 }
 
 .addnewbtn {
@@ -19,4 +20,5 @@
     padding: 1em;
     margin: 1em 4em;
     right: 0;
+    cursor: pointer;
 }
