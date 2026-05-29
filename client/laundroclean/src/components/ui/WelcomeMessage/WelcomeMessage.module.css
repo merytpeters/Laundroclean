@@ -5,15 +5,16 @@
   gap: 0.4em;
   left: 0;
   margin-left: 0;
-  width: 100%;
+  width: fit-content;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .profilepic {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 5em;
+  width: 100%;
 }
 
 /* Ensure left:0 on all screen sizes explicitly */

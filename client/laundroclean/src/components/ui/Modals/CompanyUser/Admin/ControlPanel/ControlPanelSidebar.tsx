@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import styles from './ControlPanelSidebar.module.css';
+import styles from 'src/components/ui/Modals/Sidebar.module.css';
 import { FaCog, FaFileAlt, FaPercent, FaCalendarCheck, FaChartBar, FaUsersCog, FaTshirt, FaUsers} from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -16,6 +16,14 @@ export default function ControlPanelSidebar () {
     return (
         <nav className={styles.nav}>
             <ul className={styles.navlist}>
+                <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/reports-analysis` ? styles.active : ""}`}>
+                    <div className={styles.navrow}>
+                        <span className={styles.icon}>
+                            <FaChartBar size={16} />
+                        </span>
+                        <Link href={`${controlpanelbasepath}/reports-analysis`} className={styles.label}>  Reports & Analysis </Link>
+                    </div>
+                </li>
                 <li className={`${styles.navitem} ${open ? styles.open : ""}`}>
                     <div className={styles.navrow}> 
                         <span className={styles.icon}>
@@ -74,14 +82,6 @@ export default function ControlPanelSidebar () {
                             <FaUsers size={16} />
                         </span>
                         <Link href={`${controlpanelbasepath}/customers`} className={styles.label}> Customers </Link>
-                    </div>
-                </li>
-                <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/reports-analysis` ? styles.active : ""}`}>
-                    <div className={styles.navrow}>
-                        <span className={styles.icon}>
-                            <FaChartBar size={16} />
-                        </span>
-                        <Link href={`${controlpanelbasepath}/reports-analysis`} className={styles.label}>  Reports & Analysis </Link>
                     </div>
                 </li>
                 <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/systems` ? styles.active : ""}`}>
