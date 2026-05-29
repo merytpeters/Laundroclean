@@ -42,7 +42,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {label: "Payment", key: "payment"},
       {label: "Chat", key: "chat"},
       {label: "Ratings", key: "ratings"},
-      {label: "Analytics", key: "analytics"}
+      {label: "Calendar", key: "calendar"}
     ],
     statCards: [
       {title: "Today's Revenue", key: "dailyRevenue"},

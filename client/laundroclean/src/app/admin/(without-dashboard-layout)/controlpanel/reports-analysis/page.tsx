@@ -4,11 +4,8 @@ import StatCard from "src/components/ui/flexboxes/StatCard";
 import { AdminCPStatMeta } from "src/components/ui/StatMeta";
 import { roleConfig } from "src/lib/company-user/role-config";
 import { stats } from 'src/components/ui/Modals/CompanyUser/OverviewModal/OverviewMockData';
-import styles from 'src/app/admin/(without-dashboard-layout)/controlpanel/controlpanelpage.module.css';
+import styles from 'src/app/admin/(without-dashboard-layout)/controlpanel/reports-analysis/reportsanalysis.module.css';
 import { mockCompanyAdmin } from "src/lib/company-user/mock";
-import Button from "src/components/ui/Button/Button";
-import { FaPlus } from "react-icons/fa";
-import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 import RevenueChart from "src/components/ui/Charts/RevenueChart";
 
 export default function ControlPanel () {
@@ -33,16 +30,6 @@ export default function ControlPanel () {
                         />
                     );
                 })}
-            </section>
-            <section className={styles.quickactions}>
-                <p>Quick Actions </p>
-                <span className={styles.quickactionsbtns}>
-                    <Button text="Create new role" className={styles.newrolebtn} href={`${controlpanelbasepath}/staff-access`}/>
-                    <Button icon={<FaPlus />} text="Add staff" className={styles.addstaffbtn} href={`${controlpanelbasepath}/staff-access`}/>
-                    <Button text="Create New Promos" className={styles.newpromobtn} href={`${controlpanelbasepath}/promotions`}/>
-                    <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>
-                </span>
-                
             </section>
            <section className={styles.insights}>
              Analytics
