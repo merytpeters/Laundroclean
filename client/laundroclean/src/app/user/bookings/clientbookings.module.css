@@ -1,0 +1,22 @@
+.clientbookingcontainer {
+    display: flex;
+    color: black;
+}
+
+.addnewbtn {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    gap: 1em;
+    justify-items: flex-end;
+    align-items: center;
+    width: fit-content;
+    color: #555;
+    font-size: small;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    padding: 1em;
+    margin: 1em 4em;
+    right: 0;
+}

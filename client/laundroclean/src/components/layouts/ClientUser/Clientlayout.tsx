@@ -27,7 +27,7 @@ export default function ClientLayout({ user, children, welcomeMessage }: ClientL
                 userButton={
                     <ActionButton
                         text="Dashboard"
-                        href="/users/dashboard"
+                        href="/user/dashboard"
                         className={styles.dashboardButton}
                     />
                 }
@@ -48,7 +48,7 @@ export default function ClientLayout({ user, children, welcomeMessage }: ClientL
                             <Cog6ToothIcon className={styles.iconStyle} />
                         }
                         text="Settings"
-                        href="/users/user-settings"
+                        href="/user/user-settings"
                         className={styles.iconButton}
                     />
                 }

@@ -5,7 +5,7 @@ import { FaPercent, FaCalendarCheck, FaTshirt, FaUser, FaCreditCard, FaUserShiel
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
-export const clientsidebarbasepath = "/users"
+export const clientsidebarbasepath = "/user"
 
 export default function ClientSidebar () {
     const path = usePathname();
