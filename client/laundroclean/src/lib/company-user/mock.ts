@@ -19,3 +19,8 @@ export const mockCompanyStaff: CompanyUser = {
   type: "COMPANYUSER",
   role: Role.STAFF,
 };
+
+export const mockStaffOptions = [
+  { id: mockCompanyAdmin.id, name: `${mockCompanyAdmin.firstName} ${mockCompanyAdmin.lastName}` },
+  { id: mockCompanyStaff.id, name: `${mockCompanyStaff.firstName} ${mockCompanyStaff.lastName}` },
+];

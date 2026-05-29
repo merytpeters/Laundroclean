@@ -65,6 +65,57 @@
     padding: 1em;
     margin: 1em 4em;
     right: 0;
+    cursor: pointer;
+}
+
+/* Sliding drawer for Add New booking */
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 0;
+    max-width: 45%;
+    background: var(--background);
+    box-shadow: -8px 0 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    transition: width 260ms ease, transform 260ms ease;
+    color: black;
+}
+.drawer.open {
+    width: 40%;
+}
+.drawerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.drawerClose {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.drawerContent {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1 1 auto;
+}
+.drawerOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 110;
+}
+
+/* Make drawer full width on small screens */
+@media (max-width: 768px) {
+    .drawer.open { width: 100%; }
+    .drawer { max-width: 100%; }
 }
 
 .tablesection {

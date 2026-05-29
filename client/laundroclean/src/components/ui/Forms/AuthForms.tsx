@@ -16,7 +16,7 @@ interface FieldConfig {
     options?: SelectOption[];
 }
 
-interface FormProps {
+export interface FormProps {
     title?: string;
     subtitle?: string;
     fields: FieldConfig[];

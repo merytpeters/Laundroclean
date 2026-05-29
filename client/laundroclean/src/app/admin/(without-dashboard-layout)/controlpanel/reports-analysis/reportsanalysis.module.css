@@ -1,0 +1,81 @@
+.cpoverviewcontainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    padding: 0 2em;
+    gap: 6em;
+    margin-top: 2em;
+    margin-bottom: 2rem;
+    color: #000;
+    width: 100%;
+}
+
+.statcardbox {
+    grid-column:  1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: flex-start;
+    justify-content: start;
+    justify-items: start;
+    width: 100%;
+}
+
+.insights {
+    grid-column: 1 / -1;
+}
+
+/* Responsive: collapse two-column layout into single column on smaller viewports */
+@media (max-width: 1300px) {
+    .cpoverviewcontainer {
+        gap: 4rem;
+        padding: 0 1.5em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .cpoverviewcontainer {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .statcardbox {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Ensure stat cards display in two columns between 700px and 800px */
+@media (min-width: 700px) and (max-width: 800px) {
+    .statcardbox {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .statcardbox {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cpoverviewcontainer {
+        padding: 0.5em;
+        gap: 1rem;
+    }
+    .quickactions p {
+        font-size: smaller;
+    }
+}
+
+/* Strong override: force stat cards into two columns between 700px and 800px
+   placed last so it takes precedence over earlier rules */
+@media (min-width: 700px) and (max-width: 800px) {
+    .statcardbox {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+    }
+}

@@ -8,13 +8,13 @@ import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from "@heroicons/react
 import AppHeaderMenu from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 import { CompanyUserMenuProvider, useCompanyUserMenu } from "./context/CompanyUserMenuContext";
 import WelcomeMessage from "src/components/ui/WelcomeMessage/WelcomeMessage";
-import styles from './CompanyUserLayout.module.css';
+import styles from 'src/components/layouts/UserLayout.module.css';
 import BackButton from "src/components/ui/Button/BackButton";
 
 interface CompanyUserLayoutProps {
   user: CompanyUser;
   children: React.ReactNode;
-  welcomeMessage?: { name: string; message: string };
+  welcomeMessage?: { name: string; message?: string };
   showMenu?: boolean;
 }
 

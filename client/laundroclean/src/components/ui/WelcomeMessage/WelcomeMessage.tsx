@@ -3,7 +3,7 @@ import { FaUserCircle } from 'react-icons/fa';
 
 interface WelcomeMessageProps {
     name: string;
-    message: string;
+    message?: string;
 }
 
 export default function WelcomeMessage({ name, message}: WelcomeMessageProps) {
@@ -12,7 +12,7 @@ export default function WelcomeMessage({ name, message}: WelcomeMessageProps) {
             <span className={styles.profilepic}>
                 <FaUserCircle size={45}/>
             </span>
-            <h4>Welcome, {name} </h4>
+            <span><b>Welcome,</b> {name} </span>
             <span>{message}</span>
         </div>
     )

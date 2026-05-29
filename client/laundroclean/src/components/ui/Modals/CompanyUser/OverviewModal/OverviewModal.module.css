@@ -17,6 +17,21 @@
     width: 100%;
 }
 
+.viewreportbtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  --btn-bg: #e9a872;
+  --btn-color: var(--foreground);
+  --btn-border-radius: 18px;
+  --btn-height: 2.4em;
+  --btn-gap: 1em;
+  --btn-width: 8em;
+  font-size: small;
+  font-weight: 600;  
+}
+
 .infosection {
     display: flex;
     flex-direction: row;

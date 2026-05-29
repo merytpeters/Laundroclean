@@ -1,0 +1,21 @@
+.newrolebtn {
+    width: 12em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    height: 3em;
+    align-items: center;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}
+
+.addstaffbtn {
+    width: 10em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}

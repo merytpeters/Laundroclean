@@ -3,9 +3,24 @@ import styles from "./BookingDisplayCard.module.css"
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
 import { mapBookingStatus, mapDeliveryType } from "src/types/bookingStatus";
+import type { DeliveryType } from "src/types/bookingStatus";
 
 
-const bookingDetails = [
+type BookingDetail = {
+    id: string;
+    bookingId: string;
+    customerName: string;
+    serviceType: string;
+    datepaid: string;
+    deliveryDate: string;
+    rawDeliveryType?: string;
+    deliveryType?: DeliveryType;
+    status: string;
+    amount: string;
+    assignedStaff?: string;
+}
+
+const bookingDetails: BookingDetail[] = [
     {
         id: "1",
         bookingId: "BK001",
@@ -13,7 +28,7 @@ const bookingDetails = [
         serviceType: "Laundry Wash",
         datepaid: "02-05-2026",
         deliveryDate: "10-05-2026",
-        deliveryType: "PICK_UP",
+        rawDeliveryType: "PICK_UP",
         status: "CONFIRMED",
         amount: "5000",
     },
@@ -24,21 +39,27 @@ const bookingDetails = [
         serviceType: "Laundry Wash",
         datepaid: "04-05-2026",
         deliveryDate: "12-05-2026",
-        deliveryType: "DROP_OFF",
+        rawDeliveryType: "DROP_OFF",
         status: "CONFIRMED",
         amount: "5000",
     }
 ]
 
-const mappedDelivery =bookingDetails.map((item) => ({
-    ...item,
-    deliveryType: mapDeliveryType(item.deliveryType)
-}))
+const mappedDelivery: BookingDetail[] = bookingDetails.map((item) => {
+    let delivery: DeliveryType | undefined;
+    try {
+        delivery = item.rawDeliveryType ? mapDeliveryType(item.rawDeliveryType) : undefined;
+    } catch (e) {
+        delivery = undefined;
+    }
 
-const mappedDetails = mappedDelivery.map((item) => ({
+    return ({ ...item, deliveryType: delivery } as BookingDetail);
+})
+
+const mappedDetails: BookingDetail[] = mappedDelivery.map((item) => ({
     ...item,
-    status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType}),
-}))
+    status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+} as BookingDetail))
 
 export default function BookingDisplayCard () {
         
@@ -60,6 +81,7 @@ export default function BookingDisplayCard () {
                         <th>Delivery Tag</th>
                         <th>Status</th>
                         <th>Amount</th>
+                        {user.role === "ADMIN" && <th>Assigned Staff</th>}
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -74,6 +96,9 @@ export default function BookingDisplayCard () {
                             <td>{bookingDetail.deliveryType}</td>
                             <td>{bookingDetail.status}</td>
                             <td>{bookingDetail.amount}</td>
+                            {user.role === "ADMIN" && (
+                                <td>{bookingDetail.assignedStaff ?? '—'}</td>
+                            )}
                             <td>
                                 <button className={styles.editbtn}>
                                     <FiEdit />

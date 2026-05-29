@@ -18,7 +18,7 @@ export default async function AdminLayout({
   return (
     <CompanyUserLayout 
       user={mockCompanyAdmin}
-      welcomeMessage={{ name: "Admin Name", message: "Manage your laundromat operations and monitor performance" }}
+      welcomeMessage={{ name: "Admin Name", message: "Manage operations. Monitor performance" }}
       showMenu={true}
     >
       {children}

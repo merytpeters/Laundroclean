@@ -1,7 +1,45 @@
-export default function Reports () {
+"use client";
+
+import StatCard from "src/components/ui/flexboxes/StatCard";
+import { AdminCPStatMeta } from "src/components/ui/StatMeta";
+import { roleConfig } from "src/lib/company-user/role-config";
+import { stats } from 'src/components/ui/Modals/CompanyUser/OverviewModal/OverviewMockData';
+import styles from 'src/app/admin/(without-dashboard-layout)/controlpanel/reports-analysis/reportsanalysis.module.css';
+import { mockCompanyAdmin } from "src/lib/company-user/mock";
+import RevenueChart from "src/components/ui/Charts/RevenueChart";
+
+export default function ControlPanel () {
+    const user = mockCompanyAdmin;
+    
+    const config = roleConfig[user.role];
     return (
-        <div style={{ color: "#000"}}>
-            Reports Analysis Insights
+        <div className={styles.cpoverviewcontainer}>
+            <section aria-label="CP Analysis Card" className={styles.statcardbox}>
+                {config.AdminCPStatCards?.map((card) => {
+                    const meta = AdminCPStatMeta[card.key as keyof typeof AdminCPStatMeta];
+
+                    return (
+                        <StatCard
+                            key={card.key}
+                            header={card.title}
+                            text={meta?.text}
+                            icon={meta?.icon}
+                            unit={meta?.unit}
+                            iconColor={meta?.iconColor}
+                            value={stats[card.key as keyof typeof stats]}
+                        />
+                    );
+                })}
+            </section>
+           <section className={styles.insights}>
+             Analytics
+             <span>Insights , growth trend , charts
+                <RevenueChart />
+             </span>
+           </section>
+           <section className={styles.recentactivities}>
+            <span> Recent Activities</span>
+           </section> 
         </div>
     )
 }

@@ -8,6 +8,8 @@ import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
 import { mapDeliveryType, mapBookingStatus } from "src/types/bookingStatus";
 import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
 import { stats, bookingScheduleData, clientInfoData } from "./OverviewMockData";
+import Button from "src/components/ui/Button/Button";
+import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 
 export default function Overview() {
     const { user } = useCompanyUserMenu();
@@ -54,6 +56,7 @@ export default function Overview() {
                     );
                 })}
             </section>
+            {user?.role === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
                
             <section aria-label="Information Section" className={styles.infosection}>
                 <ScheduleCard items={mappedSchedule}/>

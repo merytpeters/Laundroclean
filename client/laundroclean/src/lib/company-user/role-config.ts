@@ -33,7 +33,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
     dashboardText: "Admin Dashboard",
     dashboardHref: "/admin/dashboard",
     showNotifications: true,
-    settingsHref: "/admin/controlpanel",
+    settingsHref: "/admin/controlpanel/reports-analysis",
     settingsAction: "CONTROL PANEL",
     menuItems: [
       {label: "Overview", key: "overview"},
@@ -42,7 +42,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {label: "Payment", key: "payment"},
       {label: "Chat", key: "chat"},
       {label: "Ratings", key: "ratings"},
-      {label: "Analytics", key: "analytics"}
+      {label: "Calendar", key: "calendar"}
     ],
     statCards: [
       {title: "Today's Revenue", key: "dailyRevenue"},
