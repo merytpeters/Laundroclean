@@ -2,7 +2,7 @@
 import CompanyUserLayout from "src/components/layouts/CompanyUser/CompanyUserLayout";
 //import { getCurrentUser } from "src/lib/auth";
 // import { CompanyUser } from "src/types/user";
-import { mockCompanyStaff } from "src/lib/company-user/mock";
+import { mockCompanyStaff } from "src/services/companyUser/mock";
 
 export default async function StaffLayout({
   children,

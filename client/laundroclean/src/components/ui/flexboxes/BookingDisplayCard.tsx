@@ -49,7 +49,7 @@ const mappedDelivery: BookingDetail[] = bookingDetails.map((item) => {
     let delivery: DeliveryType | undefined;
     try {
         delivery = item.rawDeliveryType ? mapDeliveryType(item.rawDeliveryType) : undefined;
-    } catch (e) {
+    } catch {
         delivery = undefined;
     }
 

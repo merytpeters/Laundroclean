@@ -3,6 +3,9 @@
     transition: grid-template-columns 0.3s ease;
     min-height: 100vh;
     width: 100vw;
+    padding-top: 1rem;
+    border: 2px solid rgba(15, 35, 58, 0.3);
+    border-radius: 8px 8px 0 0;
 }
 
 .cplayoutcontainer.open {

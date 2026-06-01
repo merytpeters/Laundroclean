@@ -51,7 +51,7 @@ export default function ClientSidebar () {
                         <span className={styles.icon}>
                             <FaPercent size={16} />
                         </span>
-                        <Link href={`${clientsidebarbasepath}/promotions`} className={styles.label}> Promotions </Link>
+                        <Link href={`${clientsidebarbasepath}/promotions`} className={styles.label}> Offers </Link>
                     </div>  
                 </li>
                 <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/payment` ? styles.active : ""}`}>

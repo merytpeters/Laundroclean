@@ -7,7 +7,8 @@ import styles from "./OverviewModal.module.css"
 import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
 import { mapDeliveryType, mapBookingStatus } from "src/types/bookingStatus";
 import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
-import { stats, bookingScheduleData, clientInfoData } from "./OverviewMockData";
+import { stats, bookingScheduleData } from "./OverviewMockData";
+import { clientInfoData } from "src/services/userService/mock";
 import Button from "src/components/ui/Button/Button";
 import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 

@@ -36,7 +36,7 @@ export default function BookingForm({
             try {
                 const label = mapDeliveryType(v);
                 return { value: v, label };
-            } catch (e) {
+            } catch {
                 // fallback: make a readable label
                 return { value: v, label: v.replace(/_/g, ' ').toLowerCase() };
             }
