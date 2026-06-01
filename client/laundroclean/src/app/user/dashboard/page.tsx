@@ -23,6 +23,7 @@ export default function ClientDashboard () {
     return (
         <div className={styles.clientdashboardcontainer}>
             <section aria-describedby="laundrocleanservices display" className={styles.servicesdisplaysection}>
+                <span className={styles.displaytext}><b> <i>Here&apos;s</i> our Laundry Services.</b></span>
                 <span className={styles.servicesdisplaybox}>
                     { mappedServiceFields?.map((service) => {
                         return (

@@ -6,6 +6,17 @@
     width: 100%;
 }
 
+.displaytext {
+    font-size: medium;
+}
+
+.displaytext b i {
+    background: linear-gradient(to right, #325dc0, #7bc7fe);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .servicesdisplaysection {
     display: flex;
     flex-direction: column;
