@@ -1,7 +1,7 @@
 "use client";
 import StatCard from "src/components/ui/flexboxes/StatCard";
 import BookingDisplayCard from "src/components/ui/flexboxes/BookingDisplayCard";
-import { stats } from "../OverviewModal/OverviewMockData";
+import { stats } from "../../../../../services/bookingService/bookingMockData";
 import { roleConfig } from "src/lib/company-user/role-config";
 import styles from "./BookingModal.module.css"
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
@@ -47,12 +47,13 @@ export default function BookingModal () {
                 </section>
             </section>
 
-            <button className={styles.addnewbtn} onClick={() => setShowForm(true)}>
-                <span>Add new</span>
-                    <PlusIcon size={30}/>
-            </button>
+            
                
             <section aria-label="Booking display Section" className={styles.tablesection}>
+                <button className={styles.addnewbtn} onClick={() => setShowForm(true)}>
+                    <span>Add new</span>
+                        <PlusIcon size={30}/>
+                </button>
                 <BookingDisplayCard />
             </section>
 

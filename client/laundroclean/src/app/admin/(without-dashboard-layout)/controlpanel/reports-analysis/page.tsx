@@ -3,7 +3,7 @@
 import StatCard from "src/components/ui/flexboxes/StatCard";
 import { AdminCPStatMeta } from "src/components/ui/StatMeta";
 import { roleConfig } from "src/lib/company-user/role-config";
-import { stats } from 'src/components/ui/Modals/CompanyUser/OverviewModal/OverviewMockData';
+import { stats } from 'src/services/bookingService/bookingMockData';
 import styles from 'src/app/admin/(without-dashboard-layout)/controlpanel/reports-analysis/reportsanalysis.module.css';
 import { mockCompanyAdmin } from "src/services/companyUser/mock";
 import RevenueChart from "src/components/ui/Charts/RevenueChart";

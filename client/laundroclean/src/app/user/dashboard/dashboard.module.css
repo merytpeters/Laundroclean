@@ -4,6 +4,7 @@
     color: black;
     padding: 1rem;
     width: 100%;
+    gap: 2.5em;
 }
 
 .displaytext {
@@ -46,4 +47,22 @@
     justify-self: end;
     align-self: flex-end;
     padding: 4px;
+}
+
+.activeorderssection {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    padding: 0.5em;
+}
+
+.activeordersdisplaybox{
+    display: flex;
+    flex-direction: row;
+    width: 90vw;
+    overflow: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    gap: 2em;
 }

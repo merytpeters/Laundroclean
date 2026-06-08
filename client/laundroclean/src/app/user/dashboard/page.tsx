@@ -2,6 +2,7 @@ import {DashboardServices } from "src/components/ui/flexboxes/ServicesFlexbox";
 import styles from "./dashboard.module.css";
 import { mapCurrencySymbol, mapPricingType } from "src/types/laundroservices";
 import { mockServices } from "src/services/laundrocleanservices/mock";
+import ActiveOrder from "src/components/ui/flexboxes/ActiveOrder";
 
 export default function ClientDashboard () {
     const services = mockServices;
@@ -41,8 +42,13 @@ export default function ClientDashboard () {
                 </span>
                 <a href="" className={styles.seeallbutton}>See all</a>
             </section>
-            <section>
-                Active Orders/Order status: Orders that are not yet delivered but confirmed (paid)
+            <section className={styles.activeorderssection}>
+                <section className={styles.activeordersdisplaybox}>
+                    <ActiveOrder />
+                </section>
+                
+                {/* Active Orders/Order status: Orders that are not yet delivered but confirmed (paid) */}
+                <a href="" className={styles.seeallbutton}>See all</a>
             </section>
             <section>
                 Promos
