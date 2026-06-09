@@ -4,7 +4,7 @@ import styles from './StaffTab.module.css';
 import Button from 'src/components/ui/Button/Button';
 import AuthForm from 'src/components/ui/Forms/AuthForms';
 import { useState } from 'react';
-import { useRoles } from 'src/lib/hooks/roles/useRoles';
+import { useRoles } from 'src/hooks/roles/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
 
 export default function StaffTab () {

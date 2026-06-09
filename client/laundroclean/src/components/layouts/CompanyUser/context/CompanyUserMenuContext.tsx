@@ -38,7 +38,7 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
     try {
       const saved = localStorage.getItem("companyUserActiveMenu");
       if (saved) setActiveMenuState(saved);
-    } catch (e) {
+    } catch {
       // ignore
     }
   }, []);
@@ -46,7 +46,7 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
   const setActiveMenu = (key: string) => {
     try {
       localStorage.setItem("companyUserActiveMenu", key);
-    } catch (e) {
+    } catch {
       // ignore
     }
     setActiveMenuState(key);

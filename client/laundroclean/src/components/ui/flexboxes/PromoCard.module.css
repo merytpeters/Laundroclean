@@ -1,0 +1,32 @@
+.promocontainer {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--foreground);
+    border: 1px solid #f4f1f1;
+    padding: 1.5em;
+    border-radius: 12px;
+    width: 28rem;
+    height: 12rem;
+    overflow: auto;
+    box-shadow:0 6px 18px #e8e0e0;
+    gap: 1em;
+}
+
+.promodescription {
+    overflow-wrap: break-word;
+    overflow: auto;
+    height: 20px;
+}
+
+.textnexpiry {
+    display: flex;
+}
+
+.promocodebtn {
+  --btn-bg: #469bd3;
+  --btn-color: #f5f5f5;
+  --btn-border: none;
+  --btn-width: 11em;
+  --btn-border-radius: 1.1rem;
+  --btn-height: 2.5em;
+}

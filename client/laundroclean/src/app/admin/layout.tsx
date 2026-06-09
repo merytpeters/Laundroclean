@@ -5,7 +5,7 @@ import ActionButton from 'src/components/ui/ActionButton/ActionButton';
 import styles from 'src/components/layouts/UserLayout.module.css';
 import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { roleConfig } from 'src/lib/company-user/role-config';
-import { mockCompanyAdmin } from 'src/lib/company-user/mock';
+import { mockCompanyAdmin } from 'src/services/companyUser/mock';
 import BackButton from 'src/components/ui/Button/BackButton';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

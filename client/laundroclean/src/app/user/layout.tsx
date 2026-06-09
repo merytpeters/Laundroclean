@@ -2,7 +2,7 @@
 
 import React from "react";
 import ClientLayout from "src/components/layouts/ClientUser/Clientlayout";
-import { mockClient } from "src/lib/clientuser/mock";
+import { mockClient } from "src/services/clientuser/mock";
 
 
 export default function ClientDashboardLayout ({

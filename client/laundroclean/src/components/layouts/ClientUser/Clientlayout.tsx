@@ -16,7 +16,7 @@ import { SearchBar } from "src/components/ui/SearchBar/SearchBar";
 interface ClientLayoutProps {
     user: Client;
     children: React.ReactNode;
-    welcomeMessage?: { name: string; message?: string };
+    welcomeMessage?: { name: string; message?: string, showProfilePic?: boolean };
 }
 
 export default function ClientLayout({ user, children, welcomeMessage }: ClientLayoutProps) {
@@ -76,10 +76,11 @@ export default function ClientLayout({ user, children, welcomeMessage }: ClientL
                     <section className={contentstyles.cpbody}>
                         {welcomeMessage && (
                         <div className={styles.clientwelcomeWrapper}>
-                            <WelcomeMessage
-                               name={welcomeMessage.name}
-                               message={welcomeMessage.message}
-                            />
+                                     <WelcomeMessage
+                                         name={welcomeMessage.name}
+                                         message={welcomeMessage.message}
+                                         showProfilePic={false}
+                                     />
                         </div>
                         )}
                         <section className={contentstyles.cpsearchbar}>
