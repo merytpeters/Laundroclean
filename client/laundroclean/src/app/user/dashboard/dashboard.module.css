@@ -9,6 +9,7 @@
 
 .displaytext {
     font-size: medium;
+    padding-left: 1em;
 }
 
 .displaytext b i {
@@ -21,20 +22,17 @@
 .servicesdisplaysection {
     display: flex;
     flex-direction: column;
-    width: 100%;
     height: auto;
     gap: 2em;
-    padding: 0.5em;  
+    padding: 0.5em;
+    overflow: auto;
 }
 
 .servicesdisplaybox {
     display: flex;
     flex-direction: row;
     gap: 2em;
-    width: 90vw;
     overflow: auto;
-    align-items: center;
-    justify-content: center;
     padding: 0.5em;
 }
 
@@ -54,15 +52,30 @@
     flex-direction: column;
     gap: 2em;
     padding: 0.5em;
+    overflow: auto;
+}
+
+.sectionheader {
+    padding-left: 1em;
+    font-size: medium;
 }
 
 .activeordersdisplaybox{
     display: flex;
     flex-direction: row;
-    width: 90vw;
     overflow: auto;
-    align-items: center;
-    justify-content: center;
     padding: 1em;
+    gap: 2em;
+}
+
+.specialofferssection {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.promocarddisplaybox {
+    display: flex;
+    flex-direction: row;
     gap: 2em;
 }

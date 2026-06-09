@@ -3,6 +3,7 @@ import styles from "./dashboard.module.css";
 import { mapCurrencySymbol, mapPricingType } from "src/types/laundroservices";
 import { mockServices } from "src/services/laundrocleanservices/mock";
 import ActiveOrder from "src/components/ui/flexboxes/ActiveOrder";
+import PromoCard from "src/components/ui/flexboxes/PromoCard";
 
 export default function ClientDashboard () {
     const services = mockServices;
@@ -43,6 +44,7 @@ export default function ClientDashboard () {
                 <a href="" className={styles.seeallbutton}>See all</a>
             </section>
             <section className={styles.activeorderssection}>
+                <span className={styles.sectionheader}><b>Active Orders</b></span>
                 <section className={styles.activeordersdisplaybox}>
                     <ActiveOrder />
                 </section>
@@ -50,8 +52,12 @@ export default function ClientDashboard () {
                 {/* Active Orders/Order status: Orders that are not yet delivered but confirmed (paid) */}
                 <a href="" className={styles.seeallbutton}>See all</a>
             </section>
-            <section>
-                Promos
+            <section className={styles.specialofferssection}>
+                <span className={styles.sectionheader}> <b> Special Offer </b></span>
+                <section className={styles.promocarddisplaybox}>
+                    <PromoCard />
+                </section>
+                <a href="" className={styles.seeallbutton}>See all</a>
             </section>
         </div>
     )
