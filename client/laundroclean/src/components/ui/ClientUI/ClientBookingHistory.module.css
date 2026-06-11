@@ -1,0 +1,28 @@
+.pastbookingsheader {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0 1em;
+}
+
+.pastbookingsbox {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.pastbookingscard {
+    display: grid;
+    background-color: var(--foreground);
+    grid-template-columns: repeat(3, 2fr);
+    border-radius: 8px;
+    width: 100%;
+    border: 1px solid #f4f1f1;
+    gap: 2em;
+    box-shadow:0 6px 18px #e8e0e0;
+    padding: 1.5em;
+}
+
+.moredetails {
+    cursor: pointer;
+}

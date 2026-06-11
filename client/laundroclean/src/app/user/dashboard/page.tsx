@@ -4,24 +4,12 @@ import { mapCurrencySymbol, mapPricingType } from "src/types/laundroservices";
 import { mockServices } from "src/services/laundrocleanservices/mock";
 import ActiveOrder from "src/components/ui/flexboxes/ActiveOrder";
 import PromoCard from "src/components/ui/flexboxes/PromoCard";
+import { transformFieldInArray } from "src/utils/mapData";
 
 export default function ClientDashboard () {
-    const services = mockServices;
-    const mappedServiceFields = services.map((item) => {
-        let currency: string;
-        let pricingType: string;
-        try {
-            currency = item.currency ? mapCurrencySymbol(item.currency) : item.currency;
-            pricingType = item.pricingType ? mapPricingType(item.pricingType) : item.pricingType;
-        } catch {
-            return item;
-        }
-        return {
-            ...item,
-            currency,
-            pricingType,
-        };
-    })
+    const currencyMappedData = transformFieldInArray(mockServices, "currency", mapCurrencySymbol)
+    const mappedServiceFields = transformFieldInArray(currencyMappedData, "pricingType", mapPricingType)
+
     return (
         <div className={styles.clientdashboardcontainer}>
             <section aria-describedby="laundrocleanservices display" className={styles.servicesdisplaysection}>
@@ -41,7 +29,7 @@ export default function ClientDashboard () {
                     })
                 }
                 </span>
-                <a href="" className={styles.seeallbutton}>See all</a>
+                <a href="/user/laundroclean-services" className={styles.seeallbutton}>See all</a>
             </section>
             <section className={styles.activeorderssection}>
                 <span className={styles.sectionheader}><b>Active Orders</b></span>
@@ -57,7 +45,7 @@ export default function ClientDashboard () {
                 <section className={styles.promocarddisplaybox}>
                     <PromoCard />
                 </section>
-                <a href="" className={styles.seeallbutton}>See all</a>
+                <a href="/user/promotions" className={styles.seeallbutton}>See all</a>
             </section>
         </div>
     )

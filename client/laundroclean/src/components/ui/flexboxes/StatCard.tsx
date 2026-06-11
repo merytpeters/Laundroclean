@@ -17,7 +17,6 @@ export default function StatCard({icon: Icon, header, text, value, unit, iconCol
     const iconStyle = iconColor ? { color: iconColor } : undefined;
 
     useEffect(() => {
-        console.log("StatCard header (client):", header);
     }, [header]);
 
     return (

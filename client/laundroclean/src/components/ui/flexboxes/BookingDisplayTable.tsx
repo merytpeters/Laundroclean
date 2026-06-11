@@ -1,22 +1,22 @@
 "use client";
-import styles from "./BookingDisplayCard.module.css"
+import { useState } from "react";
+import styles from "./BookingDisplayTable.module.css"
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
 import { mapBookingStatus } from "src/types/bookingStatus";
 import { BookingDetail } from "src/types/bookingOrder";
-import { mappedDelivery } from "src/services/bookingService/bookingMockData"; 
+import { mappedDelivery } from "src/services/bookingService/bookingMockData";
+import { transformFieldInArray } from "src/utils/mapData";
 
 
-const mappedDetails: BookingDetail[] = mappedDelivery.map((item) => ({
-    ...item,
-    status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
-} as BookingDetail))
+const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
 
-export default function BookingDisplayCard () {
-        
+export default function BookingDisplayTable () {
     const { user } = useCompanyUserMenu();
+    const [expanded, setExpanded] = useState(false);
+
     return (
-        <section className={styles.bookingdisplaycard}>
+        <section className={styles.BookingDisplayTable}>
             <h3>All Bookings</h3>
             <span>Manage customer bookings and appointments</span>
        
@@ -39,7 +39,7 @@ export default function BookingDisplayCard () {
                 <tbody>
                     {mappedDetails.map((bookingDetail) => (
                         <tr key={bookingDetail.id}>
-                            <td>{bookingDetail.bookingId}</td>
+                            <td className={styles.moredetails}>{bookingDetail.customBookingId}</td>
                             <td>{bookingDetail.customerName}</td>
                             <td>{bookingDetail.serviceType}</td>
                             <td>{bookingDetail.datepaid}</td>
@@ -64,7 +64,11 @@ export default function BookingDisplayCard () {
                         </tr>
                     ))}
                 </tbody>
+                
             </table>
+            <div className={styles.actions}>
+                <button onClick={() => setExpanded(!expanded)} className={styles.viewmore}>{ expanded ? "view less" : "view more" }</button>
+            </div>
         </section>
     )
 }

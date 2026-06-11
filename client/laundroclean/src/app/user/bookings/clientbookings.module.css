@@ -2,6 +2,14 @@
     display: flex;
     color: black;
     font-size: small;
+    padding: 1em;
+    width: 100%;
+}
+
+.pastbookingsection {
+    display: block;
+    width: 90%;
+    padding: 1.5em;
 }
 
 .addnewbtn {
