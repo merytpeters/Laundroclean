@@ -55,7 +55,7 @@ export const statusClassMap: Record<string, string> = {
     "available for pick up": "delivered"
 }
 
-export function mapBookingStatus(status: string, meta?: {deliveryType?: DeliveryType}) : BookingStatus {
+export function mapBookingStatus(status: string, meta?: {deliveryType?: string}) : BookingStatus {
     switch(status) {
         case "PENDING":
             return "pending";
@@ -94,7 +94,7 @@ export function mapBookingStatus(status: string, meta?: {deliveryType?: Delivery
     }
 }
 
-export function mapClientBookingStatus(status: string, meta?: {deliveryType?: DeliveryType}) : BookingStatus {
+export function mapClientBookingStatus(status: string, meta?: {deliveryType?: string}) : BookingStatus {
     switch(status) {
         case "CONFIRMED":
             if (meta?.deliveryType === "pick up") {

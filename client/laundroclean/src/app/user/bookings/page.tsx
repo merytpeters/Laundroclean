@@ -5,6 +5,7 @@ import { useState } from 'react';
 import styles from './clientbookings.module.css';
 import drawerStyles from 'src/components/ui/Modals/CompanyUser/BookingModal/BookingModal.module.css';
 import BookingForm from 'src/components/ui/Forms/BookingForm';
+import ClientBookingHistory from "src/components/ui/ClientUI/ClientBookingHistory";
 
 export default function ClientBookings () {
     const [showForm, setShowForm] = useState(false);
@@ -16,8 +17,8 @@ export default function ClientBookings () {
                     <FiPlus size={30}/>
             </button>
                
-            <section aria-label="Client Booking display Section" className={styles.bookingsection}>
-                Booking History
+            <section aria-label="Client Booking display Section" className={styles.pastbookingsection}>
+                <ClientBookingHistory />
             </section>
 
             {/* sliding drawer for client booking form */}

@@ -21,14 +21,6 @@ export default function ClientSidebar () {
                         <Link href={`${clientsidebarbasepath}/dashboard`} className={styles.label}> Dashboard </Link>
                     </div>
                 </li>
-                <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/profile` ? styles.active : ""}`}>
-                    <div className={styles.navrow}>
-                        <span className={styles.icon}>
-                            <FaUser size={16} />
-                        </span>
-                        <Link href={`${clientsidebarbasepath}/profile`} className={styles.label}> Profile </Link>
-                    </div>
-                </li>
                 <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/bookings` ? styles.active : ""}`}>
                     <div className={styles.navrow}>
                         <span className={styles.icon}>
@@ -61,6 +53,14 @@ export default function ClientSidebar () {
                         </span>
                         <Link href={`${clientsidebarbasepath}/payment`} className={styles.label}> Payment </Link>
                     </div>  
+                </li>
+                <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/profile` ? styles.active : ""}`}>
+                    <div className={styles.navrow}>
+                        <span className={styles.icon}>
+                            <FaUser size={16} />
+                        </span>
+                        <Link href={`${clientsidebarbasepath}/profile`} className={styles.label}> Profile </Link>
+                    </div>
                 </li>
                 <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/user-settings` ? styles.active : ""}`}>
                     <div className={styles.navrow}>

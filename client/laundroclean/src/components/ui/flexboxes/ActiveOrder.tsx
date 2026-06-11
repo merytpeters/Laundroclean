@@ -4,10 +4,12 @@ import statusStyles from 'src/components/ui/flexboxes/ScheduleCard.module.css';
 import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { BookingDetail } from "src/types/bookingOrder";
 
+
+
 const mappedDetails: (BookingDetail & { progressCount: number; originalStatus: string })[] = mappedDelivery.map((item) => ({
     ...item,
     originalStatus: item.status,
-    status: mapClientBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+    status: mapClientBookingStatus(item.status, { deliveryType: item.deliveryType }),
     progressCount: BookingTrackerProgressCount(item.status),
 }))
 
@@ -34,7 +36,7 @@ export default function ActiveOrder() {
                             </span>
                         </span>
 
-                        <span>Order #{bookingDetails.bookingId}</span>
+                        <span>Order #{bookingDetails.customBookingId}</span>
 
                         <div className={styles.progress}>
                             <div

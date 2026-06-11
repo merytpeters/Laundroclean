@@ -1,6 +1,6 @@
 "use client";
 import StatCard from "src/components/ui/flexboxes/StatCard";
-import BookingDisplayCard from "src/components/ui/flexboxes/BookingDisplayCard";
+import BookingDisplayTable from "src/components/ui/flexboxes/BookingDisplayTable";
 import { stats } from "../../../../../services/bookingService/bookingMockData";
 import { roleConfig } from "src/lib/company-user/role-config";
 import styles from "./BookingModal.module.css"
@@ -54,7 +54,7 @@ export default function BookingModal () {
                     <span>Add new</span>
                         <PlusIcon size={30}/>
                 </button>
-                <BookingDisplayCard />
+                <BookingDisplayTable />
             </section>
 
             {/* sliding drawer for new booking */}

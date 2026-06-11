@@ -22,14 +22,10 @@ export default function Overview() {
         deliveryType: mapDeliveryType(item.deliveryType)
     }))
 
-    console.log(mappedDelivery);
-
     const mappedSchedule = mappedDelivery.map((item) => ({
         ...item,
         status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType}),
     }))
-
-    console.log(mappedSchedule);
     
 
     const clientInfoHeaderData = {
