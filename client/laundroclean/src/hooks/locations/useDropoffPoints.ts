@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiRequest } from 'src/lib/api';
+import { mockDropoffPoints } from 'src/services/locations/mock';
 
 export interface DropoffPoint {
     id: string;
@@ -26,10 +27,10 @@ export const useDropoffPoints = () => {
             const response = await apiRequest<DropoffPointsResponse>('dropoffPoints');
             
             if (response.error) {
-                throw new Error(response.error);
+                return mockDropoffPoints;
             }
             
-            return response.data?.data || [];
+            return response.data?.data || mockDropoffPoints;
         },
         staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,

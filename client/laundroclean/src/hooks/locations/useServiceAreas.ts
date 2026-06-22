@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiRequest } from 'src/lib/api';
+import { mockServiceAreas } from 'src/services/locations/mock';
 
 export interface ServiceArea {
     id: string;
@@ -27,10 +28,10 @@ export const useServiceAreas = () => {
             const response = await apiRequest<ServiceAreasResponse>('serviceAreas');
             
             if (response.error) {
-                throw new Error(response.error);
+                return mockServiceAreas;
             }
             
-            return response.data?.data || [];
+            return response.data?.data || mockServiceAreas;
         },
         staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,

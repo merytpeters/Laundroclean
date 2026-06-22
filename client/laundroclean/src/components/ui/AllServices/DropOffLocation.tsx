@@ -4,7 +4,11 @@ import { useDropoffPoints, type DropoffPoint } from "src/hooks/locations/useDrop
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
 
-export default function DropOffLocation() {
+export type CloseProps = {
+    onClose: () => void;
+};
+
+export default function DropOffLocation({onClose}: CloseProps) {
     const { data: dropoffPoints = [], isLoading, error } = useDropoffPoints();
 
     if (isLoading) {
@@ -25,7 +29,7 @@ export default function DropOffLocation() {
         <div className={styles.locationContainer}>
             <h3>Drop-Off Locations</h3>
             <div className={styles.mapWrapper}>
-                {activeDropoff ? (
+                {activeDropoff?.lat != null && activeDropoff?.lng != null ? (
                     <LocationMap
                         marker={{
                             lat: activeDropoff.lat,
@@ -37,6 +41,10 @@ export default function DropOffLocation() {
                 ) : (
                     <div className={styles.noMapContainer}>No active drop-off location with coordinates</div>
                 )}
+
+                <button className={styles.mapCloseButton} onClick={onClose}>
+                            ✕ Close
+                        </button>
             </div>
             <div className={styles.dropoffPointsList}>
                 <h4>Drop-Off Points ({dropoffPoints.length})</h4>

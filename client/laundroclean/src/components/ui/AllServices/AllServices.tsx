@@ -12,6 +12,25 @@ interface AllServicesProps {
 }
 
 type LocationViewType = "serviceAreas" | "dropoffPoints";
+type MapView = LocationViewType | null;
+
+function ServiceArea() {
+    return (
+        <div>
+            <form action="">
+                form for adding service area
+            </form>
+        </div>
+    )
+}
+
+function DropOffPoints() {
+    return(
+        <div>
+            <form action=""> Form for adding drop off point</form>
+        </div>
+    )
+}
 
 function ServicePrice() {
     return (
@@ -24,7 +43,7 @@ function ServicePrice() {
 function ServicesList() {
     return (
         <div>
-            Services List
+            Detailed Services List
         </div>
     )
 }
@@ -32,12 +51,15 @@ function ServicesList() {
 export default function AllServices(props: AllServicesProps ) {
     const [activeLocationView, setActiveLocationView] = useState<LocationViewType>("serviceAreas");
 
+    const [activeMapView, setActiveMapView] = useState<MapView>("serviceAreas");
+
     return (
         <div className={styles.allservicescontainer}>AllServices
             {props.companyuser && <section>
                 CompanyUserView Only
 
-                
+                <ServiceArea />
+                <DropOffPoints />
 
                 <ServicePrice />
 
@@ -48,23 +70,54 @@ export default function AllServices(props: AllServicesProps ) {
                     <h2>Location Management</h2>
                     <div className={styles.viewToggle}>
                         <button
-                            className={`${styles.toggleButton} ${activeLocationView === "serviceAreas" ? styles.active : ""}`}
+                            className={`${styles.toggleButton} ${
+                                activeLocationView === "serviceAreas"
+                                    ? styles.active
+                                    : ""
+                            }`}
                             onClick={() => setActiveLocationView("serviceAreas")}
                         >
                             Service Areas
                         </button>
+
                         <button
-                            className={`${styles.toggleButton} ${activeLocationView === "dropoffPoints" ? styles.active : ""}`}
+                            className={`${styles.toggleButton} ${
+                                activeLocationView === "dropoffPoints"
+                                    ? styles.active
+                                    : ""
+                            }`}
                             onClick={() => setActiveLocationView("dropoffPoints")}
                         >
                             Drop-Off Locations
                         </button>
                     </div>
 
+                    {/* MAP AREA (NO REMOUNT GLITCH FIX) */}
                     <div className={styles.locationContent}>
-                        {activeLocationView === "serviceAreas" && <ServiceAreaLocation />}
-                        {activeLocationView === "dropoffPoints" && <DropOffLocation />}
+                        {activeMapView ? (
+                            <>
+                                {activeLocationView === "serviceAreas" && (
+                                    <ServiceAreaLocation
+                                        onClose={() => setActiveMapView(null)}
+                                    />
+                                )}
+
+                                {activeLocationView === "dropoffPoints" && (
+                                    <DropOffLocation
+                                        onClose={() => setActiveMapView(null)}
+                                    />
+                                )}
+                            </>
+                        ) : (
+                            <button
+                                onClick={() => setActiveMapView(activeLocationView)}
+                                className={styles.reopenButton}
+                            >
+                                Reopen Map
+                            </button>
+                        )}
                     </div>
+                    
                 </div>
                 <ServicesList />
             </section>

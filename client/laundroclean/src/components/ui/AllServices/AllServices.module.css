@@ -61,6 +61,7 @@
 }
 
 .mapWrapper {
+    position: relative;
     border: 1px solid #ddd;
     border-radius: 4px;
     overflow: hidden;
@@ -165,4 +166,23 @@
     font-size: 0.9rem;
     flex: 1;
     margin: 0;
+}
+
+.mapCloseButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    background: white;
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.reopenButton {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
 }

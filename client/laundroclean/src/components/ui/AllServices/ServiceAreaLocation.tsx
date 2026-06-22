@@ -3,8 +3,9 @@
 import { useServiceAreas, type ServiceArea } from "src/hooks/locations/useServiceAreas";
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
+import { CloseProps } from "./DropOffLocation";
 
-export default function ServiceAreaLocation() {
+export default function ServiceAreaLocation({onClose}: CloseProps) {
     const { data: serviceAreas = [], isLoading, error } = useServiceAreas();
 
     if (isLoading) {
@@ -36,6 +37,10 @@ export default function ServiceAreaLocation() {
                     }
                     height="500px"
                 />
+
+                <button className={styles.mapCloseButton} onClick={onClose}>
+                    ✕ Close
+                </button>
             </div>
             <div className={styles.serviceAreasList}>
                 <h4>Service Areas ({serviceAreas.length})</h4>
