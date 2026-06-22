@@ -18,6 +18,9 @@ function ServiceAreaLocation() {
     return (
         <div>
             ServiceArea Location edits
+            <form action="">
+
+            </form>
         </div>
     )
 }
@@ -44,8 +47,8 @@ export default function AllServices(props: AllServicesProps ) {
             {props.companyuser && <section>
                 CompanyUserView Only
 
-                <ServicePrice />
                 <ServiceAreaLocation />
+                <ServicePrice />
                 <DropOffLocation />
 
             </section>}
