@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import styles from "./BookingDisplayTable.module.css"
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
@@ -12,8 +11,14 @@ import { transformFieldInArray } from "src/utils/mapData";
 const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
 
 export default function BookingDisplayTable () {
-    const { user } = useCompanyUserMenu();
-    const [expanded, setExpanded] = useState(false);
+    const { user, setActiveMenu } = useCompanyUserMenu();
+
+    const roleRoutes = {
+        ADMIN: "/admin/controlpanel/bookings",
+        STAFF: "/dashboard"
+    }
+
+    const href = roleRoutes[user.role] || "/dashboard";
 
     return (
         <section className={styles.BookingDisplayTable}>
@@ -67,7 +72,16 @@ export default function BookingDisplayTable () {
                 
             </table>
             <div className={styles.actions}>
-                <button onClick={() => setExpanded(!expanded)} className={styles.viewmore}>{ expanded ? "view less" : "view more" }</button>
+                {user.role === "STAFF" ? (
+                    <button
+                        className={styles.viewmore}
+                        onClick={() => setActiveMenu("calendar")}
+                    >
+                        view more
+                    </button>
+                ) : (
+                    <button className={styles.viewmore}> <a href={href}>view more</a></button>
+                )}
             </div>
         </section>
     )

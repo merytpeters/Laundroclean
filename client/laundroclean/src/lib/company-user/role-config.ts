@@ -81,7 +81,8 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {label: "Delivery", key: "delivery"},
       {label: "Payment", key: "payment"},
       {label: "Chat", key: "chat"},
-      {label: "Calendar", key: "calendar"}
+      {label: "Calendar", key: "calendar"},
+      {label: "Services", key: "services"}
     ],
     statCards: [
       {title: "Active Bookings", key: "activeBookings"},

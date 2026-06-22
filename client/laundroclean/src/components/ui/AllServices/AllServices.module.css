@@ -1,0 +1,4 @@
+.allservicescontainer {
+    display: flex;
+    flex-direction: column;
+}
