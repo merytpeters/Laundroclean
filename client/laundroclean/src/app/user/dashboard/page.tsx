@@ -29,7 +29,7 @@ export default function ClientDashboard () {
                     })
                 }
                 </span>
-                <a href="/user/laundroclean-services" className={styles.seeallbutton}>See all</a>
+                <a href="/user/laundroclean-services#all-services" className={styles.seeallbutton}>See all</a>
             </section>
             <section className={styles.activeorderssection}>
                 <span className={styles.sectionheader}><b>Active Orders</b></span>
