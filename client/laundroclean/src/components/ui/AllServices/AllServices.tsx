@@ -5,6 +5,8 @@ import styles from "./AllServices.module.css";
 import { CompanyUser, Client } from "src/types/user";
 import ServiceAreaLocation from "./ServiceAreaLocation";
 import DropOffLocation from "./DropOffLocation";
+import Button from "../Button/Button";
+import { ServiceDisplayProp } from "src/services/laundrocleanservices/laundrocleanservices.service";
 
 interface AllServicesProps {
     companyuser?: CompanyUser;
@@ -32,10 +34,23 @@ function DropOffPoints() {
     )
 }
 
-function ServicePrice() {
+function ServiceManager() {
+    const [services] = useState<ServiceDisplayProp[]>([]);
+
+    const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+
     return (
-        <div>
-            ServicePrice Edit
+        <div className={styles.servicemanager}>
+            <Button 
+              text={services.length === 0 ? "Add Your First Service" : "Add Service" }
+              onClick={() => setIsFormOpen(true)}/>
+            {isFormOpen && (
+            <form action="">
+                <legend>Create New Service For LaundroClean</legend>
+                <Button type="button" text="Cancel" onClick={() => setIsFormOpen(false)}/>
+                <Button text="Save" type="submit"/>
+            </form>
+            )}
         </div>
     )
 }
@@ -54,18 +69,18 @@ export default function AllServices(props: AllServicesProps ) {
     const [activeMapView, setActiveMapView] = useState<MapView>("serviceAreas");
 
     return (
-        <div className={styles.allservicescontainer}>AllServices
-            {props.companyuser && <section>
-                CompanyUserView Only
+        <div className={styles.allservicescontainer}>
+            {props.companyuser && <section className={styles.servicemanagersection}>
+                {/* CompanyUserView Only */}
+
+                <ServiceManager />
 
                 <ServiceArea />
                 <DropOffPoints />
 
-                <ServicePrice />
-
             </section>}
 
-            <section>
+            <section className={styles.locationManager}>
                 <div className={styles.locationSection}>
                     <h2>Location Management</h2>
                     <div className={styles.viewToggle}>

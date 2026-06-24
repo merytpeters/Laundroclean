@@ -36,3 +36,18 @@ export const useDropoffPoints = () => {
         refetchOnWindowFocus: false,
     });
 };
+
+export type ValidDropoffPoint = DropoffPoint & {
+  lat: number;
+  lng: number;
+};
+
+export const isValidPoint = (
+  point: DropoffPoint | null
+): point is ValidDropoffPoint => {
+  return (
+    point != null &&
+    point.lat != null &&
+    point.lng != null
+  );
+};

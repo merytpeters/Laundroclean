@@ -10,8 +10,16 @@ import type {
   Popup as PopupType,
   Rectangle as RectangleType,
   Polygon as PolygonType,
+  Circle as CircleType,
 } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
+
+type CircleArea = {
+  lat: number;
+  lng: number;
+  radius: number;
+};
 
 type MarkerLocation = {
   lat: number;
@@ -35,6 +43,7 @@ type LocationMapProps = {
   bounds?: BoundsArea;
   polygon?: PolygonArea;
   height?: string;
+  circle?: CircleArea;
 };
 
 type LeafletComponents = {
@@ -44,6 +53,7 @@ type LeafletComponents = {
   Popup: typeof PopupType;
   Rectangle: typeof RectangleType;
   Polygon: typeof PolygonType;
+  Circle: typeof CircleType;
 };
 
 
@@ -51,27 +61,40 @@ function MapFix() {
   const map = useMap();
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      map.invalidateSize();
-    }, 150);
+    const t = requestAnimationFrame(() => {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 150);
+    });
 
-    return () => clearTimeout(t);
+    return () => cancelAnimationFrame(t);
   }, [map]);
 
   return null;
 }
 
-
 export default function LocationMap({
   marker,
   bounds,
   polygon,
-  height = "400px",
+  height = "200px",
+  circle
 }: LocationMapProps) {
   const [leaflet, setLeaflet] = useState<LeafletComponents | null>(null);
 
   useEffect(() => {
     let mounted = true;
+
+    import("leaflet").then((L) => {
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        iconUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      });
+    });
 
     import("react-leaflet").then((modules) => {
       if (!mounted) return;
@@ -83,6 +106,7 @@ export default function LocationMap({
         Popup: modules.Popup,
         Rectangle: modules.Rectangle,
         Polygon: modules.Polygon,
+        Circle: modules.Circle,
       });
     });
 
@@ -102,6 +126,7 @@ export default function LocationMap({
     Popup,
     Rectangle,
     Polygon,
+    Circle,
   } = leaflet;
 
   return (
@@ -116,7 +141,7 @@ export default function LocationMap({
       <MapFix />
 
       <TileLayer
-        attribution="&copy; OpenStreetMap contributors"
+        attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
@@ -139,6 +164,13 @@ export default function LocationMap({
 
       {polygon && (
         <Polygon positions={polygon.coordinates} />
+      )}
+
+      {circle && (
+        <Circle
+          center={[circle.lat, circle.lng]}
+          radius={circle.radius}
+        />
       )}
     </MapContainer>
   );
