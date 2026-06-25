@@ -7,13 +7,13 @@ export type UserDto = {
     firstName?: string;
     lastName?: string;
     type: "CLIENT" | "COMPANYUSER";
-    roleId?: number | null;
-    role: {
+    roleId?: number;
+    role?: {
         title: string;
-    } | null;
-    createdAt?: Date;
-    updatedAt?: Date;
-    deletedAt?: Date | null;
+    };
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
     isActive?: boolean;
 };
 
@@ -38,3 +38,27 @@ export function mapUser(dto: UserDto): User {
         role: mapRole(dto.role?.title),
     };
 }
+
+export type ProfileDto = {
+    id: string;
+    phoneNumber?: string;
+    addressLine1?: string;
+    addressLine2?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    paymentMethodToken?: string;
+    isTemp: boolean;
+    avatarUrl?: string;
+    avatarPublicId?: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt?: string;
+}
+
+type user = {
+   user: UserDto
+} 
+
+export type UserProfileDto = user & ProfileDto

@@ -24,7 +24,7 @@ export async function loginUserService(payload: LoginPayload): Promise<AuthSessi
     const {authenticatedUser, ...session} = res.data
 
     return {
-        user: mapUser(res.data.authenticatedUser),
+        user: mapUser(authenticatedUser),
         ...session
     }
 }
