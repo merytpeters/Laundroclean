@@ -1,9 +1,10 @@
 export interface ApiResponse<T> {
+    success: boolean;
     data: T | null;
-    error: string | null;
+    message?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 export async function apiRequest<T>(
     endpoint: string,
@@ -15,30 +16,30 @@ export async function apiRequest<T>(
             ...options,
         });
 
+        const json: ApiResponse<T> = await response.json();
+
         if (!response.ok) {
-            const errorText = await response.text()
             return {
+                success: false,
                 data: null,
-                error: errorText || `Error: ${response.status} ${response.statusText}`
+                message: json.message || "Request failed",
             };
         }
 
         if (response.status === 204) {
             return {
+                success: false,
                 data: null,
-                error: 'No content',
+                message: json.message || "No content",
             };
         }
 
-        const data = (await response.json()) as T;
-        return {
-            data,
-            error: null,
-        };
+        return json
     } catch(err) {
         return {
+            success: false,
             data: null,
-            error: err instanceof Error ? err.message : 'Unknown error'
+            message: err instanceof Error ? err.message : "Unknown error",
         };
     }
 }

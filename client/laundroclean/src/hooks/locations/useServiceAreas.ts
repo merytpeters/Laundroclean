@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from 'src/lib/api';
+import { apiRequest } from 'src/lib/api/requests';
 import { mockServiceAreas } from 'src/services/locations/mock';
 
 export interface ServiceArea {
@@ -15,9 +15,9 @@ export interface ServiceArea {
 export interface ServiceAreasResponse {
     data: ServiceArea[];
     pagination: {
-        page: number;
-        limit: number;
-        total: number;
+      page: number;
+      limit: number;
+      total: number;
     };
 }
 

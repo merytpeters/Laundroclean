@@ -1,4 +1,4 @@
-import { CompanyUser } from "src/types/user";
+import { CompanyUser } from "src/types/users/user";
 import { Role } from "src/types/role";
 
 export const mockCompanyAdmin: CompanyUser = {

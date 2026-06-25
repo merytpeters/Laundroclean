@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from 'src/lib/api';
+import { apiRequest } from 'src/lib/api/requests';
 import { mockDropoffPoints } from 'src/services/locations/mock';
 
 export interface DropoffPoint {

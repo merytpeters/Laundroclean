@@ -1,4 +1,4 @@
-import { Role } from "./role";
+import { Role } from "../role";
 
 export interface BaseUser {
     id: string;
@@ -17,3 +17,4 @@ export interface CompanyUser extends BaseUser {
 }
 
 export type User = Client | CompanyUser;
+

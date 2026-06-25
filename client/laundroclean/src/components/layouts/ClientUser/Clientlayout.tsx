@@ -6,7 +6,7 @@ import ActionButton from 'src/components/ui/ActionButton/ActionButton';
 import styles from 'src/components/layouts/UserLayout.module.css';
 import { BellIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import BackButton from 'src/components/ui/Button/BackButton';
-import { Client } from "src/types/user"
+import { Client } from "src/types/users/user"
 import WelcomeMessage from "src/components/ui/WelcomeMessage/WelcomeMessage";
 import ClientSidebar from "src/components/ui/Modals/ClientUser/ClientSidebar";
 import contentstyles from 'src/app/admin/(without-dashboard-layout)/controlpanel/controlpanellayout.module.css';

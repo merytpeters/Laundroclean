@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import styles from "./AllServices.module.css";
-import { CompanyUser, Client } from "src/types/user";
+import { CompanyUser, Client } from "src/types/users/user";
 import ServiceAreaLocation from "./ServiceAreaLocation";
 import DropOffLocation from "./DropOffLocation";
 import Button from "../Button/Button";
 import { ServiceDisplayProp } from "src/services/laundrocleanservices/laundrocleanservices.service";
 import { DropoffPoint } from "src/hooks/locations/useDropoffPoints";
+
 
 interface AllServicesProps {
     companyuser?: CompanyUser;

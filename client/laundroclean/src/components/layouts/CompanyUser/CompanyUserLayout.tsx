@@ -1,6 +1,6 @@
 "use client";
 
-import { CompanyUser } from "../../../types/user";
+import { CompanyUser } from "../../../types/users/user";
 import { roleConfig } from "src/lib/company-user/role-config";
 import AppHeader from "src/components/ui/AppHeader/AppHeader";
 import ActionButton from "src/components/ui/ActionButton/ActionButton";

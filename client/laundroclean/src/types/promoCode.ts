@@ -10,4 +10,10 @@ export type PromoDetail = {
     type: PromoType;
     value: number;
     currency?: string;
+    serviceId?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
+    startsAt?: string;
+    usageLimit?: number;
 }

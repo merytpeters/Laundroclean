@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { MenuItem } from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
-import { CompanyUser } from "src/types/user";
+import { CompanyUser } from "src/types/users/user";
 
 interface MenuContextType {
   user: CompanyUser;

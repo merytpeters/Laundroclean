@@ -1,4 +1,4 @@
-import { Client } from "src/types/user";
+import { Client } from "src/types/users/user";
 
 
 export const mockClient: Client = {
