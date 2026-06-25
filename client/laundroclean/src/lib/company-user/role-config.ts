@@ -1,4 +1,4 @@
-import { Role } from "src/types/role";
+import { Role } from "src/types/roles/role";
 import { MenuItem } from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 
 export type SettingsActionType = "SETTINGS" | "CONTROL PANEL";

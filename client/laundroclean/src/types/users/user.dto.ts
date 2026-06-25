@@ -1,5 +1,5 @@
 import { User } from "./user";
-import { mapRole } from "../role";
+import { mapRole } from "../roles/role";
 
 export type UserDto = {
     id: string;
