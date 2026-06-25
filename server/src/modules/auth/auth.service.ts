@@ -109,7 +109,7 @@ const registerUser = async (
 };
 
 
-const loginUser = async (payload: any): Promise<{authenticatedUser: User; accessToken: string; refreshToken: string }> => {
+const loginUser = async (payload: any): Promise<{authenticatedUser: Omit<User, 'password'>; accessToken: string; refreshToken: string }> => {
     const authenticatedUser = await findUser({email: payload.email});
     if (!authenticatedUser) throw new NotFoundError('Invalid email or password');
 
@@ -121,7 +121,9 @@ const loginUser = async (payload: any): Promise<{authenticatedUser: User; access
 
     await tokenService.saveRefreshToken(authenticatedUser.id, refreshToken);
 
-    return { authenticatedUser, accessToken, refreshToken };
+    const { password: _password, ...safeUser } = authenticatedUser;
+
+    return { authenticatedUser: safeUser, accessToken, refreshToken };
 };
 
 const findUserByEmail = async (email: string): Promise<User | null> => {
