@@ -16,7 +16,11 @@ export type UserOrderByWithRelationInput = Prisma.UserOrderByWithRelationInput
 const findUser = async (where: UserWhereUniqueInput): Promise<User | null> => {
     const user = await prisma.user.findUnique({
         where,
+        include: {
+            role: true,
+        },
     });
+    if (!user) return null;
     return user;
 };
 
@@ -83,6 +87,9 @@ const registerUser = async (
       firstName: parts[0],
       lastName: parts.slice(1).join(' ') || null,
       }),
+    },
+    include: {
+        role: true,
     },
    });
 
