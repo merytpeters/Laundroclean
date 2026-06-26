@@ -151,14 +151,47 @@
  *           items:
  *             type: string
  *           example: ["read:bookings", "manage:staff"]
+ *     CompanyUsersRoleResponse:
+ *       type: object
+ *       properties:
+ *         users:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               profile:
+ *                 type: object
+ *                 properties:
+ *                   phoneNumber:
+ *                     type: string
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           example: 123e4567-e89b-12d3-a456-426614174000
+ *         title:
+ *           type: string
+ *         level:
+ *           type: integer
+ *         permissions:
+ *           type: array
+ *           items:
+ *             type: string
  *     CompanyRoleResponse:
  *       type: object
  *       properties:
  *         id:
- *           type: string
+ *           type: number
  *           example: 123e4567-e89b-12d3-a456-426614174000
  *         title:
  *           type: string
+ *         level:
+ *            type: integer
  *         permissions:
  *           type: array
  *           items:
@@ -284,7 +317,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CompanyRoleResponse'
+ *               $ref: '#/components/schemas/CompanyUsersRoleResponse'
  *       '401':
  *         description: Unauthorized
  *         content:
@@ -1821,5 +1854,5 @@
  *                   type: object
  */
 
-export {};
+export { };
 
