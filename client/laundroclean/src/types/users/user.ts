@@ -17,8 +17,9 @@ export interface Client extends BaseUser {
 
 export interface CompanyUser extends BaseUser {
     type: "COMPANYUSER";
-    role: Role;
+    role: Role; // this represents ui role for component display
     roleId?: number;
+    title?: string;
 }
 
 export type User = Client | CompanyUser;

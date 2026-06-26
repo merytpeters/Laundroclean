@@ -1,6 +1,7 @@
 import { profileApi } from "src/lib/api/profileApi";
 import { mapUser } from "src/types/users/user.dto";
 import { ChangePasswordPayload, UpdatedUser, UserProfilePayload, UserProfileResponse, ProfileResponse } from "src/types/users/user";
+import { adminApi } from "src/lib/api/adminApi";
 
 export async function getCurrentUserProfileService(): Promise<UserProfileResponse | null> {
     const res = await profileApi.getCurrentUserProfile();
@@ -72,4 +73,19 @@ export async function deleteProfilePicService(): Promise<ProfileResponse | null>
     }
 
     return res.data
+}
+
+export async function adminGetUserService(userId: string): Promise<UserProfileResponse | null> {
+    const res = await adminApi.adminGetUser(userId);
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    const {user, ...profile} = res.data;
+
+    return {
+        user: mapUser(user),
+        profile: profile
+    }
 }

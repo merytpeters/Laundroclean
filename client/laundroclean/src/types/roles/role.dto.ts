@@ -1,8 +1,17 @@
 export type RoleDto = {
     title: string;
     level?: number;
-    permissions: string[];
+    permissions?: string[];
     id: number;
-    createdAt?: string;
-    updatedAt?: string;
 }
+
+type users = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    profile?: {
+        phoneNumber?: string;
+    }
+}
+
+export type UserRoleDto = users & RoleDto

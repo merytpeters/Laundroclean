@@ -1,24 +1,24 @@
 import { adminApi } from "src/lib/api/adminApi";
-import { RolePayload, mapRole } from "src/types/roles/role";
-import { RoleDto } from "src/types/roles/role.dto";
+import { RolePayload, mapRole, UsersRoleResponse, RoleResponse } from "src/types/roles/role";
 
-export async function CreateRoleService(payload: RolePayload): Promise<RoleDto| null> {
+export async function createRoleService(payload: RolePayload): Promise<RoleResponse| null> {
     const res = await adminApi.createRole(payload);
 
-    if (!res.data) return null;
+    if (!res.success || !res.data) return null;
 
     const {title, ...rest} = res.data;
 
     return {
-        title: mapRole(title),
+        role: mapRole(title),
+        title,
         ...rest
     }
 }
 
-export async function GetRolesService(): Promise<RoleDto[] | []> {
+export async function getRolesService(): Promise<RoleResponse[] | []> {
     const res = await adminApi.getRoles();
 
-    if (!res.data || !res.success) {
+    if (!res.success || !res.data) {
         return [];
     }
 
@@ -26,10 +26,39 @@ export async function GetRolesService(): Promise<RoleDto[] | []> {
         const { title, ...rest} = role;
 
         return  {
-            title: mapRole(title),
+            role: mapRole(title),
+            title,
             ...rest
         }
     })
 
     return roles;
+}
+
+export async function getUsersByRoleService(id: string): Promise<UsersRoleResponse | null> {
+    const res = await adminApi.getUsersByRole(id);
+
+    if (!res.success || !res.data) {
+        return null;
+    }
+
+    return res.data
+}
+
+export async function updateRoleService(id: string, payload: RolePayload): Promise<RoleResponse | null> {
+    const res = await adminApi.updateRole(id, payload);
+
+    if (!res.success || !res.data) {
+        return null;
+    }
+
+    return res.data
+}
+
+export async function deleteRoleService(id: string): Promise<string | null> {
+    const res = await adminApi.deleteRole(id);
+
+   if  (!res.success) return null;
+
+   return res.message || "Role successfully deleted";
 }
