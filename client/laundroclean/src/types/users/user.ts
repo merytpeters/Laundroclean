@@ -61,8 +61,6 @@ export type ProfilePayload = {
     state?: string;
     postalCode?: string;
     paymentMethodToken?: string;
-    avatarUrl?: string;
-    avatarPublicId?: string;
 }
 
 export type UserProfilePayload = UserPayload & ProfilePayload

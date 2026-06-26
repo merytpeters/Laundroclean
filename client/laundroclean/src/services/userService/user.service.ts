@@ -1,6 +1,6 @@
 import { profileApi } from "src/lib/api/profileApi";
 import { mapUser } from "src/types/users/user.dto";
-import { ChangePasswordPayload, UpdatedUser, UserProfilePayload, UserProfileResponse } from "src/types/users/user";
+import { ChangePasswordPayload, UpdatedUser, UserProfilePayload, UserProfileResponse, ProfileResponse } from "src/types/users/user";
 
 export async function getCurrentUserProfileService(): Promise<UserProfileResponse | null> {
     const res = await profileApi.getCurrentUserProfile();
@@ -39,4 +39,37 @@ export async function changePasswordService(payload: ChangePasswordPayload) : Pr
     }
 
    return res.data
+}
+
+export async function softDeleteAccountService(): Promise<string | null> {
+    const res = await profileApi.softDeleteAccount();
+
+    if (!res.success) {
+        return null
+    }
+
+    return res.message || "Account Deactivated Successfully"
+}
+
+export async function updateProfilePicService(imageFile: File): Promise<ProfileResponse | null> {
+    const formData = new FormData()
+    formData.append("profilepic", imageFile)
+
+    const res = await profileApi.updateProfilePic(formData);
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    return res.data
+}
+
+export async function deleteProfilePicService(): Promise<ProfileResponse | null> {
+    const res = await profileApi.deleteProfilePic();
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    return res.data
 }
