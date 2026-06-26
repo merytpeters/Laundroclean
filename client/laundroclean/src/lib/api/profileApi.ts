@@ -31,6 +31,6 @@ export const profileApi = {
 
     deleteProfilePic: () =>
         apiRequest<ProfileDto>("/profile/pic", {
-            method: "PATCH"
+            method: "DELETE"
         })
 }
