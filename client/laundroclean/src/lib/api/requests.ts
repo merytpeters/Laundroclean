@@ -5,7 +5,7 @@ export interface ApiResponse<T> {
 }
 
 interface CustomRequestInit extends RequestInit {
-    params?: Record<string, any>
+    params?: Record<string, unknown> | object;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
