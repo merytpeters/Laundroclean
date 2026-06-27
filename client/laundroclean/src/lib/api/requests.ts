@@ -4,16 +4,38 @@ export interface ApiResponse<T> {
     message?: string;
 }
 
+interface CustomRequestInit extends RequestInit {
+    params?: Record<string, any>
+}
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 export async function apiRequest<T>(
     endpoint: string,
-    options?: RequestInit
+    options?: CustomRequestInit,
 ): Promise<ApiResponse<T>> {
     try {
-        const response = await fetch(`${BASE_URL}/${endpoint}`, {
-            headers: { 'Content-Type': 'application/json', ...options?.headers },
-            ...options,
+
+        const params = options?.params;
+
+        const fetchOptions  = {...options};
+        delete fetchOptions.params;
+
+        let url = `${BASE_URL}/${endpoint}`;
+
+        if (params) {
+            const cleanParams = Object.fromEntries(
+                Object.entries(params).filter(([_, val]) => val !== undefined && val !== null)
+            );
+            const queryString = new URLSearchParams(cleanParams as Record<string, string>).toString();
+            if (queryString) {
+                url += `?${queryString}`;
+            }
+        }
+
+        const response = await fetch(url, {
+            headers: { 'Content-Type': 'application/json', ...fetchOptions?.headers },
+            ...fetchOptions,
         });
 
         const json: ApiResponse<T> = await response.json();
