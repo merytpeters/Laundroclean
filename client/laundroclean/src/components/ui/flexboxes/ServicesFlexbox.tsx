@@ -3,9 +3,10 @@ import React from "react";
 import { FaShirtsinbulk } from "react-icons/fa6";
 import Button from "../Button/Button";
 import styles from "./ServicesFlexbox.module.css";
-import { ServiceDisplayProp } from "src/services/laundrocleanservices/laundrocleanservices.service";
+import { ServiceDisplayProp } from "src/types/laundrocleanServices/laundroservices";
 import CornerRightArrow from "../angledarrow";
-import { ServicesProps } from "src/services/laundrocleanservices/laundrocleanservices.service";
+import { ServicesProps } from "src/types/laundrocleanServices/laundroservices";
+
 
 export function Services({name, icon, description, orderedlist}: ServicesProps) {
     return (

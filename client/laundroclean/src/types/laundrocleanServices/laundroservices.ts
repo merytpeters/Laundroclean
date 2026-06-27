@@ -1,3 +1,6 @@
+import type { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { PromoDetail } from "./promocode";
+
 export type PricingType = "per kg" | "per item" | "flat rate"
 
 export function mapPricingType(pricingType: string): PricingType {
@@ -43,4 +46,31 @@ export function mapCurrencySymbol(currency: string): CurrencySymbol {
             throw new Error(`Unknown currency symbol: ${currency}`)
     }
    
+}
+
+export interface ServicesProps {
+  icon?: string | StaticImport;
+  name: string;
+  description: string;
+  orderedlist?: string[];
+}
+
+export interface ServiceDisplayProp {
+  id?: string;
+  name: string;
+  description?: string;
+  pricingType: string;
+  amount: number;
+  currency: string;
+  maxDailyBookings?: string;
+  promoCodes?: PromoDetail[];
+}
+
+export interface ServicesPromoResponse {
+  data: ServiceDisplayProp[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
 }

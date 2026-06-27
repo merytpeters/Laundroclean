@@ -17,3 +17,12 @@ export type PromoDetail = {
     startsAt?: string;
     usageLimit?: number;
 }
+
+export interface PromoCodeResponse {
+    data: PromoDetail[];
+    pagination: {
+        page: number;
+        limit: number;
+       total: number;
+    }
+}

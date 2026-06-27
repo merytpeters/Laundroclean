@@ -6,7 +6,7 @@ import { CompanyUser, Client } from "src/types/users/user";
 import ServiceAreaLocation from "./ServiceAreaLocation";
 import DropOffLocation from "./DropOffLocation";
 import Button from "../Button/Button";
-import { ServiceDisplayProp } from "src/services/laundrocleanservices/laundrocleanservices.service";
+import { ServiceDisplayProp } from "src/types/laundrocleanServices/laundroservices";
 import { DropoffPoint } from "src/hooks/locations/useDropoffPoints";
 
 

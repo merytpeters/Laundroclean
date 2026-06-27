@@ -1,4 +1,4 @@
-import { ServiceDisplayProp } from './laundrocleanservices.service'
+import { ServiceDisplayProp } from "src/types/laundrocleanServices/laundroservices"
 
 export const mockServices: ServiceDisplayProp[] = [
   {
