@@ -1,4 +1,4 @@
-import { mapCurrencySymbol } from "src/types/laundroservices";
+import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { promoDetails } from "src/services/promoService/mock";
 import Button from "../Button/Button";
 import styles from "./PromoCard.module.css";

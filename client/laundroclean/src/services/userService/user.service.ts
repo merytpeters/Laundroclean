@@ -1,6 +1,6 @@
 import { profileApi } from "src/lib/api/profileApi";
 import { mapUser } from "src/types/users/user.dto";
-import { ChangePasswordPayload, UpdatedUser, UserProfilePayload, UserProfileResponse, ProfileResponse } from "src/types/users/user";
+import { ChangePasswordPayload, UpdatedUserResponse, UserProfilePayload, UserProfileResponse, ProfileResponse, GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
 import { adminApi } from "src/lib/api/adminApi";
 
 export async function getCurrentUserProfileService(): Promise<UserProfileResponse | null> {
@@ -33,7 +33,7 @@ export async function updateProfileService(payload: UserProfilePayload): Promise
     }
 }
 
-export async function changePasswordService(payload: ChangePasswordPayload) : Promise<UpdatedUser | null> {
+export async function changePasswordService(payload: ChangePasswordPayload) : Promise<UpdatedUserResponse | null> {
     const res = await profileApi.changePassword(payload);
     if (!res.success || !res.data) {
         return null
@@ -76,7 +76,7 @@ export async function deleteProfilePicService(): Promise<ProfileResponse | null>
 }
 
 export async function adminGetUserService(userId: string): Promise<UserProfileResponse | null> {
-    const res = await adminApi.adminGetUser(userId);
+    const res = await adminApi.getUser(userId);
 
     if (!res.success || !res.data) {
         return null
@@ -88,4 +88,33 @@ export async function adminGetUserService(userId: string): Promise<UserProfileRe
         user: mapUser(user),
         profile: profile
     }
+}
+
+export async function adminGetUsersService(params: GetUsersParams): Promise<UserProfileResponse[] | null> {
+    const res = await adminApi.getUsers(params);
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    const users = res.data.map((singleuser) => {
+        const {user, ...profile} = singleuser;
+
+        return {
+            user: mapUser(user),
+            profile: profile
+        }
+    })
+
+    return users;
+}
+
+export async function adminUpdateUserStatus(userId: string, payload: UpdateUserStatusPayload): Promise<UpdatedUserResponse | null> {
+    const res = await adminApi.updateUserStatus(userId, payload);
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    return res.data
 }

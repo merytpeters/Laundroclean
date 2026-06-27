@@ -71,7 +71,7 @@ export type ChangePasswordPayload = {
     newPassword: string;
 }
 
-export type UpdatedUser = {
+export type UpdatedUserResponse = {
     id: string;
     email: string;
     firstName?: string;
@@ -85,4 +85,16 @@ export type UpdatedUser = {
         title: string;
     };
     roleId?: number;
+}
+
+export interface GetUsersParams {
+    page?: number;
+    limit?: number;
+    status?: "active" | "inactive";
+    type?: "client" | "company";
+    search?: string;
+}
+
+export type UpdateUserStatusPayload = {
+    isActive: boolean;
 }

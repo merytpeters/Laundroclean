@@ -3,7 +3,8 @@ import { RegisterPayload } from "src/types/auth/auth";
 import { AuthResponseDto } from "src/types/auth/auth.dto";
 import { RolePayload } from "src/types/roles/role";
 import { RoleDto, UserRoleDto } from "src/types/roles/role.dto";
-import { UserProfileDto } from "src/types/users/user.dto";
+import { GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
+import { UserDto, UserProfileDto } from "src/types/users/user.dto";
 
 export const adminApi = {
     registerUser: (payload: RegisterPayload) =>
@@ -35,6 +36,18 @@ export const adminApi = {
             method: "DELETE",
         }),
     
-    adminGetUser: (userId: string) =>
-        apiRequest<UserProfileDto>(`/api/v1/admin/users/${userId}`),
+    getUser: (userId: string) =>
+        apiRequest<UserProfileDto>(`/admin/users/${userId}`),
+
+    getUsers: (params: GetUsersParams) =>
+        apiRequest<UserProfileDto[]>('/admin/users', {
+            method: "GET",
+            params: params,
+        }),
+    
+    updateUserStatus: (userId:string, payload: UpdateUserStatusPayload) =>
+        apiRequest<UserDto>(`/api/v1/admin/users/${userId}/status`, {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+        }),
 }
