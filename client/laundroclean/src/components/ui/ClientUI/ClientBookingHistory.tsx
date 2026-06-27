@@ -1,6 +1,6 @@
 import styles from './ClientBookingHistory.module.css';
 import { bookingReceiptData } from 'src/services/bookingService/bookingMockData';
-import { mapCurrencySymbol } from 'src/types/laundroservices';
+import { mapCurrencySymbol } from 'src/types/laundrocleanServices/laundroservices';
 import { transformFieldInArray } from 'src/utils/mapData';
 
 export default function ClientBookingHistory() {

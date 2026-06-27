@@ -1,6 +1,6 @@
 import {DashboardServices } from "src/components/ui/flexboxes/ServicesFlexbox";
 import styles from "./dashboard.module.css";
-import { mapCurrencySymbol, mapPricingType } from "src/types/laundroservices";
+import { mapCurrencySymbol, mapPricingType } from "src/types/laundrocleanServices/laundroservices";
 import { mockServices } from "src/services/laundrocleanservices/mock";
 import ActiveOrder from "src/components/ui/flexboxes/ActiveOrder";
 import PromoCard from "src/components/ui/flexboxes/PromoCard";
