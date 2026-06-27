@@ -79,7 +79,8 @@ const getActiveServiceById = async(
                 isActive: true
             } as ServiceWhereInput,
             include: {
-                prices: { where: { isActive: true } }
+                prices: { where: { isActive: true } },
+                promoCodes: true
             }
         });
 
