@@ -5,7 +5,7 @@ import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/C
 import { statMeta } from "src/components/ui/StatMeta";
 import styles from "./OverviewModal.module.css"
 import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
-import { mapDeliveryType, mapBookingStatus } from "src/types/bookingStatus";
+import { mapDeliveryType, mapBookingStatus } from "src/types/booking/bookingStatus";
 import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
 import { stats, bookingScheduleData } from "../../../../../services/bookingService/bookingMockData";
 import { clientInfoData } from "src/services/userService/mock";

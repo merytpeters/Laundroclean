@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import styles from './BookingForm.module.css';
 import Button from '../Button/Button';
-import { mapDeliveryType } from '../../../types/bookingStatus';
+import { mapDeliveryType } from '../../../types/booking/bookingStatus';
 import { CompanyUserMenuContext } from 'src/components/layouts/CompanyUser/context/CompanyUserMenuContext';
 
 
