@@ -1,5 +1,5 @@
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { PromoDetail } from "./promocode";
+import { PromoDetail } from "./promoCode";
 import { Meta } from "../shared";
 
 export type PricingType = "per kg" | "per item" | "flat rate"
