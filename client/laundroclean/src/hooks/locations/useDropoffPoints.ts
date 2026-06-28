@@ -26,7 +26,7 @@ export const useDropoffPoints = () => {
         queryFn: async () => {
             const response = await apiRequest<DropoffPointsResponse>('dropoffPoints');
             
-            if (response.error) {
+            if (!response.success) {
                 return mockDropoffPoints;
             }
             

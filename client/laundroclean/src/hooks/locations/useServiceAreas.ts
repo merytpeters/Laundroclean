@@ -27,7 +27,7 @@ export const useServiceAreas = () => {
         queryFn: async () => {
             const response = await apiRequest<ServiceAreasResponse>('serviceAreas');
             
-            if (response.error) {
+            if (!response.success) {
                 return mockServiceAreas;
             }
             
