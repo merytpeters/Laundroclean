@@ -4,7 +4,7 @@ import type { Prisma, Service } from '@prisma/client';
 import { ProcessingError, NotFoundError, ValidationError } from '../../middlewares/errorHandler.js';
 import type { ServiceSchema, UpdateServiceSchema } from '../../validation/laundrocleanservices/services.validation.js';
 import ServiceValidation from '../../validation/laundrocleanservices/services.validation.js';
-import type { PaginationQuery } from '../../utils/asyncHandler.js';
+import type { PaginationQuery, ServiceQuery } from '../../utils/asyncHandler.js';
 import { getPagination } from '../common/pagination/paginate.js';
 
 type ServiceCreateInput = Prisma.ServiceCreateInput
@@ -200,13 +200,15 @@ const softDeleteServices = async(
 
 
 const searchAllServices = async(
-    query?: PaginationQuery
+    query?: ServiceQuery
 ):Promise<{ data: Service[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
     try {
         const { page, limit, skip } = getPagination(query || {});
         const search = query?.search?.trim();
+        const includeDeleted = query?.includeDeleted?.trim();
 
         const where: ServiceWhereInput = {
+            ...(includeDeleted === 'false' && {isActive: true}),
             ...(search && {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },
