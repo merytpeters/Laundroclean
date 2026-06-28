@@ -17,7 +17,7 @@ export interface UserQuery extends PaginationQuery {
 }
 
 export interface ServiceQuery extends PaginationQuery {
-  includeDeleted?: 'true' | 'false';
+  includeDeleted?: 'true' | 'false' | 'only';
 }
 
 

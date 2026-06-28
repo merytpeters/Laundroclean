@@ -209,6 +209,7 @@ const searchAllServices = async(
 
         const where: ServiceWhereInput = {
             ...(includeDeleted === 'false' && {isActive: true}),
+            ...(includeDeleted === 'only' && {isActive: false}),
             ...(search && {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },
