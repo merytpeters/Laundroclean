@@ -1,4 +1,4 @@
-import { PromoDetail} from "src/types/promoCode";
+import { PromoDetail } from "src/types/laundrocleanServices/promocode";
 
 export const promoDetails: PromoDetail[]  = [
     {
