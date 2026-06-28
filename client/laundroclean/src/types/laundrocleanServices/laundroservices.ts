@@ -1,5 +1,6 @@
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { PromoDetail } from "./promocode";
+import { Meta } from "../shared";
 
 export type PricingType = "per kg" | "per item" | "flat rate"
 
@@ -66,11 +67,95 @@ export interface ServiceDisplayProp {
   promoCodes?: PromoDetail[];
 }
 
-export interface ServicesPromoResponse {
+export type ServicePricePayload = {
+    serviceId?: string;
+    amount: number;
+    currency: "DOLLAR" | "NAIRA" | "POUNDS";
+    pricingType: "PER_KG" | "PER_ITEM" | "FLAT_RATE";
+}
+
+export type ServicePriceResponse = {
+    id: string;
+    isActive: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    serviceId?: string;
+    amount: number;
+    currency: "DOLLAR" | "NAIRA" | "POUNDS";
+    pricingType: "PER_KG" | "PER_ITEM" | "FLAT_RATE";
+}
+
+export type ServicePayload = {
+    name: string;
+    description: string;
+    maxDailyBookings?: number;
+}
+
+export type ServiceResponse = {
+    name: string;
+    description: string;
+    maxDailyBookings?: number;
+    id: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+}
+
+export type CombinedServiceandPriceResponse = {
+    service: ServiceResponse,
+    price?: ServicePriceResponse
+}
+
+export interface GetActiveServicesParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+}
+
+export type ServicesResponse = {
+    services: ServiceResponse[];
+    meta: Meta;
+}
+
+{/*export interface ServicesPromoResponse {
   data: ServiceDisplayProp[];
   pagination: {
     page: number;
     limit: number;
     total: number;
   };
+}*/}
+
+export type ServiceWithPromoCodesAndPriceResponse = {
+    service: ServiceResponse
+    prices: ServicePriceResponse[],
+    promoCodes?: PromoDetail[],
+}
+
+export type UpdateServicePayload = {
+    name?: string;
+    description?: string;
+    maxDailyBookings?: number;
+    isActive?: boolean;
+}
+
+export type AllServicesParams = {
+    page?: number;
+    limit?: number;
+    search?: string;
+    includeDeleted?: 'true' | 'false' | 'only';
+}
+
+export type ServiceIdPayload = {
+    id: string;
+}
+
+export type ActivateOrDeactivateServicesPayload = {
+    ids: ServiceIdPayload[];
+}
+
+export type ActivatedOrDeactivatedServicesResponse = {
+    deletedCount?: number;
+    count?: number
 }

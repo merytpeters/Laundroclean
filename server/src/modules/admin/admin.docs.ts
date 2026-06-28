@@ -735,7 +735,8 @@
  *       - in: query
  *         name: includeDeleted
  *         schema:
- *           type: boolean
+ *           type: string
+ *           enum: [true, false, only]
  *     responses:
  *       '200':
  *         description: List of services for the company

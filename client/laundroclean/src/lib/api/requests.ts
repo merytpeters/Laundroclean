@@ -2,6 +2,7 @@ export interface ApiResponse<T> {
     success: boolean;
     data: T | null;
     message?: string;
+    meta?: T | null;
 }
 
 interface CustomRequestInit extends RequestInit {

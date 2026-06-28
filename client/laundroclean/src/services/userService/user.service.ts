@@ -90,7 +90,7 @@ export async function adminGetUserService(userId: string): Promise<UserProfileRe
     }
 }
 
-export async function adminGetUsersService(params: GetUsersParams): Promise<UserProfileResponse[] | null> {
+export async function adminGetUsersService(params?: GetUsersParams): Promise<UserProfileResponse[] | null> {
     const res = await adminApi.getUsers(params);
 
     if (!res.success || !res.data) {
