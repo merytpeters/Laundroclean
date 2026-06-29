@@ -956,6 +956,10 @@
  *         name: profileId
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: includeProfile
+ *         schema:
+ *           type: boolean
  *     responses:
  *       '200':
  *         description: List of bookings

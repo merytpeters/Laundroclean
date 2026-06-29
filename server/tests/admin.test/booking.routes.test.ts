@@ -56,7 +56,8 @@ describe('Admin Booking Routes', () => {
 
     // create a client to act on behalf of
     client = await prisma.user.create({
-      data: { email: 'client-booking@test.com', password: await AuthUtils.hashPassword('ClientPass123!'), type: UserType.CLIENT },
+      data: { email: 'client-booking@test.com', password: await AuthUtils.hashPassword('ClientPass123!'), type: UserType.CLIENT, firstName: 'Client',
+    lastName: 'User',},
     });
 
     clientProfile = await prisma.profile.create({ data: { userId: client.id, phoneNumber: '0800000000' } });
@@ -163,6 +164,35 @@ describe('Admin Booking Routes', () => {
       if (b.assignedTo !== null) {
         expect(b.assignedTo.id).toBeDefined();
       }
+    });
+  });
+
+  it('GET /api/v1/admin/bookings should list bookings with profile details', async () => {
+    const res = await request(app)
+      .get('/api/v1/admin/bookings')
+      .query({ includeProfile: 'true' })
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+
+    const bookings = res.body.data;
+
+    bookings.forEach((b: any) => {
+      expect(b).toHaveProperty('assignedTo');
+
+      if (b.assignedTo) {
+        expect(b.assignedTo.id).toBeDefined();
+      }
+
+      // Verify includeProfile works
+      expect(b).toHaveProperty('profile');
+      expect(b.profile).toMatchObject({
+        user: {
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+        },
+      });
     });
   });
 

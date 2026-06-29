@@ -16,9 +16,9 @@ type UpdateBookingStatusInput = UpdateBookingStatusSchema;
 type BookingWhereUniqueInput = Prisma.BookingWhereUniqueInput;
 
 type QuantityInput = {
-  pricingType: PricingType;
-  weight?: number | undefined;
-  itemCount?: number | undefined;
+    pricingType: PricingType;
+    weight?: number | undefined;
+    itemCount?: number | undefined;
 };
 
 const PricingService = {
@@ -67,8 +67,8 @@ const validateServiceArea = async (tx: Prisma.TransactionClient, lat: number, ln
 
 
 const createBooking = async (
-  input: CreateBookingInput,
-  email?: string
+    input: CreateBookingInput,
+    email?: string
 ): Promise<Booking> => {
     return await prisma.$transaction(async (tx) => {
         let user: User | null = null;
@@ -204,7 +204,7 @@ const createBooking = async (
                     }
 
                     // enforce per-user limit via PromoUsage
-                    const usage = await tx.promoUsage.findFirst({ where: { promoCodeId: promo.id, userId: user.id} });
+                    const usage = await tx.promoUsage.findFirst({ where: { promoCodeId: promo.id, userId: user.id } });
                     if (promo.perUserLimit !== null && (usage?.timesUsed ?? 0) >= promo.perUserLimit) {
                         throw new ConflictError('User promo code usage limit reached');
                     }
@@ -317,7 +317,7 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                 updateData.finalAmount = calc.finalAmount as any;
                 updateData.promoCode = { connect: { id: promo.id } } as any;
             }
-            
+
             if (input.address) {
                 const addressLine = input.address.addressLine1 || input.address.addressLine2;
                 if (!addressLine) {
@@ -342,7 +342,7 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                     },
                 };
             }
-            
+
             if (input.deliveryType !== undefined) updateData.deliveryType = input.deliveryType;
             if (input.scheduledDate !== undefined) {
                 const scheduledPickupDay = await BookingUtils.enforceMinPickup(input.scheduledDate ?? null, tx);
@@ -362,10 +362,10 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                 if (input.timeSlotId === null) {
                     updateData.timeSlot = { disconnect: true };
                 } else {
-                    updateData.timeSlot = {connect: { id: input.timeSlotId} };
+                    updateData.timeSlot = { connect: { id: input.timeSlotId } };
                 }
             }
-            
+
             updateData.unitPrice = unitPrice;
             updateData.currency = price.currency;
             updateData.pricingType = price.pricingType;
@@ -427,7 +427,7 @@ const getBooking = async (
 
     const booking = await prisma.booking.findUnique({
         where: whereObj,
-        include: { 
+        include: {
             profile: true,
             assignedTo: true,
         },
@@ -451,19 +451,29 @@ const getBooking = async (
 };
 
 const listBookings = async (
-    params: { page?: number; limit?: number; status?: string; search?: string; profileId?: string } = {},
+    params: {
+        page?: number;
+        limit?: number;
+        status?: string;
+        search?: string;
+        profileId?: string;
+        includeProfile?: boolean;
+    } = {},
     currentUser?: { id?: string; type?: string },
-    isAdmin: boolean = false
+    isAdmin: boolean = false,
 ) => {
     const paginationInput: Record<string, any> = {};
+
     if (params.page !== undefined) paginationInput.page = params.page;
     if (params.limit !== undefined) paginationInput.limit = params.limit;
     if (params.search !== undefined) paginationInput.search = params.search;
-    
+
     const { page, limit, skip } = getPagination(paginationInput);
 
     const where: any = {};
+
     if (params.status) where.status = params.status;
+
     if (params.search) {
         where.OR = [
             { customBookingId: { contains: params.search } },
@@ -480,15 +490,59 @@ const listBookings = async (
         where.profile = { userId: currentUser.id };
     }
 
+    const include: Prisma.BookingInclude = {
+        assignedTo: {
+            include: {
+                role: {
+                    select: {
+                        title: true,
+                    },
+                },
+            },
+        },
+        service: {
+            select: {
+                name: true,
+            },
+        },
+    };
+
+    if (params.includeProfile) {
+        include.profile = {
+            include: {
+                user: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                    },
+                },
+            },
+        };
+    }
+
     const [total, data] = await Promise.all([
         prisma.booking.count({ where }),
-        prisma.booking.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' }, include: { assignedTo: { include : {role: true}}} }),
+        prisma.booking.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                createdAt: 'desc',
+            },
+            include,
+        }),
     ]);
+
+    const formattedData = data.map((b: any) => ({
+        ...b,
+        firstName: b.profile?.user?.firstName ?? null,
+        lastName: b.profile?.user?.lastName ?? null,
+    }));
 
     const totalPages = Math.ceil(total / limit) || 1;
 
     return {
-        data,
+        data: formattedData,
         meta: {
             total,
             page,
@@ -644,23 +698,23 @@ const restoreBooking = async (where: BookingWhereUniqueInput | string, isAdmin: 
     return updated;
 };
 interface BookingSettingsInput {
-  minPickupDays: number;
+    minPickupDays: number;
 }
 
 const upsertBookingSettings = async (
-  input: BookingSettingsInput
+    input: BookingSettingsInput
 ) => {
-  if (typeof input.minPickupDays !== 'number' || input.minPickupDays < 0) {
-    throw new Error('minPickupDays must be a positive number');
-  }
+    if (typeof input.minPickupDays !== 'number' || input.minPickupDays < 0) {
+        throw new Error('minPickupDays must be a positive number');
+    }
 
-  const settings = await prisma.bookingSettings.upsert({
-    where: { id: 1 },
-    update: { minPickupDays: input.minPickupDays },
-    create: { id: 1, minPickupDays: input.minPickupDays },
-  });
+    const settings = await prisma.bookingSettings.upsert({
+        where: { id: 1 },
+        update: { minPickupDays: input.minPickupDays },
+        create: { id: 1, minPickupDays: input.minPickupDays },
+    });
 
-  return settings;
+    return settings;
 };
 
 

@@ -64,13 +64,15 @@ const listBookingsController = asyncHandler(async (req, res) => {
     const limit = q.limit ? Number(q.limit) : undefined;
     const status = q.status as string | undefined;
     const search = q.search as string | undefined;
+    const includeProfile = q.includeProfile as boolean;
 
-    const params: { page?: number; limit?: number; status?: string; search?: string } = {};
+    const params: { page?: number; limit?: number; status?: string; search?: string; includeProfile?: boolean } = {};
     if (page !== undefined) params.page = page;
     if (limit !== undefined) params.limit = limit;
     if (status !== undefined) params.status = status;
     if (search !== undefined) params.search = search;
-
+    params.includeProfile = includeProfile;
+    
     const currentUser = req.user ? { id: req.user.id, type: req.user.type } : undefined;
     const isAdmin = req.user?.role?.title === 'ADMIN';
     const result = await BookingService.listBookings(params, currentUser, Boolean(isAdmin));
