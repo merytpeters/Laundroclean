@@ -470,20 +470,20 @@ const listBookings = async (
 
     const { page, limit, skip } = getPagination(paginationInput);
 
-    const where: any = {};
+    const where: any = {
+        ...(params.status && { status: params.status }),
 
-    if (params.status) where.status = params.status;
+        ...(params.search && {
+            OR: [{ customBookingId: { contains: params.search } }],
+        }),
 
-    if (params.search) {
-        where.OR = [
-            { customBookingId: { contains: params.search } },
-        ];
-    }
+        ...(params.profileId && {
+            profileId: params.profileId,
+        }),
 
-    // Exclude soft-deleted bookings for non-admins
-    if (!isAdmin) {
-        where.deletedAt = null;
-    }
+        // soft delete rule
+        ...(isAdmin ? {} : { deletedAt: null }),
+    };
 
     // If requester is a client, restrict to their bookings only
     if (currentUser?.type === 'CLIENT') {
