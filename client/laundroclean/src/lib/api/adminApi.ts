@@ -1,6 +1,8 @@
 import { apiRequest } from "./requests";
 import { RegisterPayload } from "src/types/auth/auth";
 import { AuthResponseDto } from "src/types/auth/auth.dto";
+import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
+import { BookingDto, BookingSettingsDto, ListBookingsDTO } from "src/types/booking/booking.dto";
 import { ServiceWithServicePriceAndPromoCodes, ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServiceResponse, ServiceWithPromoCodesAndPriceResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
 import { RolePayload } from "src/types/roles/role";
@@ -97,5 +99,47 @@ export const adminApi = {
         apiRequest<ActivatedOrDeactivatedServicesResponse>('/admin/services/all-services/restore', {
             method: "PATCH",
             body: JSON.stringify(payload),
-        })
+        }),
+
+    setMinimumPickupDays: (payload: minimumPickupdaysPayload) =>
+        apiRequest<BookingSettingsDto>('/admin/booking-settings', {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+        }),
+
+    searchBookings: (params?: CompanyListBookingsQueryParam) =>
+        apiRequest<ListBookingsDTO>('/admin/bookings', {
+            params: params
+        }),
+
+    createBooking: (payload: BookingPayload) =>
+        apiRequest<BookingDto>('/admin/booking', {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+
+    getBookingById: (bookingId: string) =>
+        apiRequest<BookingDto>(`/admin/bookings/${bookingId}`),
+
+    updateBooking: (bookingId: string, payload: UpdateBookingPayload) =>
+        apiRequest<BookingDto>(`/admin/bookings/${bookingId}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload)
+        }),
+    
+    cancelBooking: (bookingId: string) =>
+        apiRequest<string>(`/admin/bookings/cancel/${bookingId}`, {
+            method: "PATCH"
+        }),
+
+    updateBookingStatus: (bookingId: string, payload: BookingStatusPayload) =>
+        apiRequest<BookingDto>(`/api/v1/admin/bookings-status/${bookingId}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload)
+        }),
+
+    restoreBooking: (bookingId: string) =>
+        apiRequest<BookingDto>(`/admin/bookings/cancel/${bookingId}/restore`, {
+            method: "PATCH"
+        }),
 }
