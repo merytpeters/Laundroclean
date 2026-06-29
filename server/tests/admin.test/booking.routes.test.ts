@@ -280,4 +280,15 @@ describe('Admin Booking Routes', () => {
     expect(r2.body).toHaveProperty('success', false);
     expect(r2.body.message).toMatch(/Daily booking limit reached/i);
   });
+
+  it('PATCH /api/v1/admin/bookings/cancel/:bookingId should soft delete booking', async () => {
+    const list = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
+    const booking = list.body.data[0];
+    const res = await request(app)
+      .patch(`/api/v1/admin/bookings/cancel/${booking.id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('message');
+  });
 });

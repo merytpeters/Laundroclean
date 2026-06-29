@@ -120,7 +120,7 @@ describe('Booking Controller', () => {
         const cancelRes = { status: jest.fn().mockReturnThis(), send: jest.fn() } as unknown as Response;
 
         await BookingController.cancelBookingController(cancelReq, cancelRes, next as any);
-        expect(cancelRes.status).toHaveBeenCalledWith(204);
+        expect(cancelRes.status).toHaveBeenCalledWith(200);
 
         // admin restores (include role title so controller recognizes admin)
         const restoreReq = { params: { bookingId: booking.id }, user: { ...admin, role: { title: 'ADMIN' } } } as unknown as Request;

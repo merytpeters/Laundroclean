@@ -107,7 +107,10 @@ const cancelBookingController = asyncHandler(async (req, res) => {
 
     await BookingService.softDeleteBooking(bookingId, Boolean(isAdmin));
 
-    return res.status(204).send();
+    return res.status(200).json({
+        success: true,
+        message: 'Booking successfully cancelled'
+    });
 });
 
 const restoreBookingController = asyncHandler(async (req, res) => {

@@ -35,7 +35,7 @@ router.patch(
     BookingController.updateBookingStatusController
 );
 
-router.delete('/bookings/:bookingId', BookingController.cancelBookingController);
+router.patch('/bookings/cancel/:bookingId', BookingController.cancelBookingController);
 
 router.patch('/bookings/:bookingId/restore', BookingController.restoreBookingController);
 
