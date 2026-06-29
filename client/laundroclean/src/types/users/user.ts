@@ -55,6 +55,8 @@ export type UserPayload = {
 }
 
 export type ProfilePayload = {
+    firstName?: string,
+    lastName?: string,
     phoneNumber?: string;
     addressLine1?: string;
     addressLine2?: string;
@@ -62,6 +64,7 @@ export type ProfilePayload = {
     state?: string;
     postalCode?: string;
     paymentMethodToken?: string;
+    isTemp?: boolean;
 }
 
 export type UserProfilePayload = UserPayload & ProfilePayload

@@ -10,6 +10,8 @@ export type UserDto = {
     roleId?: number;
     role?: {
         title: string;
+        level?: number;
+        permissions?: string[];
     };
     createdAt?: string;
     updatedAt?: string;
