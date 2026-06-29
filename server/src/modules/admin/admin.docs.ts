@@ -1033,35 +1033,7 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *   patch:
- *     tags:
- *       - Admin
- *     summary: Cancel (soft delete) a booking
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: bookingId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       '204':
- *         description: Booking cancelled (no content)
- *       '401':
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       '404':
- *         description: Not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- * 
- * /api/v1/admin/bookings/cancel/{bookingId}:
+ *
  *   patch:
  *     tags:
  *       - Admin
@@ -1106,7 +1078,35 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *
- *
+ * /api/v1/admin/bookings/cancel/{bookingId}:
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Cancel (soft delete) a booking
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '204':
+ *         description: Booking cancelled (no content)
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ * 
  * components:
  *   schemas:
  *     CreateBookingRequest:
