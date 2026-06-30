@@ -63,7 +63,7 @@ describe('Admin Promocode Routes', () => {
     expect(res.body).toHaveProperty('data.promo.code', code.toUpperCase());
   });
 
-  it('should list promos and allow get, update and delete', async () => {
+  it('should list promos and allow get, update', async () => {
     // create another promo
     const createRes = await request(app)
       .post('/api/v1/admin/promocodes')
@@ -91,9 +91,31 @@ describe('Admin Promocode Routes', () => {
       .send({ description: 'Updated desc' });
     expect(patchRes.status).toBe(200);
     expect(patchRes.body).toHaveProperty('data.promo.description', 'Updated desc');
+  });
 
-    // delete (deactivate)
-    const delRes = await request(app).delete(`/api/v1/admin/promocodes/${promo.id}`).set('Authorization', `Bearer ${adminToken}`);
+  it('should list promos and allow get, and soft delete', async () => {
+    // create another promo
+    const createRes = await request(app)
+      .post('/api/v1/admin/promocodes')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ code: 'SOFTDELETETEST', serviceId, type: 'FIXED_AMOUNT', value: 500 });
+
+    expect(createRes.status).toBe(201);
+    const promo = createRes.body?.data?.promo;
+    expect(promo).toBeDefined();
+
+    // list
+    const listRes = await request(app).get('/api/v1/admin/promocodes').set('Authorization', `Bearer ${adminToken}`);
+    expect(listRes.status).toBe(200);
+    expect(Array.isArray(listRes.body?.data?.promos) || Array.isArray(listRes.body?.data)).toBeTruthy();
+
+    // get by id
+    const getRes = await request(app).get(`/api/v1/admin/promocodes/${promo.id}`).set('Authorization', `Bearer ${adminToken}`);
+    expect(getRes.status).toBe(200);
+    expect(getRes.body).toHaveProperty('data.promo.id', promo.id);
+
+    // soft delete (deactivate)
+    const delRes = await request(app).patch(`/api/v1/admin/promocodes/deactivate/${promo.id}`).set('Authorization', `Bearer ${adminToken}`);
     expect(delRes.status).toBe(200);
     expect(delRes.body).toHaveProperty('success', true);
   });

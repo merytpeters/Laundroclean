@@ -1743,7 +1743,9 @@
  *               $ref: '#/components/schemas/PromoCodeResponse'
  *       '404':
  *         description: Not found
- *   delete:
+ * 
+ * /api/v1/admin/promocodes/deactivate/{id}:
+ *   patch:
  *     tags:
  *       - Admin
  *     summary: Delete (deactivate) a promo code (admin only)
