@@ -7,6 +7,8 @@ import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam,
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
 import { ServiceWithServicePriceAndPromoCodes, ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServiceResponse, ServiceWithPromoCodesAndPriceResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
+import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
+import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { RolePayload } from "src/types/roles/role";
 import { RoleDto, UserRoleDto } from "src/types/roles/role.dto";
 import { GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
@@ -193,5 +195,28 @@ export const adminApi = {
     deleteTimeSlotById: (timeslotId: string) =>
         apiRequest<TimeSlotsDto>(`/admin/timeslots/${timeslotId}`, {
             method: "DELETE"
-        })
+        }),
+
+    createPromoCode: (payload: PromoCodePayload) =>
+        apiRequest<PromoCodeDto>('/admin/promocodes', {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+
+    getPromoCodes: () =>
+        apiRequest<PromoCodeDto[]>('/admin/promocodes'),
+
+    getPromoCodeById: (id: string) =>
+        apiRequest<PromoCodeDto>(`/admin/promocodes/${id}`),
+
+    updatePromoCodeById: (id: string, payload: UpdatePromoCodePayload) =>
+        apiRequest<PromoCodeDto>(`/api/v1/admin/promocodes/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload)
+        }),
+
+    deactivatePromoCodeById: (id: string) =>
+        apiRequest<string>(`/admin/promocodes/deactivate/${id}`, {
+            method: "PATCH"
+        }),
 }
