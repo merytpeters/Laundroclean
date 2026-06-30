@@ -91,6 +91,12 @@ describe('Admin Promocode Routes', () => {
       .send({ description: 'Updated desc' });
     expect(patchRes.status).toBe(200);
     expect(patchRes.body).toHaveProperty('data.promo.description', 'Updated desc');
+
+    // soft delete (deactivate) with update route
+    const delRes = await request(app).patch(`/api/v1/admin/promocodes/${promo.id}`).set('Authorization', `Bearer ${adminToken}`).send({ serviceId, isActive: false });;
+    expect(delRes.status).toBe(200);
+    expect(delRes.body).toHaveProperty('success', true);
+    expect(delRes.body).toHaveProperty('data.promo.isActive', false);
   });
 
   it('should list promos and allow get, and soft delete', async () => {
