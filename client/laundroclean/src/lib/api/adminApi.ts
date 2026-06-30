@@ -3,6 +3,8 @@ import { RegisterPayload } from "src/types/auth/auth";
 import { AuthResponseDto } from "src/types/auth/auth.dto";
 import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
 import { BookingDto, BookingSettingsDto, ListBookingsDTO } from "src/types/booking/booking.dto";
+import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
+import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
 import { ServiceWithServicePriceAndPromoCodes, ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServiceResponse, ServiceWithPromoCodesAndPriceResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
 import { RolePayload } from "src/types/roles/role";
@@ -133,7 +135,7 @@ export const adminApi = {
         }),
 
     updateBookingStatus: (bookingId: string, payload: BookingStatusPayload) =>
-        apiRequest<BookingDto>(`/api/v1/admin/bookings-status/${bookingId}`, {
+        apiRequest<BookingDto>(`/admin/bookings-status/${bookingId}`, {
             method: "PATCH",
             body: JSON.stringify(payload)
         }),
@@ -142,4 +144,54 @@ export const adminApi = {
         apiRequest<BookingDto>(`/admin/bookings/cancel/${bookingId}/restore`, {
             method: "PATCH"
         }),
+
+    createCalendarRow: (payload: CalendarRowPayload) =>
+        apiRequest<CalendarRowWithTimeSlotsDto>('/admin/staff-calendars', {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+
+    listCompanyUserCalendar: (params?: CalendarRowParams) =>
+        apiRequest<CalendarRowWithTimeSlotsDto[]>('/admin/staff-calendars', {
+            params: params
+        }),
+
+    getCalendarRowById: (calendarId: string) =>
+        apiRequest<CalendarRowWithTimeSlotsDto>(`/admin/staff-calendars/${calendarId}`),
+
+    updateCalendarRowById: (calendarId: string, payload: UpdateCalendarRowPayload) =>
+        apiRequest<CalendarRowWithTimeSlotsDto>(`/admin/staff-calendars/${calendarId}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload)
+        }),
+    
+    deleteCalendarRowById: (calendarId: string) =>
+        apiRequest<string>(`/admin/staff-calendars/${calendarId}`, {
+            method: "DELETE"
+        }),
+
+    createTimeSlot: (payload: TimeSlotPayload) =>
+        apiRequest<TimeSlotsDto>('/admin/timeslots', {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+
+    listTimeSlots: (params?: TimeSlotsParam) =>
+        apiRequest<TimeSlotsDto[]>('/admin/timeslots', {
+            params: params
+        }),
+    
+    getTimeSlotById: (timeslotId: string) =>
+        apiRequest<TimeSlotsDto>(`/admin/timeslots/${timeslotId}`),
+
+    updateTimeSlotById: (timeslotId: string, payload: UpdateTimeSlotPayload) =>
+        apiRequest<TimeSlotsDto>(`/admin/timeslots/${timeslotId}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload)
+        }),
+
+    deleteTimeSlotById: (timeslotId: string) =>
+        apiRequest<TimeSlotsDto>(`/admin/timeslots/${timeslotId}`, {
+            method: "DELETE"
+        })
 }
