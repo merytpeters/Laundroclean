@@ -10,6 +10,7 @@ export type ServiceDto = {
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
+    prices?: ServicePriceDto
 }
 
 export type ServicePriceDto = {

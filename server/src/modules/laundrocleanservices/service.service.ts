@@ -158,6 +158,17 @@ const searchActiveServices = async(
                 include: {
                     prices: {
                         where: { isActive: true }
+                    },
+                    promoCodes: {
+                        select: {
+                            code: true,
+                            description: true,
+                            startsAt: true,
+                            expiresAt: true,
+                            value: true,
+                            currency: true,
+                            type: true,
+                        }
                     }
                 }
             }),

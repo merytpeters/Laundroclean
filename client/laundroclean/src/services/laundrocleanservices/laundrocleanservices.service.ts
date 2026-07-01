@@ -1,7 +1,9 @@
 import { adminApi } from "src/lib/api/adminApi";
 import { clientApi } from "src/lib/api/clientApi";
+import { publicApi } from "src/lib/api/shared/publicApi";
 import { servicePriceApi } from "src/lib/api/shared/servicePriceApi";
-import { ActivateOrDeactivateServicesPayload, ServiceWithPromoCodesAndPriceResponse, AllServicesParams, CombinedServiceandPriceResponse, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServicePricePayload, ServicePriceResponse, ServiceResponse, ServicesResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
+import { ServiceDto, ServiceWithServicePriceAndPromoCodesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ActivateOrDeactivateServicesPayload, ServiceWithPromoCodesAndPriceResponse, AllServicesParams, CombinedServiceandPriceResponse, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServicePricePayload, ServicePriceResponse, ServiceResponse, ServicesResponse, UpdateServicePayload, PublicServicesParams } from "src/types/laundrocleanServices/laundroservices";
 
 export async function createServicePriceService(serviceId: string, payload: ServicePricePayload): Promise<ServicePriceResponse | null> {
   const res = await servicePriceApi.createServicePrice(serviceId, payload);
@@ -152,4 +154,28 @@ export async function clientGetServiceByIdService(id: string): Promise<ServiceWi
     promoCodes: promoCodes,
     ...services
   }
+}
+
+
+// Public Service Page Service
+export async function publicGetServicesService (params?: PublicServicesParams): Promise<ServiceWithServicePriceAndPromoCodesDto | null> {
+  const res = await publicApi.getAndSearchServices(params);
+
+  if (!res.success || !res.data) return null;
+
+  const {prices, promoCodes, ...services} = res.data
+
+  return {
+    prices: prices,
+    promoCodes: promoCodes,
+    ...services
+  }
+}
+
+export async function publicGetServiceById (id: string): Promise<ServiceDto | null> {
+  const res = await publicApi.getServiceById(id);
+
+  if (!res.success || !res.data) return null;
+
+  return res.data
 }

@@ -1,5 +1,6 @@
 import { adminApi } from "src/lib/api/adminApi";
-import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
+import { clientApi } from "src/lib/api/clientApi";
+import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
 import { BookingDto, BookingSettingsDto, ListBookingsDTO } from "src/types/booking/booking.dto";
 
 
@@ -68,3 +69,51 @@ export async function adminRestoreBookingService (bookingId: string): Promise<Bo
     return res.data
 }
 
+// client ApiServices
+export async function clientCreateBookingService (payload: BookingPayload): Promise<BookingDto | null> {
+    const res = await clientApi.createBooking(payload);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+export async function clientGetBookingsService (params?: ClientUserListBookingsQueryParam): Promise<ListBookingsDTO | null> {
+    const res = await clientApi.getBookings(params);
+
+    if (!res.success || !res.data || !res.meta) return null;
+
+    return res.data
+}
+
+export async function clientGetBookingByIdService (bookingId: string): Promise<BookingDto | null> {
+    const res = await clientApi.getBookingById(bookingId);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+export async function clientUpdateBookingByIdService (bookingId: string, payload: UpdateBookingPayload): Promise<BookingDto | null> {
+    const res = await clientApi.updateBookingById(bookingId, payload);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+export async function clientCancelBookingService (bookingId: string): Promise<string | null> {
+    const res = await clientApi.cancelBooking(bookingId);
+
+    if (!res.success || !res.message) return null;
+
+    return res.message
+}
+
+export async function clientUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<BookingDto | null> {
+    const res = await clientApi.updateBookingStatus(bookingId, payload);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}

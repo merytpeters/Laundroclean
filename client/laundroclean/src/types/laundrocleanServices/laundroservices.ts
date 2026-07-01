@@ -159,3 +159,13 @@ export type ActivatedOrDeactivatedServicesResponse = {
     deletedCount?: number;
     count?: number
 }
+
+export type PublicServicesParams = {
+    search?: string;
+    page?: number;
+    limit?: number;
+    sort?: {
+        price?: 'asc' | 'desc';
+        name?: 'asc' | 'desc';
+    }
+}
