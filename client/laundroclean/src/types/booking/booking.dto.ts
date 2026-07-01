@@ -9,7 +9,7 @@ export type BookingSettingsDto = {
 
 export type DeliveryTypeDto = "DROP_OFF" | "PICK_UP"
 
-export type BookingStatusDto = 
+export type BookingStatusDto =
   | "PENDING"
   | "CONFIRMED"
   | "IN_PROGRESS"                             

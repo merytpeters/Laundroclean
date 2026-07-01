@@ -1,4 +1,5 @@
 import { adminApi } from "src/lib/api/adminApi";
+import { clientApi } from "src/lib/api/clientApi";
 import { servicePriceApi } from "src/lib/api/shared/servicePriceApi";
 import { ActivateOrDeactivateServicesPayload, ServiceWithPromoCodesAndPriceResponse, AllServicesParams, CombinedServiceandPriceResponse, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServicePricePayload, ServicePriceResponse, ServiceResponse, ServicesResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
 
@@ -123,4 +124,32 @@ export async function adminRestoreMuulitpleServices(payload: ActivateOrDeactivat
   return res.data
 }
 
+// client ApiServices
 
+export async function clientGetServicesService(params?: GetActiveServicesParams): Promise<ServicesResponse | null> {
+  const res = await clientApi.getServices(params);
+
+  if (!res.success || !res.data || !res.meta) return null;
+
+  const servicesList = res.data;
+  const meta = res.meta;
+
+  return {
+    services: servicesList,
+    meta: meta
+  }
+}
+
+export async function clientGetServiceByIdService(id: string): Promise<ServiceWithPromoCodesAndPriceResponse | null> {
+  const res = await clientApi.getServiceById(id);
+
+  if (!res.success || !res.data) return null;
+
+  const {prices, promoCodes, ...services} = res.data
+
+  return {
+    prices: prices,
+    promoCodes: promoCodes,
+    ...services
+  }
+}
