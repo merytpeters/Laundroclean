@@ -4,7 +4,6 @@ import type { ServiceAreaSchema } from '../../../validation/location/location.va
 import { ProcessingError, ValidationError, ConflictError, NotFoundError } from '../../../middlewares/errorHandler.js';
 import { getPagination } from '../../common/pagination/paginate.js';
 import DropOffPointUtils from '../dropoffPoint/dropoffpoint.utils.js';
-import z from 'zod';
 
 type ServiceAreaInput = ServiceAreaSchema;
 type ServiceAreaWhereUniqueInput = Prisma.ServiceAreaWhereUniqueInput;
