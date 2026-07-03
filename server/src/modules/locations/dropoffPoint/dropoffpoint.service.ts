@@ -132,7 +132,7 @@ const listDropoffPoints = async (
         })
     ]);
 
-    return { data: dropoffPoints, pagination: { page, limit, total } };
+    return { data: dropoffPoints, meta: { page, limit, total, totalPages: Math.ceil(total / limit)} };
 };
 
 const makeInactive = async (where: DropOffPointWhereUniqueInput): Promise<DropOffPoint> => {

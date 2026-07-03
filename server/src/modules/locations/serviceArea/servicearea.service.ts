@@ -132,7 +132,7 @@ const listServiceAreas = async (
         })
     ]);
 
-    return { data: serviceAreas, pagination: { page, limit, total } };
+    return { data: serviceAreas, meta: { page, limit, total, totalPages: Math.ceil(total / limit) } };
 };
 
 const makeServiceAreaInactive = async (where: ServiceAreaWhereUniqueInput): Promise<ServiceArea> => {
