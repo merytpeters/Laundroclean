@@ -4,6 +4,7 @@ import type { ServiceAreaSchema } from '../../../validation/location/location.va
 import { ProcessingError, ValidationError, ConflictError, NotFoundError } from '../../../middlewares/errorHandler.js';
 import { getPagination } from '../../common/pagination/paginate.js';
 import DropOffPointUtils from '../dropoffPoint/dropoffpoint.utils.js';
+import z from 'zod';
 
 type ServiceAreaInput = ServiceAreaSchema;
 type ServiceAreaWhereUniqueInput = Prisma.ServiceAreaWhereUniqueInput;
@@ -22,17 +23,35 @@ const createServiceArea = async (input: ServiceAreaInput): Promise<ServiceArea> 
             throw new ConflictError(`${input.name} already exists as a service area`);
         }
 
-        const result = await DropOffPointUtils.getAreaBound(input.name);
-        const servicearea = await prisma.serviceArea.create({
-            data: {
-                name: input.name,
-                latMin: result?.minLat ?? null,
-                latMax: result?.maxLat ?? null,
-                lngMin: result?.minLon ?? null,
-                lngMax: result?.maxLon ?? null,
-            }
-        });
-        return servicearea;
+        if (
+            input.latMax !== undefined &&
+            input.latMin !== undefined &&
+            input.lngMax !== undefined &&
+            input.lngMin !== undefined
+        ) {
+            const servicearea = await prisma.serviceArea.create({
+                data: {
+                    name: input.name,
+                    latMin: input.latMin ,
+                    latMax: input.latMax,
+                    lngMin: input.lngMin,
+                    lngMax: input.lngMax,
+                }
+           });
+           return servicearea;
+        }else {
+            const result = await DropOffPointUtils.getAreaBound(input.name);
+            const servicearea = await prisma.serviceArea.create({
+                data: {
+                    name: input.name,
+                    latMin: result?.minLat ?? null,
+                    latMax: result?.maxLat ?? null,
+                    lngMin: result?.minLon ?? null,
+                    lngMax: result?.maxLon ?? null,
+                }
+           });
+           return servicearea;
+        }
     } catch (error) {
         if (error instanceof ConflictError || error instanceof ValidationError) {
             throw error;
@@ -58,12 +77,24 @@ const updateServiceArea = async (input: ServiceAreaInput, where: ServiceAreaWher
         if (input.name !== undefined) { 
             updateData.name = input.name;
 
-            const result = await DropOffPointUtils.getAreaBound(input.name);
-            if (result) {
-                updateData.latMin = result?.minLat;
-                updateData.latMax = result?.maxLat;
-                updateData.lngMax = result?.maxLon;
-                updateData.lngMin = result?.minLon;
+            if (
+                input.latMax !== undefined &&
+                input.latMin !== undefined &&
+                input.lngMax !== undefined &&
+                input.lngMin !== undefined
+            ) {
+                updateData.latMin = input.latMin;
+                updateData.latMax = input.latMax;
+                updateData.lngMax = input.lngMax;
+                updateData.lngMin = input.lngMin;
+            } else {
+                const result = await DropOffPointUtils.getAreaBound(input.name);
+                if (result) {
+                    updateData.latMin = result?.minLat;
+                    updateData.latMax = result?.maxLat;
+                    updateData.lngMax = result?.maxLon;
+                    updateData.lngMin = result?.minLon;
+                }
             }
         }
 
