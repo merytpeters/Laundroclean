@@ -3,7 +3,7 @@ import { GetActiveServicesParams } from "src/types/laundrocleanServices/laundros
 import { apiRequest } from "./requests";
 import { ServicesDto, ServiceWithServicePriceAndPromoCodesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, UpdateBookingPayload } from "src/types/booking/booking";
-import { BookingDto, ListBookingsDTO } from "src/types/booking/booking.dto";
+import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 export const clientApi = {
     getServices: (params?: GetActiveServicesParams ) =>
@@ -21,7 +21,7 @@ export const clientApi = {
         }),
     
     getBookings: (params?: ClientUserListBookingsQueryParam) =>
-        apiRequest<ListBookingsDTO>('/client/bookings', {
+        apiRequest<ListBookingsDto>('/client/bookings', {
             params: params
         }),
 
