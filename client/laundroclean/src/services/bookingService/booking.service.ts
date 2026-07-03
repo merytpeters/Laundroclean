@@ -1,5 +1,6 @@
 import { adminApi } from "src/lib/api/adminApi";
 import { clientApi } from "src/lib/api/clientApi";
+import { staffApi } from "src/lib/api/staffApi";
 import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
 import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
@@ -112,6 +113,48 @@ export async function clientCancelBookingService (bookingId: string): Promise<st
 
 export async function clientUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<BookingDto | null> {
     const res = await clientApi.updateBookingStatus(bookingId, payload);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+
+// Staff API Service
+export async function staffCreateBookingService (payload: BookingPayload): Promise<BookingDto | null> {
+    const res = await staffApi.createBooking(payload);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+export async function staffSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDto | null> {
+    const res = await staffApi.searchBookings(params);
+
+    if (!res.success || !res.data || !res.meta) return null;
+
+    return res.data
+}
+
+export async function staffUpdateBooking (bookingId: string, payload: UpdateBookingPayload): Promise<BookingDto | null> {
+    const res = await staffApi.updateBooking(bookingId, payload);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+export async function staffGetBookingById (bookingId: string): Promise<BookingDto | null> {
+    const res = await staffApi.getBookingById(bookingId);
+
+    if (!res.success || !res.data) return null;
+
+    return res.data
+}
+
+export async function staffUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<BookingDto | null> {
+    const res = await staffApi.updateBookingStatus(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 

@@ -2,6 +2,7 @@ import { adminApi } from "src/lib/api/adminApi";
 import { clientApi } from "src/lib/api/clientApi";
 import { publicApi } from "src/lib/api/shared/publicApi";
 import { servicePriceApi } from "src/lib/api/shared/servicePriceApi";
+import { staffApi } from "src/lib/api/staffApi";
 import { ServiceDto, ServiceWithServicePriceAndPromoCodesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { ActivateOrDeactivateServicesPayload, ServiceWithPromoCodesAndPriceResponse, AllServicesParams, CombinedServiceandPriceResponse, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServicePricePayload, ServicePriceResponse, ServiceResponse, ServicesResponse, UpdateServicePayload, PublicServicesParams } from "src/types/laundrocleanServices/laundroservices";
 
@@ -179,3 +180,67 @@ export async function publicGetServiceById (id: string): Promise<ServiceDto | nu
 
   return res.data
 }
+
+
+// Staff API services
+export async function staffCreateLCServiceService(payload: ServicePayload, servicePrice?: ServicePricePayload): Promise<ServiceResponse | CombinedServiceandPriceResponse | null> {
+  const res = await staffApi.createService(payload);
+
+  if (!res.success || !res.data) return null;
+
+  const service = res.data
+  const serviceId = res.data.id
+  if (servicePrice) {
+    const finalPricePayload = {
+      ...servicePrice,
+      serviceId: serviceId
+    }
+
+    const servicepriceRes = await createServicePriceService(serviceId, finalPricePayload);
+    if (!servicepriceRes) return null;
+
+    return {
+      service,
+      price: servicepriceRes
+    }
+  }
+  return res.data
+}
+
+export async function staffGetActiveServicesService(params?: GetActiveServicesParams): Promise<ServicesResponse | null> {
+  const res = await staffApi.getActiveServices(params);
+
+  if (!res.success || !res.data || !res.meta) return null;
+
+  const serviceList = res.data
+  const meta = res.meta
+
+  return {
+    services: serviceList,
+    meta: meta,
+  }
+}
+
+export async function staffGetActiveServiceByIdService(serviceId: string): Promise<ServiceWithPromoCodesAndPriceResponse | null> {
+  const res = await staffApi.getActiveServiceById(serviceId);
+
+  if (!res.success || !res.data) return null;
+
+  const {prices, promoCodes, ...services} = res.data
+
+  return {
+    prices: prices,
+    promoCodes: promoCodes,
+    ...services
+  }
+}
+
+export async function staffUpdateServceByIdService(serviceId: string, payload: UpdateServicePayload): Promise<ServiceResponse | null> {
+  const res = await staffApi.updateServiceById(serviceId, payload);
+
+  if (!res.success || !res.data) return null;
+
+  return res.data
+}
+
+
