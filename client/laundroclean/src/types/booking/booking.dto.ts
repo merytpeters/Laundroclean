@@ -63,4 +63,4 @@ export type BookingDto = {
     deletedAt?: string;
 }
 
-export type ListBookingsDTO = BookingDto[] & Meta
+export type ListBookingsDto = BookingDto[] & Meta

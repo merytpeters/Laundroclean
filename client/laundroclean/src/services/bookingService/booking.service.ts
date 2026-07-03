@@ -1,7 +1,7 @@
 import { adminApi } from "src/lib/api/adminApi";
 import { clientApi } from "src/lib/api/clientApi";
 import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
-import { BookingDto, BookingSettingsDto, ListBookingsDTO } from "src/types/booking/booking.dto";
+import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 
 // admin routes Services
@@ -13,7 +13,7 @@ export async function setMinimumPickupDaysService (payload: minimumPickupdaysPay
     return res.data
 }
 
-export async function adminSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDTO | null> {
+export async function adminSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDto | null> {
     const res = await adminApi.searchBookings(params);
 
     if (!res.success || !res.data || !res.meta) return null;
@@ -78,7 +78,7 @@ export async function clientCreateBookingService (payload: BookingPayload): Prom
     return res.data
 }
 
-export async function clientGetBookingsService (params?: ClientUserListBookingsQueryParam): Promise<ListBookingsDTO | null> {
+export async function clientGetBookingsService (params?: ClientUserListBookingsQueryParam): Promise<ListBookingsDto | null> {
     const res = await clientApi.getBookings(params);
 
     if (!res.success || !res.data || !res.meta) return null;

@@ -2,7 +2,7 @@ import { apiRequest } from "./requests";
 import { RegisterPayload } from "src/types/auth/auth";
 import { AuthResponseDto } from "src/types/auth/auth.dto";
 import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
-import { BookingDto, BookingSettingsDto, ListBookingsDTO } from "src/types/booking/booking.dto";
+import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
 import { ServiceWithServicePriceAndPromoCodesDto, ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
@@ -112,7 +112,7 @@ export const adminApi = {
         }),
 
     searchBookings: (params?: CompanyListBookingsQueryParam) =>
-        apiRequest<ListBookingsDTO>('/admin/bookings', {
+        apiRequest<ListBookingsDto>('/admin/bookings', {
             params: params
         }),
 
