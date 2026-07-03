@@ -1760,14 +1760,13 @@
  *     responses:
  *       '200':
  *         description: Deleted
- */
+ *
 
-/**
- * @swagger
+ *
  * /api/v1/admin/analysis/promousages:
  *   get:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: List promo usage records
@@ -1789,7 +1788,7 @@
  * /api/v1/admin/analysis/promousages/{id}:
  *   get:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: Get a promo usage record
@@ -1813,7 +1812,7 @@
  *                   type: object
  *   delete:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: Delete a promo usage record
@@ -1826,14 +1825,11 @@
  *     responses:
  *       '204':
  *         description: Deleted
- */
-
-/**
- * @swagger
+ *
  * /api/v1/admin/analysis/promousages/user:
  *   get:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: Get promo usage for a specific user and promo code
