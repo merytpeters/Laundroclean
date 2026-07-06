@@ -25,5 +25,4 @@ export type ResetPasswordPayload = {
 export type AuthSession = {
   user: User;
   accessToken: string;
-  refreshToken: string;
 };

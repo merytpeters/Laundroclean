@@ -1,11 +1,17 @@
 "use client";
 
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import AuthForm from "src/components/ui/Forms/AuthForms";
 import Button from "src/components/ui/Button/Button";
 import styles from "./signup.module.css"
 import React, { useState } from "react";
+import { useRegisterUser } from "src/hooks/auth/useAuth";
 
 export default function Signup() {
+  const registerMutation = useRegisterUser();
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -16,6 +22,7 @@ export default function Signup() {
       label: "Name",
       inputProps: {
         id: "name",
+        name: "name",
         type: "text",
         placeholder: "Enter your first and last names",
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNameSplit(e.target.value),
@@ -26,6 +33,7 @@ export default function Signup() {
       label: "Email",
       inputProps: {
         id: "email",
+        name: "email",
         type: "email",
         placeholder: "Enter your email",
         required: true,
@@ -35,6 +43,7 @@ export default function Signup() {
       label: "Password",
       inputProps: {
         id: "password",
+        name: "password",
         type: "password",
         placeholder: "Enter your password",
         required: true,
@@ -63,17 +72,61 @@ export default function Signup() {
     }
   }
 
+  const onSubmit: NonNullable<React.ComponentPropsWithoutRef<"form">["onSubmit"]> = (e) => {
+    e.preventDefault();
+
+    // console.log('[Signup] onSubmit fired');
+
+    const data = new FormData(e.currentTarget);
+    const email = String(data.get("email") ?? "").trim();
+    const password = String(data.get("password") ?? "");
+    const typedName = String(data.get("name") ?? "").trim();
+
+    const name = [formData.firstName, formData.lastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim() || typedName;
+    // client-side password validation
+    // Match server-side rules in server/src/validation/auth/auth.validation.ts
+    const validatePassword = (pwd: string): string | null => {
+      if (!pwd || pwd.length < 7) return 'Password must be a minimum of 7 letters';
+      if (!/^[A-Z]/.test(pwd)) return 'First letter must be uppercase';
+      if (!/[!@#$%^&*]/.test(pwd)) return 'Must contain at least one special character';
+      return null;
+    }
+
+    const pwdError = validatePassword(password);
+    if (pwdError) {
+      toast.error(pwdError);
+      return;
+    }
+    // console.log('[Signup] payload', { name, email, password });
+
+    registerMutation.mutate({
+      name,
+      email,
+      password,
+      type: "CLIENT",
+    }, {
+      onSuccess(data) {
+            toast.success(data?.message);
+            router.push("/login")
+        },
+    });
+  }
+
   return (
     <>
       <AuthForm
         title="Create An Account"
         subtitle="Sign up to get started"
         fields={getFields(handleNameSplit)}
+        onSubmit={onSubmit}
         actions={
           <>
-            <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
+            <Button text={registerMutation.status === 'pending' ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton}/>
             <span>or</span>
-            <Button text="Sign up with Google" className={styles.googlebutton} onClick={() => alert("Google signup")} />
+            <Button type="button" text="Sign up with Google" className={styles.googlebutton} onClick={() => alert("Google signup")} />
           </>
         }
       />

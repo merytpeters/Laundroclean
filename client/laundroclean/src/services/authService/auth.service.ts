@@ -4,7 +4,7 @@ import { mapUser } from 'src/types/users/user.dto';
 import { RegisterPayload, LoginPayload, AuthSession, ForgotPasswordPayload, ResetPasswordPayload } from 'src/types/auth/auth';
 import { User } from 'src/types/users/user';
 
-export async function registerUserService(payload: RegisterPayload): Promise< User|null> {
+export async function registerUserService(payload: RegisterPayload): Promise<{ user: User; message: string } | null> {
     const api =
         payload.type === "CLIENT"
             ? authApi
@@ -12,21 +12,38 @@ export async function registerUserService(payload: RegisterPayload): Promise< Us
 
     const res = await api.registerUser(payload);
 
+    if (!res.success) {
+        throw new Error(res.message || 'Registration failed');
+    }
+
     if (!res.data) return null;
 
-    return mapUser(res.data.user);
+    const user = mapUser(res.data.user);
+    const message = res.message ?? 'Success';
+
+    return {
+        user,
+        message
+    }
 }
 
-export async function loginUserService(payload: LoginPayload): Promise<AuthSession| null> {
+export async function loginUserService(payload: LoginPayload): Promise<{ user: AuthSession; message: string }| null> {
     const res = await authApi.loginUser(payload);
 
     if (!res.data) return null;
-    const {authenticatedUser, ...session} = res.data
+    const { user: authenticatedUser, accessToken } = res.data;
+    const message = res.message ?? 'Success';
+
+
+    const authSession: AuthSession = {
+        user: mapUser(authenticatedUser),
+        accessToken,
+    };
 
     return {
-        user: mapUser(authenticatedUser),
-        ...session
-    }
+        user: authSession,
+        message,
+    };
 }
 
 export async function forgotPasswordService(payload: ForgotPasswordPayload): Promise<string> {

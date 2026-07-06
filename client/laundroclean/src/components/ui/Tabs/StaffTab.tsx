@@ -1,4 +1,5 @@
 "use client";
+import { toast } from 'sonner';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import styles from './StaffTab.module.css';
 import Button from 'src/components/ui/Button/Button';
@@ -6,6 +7,7 @@ import AuthForm from 'src/components/ui/Forms/AuthForms';
 import { useState } from 'react';
 import { useRoles } from 'src/hooks/roles/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
+import { useRegisterUser } from 'src/hooks/auth/useAuth';
 
 export default function StaffTab () {
     const [open, setOpen] = useState(false);
@@ -20,6 +22,7 @@ export default function StaffTab () {
             label: "Name",
             inputProps: {
                 id: "name",
+                name: "name",
                 type: "text",
                 placeholder: "Enter your first and last names",
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNameSplit(e.target.value),
@@ -30,6 +33,7 @@ export default function StaffTab () {
             label: "Email",
             inputProps: {
                 id: "email",
+                name: "email",
                 type: "email",
                 placeholder: "Enter your email",
                 required: true,
@@ -39,6 +43,7 @@ export default function StaffTab () {
             label: "Password",
             inputProps: {
                 id: "password",
+                name: "password",
                 type: "password",
                 placeholder: "Enter your password",
                 required: true,
@@ -48,6 +53,7 @@ export default function StaffTab () {
             label: "Role",
             inputProps: {
                 id: "role",
+                name: "role",
                 type: "select",
                 required: true,
             },
@@ -76,6 +82,49 @@ export default function StaffTab () {
         }
     }
 
+    const registerMutation = useRegisterUser();
+
+    const onSubmit: NonNullable<React.ComponentPropsWithoutRef<"form">["onSubmit"]> = (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+    
+        const data = new FormData(e.currentTarget);
+        const email = String(data.get("email") ?? "").trim();
+        const password = String(data.get("password") ?? "");
+        const typedName = String(data.get("name") ?? "").trim();
+    
+        const name = [formData.firstName, formData.lastName]
+          .filter(Boolean)
+          .join(" ")
+          .trim() || typedName;
+
+        const validatePassword = (pwd: string): string | null => {
+            if (!pwd || pwd.length < 7) return 'Password must be a minimum of 7 letters';
+            if (!/^[A-Z]/.test(pwd)) return 'First letter must be uppercase';
+            if (!/[!@#$%^&*]/.test(pwd)) return 'Must contain at least one special character';
+            return null;
+        }
+        
+        const pwdError = validatePassword(password);
+            if (pwdError) {
+            toast.error(pwdError);
+            return;
+        }
+    
+        registerMutation.mutate({
+          name,
+          email,
+          password,
+          type: "COMPANYUSER",
+        }, {
+            onSuccess(data) {
+            toast.success(data?.message);
+            form.reset();
+            setFormData({ firstName: '', lastName: '' });
+         },
+        });
+      }
+
     if (loading) return <p>Loading</p>
     return (
         <section className={styles.stafftab}>
@@ -88,9 +137,10 @@ export default function StaffTab () {
                             title="Staff Registration"
                             subtitle="Add a new staff"
                             fields={getFields(handleNameSplit)}
+                            onSubmit={onSubmit}
                             actions={
                             <>
-                                <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
+                                <Button text={registerMutation.isPending ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton}/>
                             </>
                             }
                         />

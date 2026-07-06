@@ -1,4 +1,4 @@
-// import cors from 'cors';
+import cors from 'cors';
 import express from 'express';
 import path from 'path';
 import nunjucks from 'nunjucks';
@@ -35,13 +35,13 @@ app.set('view engine', 'html');
 // parse JSON bodies
 app.use(express.json());
 
-{/*app.use(
+app.use(
   cors({
-    origin: "",
+    origin: config.ALLOWED_ORIGINS,
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
   })
-)
-*/}
+);
 
 app.use(globalLimiter);
 

@@ -22,7 +22,8 @@ export async function apiRequest<T>(
         const fetchOptions  = {...options};
         delete fetchOptions.params;
 
-        let url = `${BASE_URL}/${endpoint}`;
+        const cleanEndpoint = endpoint.replace(/^\/+/, "");
+        let url = `${BASE_URL}/${cleanEndpoint}`;
 
         if (params) {
             const cleanParams = Object.fromEntries(
@@ -34,12 +35,26 @@ export async function apiRequest<T>(
             }
         }
 
+        // log outgoing request body to help diagnose issues
+        // console.log('[apiRequest] request body', fetchOptions?.body);
+
         const response = await fetch(url, {
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json', ...fetchOptions?.headers },
             ...fetchOptions,
         });
 
-        const json: ApiResponse<T> = await response.json();
+        // log request and response for easier debugging
+        // console.log('[apiRequest] ', fetchOptions?.method ?? 'GET', url);
+        const respText = await response.clone().text();
+        //console.log('[apiRequest] response', response.status, respText);
+
+        let json: ApiResponse<T>;
+        try {
+            json = respText ? JSON.parse(respText) : { success: false, data: null, message: 'No response body' } as ApiResponse<T>;
+        } catch (parseErr) {
+            json = await response.json();
+        }
 
         if (!response.ok) {
             return {

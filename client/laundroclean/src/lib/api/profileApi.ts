@@ -4,7 +4,9 @@ import { ChangePasswordPayload, UserProfilePayload } from "src/types/users/user"
 
 export const profileApi = {
     getCurrentUserProfile: () =>
-        apiRequest<UserProfileDto>("/profile"),
+        apiRequest<UserProfileDto>("/profile", {
+            credentials: "include",
+        }),
 
     updateProfile: (payload: UserProfilePayload) =>
         apiRequest<UserProfileDto>("/profile", {
