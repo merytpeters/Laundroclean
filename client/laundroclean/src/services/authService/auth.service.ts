@@ -46,24 +46,32 @@ export async function loginUserService(payload: LoginPayload): Promise<{ user: A
     };
 }
 
-export async function forgotPasswordService(payload: ForgotPasswordPayload): Promise<string> {
+export async function forgotPasswordService(payload: ForgotPasswordPayload): Promise<{message: string}> {
     const res = await authApi.forgotPassword(payload);
 
     if (!res.success) {
         throw new Error(res.message || "Failed to send reset email");
     }
 
-    return res.message ?? "Success";
+    const message = res.message ?? "Success"
+
+    return {
+        message
+    }
 }
 
-export async function resetPasswordService(payload: ResetPasswordPayload): Promise<string> {
+export async function resetPasswordService(payload: ResetPasswordPayload): Promise<{message: string}> {
     const res = await authApi.resetPassword(payload);
 
     if (!res.success) {
         throw new Error(res.message || "Password reset failed");
     }
 
-    return res.message ?? "Success";
+    const message = res.message ?? "Success"
+
+    return {
+        message
+    }
 }
 
 export async function logoutService(): Promise<string | null> {

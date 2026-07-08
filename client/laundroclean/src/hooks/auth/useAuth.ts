@@ -41,12 +41,26 @@ export function useLoginUser() {
 export function useForgotPassword() {
     return useMutation({
         mutationFn: forgotPasswordService,
+
+        onSuccess(data) {
+            toast.success(data.message);
+        },
+        onError(error) {
+            toast.error(error.message);
+        }
     })
 }
 
 export function useResetPassword() {
     return useMutation({
-        mutationFn: resetPasswordService
+        mutationFn: resetPasswordService,
+
+        onSuccess(data) {
+            toast.success(data.message);
+        },
+        onError(error) {
+            toast.error(error.message);
+        }
     })
 }
 
