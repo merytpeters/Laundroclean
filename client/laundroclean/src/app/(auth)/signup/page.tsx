@@ -7,6 +7,7 @@ import Button from "src/components/ui/Button/Button";
 import styles from "./signup.module.css"
 import React, { useState } from "react";
 import { useRegisterUser } from "src/hooks/auth/useAuth";
+import { validatePassword } from "src/utils/validatePassword";
 
 export default function Signup() {
   const registerMutation = useRegisterUser();
@@ -86,14 +87,7 @@ export default function Signup() {
       .filter(Boolean)
       .join(" ")
       .trim() || typedName;
-    // client-side password validation
-    // Match server-side rules in server/src/validation/auth/auth.validation.ts
-    const validatePassword = (pwd: string): string | null => {
-      if (!pwd || pwd.length < 7) return 'Password must be a minimum of 7 letters';
-      if (!/^[A-Z]/.test(pwd)) return 'First letter must be uppercase';
-      if (!/[!@#$%^&*]/.test(pwd)) return 'Must contain at least one special character';
-      return null;
-    }
+    
 
     const pwdError = validatePassword(password);
     if (pwdError) {

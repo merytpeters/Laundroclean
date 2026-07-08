@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useRoles } from 'src/hooks/roles/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
 import { useRegisterUser } from 'src/hooks/auth/useAuth';
+import { validatePassword } from 'src/utils/validatePassword';
 
 export default function StaffTab () {
     const [open, setOpen] = useState(false);
@@ -97,13 +98,6 @@ export default function StaffTab () {
           .filter(Boolean)
           .join(" ")
           .trim() || typedName;
-
-        const validatePassword = (pwd: string): string | null => {
-            if (!pwd || pwd.length < 7) return 'Password must be a minimum of 7 letters';
-            if (!/^[A-Z]/.test(pwd)) return 'First letter must be uppercase';
-            if (!/[!@#$%^&*]/.test(pwd)) return 'Must contain at least one special character';
-            return null;
-        }
         
         const pwdError = validatePassword(password);
             if (pwdError) {
