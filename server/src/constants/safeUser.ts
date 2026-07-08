@@ -8,6 +8,7 @@ export const safeUserSelect = {
   lastName: true,
   type: true,
   roleId: true,
+  role: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true,

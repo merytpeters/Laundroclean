@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { redirect } from "next/navigation";
 import ClientLayout from "src/components/layouts/ClientUser/Clientlayout";
+import { useCurrentUser } from "src/hooks/profile/useProfile";
 import { mockClient } from "src/services/clientuser/mock";
 
 
@@ -10,11 +12,18 @@ export default function ClientDashboardLayout ({
 }: {
     children: React.ReactNode
 }) {
+
+    const userProfile = useCurrentUser();
+    const user = userProfile.data?.user || mockClient;
+
+    if (!user || user.type !== "CLIENT") {
+        redirect("/login");
+      }
     
     return (
         <ClientLayout
-           user={mockClient}
-           welcomeMessage={{ name: "Client Name"}}
+           user={user}
+           welcomeMessage={{ name: user?.firstName || user?.lastName || "Client"}}
         >
             { children }
         </ClientLayout>

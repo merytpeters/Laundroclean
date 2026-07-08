@@ -1,3 +1,5 @@
+import { getAccessToken } from "./auth-store";
+
 export interface ApiResponse<T> {
     success: boolean;
     data: T | null;
@@ -24,6 +26,7 @@ export async function apiRequest<T>(
 
         const cleanEndpoint = endpoint.replace(/^\/+/, "");
         let url = `${BASE_URL}/${cleanEndpoint}`;
+        const token = getAccessToken();
 
         if (params) {
             const cleanParams = Object.fromEntries(
@@ -39,9 +42,15 @@ export async function apiRequest<T>(
         // console.log('[apiRequest] request body', fetchOptions?.body);
 
         const response = await fetch(url, {
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json', ...fetchOptions?.headers },
             ...fetchOptions,
+            credentials: 'include',
+            headers: { 
+                'Content-Type': 'application/json',
+                ...(token && {
+                    Authorization: `Bearer ${token}`
+                }),
+                ...fetchOptions?.headers,
+            },
         });
 
         // log request and response for easier debugging

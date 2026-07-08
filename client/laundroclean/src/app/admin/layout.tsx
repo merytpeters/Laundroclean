@@ -7,10 +7,14 @@ import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from '@heroicons/react
 import { roleConfig } from 'src/lib/company-user/role-config';
 import { mockCompanyAdmin } from 'src/services/companyUser/mock';
 import BackButton from 'src/components/ui/Button/BackButton';
+import { useCurrentUser } from 'src/hooks/profile/useProfile';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const user = mockCompanyAdmin;
-    const config = roleConfig[user.role];
+
+    const userProfile = useCurrentUser();
+    const user = userProfile.data?.user || mockCompanyAdmin;
+    const userRole = "role" in user ? user.role : mockCompanyAdmin.role;
+    const config = roleConfig[userRole];
     const isControlPanel = config.settingsAction === "CONTROL PANEL";
 
 

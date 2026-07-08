@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { registerUserService, loginUserService, forgotPasswordService, resetPasswordService, logoutService } from "src/services/authService/auth.service";
 import { useRouter } from "next/navigation";
+import { setAccessToken } from "src/lib/api/auth-store";
 
 
 export function useRegisterUser() {
@@ -20,6 +21,7 @@ export function useLoginUser() {
         mutationFn: loginUserService,
         
         onSuccess(data) {
+            setAccessToken(data?.user.accessToken ?? null);
             toast.success(data?.message);
             const user = data?.user.user;
             if (!user) return;
