@@ -75,6 +75,12 @@
  *       properties:
  *         message:
  *           type: string
+ *     LogoutResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: logged out successfully
  *
  * tags:
  *   - name: Auth
@@ -184,6 +190,25 @@
  *                     example: Password has been reset
  *         '400':
  *           description: Validation error or invalid token
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ErrorResponse'
+ * 
+ *   /api/v1/auth/logout:
+ *     post:
+ *       tags:
+ *         - Auth
+ *       summary: Log out a user
+ *       responses:
+ *         '200':
+ *           description: Logout successful
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/LogoutResponse'
+ *         '401':
+ *           description: Invalid credentials
  *           content:
  *             application/json:
  *               schema:

@@ -16,6 +16,12 @@ const refreshTokenCookieOptions = {
     maxAge: Number(ms(config.REFRESH_TOKEN_EXPIRES || '7d')),
 };
 
+const refreshTokenCookieClearingOptions = {
+    httpOnly: true,
+    sameSite: 'lax' as const,
+    secure: config.NODE_ENV === 'production',
+    path: '/',
+};
 
 const clientRegister = asyncHandler(async (req, res) => {
     let newUser: SignupSchema = req.body;
@@ -84,10 +90,28 @@ const resetPassword = asyncHandler(async (req, res) => {
     });
 });
 
+const logout = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId) {
+        return res.status(401).json({ 
+            success: false,
+            message: 'Unauthorized',
+        });
+    }
 
+    const result = await authService.logoutUser(userId);
+    res.clearCookie('refreshToken', refreshTokenCookieClearingOptions);
+
+    res.status(200).json({
+        success: true,
+        data: null,
+        message: result
+    });
+});
 
 export default {
     clientRegister,
     login,
-    resetPassword
+    resetPassword,
+    logout
 };

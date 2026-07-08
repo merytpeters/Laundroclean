@@ -1,8 +1,8 @@
 import prisma from '../../config/prisma.js';
-import type { Prisma, User, Profile } from '@prisma/client';
+import { type Prisma, type User, type Profile, TokenType } from '@prisma/client';
 import { NotFoundError, ConflictError, ValidationError } from '../../middlewares/errorHandler.js';
 import authUtils from './auth.utils.js';
-import tokenService from '../token/token.service.js';
+import tokenService, { refreshToken } from '../token/token.service.js';
 import type { SignupSchema } from '../../validation/auth/auth.validation.js';
 
 export type UserWhereInput = Prisma.UserWhereInput
@@ -140,6 +140,30 @@ const findUserByEmail = async (email: string): Promise<User | null> => {
     return user;
 };
 
+const logoutUser = async (userId: string): Promise<string> => {
+    const user = await prisma.user.findUnique({
+        where: {id: userId}
+    });
+
+    if (!user) {
+        throw new NotFoundError('User not found');
+    }
+
+    await prisma.user.update({
+        where: {id: userId},
+        data: {
+            tokens: {
+                deleteMany: {
+                    type: TokenType.REFRESH
+                }
+            }
+        }
+    });
+    const message = 'Logged out successfully';
+    return message;
+};
+
+
 export default {
     findUser,
     createUser,
@@ -147,5 +171,6 @@ export default {
     deleteUser,
     registerUser,
     loginUser,
-    findUserByEmail
+    findUserByEmail,
+    logoutUser
 };
