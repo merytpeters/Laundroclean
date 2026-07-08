@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
-import { registerUserService, loginUserService, forgotPasswordService, resetPasswordService } from "src/services/authService/auth.service";
+import { registerUserService, loginUserService, forgotPasswordService, resetPasswordService, logoutService } from "src/services/authService/auth.service";
 import { useRouter } from "next/navigation";
 
 
@@ -47,5 +47,11 @@ export function useForgotPassword() {
 export function useResetPassword() {
     return useMutation({
         mutationFn: resetPasswordService
+    })
+}
+
+export function useLogout() {
+    return useMutation({
+        mutationFn: logoutService
     })
 }

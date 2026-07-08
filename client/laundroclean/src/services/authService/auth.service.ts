@@ -65,3 +65,11 @@ export async function resetPasswordService(payload: ResetPasswordPayload): Promi
 
     return res.message ?? "Success";
 }
+
+export async function logoutService(): Promise<string | null> {
+    const res = await authApi.logout();
+
+    if (!res.success) return null;
+
+    return res.message ?? "Logged out Successfully"
+}

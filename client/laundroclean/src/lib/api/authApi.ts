@@ -25,5 +25,10 @@ export const authApi = {
         apiRequest<string>("/auth/reset-password", {
             method: "POST",
             body: JSON.stringify(payload),
+        }),
+    
+    logout: () =>
+        apiRequest<string>("auth/logout", {
+            method: "POST"
         })
 };
