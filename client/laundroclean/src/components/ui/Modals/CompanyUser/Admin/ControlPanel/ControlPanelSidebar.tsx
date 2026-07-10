@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import styles from 'src/components/ui/Modals/Sidebar.module.css';
-import { FaCog, FaFileAlt, FaPercent, FaCalendarCheck, FaChartBar, FaUsersCog, FaTshirt, FaUsers} from 'react-icons/fa';
+import { FaCog, FaFileAlt, FaPercent, FaCalendarCheck, FaChartBar, FaUsersCog, FaTshirt, FaUsers, FaUser} from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -82,6 +82,14 @@ export default function ControlPanelSidebar () {
                             <FaUsers size={16} />
                         </span>
                         <Link href={`${controlpanelbasepath}/customers`} className={styles.label}> Customers </Link>
+                    </div>
+                </li>
+                <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/settings` ? styles.active : ""}`}>
+                    <div className={styles.navrow}>
+                        <span className={styles.icon}>
+                            <FaUser size={16} />
+                        </span>
+                        <Link href={`${controlpanelbasepath}/settings`} className={styles.label}> Account Settings </Link>
                     </div>
                 </li>
                 <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/systems` ? styles.active : ""}`}>

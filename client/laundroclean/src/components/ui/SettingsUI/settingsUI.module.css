@@ -1,0 +1,217 @@
+.uiContainer {
+    display: grid;
+    color: #0f233a;
+    grid-template-columns: 1fr 3fr;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.uiContainer aside {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5em;
+    background-color: #fff;
+    color: #0f233a;
+    height: fit-content;
+    border-radius: 4px;
+    font-size: small;
+}
+
+.uiContainer ul {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.uiContainer li, .uiContainer span {
+    display: flex;
+    list-style-type: none;
+    gap: 20px;
+    font-size: small;
+}
+
+.destructiveactionbtns {
+    display: flex;
+    flex-direction: column;
+    gap: 3em;
+    align-self: center;
+}
+
+.logoutbtn {
+    --btn-height: 3em;
+    --btn-padding: 1em;
+    --btn-color: #0f233a;
+    --btn-bg: #e1e0e0;
+    --btn-width: 12em;
+    border-radius: 4px;
+    font-size: small;
+    box-shadow: none;
+}
+
+.deleteacctbtn {
+    --btn-height: 3em;
+    --btn-padding: 1em;
+    --btn-color: #fdfdfd;
+    --btn-bg: #bf1717;
+    --btn-width: 12em;
+    border-radius: 4px;
+    font-size: small;
+    box-shadow: none;
+}
+
+.pagedisplay {
+    background-color: #fff;
+    border-radius: 4px;
+    padding-left: 2em;
+    padding-right: 2em;
+    font-size: small;
+}
+
+.profilesettings {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    width: 100%;
+    gap: 3em;
+}
+
+.profilepic {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    gap: 3em;
+}
+
+.profileavatar {
+    position: relative;
+    display: inline-block;
+}
+
+.avataricon {
+    color: #ccc;
+}
+
+.camerabadge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    background-color: #007bff;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-sizing: border-box;
+    width: 60px;
+    height: 60px;
+}
+
+.cameraicon {
+    fill: #007bff;
+    margin-left: 11px;
+    margin-top: 8px;
+    stroke-width: 20px;
+    stroke: #ffffff;
+}
+
+.profilepicbtns {
+    display: flex;
+    margin-top: 6em;
+    padding: 2em;
+    height: fit-content;
+    gap: 1em;
+}
+
+.uploadnewbtn {
+    --btn-height: 3em;
+    --btn-padding: 1em;
+    --btn-bg: #007bff;
+    --btn-color: #fff;
+    border-radius: 4px;
+    font-size: medium;
+    box-shadow: none;
+}
+
+.deleteavatarbtn {
+    --btn-height: 3em;
+    --btn-padding: 1em;
+    --btn-color: #0f233a;
+    --btn-bg: #e1e0e0;
+    border-radius: 4px;
+    font-size: medium;
+    box-shadow: none;
+}
+
+.profilesettings form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 2em 0;
+}
+
+.formrowgroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1em;
+}
+
+.formitem {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+}
+
+.formitem label {
+    font-weight: bold;
+}
+
+.formitem input {
+    width: 22em;
+    height: 3em;
+}
+
+.adformrowgroup {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+}
+
+.addressformgroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 1em;
+}
+
+
+.addressdetails {
+    display: flex;
+    padding-bottom: 1em;
+    justify-content: space-between;
+}
+
+.citynstate {
+    display: flex;
+}
+
+.addressdetails .formitem input {
+    width: 10em;
+}
+
+.actionbtn {
+    padding: 2em;
+}
+
+.savechangesbtn {
+    --btn-height: 3em;
+    --btn-padding: 1em;
+    --btn-bg: #007bff;
+    --btn-color: #fff;
+    --btn-width: 10em;
+    border-radius: 4px;
+    font-size: medium;
+    box-shadow: none;
+}

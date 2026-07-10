@@ -48,7 +48,7 @@ export default function ClientLayout({ user, children, welcomeMessage }: ClientL
                             <Cog6ToothIcon className={styles.iconStyle} />
                         }
                         text="Settings"
-                        href="/user/user-settings"
+                        href="/user/settings"
                         className={styles.iconButton}
                     />
                 }

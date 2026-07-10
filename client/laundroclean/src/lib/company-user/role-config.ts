@@ -73,14 +73,14 @@ export const roleConfig: Record<Role, RoleConfig> = {
     dashboardText: "Staff Dashboard",
     dashboardHref: "/staff/dashboard",
     showNotifications: true,
-    settingsHref: "/settings",
+    settingsHref: "/staff/dashboard#settings",
     settingsAction: "SETTINGS",
     menuItems: [
       {label: "Overview", key: "overview"},
       {label: "Bookings", key: "bookings"},
       {label: "Delivery", key: "delivery"},
       {label: "Payment", key: "payment"},
-      {label: "Chat", key: "chat"},
+      {label: "Settings", key: "settings"},
       {label: "Calendar", key: "calendar"},
       {label: "Services", key: "services"}
     ],

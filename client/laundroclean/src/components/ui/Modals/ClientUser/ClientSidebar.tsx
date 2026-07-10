@@ -54,20 +54,20 @@ export default function ClientSidebar () {
                         <Link href={`${clientsidebarbasepath}/payment`} className={styles.label}> Payment </Link>
                     </div>  
                 </li>
-                <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/profile` ? styles.active : ""}`}>
+                {/*<li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/profile` ? styles.active : ""}`}>
                     <div className={styles.navrow}>
                         <span className={styles.icon}>
                             <FaUser size={16} />
                         </span>
                         <Link href={`${clientsidebarbasepath}/profile`} className={styles.label}> Profile </Link>
                     </div>
-                </li>
-                <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/user-settings` ? styles.active : ""}`}>
+                </li>*/}
+                <li className={`${styles.navitem} ${path === `${clientsidebarbasepath}/settings` ? styles.active : ""}`}>
                     <div className={styles.navrow}>
                         <span className={styles.icon}>
                             <FaCog size={16} />
                         </span>
-                        <Link href={`${clientsidebarbasepath}/user-settings`} className={styles.label}> Settings </Link>
+                        <Link href={`${clientsidebarbasepath}/settings`} className={styles.label}> Settings </Link>
                     </div>  
                 </li>
             </ul>

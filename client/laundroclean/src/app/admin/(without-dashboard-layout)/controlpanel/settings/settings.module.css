@@ -1,0 +1,10 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: #f1efef;
+    color: #3c3c3c;
+    width: 100%;
+    padding: 2em;
+    height: fit-content;
+    gap: 2em;
+}
