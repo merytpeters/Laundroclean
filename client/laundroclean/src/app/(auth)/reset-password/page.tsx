@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from 'react';
 import { useSearchParams } from "next/navigation";
 import AuthForm from "src/components/ui/Forms/AuthForms";
 import Button from "src/components/ui/Button/Button";
@@ -10,7 +11,7 @@ import { toast } from "sonner";
 import { FiCheckCircle } from "react-icons/fi";
 import Link from "next/link";
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
     const searchParams = useSearchParams();
 
     const tokenfromURl = searchParams.get("token");
@@ -89,4 +90,12 @@ export default function ResetPassword() {
             }
         </>     
     )
+}
+
+export default function ResetPassword() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <ResetPasswordContent />
+        </Suspense>
+    );
 }
