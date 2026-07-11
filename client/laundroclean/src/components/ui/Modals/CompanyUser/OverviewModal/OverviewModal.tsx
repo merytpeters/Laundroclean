@@ -15,7 +15,7 @@ import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin
 export default function Overview() {
     const { user } = useCompanyUserMenu();
 
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
 
     const mappedDelivery =bookingScheduleData.map((item) => ({
         ...item,
@@ -53,7 +53,7 @@ export default function Overview() {
                     );
                 })}
             </section>
-            {user?.role === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
+            {user?.uiRole === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
                
             <section aria-label="Information Section" className={styles.infosection}>
                 <ScheduleCard items={mappedSchedule}/>
