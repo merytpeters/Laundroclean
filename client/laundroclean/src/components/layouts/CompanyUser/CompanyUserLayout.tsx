@@ -20,7 +20,7 @@ interface CompanyUserLayoutProps {
 
 const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: CompanyUserLayoutProps) => {
   const { activeMenu, setActiveMenu, menuItems, setMenuItems } = useCompanyUserMenu();
-  const config = roleConfig[user.role];
+  const config = roleConfig[user.uiRole];
 
   const isControlPanel = config.settingsAction === "CONTROL PANEL";
 
@@ -31,7 +31,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
 
   return (
       <div className={styles.layoutContainer}>
-        {user?.role === "STAFF" && <AppHeader
+        {user?.uiRole === "STAFF" && <AppHeader
           userButton={
             config && (
               <ActionButton
@@ -106,7 +106,7 @@ export default function CompanyUserLayout(props: CompanyUserLayoutProps) {
   return (
     <CompanyUserMenuProvider
       user={props.user}
-      initialMenuItems={props.user.role ? roleConfig[props.user.role].menuItems : []}
+      initialMenuItems={props.user.uiRole ? roleConfig[props.user.uiRole].menuItems : []}
     >
       <LayoutContent {...props} />
     </CompanyUserMenuProvider>

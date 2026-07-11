@@ -18,7 +18,7 @@ export default function BookingDisplayTable () {
         STAFF: "/dashboard"
     }
 
-    const href = roleRoutes[user.role] || "/dashboard";
+    const href = roleRoutes[user.uiRole] || "/dashboard";
 
     return (
         <section className={styles.BookingDisplayTable}>
@@ -37,7 +37,7 @@ export default function BookingDisplayTable () {
                         <th>Delivery Tag</th>
                         <th>Status</th>
                         <th>Amount</th>
-                        {user.role === "ADMIN" && <th>Assigned Staff</th>}
+                        {user.uiRole === "ADMIN" && <th>Assigned Staff</th>}
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -52,14 +52,14 @@ export default function BookingDisplayTable () {
                             <td>{bookingDetail.deliveryType}</td>
                             <td>{bookingDetail.status}</td>
                             <td>{bookingDetail.amount}</td>
-                            {user.role === "ADMIN" && (
+                            {user.uiRole === "ADMIN" && (
                                 <td>{bookingDetail.assignedStaff ?? '—'}</td>
                             )}
                             <td>
                                 <button className={styles.editbtn}>
                                     <FiEdit />
                                 </button>
-                                {user.role === "ADMIN" && (
+                                {user.uiRole === "ADMIN" && (
                                     <button className={styles.trashbtn}>
                                         <FiTrash2 />
                                     </button>
@@ -72,7 +72,7 @@ export default function BookingDisplayTable () {
                 
             </table>
             <div className={styles.actions}>
-                {user.role === "STAFF" ? (
+                {user.uiRole === "STAFF" ? (
                     <button
                         className={styles.viewmore}
                         onClick={() => setActiveMenu("calendar")}

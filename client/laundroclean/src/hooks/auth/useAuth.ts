@@ -28,7 +28,7 @@ export function useLoginUser() {
 
             if (user.type === "CLIENT") {
                 router.push("/user/dashboard");
-            } else if (user.role === "ADMIN") {
+            } else if (user.uiRole === "ADMIN") {
                 router.push("/admin/dashboard");
             } else {
                 router.push("/staff/dashboard");

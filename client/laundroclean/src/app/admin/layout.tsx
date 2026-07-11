@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const userProfile = useCurrentUser();
     const user = userProfile.data?.user || mockCompanyAdmin;
-    const userRole = "role" in user ? user.role : mockCompanyAdmin.role;
+    const userRole = "uiRole" in user ? user.uiRole : mockCompanyAdmin.uiRole;
     const config = roleConfig[userRole];
     const isControlPanel = config.settingsAction === "CONTROL PANEL";
 
