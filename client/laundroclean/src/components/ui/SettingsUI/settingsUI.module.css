@@ -277,3 +277,138 @@
     font-size: medium;
     box-shadow: none;
 }
+
+@media (max-width: 1024px) {
+
+    .pagedisplay {
+        display: flex;
+        width: 60dvw;
+        max-width: 70dvw;
+    }
+
+    .profileavatar {
+        width: 180px;
+        height: 180px;
+    }
+
+    .profilepic {
+        gap: 1em;
+    }
+
+    .formitem input {
+        width: 20dvw;
+        height: 3em;
+    }
+
+    .addressdetails {
+        flex-direction: column;
+    }
+
+    .actionbtn {
+        display: flex;
+        gap: 0.5em;
+    }
+}
+
+@media (max-width: 750px) {
+
+    .uiContainer aside {
+        width: fit-content;
+        padding: 1em;
+        position: relative;
+    }
+
+    .uiContainer li, .uiContainer a {
+        font-size: xx-small;
+    }
+
+    .destructiveactionbtns {
+        gap: 2em;
+        align-self: center;
+        align-items: center;
+    }
+
+    .logoutbtn {
+        --btn-height: 3em;
+        --btn-width: 6em;
+        font-size: smaller;
+    }
+
+    .deleteacctbtn {
+        --btn-height: 3em;
+        --btn-width: 6em;
+        font-size: smaller;
+    }
+
+    .pagedisplay {
+        display: flex;
+        max-width: 55vw;
+        padding: 0.2em;
+    }
+
+    .profilesettings {
+        width: 100%;
+        gap: 1em;
+    }
+
+    .profilepic {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .profileavatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .camerabadge {
+        width: 20px;
+        height: 20px;
+    }
+
+    .uploadnewbtn {
+        font-size: smaller;
+    }
+
+    .deleteavatarbtn {
+        font-size: smaller;
+    }
+
+    .formrowgroup {
+        flex-direction: column;
+    }
+
+    .formitem input {
+        width: 10em;
+        height: 2em;
+    }
+
+    .addressformgroup {
+        flex-direction: column;
+    }
+
+    .addressdetails {
+        flex-direction: column;
+    }
+
+    .citynstate {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .editbtn {
+        --btn-width: 8em;
+        font-size: small;
+    }
+
+    .savechangesbtn {
+        --btn-width: 8em;
+        font-size: small;
+    }
+
+    .cancelbtn {
+        --btn-width: 8em;
+        font-size: small;
+    }
+}
+

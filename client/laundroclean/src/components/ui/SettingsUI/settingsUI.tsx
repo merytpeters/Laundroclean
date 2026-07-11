@@ -88,6 +88,7 @@ export default function SettingsUI({ user, profile }: SettingsUIProps) {
     return (
         <section className={styles.uiContainer}>
             <aside>
+                {/*<span>X</span>*/}
                 <ul>
                     <li>
                         <FaCog size={16} />
