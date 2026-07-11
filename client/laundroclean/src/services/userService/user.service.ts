@@ -54,7 +54,7 @@ export async function softDeleteAccountService(): Promise<string | null> {
 
 export async function updateProfilePicService(imageFile: File): Promise<ProfileResponse | null> {
     const formData = new FormData()
-    formData.append("profilepic", imageFile)
+    formData.append("avatar", imageFile)
 
     const res = await profileApi.updateProfilePic(formData);
 

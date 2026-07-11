@@ -2,7 +2,8 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { registerUserService, loginUserService, forgotPasswordService, resetPasswordService, logoutService } from "src/services/authService/auth.service";
 import { useRouter } from "next/navigation";
-import { setAccessToken } from "src/lib/api/auth-store";
+import { clearAccessToken, setAccessToken } from "src/lib/api/auth-store";
+import { useAuth } from "src/context/AuthContext";
 
 
 export function useRegisterUser() {
@@ -16,6 +17,7 @@ export function useRegisterUser() {
 }
 
 export function useLoginUser() {
+    const { setAuthUser } = useAuth();
     const router = useRouter();
     return useMutation({
         mutationFn: loginUserService,
@@ -25,7 +27,7 @@ export function useLoginUser() {
             toast.success(data?.message);
             const user = data?.user.user;
             if (!user) return;
-
+            setAuthUser(user)
             if (user.type === "CLIENT") {
                 router.push("/user/dashboard");
             } else if (user.uiRole === "ADMIN") {
@@ -67,7 +69,22 @@ export function useResetPassword() {
 }
 
 export function useLogout() {
+    const { setAuthUser } = useAuth();
+    const router = useRouter();
     return useMutation({
-        mutationFn: logoutService
+        mutationFn: logoutService,
+
+        onSuccess(data) {
+            clearAccessToken();
+            setAuthUser(null);
+            if (data) {
+                toast.success(data);
+            }
+            router.push("/login");
+        },
+
+        onError(error) {
+            toast.error(error.message);
+        }
     })
 }

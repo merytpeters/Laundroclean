@@ -1,7 +1,7 @@
 "use client";
 
 import styles from 'src/components/ui/Modals/Sidebar.module.css';
-import { FaPercent, FaCalendarCheck, FaTshirt, FaUser, FaCreditCard, FaUserShield, FaCog} from 'react-icons/fa';
+import { FaPercent, FaCalendarCheck, FaTshirt, FaCreditCard, FaUserShield, FaCog} from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 

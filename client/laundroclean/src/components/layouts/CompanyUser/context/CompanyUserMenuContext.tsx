@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
 import { MenuItem } from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 import { CompanyUser } from "src/types/users/user";
 
@@ -34,23 +34,54 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
 
   const [activeMenu, setActiveMenuState] = useState<string>("overview");
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("companyUserActiveMenu");
-      if (saved) setActiveMenuState(saved);
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const setActiveMenu = (key: string) => {
+  const setActiveMenu = useCallback((key: string) => {
     try {
       localStorage.setItem("companyUserActiveMenu", key);
+      if (user.uiRole === "STAFF") {
+        window.history.replaceState(
+          null,
+          "",
+          `/staff/dashboard#${key}`
+        )
+      } else if (user.uiRole === "ADMIN") {
+        window.history.replaceState(
+          null,
+          "",
+          `/admin/dashboard#${key}`
+        )
+      }
+
     } catch {
       // ignore
     }
     setActiveMenuState(key);
-  };
+  }, [user.uiRole]);
+
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("companyUserActiveMenu");
+      if (saved) setActiveMenuState(saved);
+      const syncMenuWithHash = () => {
+        switch (window.location.hash) {
+          case "#settings":
+            setActiveMenu("settings");
+            break;
+          default:
+            setActiveMenu("overview")
+        }
+      };
+
+      syncMenuWithHash();
+
+      window.addEventListener("hashchange", syncMenuWithHash);
+      return () => {
+        window.removeEventListener("hashchange", syncMenuWithHash)
+      }
+    } catch {
+      // ignore
+    }
+  }, [setActiveMenu]);
 
   return (
     <CompanyUserMenuContext.Provider value={{ user, activeMenu, setActiveMenu, menuItems, setMenuItems }}>

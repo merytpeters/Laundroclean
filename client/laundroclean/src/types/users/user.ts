@@ -5,9 +5,9 @@ export interface BaseUser {
     email: string;
     firstName?: string;
     lastName?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-    deletedAt?: Date;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
     isActive?: boolean;
 }
 
@@ -17,9 +17,13 @@ export interface Client extends BaseUser {
 
 export interface CompanyUser extends BaseUser {
     type: "COMPANYUSER";
-    role: Role; // this represents ui role for component display
+    uiRole: Role // this represents ui role for component display
+    role?: {
+        title: string;
+        level?: number;
+        permissions?: string[];
+    };
     roleId?: number;
-    title?: string;
 }
 
 export type User = Client | CompanyUser;
@@ -37,8 +41,8 @@ export type ProfileResponse = {
     avatarUrl?: string;
     avatarPublicId?: string;
     userId: string;
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt: string;
+    updatedAt: string;
     deletedAt?: string;
 }
 

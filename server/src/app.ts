@@ -24,6 +24,11 @@ import { globalLimiter } from './middlewares/rateLimiter.js';
 const app = express();
 
 const templatesPath = config.TEMPLATES_PATH;
+const corsOptions = {
+  origin: config.ALLOWED_ORIGINS,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+};
 
 
 nunjucks.configure(templatesPath, {
@@ -36,12 +41,10 @@ app.set('view engine', 'html');
 app.use(express.json());
 
 app.use(
-  cors({
-    origin: config.ALLOWED_ORIGINS,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-  })
+  cors(corsOptions)
 );
+
+app.options(/.*/, cors(corsOptions));
 
 app.use(globalLimiter);
 

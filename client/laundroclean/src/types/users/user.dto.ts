@@ -34,13 +34,10 @@ export function mapUser(dto: UserDto): User {
         };
     }
 
-    const title = dto.role?.title;
-
     return {
         ...base,
         type: "COMPANYUSER",
-        role: mapRole(dto.role?.title),
-        title
+        uiRole: mapRole(dto.role?.title),
     };
 }
 
