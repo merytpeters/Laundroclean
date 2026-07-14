@@ -24,7 +24,7 @@
     gap: 40px;
 }
 
-.uiContainer li {
+.uiContainer li, .uiContainer a {
     display: flex;
     list-style-type: none;
     gap: 20px;
@@ -276,6 +276,115 @@
     border-radius: 4px;
     font-size: medium;
     box-shadow: none;
+}
+
+.overlay {
+    position: fixed;
+    z-index: 9999;
+    background-color: rgb(152, 161, 169);
+    width: 20em;
+    height: 12em;
+    top: 60%;
+    left: 15%;
+    border-radius: 4px;
+    pointer-events: auto;
+}
+
+.destructiveaction {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 10000;
+    border-radius: 4px;
+    top: 70%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    width: 18em;
+    padding: 1em;
+    color: white;
+    gap: 1em;
+}
+
+.confirmationbtns {
+    display: flex;
+    gap: 2em;
+}
+
+.securitynpassword {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    width: 100%;
+    height: auto;
+    gap: 5em;
+}
+
+.securitynpassword h3 {
+    display: flex;
+    justify-self: center;
+}
+
+.securityformgroup {
+    display: flex;
+    flex-direction: column;
+    gap: 3em;
+    margin-top: 2em;
+}
+
+.passwordWrapper {
+  position: relative;
+  width: 60%;
+  border: 2px solid #67696c;
+  display: flex;
+  border-radius: 24px;
+}
+
+.passwordWrapper input {
+  width: 90%;
+  padding-right: 2.5rem;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 24px 0 0 24px;
+  padding: 1em;
+}
+
+.showPasswordButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.passwordbtncontainer {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    justify-content: center;
+}
+
+.passwordchangebtn {
+    --btn-height: 3em;
+    --btn-padding: 1em;
+    --btn-bg: #ffffff;
+    --btn-color: #060606;
+    --btn-width: 10em;
+    --btn-border: 1px solid rgb(29, 32, 136);
+    border-radius: 14px;
+    font-size: medium;
+    box-shadow: none;
+}
+
+.passwordchangebtn:hover {
+    --btn-color: #ffffff;
+    --btn-bg: rgb(29, 32, 136);
 }
 
 @media (max-width: 1024px) {

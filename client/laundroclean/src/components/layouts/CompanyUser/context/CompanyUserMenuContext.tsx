@@ -34,14 +34,14 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
 
   const [activeMenu, setActiveMenuState] = useState<string>("overview");
 
-  const setActiveMenu = useCallback((key: string) => {
+  const setActiveMenu = useCallback((key: string,) => {
     try {
       localStorage.setItem("companyUserActiveMenu", key);
       if (user.uiRole === "STAFF") {
         window.history.replaceState(
           null,
           "",
-          `/staff/dashboard#${key}`
+          `/staff/dashboard#${key}`,
         )
       } else if (user.uiRole === "ADMIN") {
         window.history.replaceState(
@@ -54,6 +54,7 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
     } catch {
       // ignore
     }
+    
     setActiveMenuState(key);
   }, [user.uiRole]);
 
@@ -67,8 +68,6 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
           case "#settings":
             setActiveMenu("settings");
             break;
-          default:
-            setActiveMenu("overview")
         }
       };
 

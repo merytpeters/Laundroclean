@@ -50,6 +50,15 @@ export default function Signup() {
         required: true,
       },
     },
+    {
+      label: "Confirm Password",
+      inputProps: {
+        name: "confirm password",
+        type: "password",
+        placeholder: "Re-enter your password",
+        required: true,
+      },
+    },
   ];
 
   const handleNameSplit = (val: string): [string, string] => {
