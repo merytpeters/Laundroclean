@@ -27,7 +27,7 @@
   background-color: rgb(152, 161, 169);
   min-width: 40em;
   height: 20em;
-  top: 23%;
+  top: 27%;
   left: 20%;
   border-radius: 4px;
   pointer-events: auto;
@@ -48,7 +48,7 @@
   z-index: 10000;
   min-height: fit-content;
   height: calc(200px + 12em);
-  top: 14%;
+  top: 27%;
   left: 10%;
 }
 
@@ -343,6 +343,17 @@
   border: 1px solid #ccc;
   background: white;
   cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+
+  .overlay {
+    top: 20%;
+  }
+
+  .servicemanager form {
+    top: 20%;
+  }
 }
 
 @media (max-width: 650px) {
