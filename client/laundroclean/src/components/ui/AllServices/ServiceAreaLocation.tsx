@@ -51,7 +51,7 @@ export default function ServiceAreaLocation({ onClose }: CloseProps) {
 
     return (
         <div className={styles.locationContainer}>
-            <h3>Service Area Locations</h3>
+            <h4>Service Area Locations</h4>
 
             <div className={styles.mapWrapper}>
                 <LocationMap

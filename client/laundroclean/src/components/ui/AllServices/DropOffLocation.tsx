@@ -57,7 +57,7 @@ export default function DropOffLocation({ onClose }: CloseProps) {
 
     return (
         <div className={styles.locationContainer}>
-            <h3>Drop-Off Locations</h3>
+            <h4>Drop-Off Locations</h4>
 
             <div className={styles.mapWrapper}>
                 {validPoint ? (

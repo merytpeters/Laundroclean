@@ -41,7 +41,7 @@ export default function StaffDashboard() {
             {activeMenu === "payment" && <PaymentModal />}
             {
                 activeMenu === "settings" &&
-                (<div id="settings" style={{ margin: "1em", minHeight: "100vh", display: "flex", border: "2px solid #f1efef", borderRadius: "8px", height: "fit-content" }}>
+                (<div id="settings" style={{ margin: "1em", minHeight: "100vh", display: "flex", borderRadius: "8px", height: "fit-content" }}>
                     <section className={styles.pageContainer}>
                         <h3>Account Settings</h3>
                         <SettingsUI user={user} profile={profile} />

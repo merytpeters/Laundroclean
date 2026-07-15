@@ -4,33 +4,37 @@
   flex-direction: column;
   align-self: center;
   align-items: center;
-  gap: 1em;
+  gap: 2em;
   position: relative;
-  padding: 2em;
-  width: 100%;
+  padding: 1em;
   max-width: 800px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 24px;
   color: #0f172a;
   border: 1px solid rgba(255, 255, 255, 0.12);
+  height: 100%;
 }
 
-.servicemanager h3,
+.servicemanager h4,
 .servicemanager span {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .overlay {
   position: fixed;
   z-index: 9999;
-  background-color: rgb(152, 161, 169);
-  min-width: 40em;
-  height: 20em;
-  top: 27%;
-  left: 20%;
+  background-color: transparent;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
   border-radius: 4px;
   pointer-events: auto;
+  backdrop-filter: blur(8px);
 }
 
 .servicemanager form {
@@ -38,27 +42,27 @@
   flex-direction: column;
   justify-content: center;
   position: fixed;
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: #0F233A;
+  color: #ccc;
   padding: 2em;
   gap: 2em;
   align-items: center;
-  width: 80%;
+  width: 700px;
   border-radius: 8px;
   z-index: 10000;
   min-height: fit-content;
-  height: calc(200px + 12em);
+  height: calc(300px + 12em);
   top: 27%;
-  left: 10%;
+  left: 30%;
 }
 
 .addservicebtn {
   border: #d59056 2px solid;
-  padding: 1rem;
-  border-radius: 24px;
+  padding: 0.7rem;
+  border-radius: 4px;
   width: fit-content;
   box-shadow: none;
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   font-size: small;
 }
 
@@ -71,6 +75,7 @@
   justify-content: space-evenly;
   width: 100%;
   align-items: center;
+  gap: 2em;
 }
 
 .formitem {
@@ -100,6 +105,7 @@
   width: 8em;
   border-radius: 24px;
   background-color: #f5f5f5;
+  color: #0f172a;
   height: 2.5em;
 }
 
@@ -113,6 +119,7 @@
   padding: auto;
   width: 8em;
   border-radius: 24px;
+  color: #0f172a;
   background-color: #f5f5f5;
   height: 2.5em;
 }
@@ -131,22 +138,19 @@
   background-position: center;
   height: fit-content;
   overflow: auto;
+  gap: 2em;
 }
 
 .servicemanagersection {
   display: flex;
   flex-direction: row;
   position: fixed;
-  align-items: center;
   padding: 2em;
-  gap: 2rem;
   width: 100%;
-  background-color: #f5f5f5;
-  min-height: fit-content;
+  border: #f5f5f5 2px solid;
   position: relative;
-  justify-content: center;
   color: #0f172a;
-  height: 400px;
+  gap: 1em;
 }
 
 .locationManager {
@@ -159,23 +163,23 @@
 .locationSection {
   width: 100%;
   margin: 20px 0;
-  padding: 20px;
+  padding: 40px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   height: fit-content;
   overflow: auto;
 }
 
-.locationSection h2 {
+.locationSection h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  font-size: 1.5rem;
+  font-size: medium;
   color: #333;
 }
 
 .viewToggle {
   display: flex;
-  gap: 10px;
+  gap: 4em;
   margin-bottom: 20px;
 }
 
@@ -185,7 +189,7 @@
   background-color: #f5f5f5;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: small;
   transition: all 0.3s ease;
 }
 
@@ -210,9 +214,9 @@
   gap: 20px;
 }
 
-.locationContainer h3 {
+.locationContainer h4 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: medium;
   color: #333;
 }
 
@@ -265,7 +269,7 @@
 .serviceAreasList h4,
 .dropoffPointsList h4 {
   margin: 0 0 15px 0;
-  font-size: 1.1rem;
+  font-size: small;
   color: #333;
 }
 
@@ -330,12 +334,13 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 9999;
+  z-index: 900;
   background: white;
   border: 1px solid #ddd;
   padding: 6px 10px;
   cursor: pointer;
   border-radius: 6px;
+  font-size: small;
 }
 
 .reopenButton {
@@ -343,26 +348,39 @@
   border: 1px solid #ccc;
   background: white;
   cursor: pointer;
+  font-size: small;
+}
+
+.serviceslistsection {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  border: 1px solid #ccc;
+}
+
+.serviceslist {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2em;
+  
 }
 
 @media (max-width: 1024px) {
-
-  .overlay {
-    top: 20%;
-  }
-
   .servicemanager form {
     top: 20%;
+    width: 500px;
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 850px) {
   .allservicescontainer {
     padding: 1rem;
   }
 
   .servicemanager {
     font-size: xx-small;
+    
   }
 
   .servicemanagersection {
@@ -376,13 +394,37 @@
   }
 
   .overlay {
-    top: 25%;
-    left: 10%;
     min-width: 20em;
   }
 
   .servicemanager form {
     height: calc(350px + 12em);
     top: 25%;
+    left: 10%;
+    width: 500px;
+  }
+
+  .formitem input,
+  .formitem select{
+    width: 8em;
+  }
+}
+
+@media (max-width: 550px) {
+  .servicemanager form {
+    width: 300px;
+  }
+
+  .formgroup {
+    justify-content: space-between;
+  }
+
+  .formitem input,
+  .formitem select{
+    width: 8em;
+  }
+
+  .actionbuttons {
+    width: 100%
   }
 }

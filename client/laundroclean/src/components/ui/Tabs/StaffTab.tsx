@@ -9,8 +9,9 @@ import { useRoles } from 'src/hooks/roles/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
 import { useRegisterUser } from 'src/hooks/auth/useAuth';
 import { validatePassword } from 'src/utils/validatePassword';
+import UserInfoUI from '../UserInfoUI/UserInfoUI';
 
-export default function StaffTab () {
+export default function StaffTab() {
     const [open, setOpen] = useState(false);
     const { data: roles, loading } = useRoles();
     const [formData, setFormData] = useState({
@@ -69,7 +70,7 @@ export default function StaffTab () {
         if (index === -1) {
             const firstName = name;
             const lastName = ''
-            setFormData({ ...formData, firstName, lastName});
+            setFormData({ ...formData, firstName, lastName });
             return [firstName, lastName]
         } else {
             const firstName = name.substring(0, index)
@@ -79,7 +80,7 @@ export default function StaffTab () {
                 firstName,
                 lastName,
             })
-        return [firstName, lastName]
+            return [firstName, lastName]
         }
     }
 
@@ -88,68 +89,85 @@ export default function StaffTab () {
     const onSubmit: NonNullable<React.ComponentPropsWithoutRef<"form">["onSubmit"]> = (e) => {
         e.preventDefault();
         const form = e.currentTarget;
-    
+
         const data = new FormData(e.currentTarget);
         const email = String(data.get("email") ?? "").trim();
         const password = String(data.get("password") ?? "");
         const typedName = String(data.get("name") ?? "").trim();
-    
+
         const name = [formData.firstName, formData.lastName]
-          .filter(Boolean)
-          .join(" ")
-          .trim() || typedName;
-        
+            .filter(Boolean)
+            .join(" ")
+            .trim() || typedName;
+
         const pwdError = validatePassword(password);
-            if (pwdError) {
+        if (pwdError) {
             toast.error(pwdError);
             return;
         }
-    
+
         registerMutation.mutate({
-          name,
-          email,
-          password,
-          type: "COMPANYUSER",
+            name,
+            email,
+            password,
+            type: "COMPANYUSER",
         }, {
             onSuccess(data) {
-            toast.success(data?.message);
-            form.reset();
-            setFormData({ firstName: '', lastName: '' });
-         },
+                toast.success(data?.message);
+                form.reset();
+                setFormData({ firstName: '', lastName: '' });
+            },
         });
-      }
+    }
 
     if (loading) return <p>Loading</p>
     return (
-        <section className={styles.stafftab}>
-            <div className={styles.actionsWrap}>
-                <Button icon={open ? <FaTimes /> : <FaPlus />} text={open ? "Cancel" : "Add Staff"} className={open ? styles.cancelbtn : styles.addstaffbtn} onClick={() => setOpen(!open)}/> 
-                
-                <div className={`${styles.panel} ${open ? styles.open : ''}`}>
-                    <span className={styles.staffsignup}>
-                        <AuthForm
-                            title="Staff Registration"
-                            subtitle="Add a new staff"
-                            fields={getFields(handleNameSplit)}
-                            onSubmit={onSubmit}
-                            actions={
-                            <>
-                                <Button text={registerMutation.isPending ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton}/>
-                            </>
-                            }
-                        />
-                    </span>
+        <section className={styles.stafftabContainer}>
+            <div className={styles.stafftab}>
+                <div className={styles.actionsWrap}>
+                    <Button icon={<FaPlus />} text="Add Staff" className={styles.addstaffbtn} onClick={() => setOpen(true)} />
 
-                    <span> Send staff invite</span>
+                    {open && <div>
+                        <span className={styles.staffregisterOverlay}></span>
+                        <div className={`${styles.panel} ${open ? styles.open : ''}`}>
+
+                            <span className={styles.staffsignup}>
+                                <span className={styles.cancelbtnwrapper}>
+                                    <Button icon={<FaTimes />} text="Cancel" className={styles.cancelbtn} onClick={() => setOpen(false)} />
+                                </span>
+                                
+
+                                <AuthForm
+                                    title="Staff Registration"
+                                    subtitle="Add a new staff"
+                                    fields={getFields(handleNameSplit)}
+                                    onSubmit={onSubmit}
+                                    actions={
+                                        <>
+                                            <Button text={registerMutation.isPending ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton} />
+                                        </>
+                                    }
+                                />
+                            </span>
+
+                            <span> Send staff invite</span>
+                        </div>
+                    </div>}
                 </div>
+
+                <span className={styles.localsearchfilter}>
+                    <LocalSearchBar placeholder="Find Staff" />
+                    <FilterSearch />
+                </span>
+
             </div>
 
-            <span className={styles.localsearchfilter}>
-                <LocalSearchBar placeholder="Find Staff" />
-                <FilterSearch />
-            </span>
-            
-            
+
+            <section className={styles.staffInfodetails}>
+                <UserInfoUI />
+            </section>
+
+
         </section>
     )
 }
