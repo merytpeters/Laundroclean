@@ -47,6 +47,8 @@ function DropOffPoints() {
               />
             )}
             {isFormOpen && (
+                <div>
+                <span className={styles.overlay}></span>
                 <form action="">
                     <span className={styles.formgroup}>
                         <span className={styles.formitem}>
@@ -66,6 +68,7 @@ function DropOffPoints() {
                     </span>
 
                 </form>
+                </div>
             )}
         </div>
     )
@@ -89,6 +92,8 @@ function ServiceManager() {
             />
             )}
             {isFormOpen && (
+                <div>
+                <span className={styles.overlay}></span>
                 <form action="">
                     <span className={styles.formgroup}>
                         <span className={styles.formitem}>
@@ -145,6 +150,7 @@ function ServiceManager() {
                     </span>
 
                 </form>
+                </div>
             )}
         </div>
     )
@@ -167,9 +173,6 @@ export default function AllServices(props: AllServicesProps) {
         <div className={styles.allservicescontainer}>
             {props.companyuser && <section className={styles.servicemanagersection}>
                 {/* CompanyUserView Only */}
-                <div className={`${styles.blob} ${styles['blob-1']}`}></div>
-                <div className={`${styles.blob} ${styles['blob-2']}`}></div>
-                <div className={`${styles.blob} ${styles['blob-3']}`}></div>
 
                 <ServiceManager />
 

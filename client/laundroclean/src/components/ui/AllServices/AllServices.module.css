@@ -1,347 +1,376 @@
 /* Service Form CSS*/
 .servicemanager {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    align-items: center;
-    gap: 1em;
-    position: relative;
-    z-index: 10;
-    padding: 2em;
-    width: 100%;
-    max-width: 800px;
-    /*background-color: #f9f9f9;*/
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 24px;
-    color: #f5f5f5;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    /*height: 500px;*/
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  gap: 1em;
+  position: relative;
+  padding: 2em;
+  width: 100%;
+  max-width: 800px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.servicemanager h3, 
+.servicemanager h3,
 .servicemanager span {
-    display: flex;
+  display: flex;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 9999;
+  background-color: rgb(152, 161, 169);
+  min-width: 40em;
+  height: 20em;
+  top: 23%;
+  left: 20%;
+  border-radius: 4px;
+  pointer-events: auto;
 }
 
 .servicemanager form {
-    display: flex;
-    flex-direction: column;
-    background-color: #f9f9f9;
-    color:#333;
-    z-index: 5;
-    padding: 1em;
-    gap: 2em;
-    align-items: center;
-    width: 100%;
-    border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 2em;
+  gap: 2em;
+  align-items: center;
+  width: 80%;
+  border-radius: 8px;
+  z-index: 10000;
+  min-height: fit-content;
+  height: calc(200px + 12em);
+  top: 14%;
+  left: 10%;
 }
 
 .addservicebtn {
-    background: #d59056;
-    padding: 1rem;
-    border-radius: 24px;
-    width: fit-content;
+  border: #d59056 2px solid;
+  padding: 1rem;
+  border-radius: 24px;
+  width: fit-content;
+  box-shadow: none;
+  background-color: #f0f0f0;
+  font-size: small;
+}
+
+.addservicebtn:hover {
+  background: #d59056;
 }
 
 .formgroup {
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
-    align-items: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  align-items: center;
 }
 
-.formitem{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    max-width: 12em;
-    gap: 1em;
+.formitem {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 12em;
+  gap: 1em;
 }
 
-.formitem input, 
+.formitem input,
 .formitem select {
-    height: 2em;
-    border-radius: 4px;
+  height: 2em;
+  border-radius: 4px;
 }
 
-.actionbuttons{
-    display: flex;
-    justify-content: space-evenly;
-    width: 60%;
+.actionbuttons {
+  display: flex;
+  justify-content: space-evenly;
+  width: 60%;
+  gap: 2em;
 }
 
 .cancelbutton {
-    background: #d32f2f;
-    padding: auto;
-    width: 8em;
-    border-radius: 24px;
-    color: #f5f5f5;
-    height: 2.5em;
+  border: #d32f2f 2px solid;
+  padding: auto;
+  width: 8em;
+  border-radius: 24px;
+  background-color: #f5f5f5;
+  height: 2.5em;
+}
+
+.cancelbutton:hover {
+  background: #d32f2f;
+  color: #f5f5f5;
 }
 
 .savebtn {
-    background: #42d32f;
-    padding: auto;
-    width: 8em;
-    border-radius: 24px;
-    color: #f5f5f5;
-    height: 2.5em;
+  border: #42d32f 2px solid;
+  padding: auto;
+  width: 8em;
+  border-radius: 24px;
+  background-color: #f5f5f5;
+  height: 2.5em;
 }
 
+.savebtn:hover {
+  background: #42d32f;
+  color: #f5f5f5;
+}
 
 /* AllService css*/
 .allservicescontainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 2rem;
-    background-position: center;
-    height: fit-content;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 2rem;
+  background-position: center;
+  height: fit-content;
+  overflow: auto;
 }
 
 .servicemanagersection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2em;
-    gap: 2rem;
-    width: 100%;
-    color: #f5f5f5;
-    min-height: fit-content;
-    position: relative;
-    justify-content: center;
-    background-color: #0f172a;
-    height: 400px;
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  align-items: center;
+  padding: 2em;
+  gap: 2rem;
+  width: 100%;
+  background-color: #f5f5f5;
+  min-height: fit-content;
+  position: relative;
+  justify-content: center;
+  color: #0f172a;
+  height: 400px;
 }
 
-.blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
-    z-index: 1;
-    mix-blend-mode: screen;
-}
-
-.blob-1 {
-    top: 10%;
-    left: 20%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #6366f1 0%, transparent 70%);
-}
-
-.blob-2 {
-    bottom: 10%;
-    right: 15%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #ec4899 0%, transparent 70%);
-}
-
-.blob-3 {
-    top: 40%;
-    right: 40%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
-}
-
-.locationManager{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    overflow: auto;
+.locationManager {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
 }
 
 .locationSection {
-    width: 100%;
-    margin: 20px 0;
-    padding: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    height: fit-content;
-    overflow: auto;
+  width: 100%;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  height: fit-content;
+  overflow: auto;
 }
 
 .locationSection h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    color: #333;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
 }
 
 .viewToggle {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .toggleButton {
-    padding: 10px 20px;
-    border: 2px solid #ddd;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+  padding: 10px 20px;
+  border: 2px solid #ddd;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 .toggleButton:hover {
-    border-color: #999;
-    background-color: #efefef;
+  border-color: #999;
+  background-color: #efefef;
 }
 
 .toggleButton.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #0056b3;
+  background-color: #007bff;
+  color: white;
+  border-color: #0056b3;
 }
 
 .locationContent {
-    height: fit-content;
+  height: fit-content;
 }
 
 .locationContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .locationContainer h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: #333;
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
 }
 
 .mapWrapper {
-    position: relative;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    background-color: #f9f9f9;
-    height: 60%;
-    width: 100%;
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  height: 60%;
+  width: 100%;
 }
 
 .noMapContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 500px;
-    background-color: #f0f0f0;
-    color: #999;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  background-color: #f0f0f0;
+  color: #999;
+  font-size: 1rem;
 }
 
 .loadingContainer,
 .errorContainer,
 .emptyContainer {
-    padding: 20px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fafafa;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fafafa;
 }
 
 .errorContainer {
-    color: #d32f2f;
-    background-color: #ffebee;
-    border-color: #ffcdd2;
+  color: #d32f2f;
+  background-color: #ffebee;
+  border-color: #ffcdd2;
 }
 
 .emptyContainer {
-    color: #999;
-    background-color: #f5f5f5;
+  color: #999;
+  background-color: #f5f5f5;
 }
 
 .serviceAreasList,
 .dropoffPointsList {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .serviceAreasList h4,
 .dropoffPointsList h4 {
-    margin: 0 0 15px 0;
-    font-size: 1.1rem;
-    color: #333;
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  color: #333;
 }
 
 .serviceAreasList ul,
 .dropoffPointsList ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .serviceAreasList li,
 .dropoffPointsList li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    background-color: #fafafa;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background-color: #fafafa;
 }
 
 .serviceAreasList li:last-child,
 .dropoffPointsList li:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .serviceAreasList strong,
 .dropoffPointsList strong {
-    flex: 1;
-    color: #333;
+  flex: 1;
+  color: #333;
 }
 
 .activeBadge {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: #4caf50;
-    color: white;
-    border-radius: 3px;
-    font-size: 0.85rem;
-    font-weight: bold;
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .inactiveBadge {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: #999;
-    color: white;
-    border-radius: 3px;
-    font-size: 0.85rem;
-    font-weight: bold;
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #999;
+  color: white;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .pointDetails {
-    color: #666;
-    font-size: 0.9rem;
-    flex: 1;
-    margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  flex: 1;
+  margin: 0;
 }
 
 .mapCloseButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-    background: white;
-    border: 1px solid #ddd;
-    padding: 6px 10px;
-    cursor: pointer;
-    border-radius: 6px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
 }
 
 .reopenButton {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    background: white;
-    cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+
+@media (max-width: 650px) {
+  .allservicescontainer {
+    padding: 1rem;
+  }
+
+  .servicemanager {
+    font-size: xx-small;
+  }
+
+  .servicemanagersection {
+    padding: 0.5em;
+  }
+
+  .addservicebtn {
+    font-size: xx-small;
+    width: 10em;
+    border-radius: 20px;
+  }
+
+  .overlay {
+    left: 10%;
+    min-width: 20em;
+  }
+
+  .servicemanager form {
+    height: calc(350px + 12em);
+    top: 25%;
+  }
 }
