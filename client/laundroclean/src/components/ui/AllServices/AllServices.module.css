@@ -365,6 +365,7 @@
   }
 
   .overlay {
+    top: 25%;
     left: 10%;
     min-width: 20em;
   }
