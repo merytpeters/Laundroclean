@@ -244,6 +244,7 @@ export default function AllServices(props: AllServicesProps) {
 
             </section>}
             <section id="all-services" className={styles.serviceslistsection}>
+                <h3>All Services</h3>
                 <ServicesList />
             </section>
         </div>

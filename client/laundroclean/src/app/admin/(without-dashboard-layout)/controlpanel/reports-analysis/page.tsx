@@ -32,13 +32,12 @@ export default function ControlPanel () {
                 })}
             </section>
            <section className={styles.insights}>
-             Analytics
-             <span>Insights , growth trend , charts
+             <span>
                 <RevenueChart />
              </span>
            </section>
            <section className={styles.recentactivities}>
-            <span> Recent Activities</span>
+            {/*<span> Recent Activities</span>*/}
            </section> 
         </div>
     )
