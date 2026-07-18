@@ -49,7 +49,7 @@ export default function RevenueChart() {
 
     const pieChartData = [
         { name: 'Gross Paid', value: totals.gross, fill: '#4CAF50' },
-        { name: 'Net Revenue', value: totals.sales, fill: '#a3af4c' },
+        { name: 'Net Revenue', value: totals.sales, fill: '#d3a21ad8' },
         { name: 'Net Income', value: totals.income, fill: '#9C27B0' },
         { name: 'Expenses', value: totals.expenses, fill: '#F44336' },
     ]
