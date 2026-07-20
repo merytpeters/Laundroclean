@@ -40,7 +40,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {label: "Bookings", key: "bookings"},
       {label: "Delivery", key: "delivery"},
       {label: "Payment", key: "payment"},
-      {label: "Chat", key: "chat"},
+      //{label: "Chat", key: "chat"},
       {label: "Ratings", key: "ratings"},
       {label: "Calendar", key: "calendar"}
     ],

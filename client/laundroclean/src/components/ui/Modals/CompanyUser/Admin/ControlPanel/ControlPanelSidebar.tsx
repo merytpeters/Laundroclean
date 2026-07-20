@@ -24,7 +24,7 @@ export default function ControlPanelSidebar () {
                         <Link href={`${controlpanelbasepath}/reports-analysis`} className={styles.label}>  Reports & Analysis </Link>
                     </div>
                 </li>
-                <li className={`${styles.navitem} ${open ? styles.open : ""}`}>
+                {/*<li className={`${styles.navitem} ${open ? styles.open : ""}`}>
                     <div className={styles.navrow}> 
                         <span className={styles.icon}>
                         <FaFileAlt size={16} />
@@ -42,7 +42,7 @@ export default function ControlPanelSidebar () {
                             About Page Content
                         </li>
                     </ul>
-                </li>
+                </li>*/}
                 <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/laundroclean-services` ? styles.active : ""}`}>
                     <div className={styles.navrow}>
                         <span className={styles.icon}>
