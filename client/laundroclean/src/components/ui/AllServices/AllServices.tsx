@@ -8,6 +8,7 @@ import DropOffLocation from "./DropOffLocation";
 import Button from "../Button/Button";
 import { ServiceDisplayProp } from "src/types/laundrocleanServices/laundroservices";
 import { DropoffPoint } from "src/hooks/locations/useDropoffPoints";
+import Pagination from "../Pagination";
 
 
 interface AllServicesProps {
@@ -18,17 +19,6 @@ interface AllServicesProps {
 type LocationViewType = "serviceAreas" | "dropoffPoints";
 type MapView = LocationViewType | null;
 
-
-{/** This will be done to pick radius on the map */ }
-{/*function ServiceArea() {
-    return (
-        <div>
-            <form action="">
-                form for adding service area
-            </form>
-        </div>
-    )
-}*/}
 
 function DropOffPoints() {
     const [dropoffPoints] = useState<DropoffPoint[]>([]);
@@ -177,6 +167,7 @@ export default function AllServices(props: AllServicesProps) {
     const [activeLocationView, setActiveLocationView] = useState<LocationViewType>("serviceAreas");
 
     const [activeMapView, setActiveMapView] = useState<MapView>("serviceAreas");
+    const totalPages = 1;
 
     return (
         <div className={styles.allservicescontainer}>
@@ -211,6 +202,7 @@ export default function AllServices(props: AllServicesProps) {
                             <>
                                 {activeLocationView === "serviceAreas" && (
                                     <ServiceAreaLocation
+                                        usertype={props.companyuser}
                                         onClose={() => setActiveMapView(null)}
                                     />
                                 )}
@@ -245,7 +237,9 @@ export default function AllServices(props: AllServicesProps) {
             </section>}
             <section id="all-services" className={styles.serviceslistsection}>
                 <h3>All Services</h3>
+
                 <ServicesList />
+                <Pagination totalPages={totalPages}/>
             </section>
         </div>
     )

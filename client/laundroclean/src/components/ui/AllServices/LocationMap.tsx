@@ -12,7 +12,9 @@ import type {
   Polygon as PolygonType,
   Circle as CircleType,
 } from "react-leaflet";
+
 import "leaflet/dist/leaflet.css";
+import type * as L from "leaflet";
 
 
 type CircleArea = {
@@ -38,13 +40,18 @@ type PolygonArea = {
   coordinates: [number, number][];
 };
 
+
 type LocationMapProps = {
   marker?: MarkerLocation;
   bounds?: BoundsArea;
   polygon?: PolygonArea;
   height?: string;
   circle?: CircleArea;
+
+  drawMode?: boolean;
+  onAreaCreated?: (bounds: BoundsArea) => void;
 };
+
 
 type LeafletComponents = {
   MapContainer: typeof MapContainerType;
@@ -73,51 +80,106 @@ function MapFix() {
   return null;
 }
 
+
+
 export default function LocationMap({
   marker,
   bounds,
   polygon,
   height = "200px",
-  circle
+  circle,
+  drawMode,
+  onAreaCreated,
 }: LocationMapProps) {
-  const [leaflet, setLeaflet] = useState<LeafletComponents | null>(null);
+
+
+  const [leaflet, setLeaflet] =
+    useState<LeafletComponents | null>(null);
+
+
+  const [drawComponents, setDrawComponents] =
+    useState<{
+      FeatureGroup: typeof import("react-leaflet")["FeatureGroup"];
+      EditControl: typeof import("react-leaflet-draw")["EditControl"];
+    } | null>(null);
+
+
 
   useEffect(() => {
+
     let mounted = true;
 
-    import("leaflet").then((L) => {
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl:
-          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      });
-    });
 
-    import("react-leaflet").then((modules) => {
-      if (!mounted) return;
+    Promise.all([
+      import("leaflet"),
+      import("react-leaflet"),
+      import("react-leaflet-draw"),
+    ])
+      .then(([L, leafletModules, drawModules]) => {
 
-      setLeaflet({
-        MapContainer: modules.MapContainer,
-        TileLayer: modules.TileLayer,
-        Marker: modules.Marker,
-        Popup: modules.Popup,
-        Rectangle: modules.Rectangle,
-        Polygon: modules.Polygon,
-        Circle: modules.Circle,
+        if (!mounted) return;
+
+
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+
+          iconUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+
+          shadowUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        });
+
+
+
+        setLeaflet({
+
+          MapContainer: leafletModules.MapContainer,
+
+          TileLayer: leafletModules.TileLayer,
+
+          Marker: leafletModules.Marker,
+
+          Popup: leafletModules.Popup,
+
+          Rectangle: leafletModules.Rectangle,
+
+          Polygon: leafletModules.Polygon,
+
+          Circle: leafletModules.Circle,
+
+        });
+
+
+
+        setDrawComponents({
+
+          FeatureGroup: leafletModules.FeatureGroup,
+
+          EditControl: drawModules.EditControl,
+
+        });
+
       });
-    });
+
+
 
     return () => {
       mounted = false;
     };
+
+
   }, []);
+
+
+
 
   if (!leaflet) {
     return <div>Loading map...</div>;
   }
+
+
 
   const {
     MapContainer,
@@ -129,49 +191,193 @@ export default function LocationMap({
     Circle,
   } = leaflet;
 
+
+
+  const FeatureGroup =
+    drawComponents?.FeatureGroup;
+
+
+  const EditControl =
+    drawComponents?.EditControl;
+
+
+
   return (
+
     <MapContainer
-      center={[0, 0]}
-      zoom={2}
+
+      center={[6.5244, 3.3792]}
+
+      zoom={12}
+
       style={{
         height,
         width: "100%",
       }}
+
     >
+
+
       <MapFix />
 
+
+
       <TileLayer
+
         attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
       />
 
+
+
+
+      {drawMode &&
+        FeatureGroup &&
+        EditControl && (
+
+          <FeatureGroup>
+
+            <EditControl
+
+              position="bottomright"
+
+
+              draw={{
+                rectangle: true,
+                polygon: false,
+                circle: false,
+                marker: false,
+                polyline: false,
+                circlemarker: false,
+              }}
+
+
+              onCreated={(event: L.DrawEvents.Created) => {
+
+
+                const layer = event.layer as L.Rectangle
+                const bounds = layer.getBounds();
+
+
+                const southWest =
+                  bounds.getSouthWest();
+
+
+                const northEast =
+                  bounds.getNorthEast();
+
+
+
+                onAreaCreated?.({
+
+                  minLat: southWest.lat,
+
+                  maxLat: northEast.lat,
+
+                  minLng: southWest.lng,
+
+                  maxLng: northEast.lng,
+
+                });
+
+
+              }}
+
+            />
+
+
+          </FeatureGroup>
+
+        )}
+
+
+
+
+
       {marker && (
-        <Marker position={[marker.lat, marker.lng]}>
+
+        <Marker
+          position={[
+            marker.lat,
+            marker.lng
+          ]}
+        >
+
           {marker.address && (
-            <Popup>{marker.address}</Popup>
+
+            <Popup>
+              {marker.address}
+            </Popup>
+
           )}
+
         </Marker>
+
       )}
+
+
+
+
 
       {bounds && (
+
         <Rectangle
+
           bounds={[
-            [bounds.minLat, bounds.minLng],
-            [bounds.maxLat, bounds.maxLng],
+
+            [
+              bounds.minLat,
+              bounds.minLng
+            ],
+
+            [
+              bounds.maxLat,
+              bounds.maxLng
+            ]
+
           ]}
+
         />
+
       )}
+
+
+
+
 
       {polygon && (
-        <Polygon positions={polygon.coordinates} />
+
+        <Polygon
+          positions={polygon.coordinates}
+        />
+
       )}
 
+
+
+
+
       {circle && (
+
         <Circle
-          center={[circle.lat, circle.lng]}
+
+          center={[
+            circle.lat,
+            circle.lng
+          ]}
+
           radius={circle.radius}
+
         />
+
       )}
+
+
+
     </MapContainer>
+
   );
+
 }

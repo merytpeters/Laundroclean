@@ -12,10 +12,25 @@ import {
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
 import { CloseProps } from "./DropOffLocation";
+import { CompanyUser } from "src/types/users/user";
+import Button from "../Button/Button";
 
-export default function ServiceAreaLocation({ onClose }: CloseProps) {
+type ServiceAreaLocationProps = CloseProps & {
+    usertype?: CompanyUser;
+};
+
+export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLocationProps) {
     const { data: serviceAreas = [], isLoading, error } = useServiceAreas();
     const [selectedArea, setSelectedArea] = useState<ServiceArea | null>(null);
+    const [isCreating, setIsCreating] = useState(false);
+
+    const [newArea, setNewArea] = useState({
+        name: "",
+        latMin: 0,
+        latMax: 0,
+        lngMin: 0,
+        lngMax: 0,
+    });
 
     if (isLoading) {
         return (
@@ -51,7 +66,21 @@ export default function ServiceAreaLocation({ onClose }: CloseProps) {
 
     return (
         <div className={styles.locationContainer}>
-            <h4>Service Area Locations</h4>
+            <div className={styles.mapHeader}>
+                <h4>Service Area Locations</h4>
+
+                {usertype && (<Button
+                    onClick={() => {
+                        console.log("creating");
+                        setIsCreating(true);
+                        setSelectedArea(null);
+                    }}
+                    text="+ Create Service Area"
+                    className={styles.createServicareabtn}
+                />
+                )}
+            </div>
+
 
             <div className={styles.mapWrapper}>
                 <LocationMap
@@ -75,7 +104,24 @@ export default function ServiceAreaLocation({ onClose }: CloseProps) {
                             : undefined
                     }
                     height="500px"
+
+                    drawMode={isCreating}
+
+
+                    onAreaCreated={(bounds) => {
+
+                        setNewArea({
+                            name: "",
+                            latMin: bounds.minLat,
+                            latMax: bounds.maxLat,
+                            lngMin: bounds.minLng,
+                            lngMax: bounds.maxLng,
+                        });
+
+                    }}
                 />
+
+
 
                 <button
                     className={styles.mapCloseButton}
@@ -84,6 +130,72 @@ export default function ServiceAreaLocation({ onClose }: CloseProps) {
                     ✕ Close
                 </button>
             </div>
+
+            {newArea.latMin !== 0 && (
+
+                <div className={styles.modal}>
+
+                    <h3>
+                        New Service Area
+                    </h3>
+
+
+                    <input
+                        placeholder="Service area name"
+                        value={newArea.name}
+                        onChange={(e) =>
+                            setNewArea({
+                                ...newArea,
+                                name: e.target.value
+                            })
+                        }
+                    />
+
+
+                    <p>
+                        Lat Min: {newArea.latMin}
+                    </p>
+
+                    <p>
+                        Lat Max: {newArea.latMax}
+                    </p>
+
+                    <p>
+                        Lng Min: {newArea.lngMin}
+                    </p>
+
+                    <p>
+                        Lng Max: {newArea.lngMax}
+                    </p>
+
+
+
+                    <button
+                        onClick={() => {
+                            console.log(newArea);
+
+                            // call mutation here
+                            // createServiceArea(newArea)
+
+                            setNewArea({
+                                name: "",
+                                latMin: 0,
+                                latMax: 0,
+                                lngMin: 0,
+                                lngMax: 0,
+                            });
+
+                            setIsCreating(false);
+                        }}
+                    >
+                        Save Area
+                    </button>
+
+
+                </div>
+
+            )}
+
 
             <div className={styles.serviceAreasList}>
                 <h4>Service Areas ({serviceAreas.length})</h4>
@@ -94,8 +206,8 @@ export default function ServiceAreaLocation({ onClose }: CloseProps) {
                             key={area.id}
                             onClick={() => setSelectedArea(area)}
                             className={`${styles.listItem} ${selectedArea?.id === area.id
-                                    ? styles.selectedItem
-                                    : ""
+                                ? styles.selectedItem
+                                : ""
                                 }`}
                             style={{ cursor: "pointer" }}
                         >

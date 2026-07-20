@@ -220,6 +220,12 @@
   color: #333;
 }
 
+.mapHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
 .mapWrapper {
   position: relative;
   border: 1px solid #ddd;
@@ -364,6 +370,14 @@
   flex-wrap: wrap;
   gap: 2em;
   
+}
+
+.createServicareabtn {
+  box-shadow: none;
+  --btn-border: #ccc 2px solid;
+  --btn-border-radius: 6px;
+  --btn-padding: 0.5em 1em;
+  --btn-width: fit-content;
 }
 
 @media (max-width: 1024px) {
