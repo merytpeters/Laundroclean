@@ -202,7 +202,7 @@ export default function AllServices(props: AllServicesProps) {
                             <>
                                 {activeLocationView === "serviceAreas" && (
                                     <ServiceAreaLocation
-                                        usertype={props.companyuser}
+                                        usertype={props.companyuser || props.clientuser}
                                         onClose={() => setActiveMapView(null)}
                                     />
                                 )}

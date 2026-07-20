@@ -12,11 +12,11 @@ import {
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
 import { CloseProps } from "./DropOffLocation";
-import { CompanyUser } from "src/types/users/user";
+import { CompanyUser, Client } from "src/types/users/user";
 import Button from "../Button/Button";
 
 type ServiceAreaLocationProps = CloseProps & {
-    usertype?: CompanyUser;
+    usertype?: CompanyUser | Client;
 };
 
 export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLocationProps) {
