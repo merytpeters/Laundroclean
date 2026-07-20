@@ -4,6 +4,8 @@ import {
     QueryClientProvider,
 } from '@tanstack/react-query';
 import { queryClient } from 'src/lib/query-client';
+import { Toaster } from 'sonner';
+import { AuthProvider } from 'src/context/AuthContext';
 
 export default function QueryProvider({
     children
@@ -12,7 +14,10 @@ export default function QueryProvider({
 }) {
     return (
         <QueryClientProvider client={queryClient}>
-            {children}
+            <AuthProvider>
+                {children}
+                <Toaster position="top-right" />
+            </AuthProvider>
         </QueryClientProvider>
     )
 }

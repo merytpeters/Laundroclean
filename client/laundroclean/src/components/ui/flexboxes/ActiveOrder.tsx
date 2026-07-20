@@ -1,8 +1,8 @@
-import { mapClientBookingStatus, ACTIVE_STATUS, BookingTrackerProgressCount, statusClassMap, ClientBookingOrderSteps, OrderStatusMessage } from "src/types/bookingStatus"
+import { mapClientBookingStatus, ACTIVE_STATUS, BookingTrackerProgressCount, statusClassMap, ClientBookingOrderSteps, OrderStatusMessage } from "src/types/booking/bookingStatus"
 import styles from './ActiveOrder.module.css';
 import statusStyles from 'src/components/ui/flexboxes/ScheduleCard.module.css';
 import { mappedDelivery } from "src/services/bookingService/bookingMockData";
-import { BookingDetail } from "src/types/bookingOrder";
+import { BookingDetail } from "src/types/booking/bookingOrder";
 
 
 

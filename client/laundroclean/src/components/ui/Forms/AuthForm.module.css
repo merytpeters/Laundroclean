@@ -9,6 +9,7 @@
   gap: 1.5rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   position: relative;
+  z-index: 2000;
 }
 
 .formactions {

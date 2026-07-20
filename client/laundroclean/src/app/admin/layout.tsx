@@ -7,62 +7,70 @@ import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from '@heroicons/react
 import { roleConfig } from 'src/lib/company-user/role-config';
 import { mockCompanyAdmin } from 'src/services/companyUser/mock';
 import BackButton from 'src/components/ui/Button/BackButton';
+import { useCurrentUser } from 'src/hooks/profile/useProfile';
+// import ProtectedRoute from 'src/components/ui/ProtectedRoutes';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const user = mockCompanyAdmin;
-    const config = roleConfig[user.role];
+
+    const userProfile = useCurrentUser();
+    const user = userProfile.data?.user || mockCompanyAdmin;
+    const userRole = "uiRole" in user ? user.uiRole : mockCompanyAdmin.uiRole;
+    const config = roleConfig[userRole];
     const isControlPanel = config.settingsAction === "CONTROL PANEL";
 
 
     return (
-        <div>
-            <div className={styles.layoutContainer}>
-                <AppHeader
-                    userButton={
-                        config && (
-                        <ActionButton
-                            text={config.dashboardText}
-                            href={config.dashboardHref}
-                            className={styles.dashboardButton}
-                        />
-                        )
-                    }
-                
+        //<ProtectedRoute>
+            <div>
+                <div className={styles.layoutContainer}>
+                    <AppHeader
+                        userButton={
+                            config && (
+                                <ActionButton
+                                    text={config.dashboardText}
+                                    href={config.dashboardHref}
+                                    className={styles.dashboardButton}
+                                />
+                            )
+                        }
 
-                    notificationButton={
-                        config?.showNotifications ? (
-                        <ActionButton
-                            icon={<BellIcon className={styles.iconStyle} />}
-                            text="Notifications"
-                            className={styles.iconButton}
-                        // onClick={() => console.log("Open notifications")}
-                        />
-                        ) : null
-                    }
 
-                    settingsOrControlPanelButton={
-                        config && (
-                        <ActionButton
-                            icon={
-                            isControlPanel ? (
-                                <WrenchScrewdriverIcon className={styles.iconStyle} />
-                            ) :
-                                (
-                                <Cog6ToothIcon className={styles.iconStyle} />
-                                )
-                            }
-                            text={isControlPanel ? "Control Panel" : "Settings"}
-                            href={config.settingsHref}
-                            className={styles.iconButton}
-                        />
-                        )
-                    }
+                        notificationButton={
+                            config?.showNotifications ? (
+                                <ActionButton
+                                    icon={<BellIcon className={styles.iconStyle} />}
+                                    text="Notifications"
+                                    className={styles.iconButton}
+                                // onClick={() => console.log("Open notifications")}
+                                />
+                            ) : null
+                        }
 
-                    backbutton={
-                        <BackButton />
-                    }
-                />
+                        settingsOrControlPanelButton={
+                            config && (
+                                <ActionButton
+                                    icon={
+                                        isControlPanel ? (
+                                            <WrenchScrewdriverIcon className={styles.iconStyle} />
+                                        ) :
+                                            (
+                                                <Cog6ToothIcon className={styles.iconStyle} />
+                                            )
+                                    }
+                                    text={isControlPanel ? "Control Panel" : "Settings"}
+                                    href={config.settingsHref}
+                                    className={styles.iconButton}
+                                />
+                            )
+                        }
+
+                        backbutton={
+                            <BackButton />
+                        }
+                    />
+                </div>
+                {children}
             </div>
-            {children}
-        </div>
-)}
+        //</ProtectedRoute>
+    )
+}

@@ -1,8 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styles from './BookingForm.module.css';
 import Button from '../Button/Button';
-import { mapDeliveryType } from '../../../types/bookingStatus';
+import { mapDeliveryType } from '../../../types/booking/bookingStatus';
+import { CompanyUserMenuContext } from 'src/components/layouts/CompanyUser/context/CompanyUserMenuContext';
 
+
+interface PaymentButtonProps {
+    onClose?: () => void;
+    onPayLater?: () => void;
+    className?: string;
+}
+function PaymentButton(props: PaymentButtonProps) {
+    const context = useContext(CompanyUserMenuContext) as React.ContextType<typeof CompanyUserMenuContext> | undefined;
+    const contextUser = context?.user;
+    const setActiveMenu = context?.setActiveMenu;
+
+    const typeRoutes: Record<string, string> = {
+        CLIENT: "/user/payment",
+        COMPANYUSER: "/dashboard"
+    };
+
+    const userType = contextUser?.type ?? 'CLIENT';
+    const href = typeRoutes[userType] || "/user/payment";
+
+    return (
+        <div className={`${props.className ?? ''}`}>
+            <div className={styles.paymentbuttoncontainer}>
+                {userType === "COMPANYUSER" ? (
+                    <Button text='Proceed to payment' className={styles.paynowOrlater}
+                        onClick={() => setActiveMenu?.("payment")}
+                    ></Button>
+                ) : (
+                    <Button text='Proceed to payment' className={styles.paynowOrlater}
+                        href={href}
+                    ></Button>
+                )}
+
+                <Button text='Pay Later' className={styles.paynowOrlater} onClick={() => { props.onPayLater?.(); props.onClose?.(); }}></Button>
+            </div>
+        </div>
+    );
+}
+ 
 export interface BookingFormProps {
     onSubmit?: (e: React.SyntheticEvent<HTMLFormElement>) => void;
     staffAssignedSlot?: React.ReactNode;
@@ -27,6 +66,7 @@ export default function BookingForm({
     staffOptions,
     deliveryOptions,
 }: BookingFormProps) {
+    const [open, setOpen] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | 'new' | ''>('');
     const [selectedServiceId, setSelectedServiceId] = useState<string>('');
     const deliveryOpts = deliveryOptions ?? (() => {
@@ -207,7 +247,14 @@ export default function BookingForm({
             </section>
 
             <div className={styles.formactions}>
-                {actions ?? <Button text="Book" type="button" className={styles.bookButton} />}
+                {actions ?? (
+                    <div className={styles.bookButtonContainer}>
+                        <Button text="Book" type="button" className={styles.bookButton} onClick={() => setOpen(true)} />
+                        {open && (
+                            <PaymentButton onClose={() => setOpen(false)} className={styles.paymentbuttonoverlay} />
+                        )}
+                    </div>
+                )}
             </div>
         </form>
     );

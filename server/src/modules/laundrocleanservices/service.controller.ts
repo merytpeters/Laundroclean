@@ -1,6 +1,6 @@
 import LaundrocleanservicesService from './service.service.js';
 import type { ServiceSchema, UpdateServiceSchema } from '../../validation/laundrocleanservices/services.validation.js';
-import asyncHandler from '../../utils/asyncHandler.js';
+import asyncHandler, { type ServiceQuery } from '../../utils/asyncHandler.js';
 import { ValidationError } from '../../middlewares/errorHandler.js';
 
 const companyCreateServiceController = asyncHandler(async (req, res) => {
@@ -117,15 +117,15 @@ const companySoftDeleteServices = asyncHandler(async (req, res) => {
     }
 });
 
-// for admin only
+// for admin only both active and inactive services
 const companySearchAllServices = asyncHandler(async (req, res) => {
-    const searchQuery = req?.query;
+    const searchQuery = req?.query as unknown as ServiceQuery;
 
     const all_services = await LaundrocleanservicesService.searchAllServices(searchQuery);
 
     return res.status(200).json({
         success: true,
-        message: 'Active services fetched successfully',
+        message: 'Services fetched successfully',
         data: all_services.data,
         meta: all_services.meta
     });

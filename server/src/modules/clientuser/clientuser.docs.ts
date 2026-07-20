@@ -213,7 +213,9 @@
  *       '404':
  *         description: Not found
  *
- *   delete:
+ * 
+ * /api/v1/client/bookings/cancel/{bookingId}:
+ *   patch:
  *     tags:
  *       - ClientUser
  *     summary: Cancel (delete) a booking (client - subject to allowed statuses)

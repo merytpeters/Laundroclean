@@ -11,7 +11,7 @@ import RevenueChart from "src/components/ui/Charts/RevenueChart";
 export default function ControlPanel () {
     const user = mockCompanyAdmin;
     
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
     return (
         <div className={styles.cpoverviewcontainer}>
             <section aria-label="CP Analysis Card" className={styles.statcardbox}>
@@ -32,13 +32,12 @@ export default function ControlPanel () {
                 })}
             </section>
            <section className={styles.insights}>
-             Analytics
-             <span>Insights , growth trend , charts
+             <span>
                 <RevenueChart />
              </span>
            </section>
            <section className={styles.recentactivities}>
-            <span> Recent Activities</span>
+            {/*<span> Recent Activities</span>*/}
            </section> 
         </div>
     )

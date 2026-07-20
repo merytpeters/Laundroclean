@@ -1,0 +1,14 @@
+.paymentmodalcontainer {
+    display: flex;
+    flex-direction: column;
+    gap: 4em;
+    padding: 1em;
+    margin-bottom: 2rem;
+    background: var(--foreground);
+    min-height: 85vh;
+    border-radius: 8px;
+    font-size: small;
+    margin: 1.5em;
+    position: relative;
+    color: black;
+}

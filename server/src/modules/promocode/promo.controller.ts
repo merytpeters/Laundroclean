@@ -37,8 +37,8 @@ const updatePromo = asyncHandler(async (req, res) => {
   res.json({ success: true, data: { promo }, message: 'Promo updated' });
 });
 
-const deletePromo = asyncHandler(async (req, res) => {
-  await PromoService.deletePromo(req.params.id);
+const softDeletePromo = asyncHandler(async (req, res) => {
+  await PromoService.softDeletePromo(req.params.id);
   res.json({ success: true, message: 'Promo deleted' });
 });
 
@@ -47,6 +47,6 @@ export default {
   getPromos,
   getPromo,
   updatePromo,
-  deletePromo,
+  softDeletePromo,
   validatePromo,
 };

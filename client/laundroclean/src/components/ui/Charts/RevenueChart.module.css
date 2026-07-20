@@ -1,0 +1,50 @@
+.revenueChartContainer {
+    display: grid;
+    grid-template-columns: 4fr 2fr;
+    color: "#000";
+    gap: 2em;
+}
+
+.salesGraph {
+    background-color: #ffffff;
+    padding: 2em;
+    border-radius: 4px;
+}
+
+.salesBarchart {
+    background-color: #ffffff;
+    padding: 1em;
+    border-radius: 4px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+.timeoptions {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    width: 100%;
+    margin-top: 0;
+}
+
+.timeoptions select {
+    font-size: small;
+    padding: 3px 6px;
+    border: 0;
+    border: 1px solid rgb(200, 219, 234);
+    background-color: rgb(207, 220, 231);
+    border-radius: 4px;
+}
+
+
+@media (max-width: 1300px) {
+    .revenueChartContainer {
+        display: flex;
+        flex-direction: column;
+    }
+}

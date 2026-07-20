@@ -3,6 +3,7 @@ import AuthUtils from '../../src/modules/auth/auth.utils';
 import prisma from '../../src/config/prisma';
 import request from 'supertest';
 import app from '../../src/app';
+import tokenService from '../../src/modules/token/token.service';
 
 
 const uniqueEmail = (prefix: string) =>
@@ -11,6 +12,8 @@ const uniqueEmail = (prefix: string) =>
 describe('Auth Routes', () => {
     let adminRole: any;
     let staffRole: any;
+    let logoutuser: any;
+    let token: string;
     beforeEach(async () => {
         // await prisma.user.deleteMany();
 
@@ -25,6 +28,19 @@ describe('Auth Routes', () => {
             update: { level: 8, permissions: [] },
             create: { title: 'STAFF', level: 8, permissions: [] },
         });
+
+        const logoutuseremail = uniqueEmail('logouttestuser');
+            const logoutuserpassword = 'Password123!';
+
+            logoutuser = await prisma.user.create({
+                data: {
+                    email: logoutuseremail,
+                    password: await AuthUtils.hashPassword(logoutuserpassword),
+                    type: UserType.CLIENT,
+                },
+            });
+
+            token = await tokenService.createAccessToken(logoutuser.id);
     });
 
     afterAll(async () => {
@@ -126,6 +142,17 @@ describe('Auth Routes', () => {
                 expect(response.status).toBe(200);
                 expect(response.body).toHaveProperty('data.user.email', user.email);
             }
+        });
+    });
+
+    describe('POST /api/v1/auth/logout', () => {
+        it('should logout the authenticated user and return 200', async () => {
+            const res = await request(app)
+                .post('/api/v1/auth/logout')
+                .set('Authorization', `Bearer ${token}`);
+            
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('message', 'Logged out successfully');
         });
     });
 

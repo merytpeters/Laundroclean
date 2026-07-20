@@ -56,7 +56,8 @@ describe('Admin Booking Routes', () => {
 
     // create a client to act on behalf of
     client = await prisma.user.create({
-      data: { email: 'client-booking@test.com', password: await AuthUtils.hashPassword('ClientPass123!'), type: UserType.CLIENT },
+      data: { email: 'client-booking@test.com', password: await AuthUtils.hashPassword('ClientPass123!'), type: UserType.CLIENT, firstName: 'Client',
+    lastName: 'User',},
     });
 
     clientProfile = await prisma.profile.create({ data: { userId: client.id, phoneNumber: '0800000000' } });
@@ -166,6 +167,35 @@ describe('Admin Booking Routes', () => {
     });
   });
 
+  it('GET /api/v1/admin/bookings should list bookings with profile details', async () => {
+    const res = await request(app)
+      .get('/api/v1/admin/bookings')
+      .query({ includeProfile: 'true' })
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+
+    const bookings = res.body.data;
+
+    bookings.forEach((b: any) => {
+      expect(b).toHaveProperty('assignedTo');
+
+      if (b.assignedTo) {
+        expect(b.assignedTo.id).toBeDefined();
+      }
+
+      // Verify includeProfile works
+      expect(b).toHaveProperty('profile');
+      expect(b.profile).toMatchObject({
+        user: {
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+        },
+      });
+    });
+  });
+
   it('GET /api/v1/admin/bookings/:bookingId should return booking details', async () => {
     const list = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
     const booking = list.body.data[0];
@@ -249,5 +279,16 @@ describe('Admin Booking Routes', () => {
     expect(r2.status).toBe(409);
     expect(r2.body).toHaveProperty('success', false);
     expect(r2.body.message).toMatch(/Daily booking limit reached/i);
+  });
+
+  it('PATCH /api/v1/admin/bookings/cancel/:bookingId should soft delete booking', async () => {
+    const list = await request(app).get('/api/v1/admin/bookings').set('Authorization', `Bearer ${adminToken}`);
+    const booking = list.body.data[0];
+    const res = await request(app)
+      .patch(`/api/v1/admin/bookings/cancel/${booking.id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('message');
   });
 });

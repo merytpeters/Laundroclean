@@ -1,6 +1,6 @@
 import {DashboardServices } from "src/components/ui/flexboxes/ServicesFlexbox";
 import styles from "./dashboard.module.css";
-import { mapCurrencySymbol, mapPricingType } from "src/types/laundroservices";
+import { mapCurrencySymbol, mapPricingType } from "src/types/laundrocleanServices/laundroservices";
 import { mockServices } from "src/services/laundrocleanservices/mock";
 import ActiveOrder from "src/components/ui/flexboxes/ActiveOrder";
 import PromoCard from "src/components/ui/flexboxes/PromoCard";
@@ -29,7 +29,7 @@ export default function ClientDashboard () {
                     })
                 }
                 </span>
-                <a href="/user/laundroclean-services" className={styles.seeallbutton}>See all</a>
+                <a href="/user/laundroclean-services#all-services" className={styles.seeallbutton}>See all</a>
             </section>
             <section className={styles.activeorderssection}>
                 <span className={styles.sectionheader}><b>Active Orders</b></span>

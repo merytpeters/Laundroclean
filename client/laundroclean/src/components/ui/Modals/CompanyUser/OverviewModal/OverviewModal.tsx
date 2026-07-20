@@ -5,7 +5,7 @@ import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/C
 import { statMeta } from "src/components/ui/StatMeta";
 import styles from "./OverviewModal.module.css"
 import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
-import { mapDeliveryType, mapBookingStatus } from "src/types/bookingStatus";
+import { mapDeliveryType, mapBookingStatus } from "src/types/booking/bookingStatus";
 import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
 import { stats, bookingScheduleData } from "../../../../../services/bookingService/bookingMockData";
 import { clientInfoData } from "src/services/userService/mock";
@@ -15,7 +15,7 @@ import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin
 export default function Overview() {
     const { user } = useCompanyUserMenu();
 
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
 
     const mappedDelivery =bookingScheduleData.map((item) => ({
         ...item,
@@ -53,7 +53,7 @@ export default function Overview() {
                     );
                 })}
             </section>
-            {user?.role === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
+            {user?.uiRole === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
                
             <section aria-label="Information Section" className={styles.infosection}>
                 <ScheduleCard items={mappedSchedule}/>

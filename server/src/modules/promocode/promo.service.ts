@@ -97,7 +97,7 @@ const updatePromo = async (id: string, payload: any) => {
   return updated;
 };
 
-const deletePromo = async (id: string) => {
+const softDeletePromo = async (id: string) => {
   // soft deactivate
   await prisma.promoCode.update({ where: { id }, data: { isActive: false, deletedAt: new Date() } });
 };
@@ -110,6 +110,6 @@ export default {
   getPromos,
   getPromoById,
   updatePromo,
-  deletePromo,
+  softDeletePromo,
 };
 

@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
 import styles from "./BookingDisplayTable.module.css"
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
-import { mapBookingStatus } from "src/types/bookingStatus";
-import { BookingDetail } from "src/types/bookingOrder";
+import { mapBookingStatus } from "src/types/booking/bookingStatus";
+import { BookingDetail } from "src/types/booking/bookingOrder";
 import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
 
@@ -12,8 +11,14 @@ import { transformFieldInArray } from "src/utils/mapData";
 const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
 
 export default function BookingDisplayTable () {
-    const { user } = useCompanyUserMenu();
-    const [expanded, setExpanded] = useState(false);
+    const { user, setActiveMenu } = useCompanyUserMenu();
+
+    const roleRoutes = {
+        ADMIN: "/admin/controlpanel/bookings",
+        STAFF: "/dashboard"
+    }
+
+    const href = roleRoutes[user.uiRole] || "/dashboard";
 
     return (
         <section className={styles.BookingDisplayTable}>
@@ -32,7 +37,7 @@ export default function BookingDisplayTable () {
                         <th>Delivery Tag</th>
                         <th>Status</th>
                         <th>Amount</th>
-                        {user.role === "ADMIN" && <th>Assigned Staff</th>}
+                        {user.uiRole === "ADMIN" && <th>Assigned Staff</th>}
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -47,14 +52,14 @@ export default function BookingDisplayTable () {
                             <td>{bookingDetail.deliveryType}</td>
                             <td>{bookingDetail.status}</td>
                             <td>{bookingDetail.amount}</td>
-                            {user.role === "ADMIN" && (
+                            {user.uiRole === "ADMIN" && (
                                 <td>{bookingDetail.assignedStaff ?? '—'}</td>
                             )}
                             <td>
                                 <button className={styles.editbtn}>
                                     <FiEdit />
                                 </button>
-                                {user.role === "ADMIN" && (
+                                {user.uiRole === "ADMIN" && (
                                     <button className={styles.trashbtn}>
                                         <FiTrash2 />
                                     </button>
@@ -67,7 +72,16 @@ export default function BookingDisplayTable () {
                 
             </table>
             <div className={styles.actions}>
-                <button onClick={() => setExpanded(!expanded)} className={styles.viewmore}>{ expanded ? "view less" : "view more" }</button>
+                {user.uiRole === "STAFF" ? (
+                    <button
+                        className={styles.viewmore}
+                        onClick={() => setActiveMenu("calendar")}
+                    >
+                        view more
+                    </button>
+                ) : (
+                    <button className={styles.viewmore}> <a href={href}>view more</a></button>
+                )}
             </div>
         </section>
     )

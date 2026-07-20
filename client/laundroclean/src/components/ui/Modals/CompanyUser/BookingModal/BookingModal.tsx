@@ -14,7 +14,7 @@ import BookingForm from "src/components/ui/Forms/BookingForm";
 export default function BookingModal () {
     const { user } = useCompanyUserMenu();
     
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
     const [showForm, setShowForm] = useState(false);
     return (
         <div className={styles.bookingmodalcontainer}>
@@ -68,8 +68,8 @@ export default function BookingModal () {
                 <div className={styles.drawerContent}>
                     <BookingForm
                         user={user}
-                        showStaffAssignedSlot={user.role === 'ADMIN'}
-                        staffOptions={user.role === 'ADMIN' ? [
+                        showStaffAssignedSlot={user.uiRole === 'ADMIN'}
+                        staffOptions={user.uiRole === 'ADMIN' ? [
                             { id: 'staff-1', name: 'Alice' },
                             { id: 'staff-2', name: 'Bob' },
                         ] : undefined}

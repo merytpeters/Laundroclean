@@ -1,5 +1,5 @@
-import { BookingDetail, BookingReceipt } from "src/types/bookingOrder";
-import { mapDeliveryType } from "src/types/bookingStatus";
+import { BookingDetail, BookingReceipt } from "src/types/booking/bookingOrder";
+import { mapDeliveryType } from "src/types/booking/bookingStatus";
 import { transformFieldInArray } from "src/utils/mapData";
 
 export const stats = {};

@@ -8,7 +8,7 @@ import { DeliveryStatMeta } from "src/components/ui/StatMeta";
 export default function DeliveryModal () {
     const { user } = useCompanyUserMenu();
     
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
     return (
         <div className={styles.deliverymodalcontainer}>
             <section aria-label="Booking Stat Card" className={styles.statcardbox}>

@@ -1,5 +1,5 @@
-import { CompanyUser } from "src/types/user";
-import { Role } from "src/types/role";
+import { CompanyUser } from "src/types/users/user";
+import { Role } from "src/types/roles/role";
 
 export const mockCompanyAdmin: CompanyUser = {
   id: "1",
@@ -7,7 +7,7 @@ export const mockCompanyAdmin: CompanyUser = {
   firstName: "Admin",
   lastName: "User",
   type: "COMPANYUSER",
-  role: Role.ADMIN,
+  uiRole: Role.ADMIN,
 };
 
 
@@ -17,7 +17,7 @@ export const mockCompanyStaff: CompanyUser = {
   firstName: "Staff",
   lastName: "User",
   type: "COMPANYUSER",
-  role: Role.STAFF,
+  uiRole: Role.STAFF,
 };
 
 export const mockStaffOptions = [

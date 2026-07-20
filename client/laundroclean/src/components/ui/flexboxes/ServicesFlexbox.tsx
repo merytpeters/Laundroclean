@@ -1,18 +1,12 @@
 import Image from "next/image";
 import React from "react";
 import { FaShirtsinbulk } from "react-icons/fa6";
-import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Button from "../Button/Button";
 import styles from "./ServicesFlexbox.module.css";
-import { ServiceDisplayProp } from "src/services/laundrocleanservices/laundrocleanservices.service";
+import { ServiceDisplayProp } from "src/types/laundrocleanServices/laundroservices";
 import CornerRightArrow from "../angledarrow";
+import { ServicesProps } from "src/types/laundrocleanServices/laundroservices";
 
-interface ServicesProps {
-    icon?: string | StaticImport;
-    name: string;
-    description: string;
-    orderedlist?: string[];
-}
 
 export function Services({name, icon, description, orderedlist}: ServicesProps) {
     return (
