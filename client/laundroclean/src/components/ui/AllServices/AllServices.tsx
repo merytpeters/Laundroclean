@@ -8,7 +8,7 @@ import DropOffLocation from "./DropOffLocation";
 import Button from "../Button/Button";
 import { ServiceDisplayProp } from "src/types/laundrocleanServices/laundroservices";
 import { DropoffPoint } from "src/hooks/locations/useDropoffPoints";
-import Pagination from "../Pagination";
+// import Pagination from "../Pagination";
 
 
 interface AllServicesProps {
@@ -167,7 +167,7 @@ export default function AllServices(props: AllServicesProps) {
     const [activeLocationView, setActiveLocationView] = useState<LocationViewType>("serviceAreas");
 
     const [activeMapView, setActiveMapView] = useState<MapView>("serviceAreas");
-    const totalPages = 1;
+    // const totalPages = 1;
 
     return (
         <div className={styles.allservicescontainer}>
@@ -239,7 +239,7 @@ export default function AllServices(props: AllServicesProps) {
                 <h3>All Services</h3>
 
                 <ServicesList />
-                <Pagination totalPages={totalPages}/>
+                {/*<Pagination totalPages={totalPages}/>*/}
             </section>
         </div>
     )
