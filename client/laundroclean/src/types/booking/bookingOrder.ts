@@ -1,18 +1,31 @@
 export type BookingDetail = {
     id: string;
     customBookingId: string;
-    customerName: string;
+    firstname?: string;
+    lastname?: string;
+    email?: string;
+    phoneNumber?: string;
     serviceType: string;
     datepaid: string;
-    deliveryDate: string;
+    scheduledDate?: string;
     deliveryType: string;
     status: string;
-    amount: string;
     assignedStaff?: string;
+    assignedToId?: string;
     progressCount?: number;
     itemCount?: number;
     weight?: number;
     additionalNote?: string;
+    currency: "NAIRA" | "DOLLAR" | "POUNDS";
+    unitPrice?: number;
+    totalAmount?: number;
+    discountAmount?: number;
+    finalAmount?: number;
+    pickupTime?: string;
+    isActive?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
 }
 
 export type BookingReceipt = {

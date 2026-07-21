@@ -71,3 +71,102 @@
     font-weight: bold;
     font-size: small;
 }
+
+/*Admin all bookings component styles */
+.bookingdetailsection {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5em 2em;
+    color: #000;
+    width: 100%;
+}
+
+.bookingInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    padding: 1em 1em;
+}
+
+.bookingInfodetails {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    border: #555 2px solid;
+    border-radius: 10px;
+    padding: 1em;
+    background: #fff;
+}
+
+/*Overlay component css*/
+.overlay {
+    position: fixed;
+    z-index: 9999;
+    background-color: transparent;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+    pointer-events: auto;
+    overscroll-behavior: contain;
+    backdrop-filter: blur(8px);
+}
+
+.bookingOverlay {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 10000;
+    border-radius: 4px;
+    top: 25%;
+    left: 10%;
+    width: 80%;
+    padding: 3em;
+    height: fit-content;
+    color: #fff;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    background-color: #0f233a;
+    gap: 1em;
+}
+
+.bookingOverlay button {
+    display: flex;
+    align-self: self-end;
+    width: fit-content;
+    padding: 0.5em;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #fff;
+    border: #fff 2px solid;
+    cursor: pointer;
+}
+
+.bookingoverlayinfo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 2em;
+    border: #555 2px solid;
+    border-radius: 10px;
+    padding: 2em;
+}
+
+/*.itemspan {
+    width: 200px;
+    padding: 0 0.5em;
+}*/
+
+.adminonlyui {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}
+
+.timestamps {
+    display: flex;
+    gap: 2em;
+}
