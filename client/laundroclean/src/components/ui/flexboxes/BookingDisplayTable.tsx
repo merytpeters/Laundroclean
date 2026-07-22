@@ -99,14 +99,43 @@ export default function BookingDisplayTable() {
 }
 
 
+export function BookingSettings() {
+    return (
+        <section className={styles.bookingsettingssection}>
+            <p>Configure Minimum Pickup Days</p>
+            <input type="number" />
+        </section>
+    )
+}
+
+
 export function AdminAllBookings() {
     const [selectedBooking, setSelectedBooking] = useState<BookingDetail | null>(null);
     return (
         <section className={styles.bookingdetailsection}>
-            <h3>All Bookings</h3>
-            <span>Manage customer bookings and appointments</span>
+            <span className={styles.allbookingsheader}>
+                <span className={styles.headertext}>
+                    <h3>All Bookings</h3>
+
+                    <span>Manage customer bookings and appointments</span>
+                </span>
+                <BookingSettings />
+
+            </span>
 
             <span className={styles.bookingInfo}>
+                <span className={styles.bookingInfoHeader}>
+                    <span>Booking ID</span>
+                        <span>Customer</span>
+                        <span>Service</span>
+                        <span>Date Booked</span>
+                        <span>Pickup/Delivery Date</span>
+                        <span>Delivery Tag</span>
+                        <span>Status</span>
+                        <span>Amount</span>
+                        <span>Assigned Staff</span>
+                        <span>Actions</span>
+                </span>
                 {mappedDetails.map((bookingDetail) => (
                     <span key={bookingDetail.id} className={styles.bookingInfodetails}>
                         <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
@@ -151,7 +180,7 @@ export function BookingDetailsOverlay({
 }: BookingDetailsOverlayProps) {
     const { user } = useCompanyUserMenu();
     if (!isOpen || !item) return null;
-    
+
 
     return (
         <div>

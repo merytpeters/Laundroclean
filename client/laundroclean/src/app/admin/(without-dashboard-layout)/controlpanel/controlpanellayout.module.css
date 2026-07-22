@@ -98,7 +98,7 @@
     font-size: small;
     width: 100%;
     box-sizing: border-box;
-    overflow: auto;
+    overflow: hidden;
 }
 
 /* Responsive adjustments */
