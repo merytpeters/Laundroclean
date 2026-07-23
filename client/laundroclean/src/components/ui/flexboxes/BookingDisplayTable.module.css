@@ -1,0 +1,73 @@
+.BookingDisplayTable {
+    display: block;
+    color: #555;
+    margin: 1em 1em;
+}
+
+.BookingDisplayTable h3,
+.BookingDisplayTable span {
+    margin: 1em;
+}
+
+.bdctable {
+    width: 100%;
+    color: #555;
+    border-collapse: collapse;
+}
+
+.bdctable tr {
+    border-bottom: 1px solid #353535;
+}
+
+.moredetails {
+    cursor: pointer;
+}
+
+.bdctable thead th,
+.bdctable tbody td {
+    text-align: left;
+    padding: 2em 1em;
+    white-space: nowrap;
+}
+
+.editbtn {
+    border: none;
+    background: transparent;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+.trashbtn {
+    color: red;
+    background-color: transparent;
+    border: 1px solid #555;
+    cursor: pointer;
+}
+
+.actions {
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    margin-bottom: 0;
+    margin-top: auto;
+    justify-content: flex-end;
+    padding: 0.5em 0 0 0;
+}
+
+.viewmore {
+    font-weight: bold;
+    font-size: small;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 1em;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+}
+
+.viewmore a {
+    font-weight: bold;
+    font-size: small;
+}

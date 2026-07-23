@@ -25,9 +25,9 @@ export const BookingTransitions: Record<BookingStatus, BookingStatus[]> = {
 
   [BookingStatus.CUSTOMER_PICKED_UP_FROM_POINT]: [BookingStatus.DELIVERED],
 
-  [BookingStatus.COMPLETED]: [BookingStatus.DELIVERED],
-
-  [BookingStatus.DELIVERED]: [],
+  [BookingStatus.DELIVERED]: [BookingStatus.COMPLETED],
+  
+  [BookingStatus.COMPLETED]: [],
 
   [BookingStatus.CANCELLED]: [],
 };

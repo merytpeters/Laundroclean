@@ -13,7 +13,25 @@ const createRole = async (data: { title: string; level?: number | null; permissi
 
 const getRoleById = async (id: string | number) => {
   const intId = typeof id === 'string' ? Number(id) : id;
-  return prisma.companyRoleTitle.findUnique({ where: { id: intId } });
+  return prisma.companyRoleTitle.findUnique({ 
+    where: { 
+      id: intId 
+    },
+    include: {
+      users: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          profile: {
+            select: {
+              phoneNumber: true
+            }
+          }
+        }
+      },
+    }
+  });
 };
 
 const getAllRoles = async () => {

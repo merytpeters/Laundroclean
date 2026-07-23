@@ -495,3 +495,14 @@ model PaymentEvent {
 // model Wallet - later feature
 // model Invoice - later feature
 // model LedgerEntry
+
+
+// model HomePageContent {
+//  id String                  @id @default(uuid())
+//  heroTitle
+//  heroSubtitle
+//}
+
+//model AboutPage {
+//
+//}

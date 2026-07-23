@@ -1,11 +1,11 @@
 :root {
-  --background: #469BD3;
-  --foreground: #FFFFFF;
+  --background: #469bd3;
+  --foreground: #ffffff;
 }
 
 html,
 body {
-  max-width: 100vw;
+  width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -21,7 +21,9 @@ body {
 }
 
 /* Hide scrollbars globally while keeping scrolling functional */
-html, body, * {
+html,
+body,
+* {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
@@ -42,6 +44,46 @@ body::-webkit-scrollbar,
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.leaflet-control {
+  width: 80%;
+  height: 90%;
+}
+
+.leaflet-draw a {
+  width: 70px;
+  height: 45px;
+  background-size: 30px 30px;
+  background-color: #ffffff;
+}
+
+/* Increase the toolbar container width */
+.leaflet-draw {
+  width: 60%;
+  background-color: #ffffff;
+  gap: 30px;
+}
+
+.leaflet-draw-actions {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.leaflet-draw-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.leaflet-draw-toolbar {
+  display: flex;
+  gap: 3em;
+}
+
+.leaflet-draw-toolbar a {
+  width: fit-content;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -77,20 +119,54 @@ body {
   line-height: var(--line-height-base);
 }
 
-h1 { font-size: var(--h1); margin-bottom: 0.5rem; }
-h2 { font-size: var(--h2); margin-bottom: 0.45rem; }
-h3 { font-size: var(--h3); margin-bottom: 0.4rem; }
-h4 { font-size: var(--h4); margin-bottom: 0.35rem; }
-h5 { font-size: var(--h5); margin-bottom: 0.3rem; }
-h6 { font-size: var(--h6); margin-bottom: 0.25rem; }
+h1 {
+  font-size: var(--h1);
+  margin-bottom: 0.5rem;
+}
+h2 {
+  font-size: var(--h2);
+  margin-bottom: 0.45rem;
+}
+h3 {
+  font-size: var(--h3);
+  margin-bottom: 0.4rem;
+}
+h4 {
+  font-size: var(--h4);
+  margin-bottom: 0.35rem;
+}
+h5 {
+  font-size: var(--h5);
+  margin-bottom: 0.3rem;
+}
+h6 {
+  font-size: var(--h6);
+  margin-bottom: 0.25rem;
+}
 
-p { font-size: var(--p); margin-bottom: 0.75rem; color: inherit; }
-small, .small { font-size: var(--small); }
-a { text-decoration: none; font-size: var(--p); }
-button, input[type="button"], input[type="submit"] { font-size: var(--button); }
+p {
+  font-size: var(--p);
+  margin-bottom: 0.75rem;
+  color: inherit;
+}
+small,
+.small {
+  font-size: var(--small);
+}
+a {
+  text-decoration: none;
+  font-size: var(--p);
+}
+button,
+input[type="button"],
+input[type="submit"] {
+  font-size: var(--button);
+}
 
 @media (max-width: 1024px) {
-  html { font-size: calc(var(--font-size-base) * var(--font-scale-tablet)); }
+  html {
+    font-size: calc(var(--font-size-base) * var(--font-scale-tablet));
+  }
   :root {
     --h1: 1.9rem;
     --h2: 1.4rem;
@@ -100,7 +176,9 @@ button, input[type="button"], input[type="submit"] { font-size: var(--button); }
 }
 
 @media (max-width: 768px) {
-  html { font-size: calc(var(--font-size-base) * var(--font-scale-mobile)); }
+  html {
+    font-size: calc(var(--font-size-base) * var(--font-scale-mobile));
+  }
   :root {
     --h1: 1.6rem;
     --h2: 1.25rem;

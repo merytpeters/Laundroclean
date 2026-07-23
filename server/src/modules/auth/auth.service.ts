@@ -1,8 +1,8 @@
 import prisma from '../../config/prisma.js';
-import type { Prisma, User, Profile } from '@prisma/client';
+import { type Prisma, type User, type Profile, TokenType } from '@prisma/client';
 import { NotFoundError, ConflictError, ValidationError } from '../../middlewares/errorHandler.js';
 import authUtils from './auth.utils.js';
-import tokenService from '../token/token.service.js';
+import tokenService, { refreshToken } from '../token/token.service.js';
 import type { SignupSchema } from '../../validation/auth/auth.validation.js';
 
 export type UserWhereInput = Prisma.UserWhereInput
@@ -16,7 +16,11 @@ export type UserOrderByWithRelationInput = Prisma.UserOrderByWithRelationInput
 const findUser = async (where: UserWhereUniqueInput): Promise<User | null> => {
     const user = await prisma.user.findUnique({
         where,
+        include: {
+            role: true,
+        },
     });
+    if (!user) return null;
     return user;
 };
 
@@ -84,6 +88,9 @@ const registerUser = async (
       lastName: parts.slice(1).join(' ') || null,
       }),
     },
+    include: {
+        role: true,
+    },
    });
 
    const profile = await prisma.profile.create({
@@ -109,7 +116,7 @@ const registerUser = async (
 };
 
 
-const loginUser = async (payload: any): Promise<{authenticatedUser: User; accessToken: string; refreshToken: string }> => {
+const loginUser = async (payload: any): Promise<{authenticatedUser: Omit<User, 'password'>; accessToken: string; refreshToken: string }> => {
     const authenticatedUser = await findUser({email: payload.email});
     if (!authenticatedUser) throw new NotFoundError('Invalid email or password');
 
@@ -121,7 +128,9 @@ const loginUser = async (payload: any): Promise<{authenticatedUser: User; access
 
     await tokenService.saveRefreshToken(authenticatedUser.id, refreshToken);
 
-    return { authenticatedUser, accessToken, refreshToken };
+    const { password: _password, ...safeUser } = authenticatedUser;
+
+    return { authenticatedUser: safeUser, accessToken, refreshToken };
 };
 
 const findUserByEmail = async (email: string): Promise<User | null> => {
@@ -131,6 +140,30 @@ const findUserByEmail = async (email: string): Promise<User | null> => {
     return user;
 };
 
+const logoutUser = async (userId: string): Promise<string> => {
+    const user = await prisma.user.findUnique({
+        where: {id: userId}
+    });
+
+    if (!user) {
+        throw new NotFoundError('User not found');
+    }
+
+    await prisma.user.update({
+        where: {id: userId},
+        data: {
+            tokens: {
+                deleteMany: {
+                    type: TokenType.REFRESH
+                }
+            }
+        }
+    });
+    const message = 'Logged out successfully';
+    return message;
+};
+
+
 export default {
     findUser,
     createUser,
@@ -138,5 +171,6 @@ export default {
     deleteUser,
     registerUser,
     loginUser,
-    findUserByEmail
+    findUserByEmail,
+    logoutUser
 };

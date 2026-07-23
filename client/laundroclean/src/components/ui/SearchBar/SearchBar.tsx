@@ -36,12 +36,13 @@ export function FilterSearch({
     id?: string
 }) {
     const hasOptions = options && options.length > 0
+    const controlId = id ?? `${name}-list`
 
     return (
-        <div role="combobox" className={styles.dropdown}>
+        <div role="combobox" aria-controls={controlId} aria-expanded={false} className={styles.dropdown}>
             <select
                 name={name}
-                id={id}
+                id={controlId}
                 multiple={multiple}
                 defaultValue={multiple ? undefined : ''}
                 aria-label={placeholder}

@@ -18,6 +18,31 @@
   gap: 1em;
 }
 
+.dashboardservices {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--foreground);
+  border: 1px solid #f4f1f1;
+  padding: 1.5em;
+  border-radius: 12px;
+  min-width: 12rem;
+  max-width: 14rem;
+  height: 10rem;
+  overflow: auto;
+  box-shadow:0 6px 18px #e8e0e0;
+}
+
+.cornerrightarrow {
+  display: flex;
+  align-self: flex-end;
+  justify-self: flex-end;
+  cursor: pointer;
+  background-color: rgb(212, 227, 241);
+  border-radius: 8px;
+  margin-bottom: 1em;
+  box-shadow:0 6px 18px #e8e0e0;
+}
+
 .servicesButton {
   --btn-bg: #0F233A;
   --btn-color: #f5f5f5;

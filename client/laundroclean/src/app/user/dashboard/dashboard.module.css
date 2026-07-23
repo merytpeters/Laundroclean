@@ -1,0 +1,81 @@
+.clientdashboardcontainer {
+    display: flex;
+    flex-direction: column;
+    color: black;
+    padding: 1rem;
+    width: 100%;
+    gap: 2.5em;
+}
+
+.displaytext {
+    font-size: medium;
+    padding-left: 1em;
+}
+
+.displaytext b i {
+    background: linear-gradient(to right, #325dc0, #7bc7fe);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.servicesdisplaysection {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: 2em;
+    padding: 0.5em;
+    overflow: auto;
+}
+
+.servicesdisplaybox {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+    overflow: auto;
+    padding: 0.5em;
+}
+
+.seeallbutton {
+    display: flex;
+    background-color: aliceblue;
+    color: black;
+    cursor: pointer;
+    width: fit-content;
+    justify-self: end;
+    align-self: flex-end;
+    padding: 4px;
+}
+
+.activeorderssection {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    padding: 0.5em;
+    overflow: auto;
+}
+
+.sectionheader {
+    padding-left: 1em;
+    font-size: medium;
+}
+
+.activeordersdisplaybox{
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    padding: 1em;
+    gap: 2em;
+}
+
+.specialofferssection {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.promocarddisplaybox {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}

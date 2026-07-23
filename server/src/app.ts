@@ -1,4 +1,4 @@
-// import cors from 'cors';
+import cors from 'cors';
 import express from 'express';
 import path from 'path';
 import nunjucks from 'nunjucks';
@@ -24,6 +24,11 @@ import { globalLimiter } from './middlewares/rateLimiter.js';
 const app = express();
 
 const templatesPath = config.TEMPLATES_PATH;
+const corsOptions = {
+  origin: config.ALLOWED_ORIGINS,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+};
 
 
 nunjucks.configure(templatesPath, {
@@ -35,13 +40,11 @@ app.set('view engine', 'html');
 // parse JSON bodies
 app.use(express.json());
 
-{/*app.use(
-  cors({
-    origin: "",
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-  })
-)
-*/}
+app.use(
+  cors(corsOptions)
+);
+
+app.options(/.*/, cors(corsOptions));
 
 app.use(globalLimiter);
 

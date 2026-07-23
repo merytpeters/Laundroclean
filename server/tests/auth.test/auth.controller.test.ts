@@ -23,10 +23,16 @@ const mockLoginUser = jest.fn().mockImplementation(async ({ email }: any) => ({
     accessToken: 'access-token',
     refreshToken: 'refresh-token',
 }));
+
+const mockLogoutUser = jest.fn().mockImplementation(async () => (
+    'Logged out successfully'
+));
+
 const mockUpdateUser = jest.fn() as jest.MockedFunction<() => Promise<any>>;
 (jest as any).unstable_mockModule('../../src/modules/auth/auth.service', () => ({
-    default: { registerUser: mockRegisterUser, loginUser: mockLoginUser, updateUser: mockUpdateUser },
+    default: { registerUser: mockRegisterUser, loginUser: mockLoginUser, updateUser: mockUpdateUser, logoutUser: mockLogoutUser},
 }));
+
 
 const { default: AuthController } = await import('../../src/modules/auth/auth.controller');
 
@@ -72,6 +78,8 @@ describe('Auth Controller', () => {
             } as unknown as Request;
 
             const res = {
+                cookie: jest.fn().mockReturnThis(),
+                clearCookie: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn(),
             } as unknown as Response;
@@ -79,6 +87,8 @@ describe('Auth Controller', () => {
             const next = jest.fn();
 
             await AuthController.clientRegister(req, res, next);
+
+            // console.log(next.mock.calls)
 
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.json).toHaveBeenCalledWith(
@@ -101,6 +111,8 @@ describe('Auth Controller', () => {
             } as unknown as Request;
 
             const res = {
+                cookie: jest.fn().mockReturnThis(),
+                clearCookie: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn(),
             } as unknown as Response;
@@ -141,6 +153,8 @@ describe('Auth Controller', () => {
             } as unknown as Request;
 
             const res = {
+                cookie: jest.fn().mockReturnThis(),
+                clearCookie: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn(),
             } as unknown as Response;
@@ -205,6 +219,8 @@ describe('Auth Controller', () => {
                 } as unknown as Request;
 
                 const res = {
+                    cookie: jest.fn().mockReturnThis(),
+                    clearCookie: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
                     json: jest.fn(),
                 } as unknown as Response;
@@ -226,6 +242,53 @@ describe('Auth Controller', () => {
         });
     });
 
+    describe('logout', () => {
+        it('should logout a user', async () => {
+            const email = uniqueEmail('user20');
+            const password = 'Password123!';
+
+            const user = await prisma.user.create({
+                data: {
+                    email,
+                    password: await AuthUtils.hashPassword(password),
+                    type: UserType.COMPANYUSER,
+                },
+            });
+
+            const req = {
+                user: user,
+                cookies: {},
+                signedCookies: {},
+                get: jest.fn(),
+                header: jest.fn(),
+            } as unknown as Request;
+
+            const res = {
+                cookie: jest.fn().mockReturnThis(),
+                clearCookie: jest.fn().mockReturnThis(),
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn(),
+            } as unknown as Response;
+
+            const next = jest.fn();
+
+            //await AuthController.login(req, res, next);
+
+            await AuthController.logout(req, res, next);
+
+            // console.log(next.mock.calls)
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    success: true,
+                    data: null,
+                    message: 'Logged out successfully'
+                })
+            );
+        });
+    });
+
     describe('resetPassword', () => {
         beforeEach(() => {
             mockFindToken.mockReset();
@@ -239,7 +302,7 @@ describe('Auth Controller', () => {
             mockFindToken.mockResolvedValue(null);
 
             const req = { body: { token: 'bad-token', password: 'NewPass123!' } } as any;
-            const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+            const res = { cookie: jest.fn().mockReturnThis(), clearCookie: jest.fn().mockReturnThis(),status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
             const next = jest.fn();
 
             await AuthController.resetPassword(req, res, next);
@@ -266,7 +329,7 @@ describe('Auth Controller', () => {
             mockUpdateUser.mockResolvedValue({});
 
             const req = { body: { token: 'valid-token', password: 'NewPass123!' } } as any;
-            const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+            const res = { cookie: jest.fn().mockReturnThis(), clearCookie: jest.fn().mockReturnThis(),status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
             const next = jest.fn();
 
             await AuthController.resetPassword(req, res, next);

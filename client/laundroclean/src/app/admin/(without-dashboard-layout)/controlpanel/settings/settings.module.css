@@ -1,0 +1,21 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: #f1efef;
+    color: #3c3c3c;
+    width: 100%;
+    padding: 2em;
+    height: fit-content;
+    gap: 2em;
+}
+
+@media (max-width: 768px) {
+    .pageContainer {
+        max-width: 100vw;
+        padding: 0.5em;
+    }
+
+    .pageContainer h3 {
+        width: fit-content;
+    }
+}

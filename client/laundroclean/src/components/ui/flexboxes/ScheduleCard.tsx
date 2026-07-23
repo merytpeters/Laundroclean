@@ -2,7 +2,7 @@
 import React from "react";
 import { FaClock } from "react-icons/fa";
 import styles from "./ScheduleCard.module.css";
-import { statusClassMap } from "src/types/bookingStatus";
+import { statusClassMap } from "src/types/booking/bookingStatus";
 import { useState } from "react";
 
 type ScheduleItem = {

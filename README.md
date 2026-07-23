@@ -74,6 +74,18 @@ If you are an approved contributor:
 
 For editing, open [db-schema.drawio](docs/db-schema.drawio) in [draw.io](https://app.diagrams.net/).
 
+## UI Routes (In progress)
+
+These routes provide current UI previews for different user types and are under active development:
+
+- Admin dashboard (public preview): https://laundroclean.vercel.app/admin/dashboard
+- Staff dashboard : https://laundroclean.vercel.app/staff/dashboard
+- User dashboard : https://laundroclean.vercel.app/user/dashboard
+
+Use these pages to review ongoing UI changes for the admin, staff, and user experiences.
+
+Note: these routes are public for now to allow UI review and testing. They will be protected (role-based access) once integration with auth is completed.
+
 
 ## License
 [License](./LICENSE)

@@ -4,7 +4,7 @@ import type { Prisma, Service } from '@prisma/client';
 import { ProcessingError, NotFoundError, ValidationError } from '../../middlewares/errorHandler.js';
 import type { ServiceSchema, UpdateServiceSchema } from '../../validation/laundrocleanservices/services.validation.js';
 import ServiceValidation from '../../validation/laundrocleanservices/services.validation.js';
-import type { PaginationQuery } from '../../utils/asyncHandler.js';
+import type { PaginationQuery, ServiceQuery } from '../../utils/asyncHandler.js';
 import { getPagination } from '../common/pagination/paginate.js';
 
 type ServiceCreateInput = Prisma.ServiceCreateInput
@@ -79,7 +79,8 @@ const getActiveServiceById = async(
                 isActive: true
             } as ServiceWhereInput,
             include: {
-                prices: { where: { isActive: true } }
+                prices: { where: { isActive: true } },
+                promoCodes: {where: {isActive: true}},
             }
         });
 
@@ -157,6 +158,17 @@ const searchActiveServices = async(
                 include: {
                     prices: {
                         where: { isActive: true }
+                    },
+                    promoCodes: {
+                        select: {
+                            code: true,
+                            description: true,
+                            startsAt: true,
+                            expiresAt: true,
+                            value: true,
+                            currency: true,
+                            type: true,
+                        }
                     }
                 }
             }),
@@ -199,13 +211,16 @@ const softDeleteServices = async(
 
 
 const searchAllServices = async(
-    query?: PaginationQuery
+    query?: ServiceQuery
 ):Promise<{ data: Service[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
     try {
         const { page, limit, skip } = getPagination(query || {});
         const search = query?.search?.trim();
+        const includeDeleted = query?.includeDeleted?.trim();
 
         const where: ServiceWhereInput = {
+            ...(includeDeleted === 'false' && {isActive: true}),
+            ...(includeDeleted === 'only' && {isActive: false}),
             ...(search && {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },

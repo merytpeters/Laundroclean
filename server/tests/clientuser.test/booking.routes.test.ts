@@ -120,4 +120,15 @@ describe('Client Booking Routes', () => {
     expect(res.body).toHaveProperty('data');
     expect(res.body.data).toHaveProperty('id', booking.id);
   });
+
+  it('PATCH /api/v1/client/bookings/cancel/:bookingId should soft delete booking', async () => {
+    const list = await request(app).get('/api/v1/client/bookings').set('Authorization', `Bearer ${clientToken}`);
+    const booking = list.body.data[0];
+    const res = await request(app)
+      .patch(`/api/v1/client/bookings/cancel/${booking.id}`)
+      .set('Authorization', `Bearer ${clientToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('message');
+  });
 });

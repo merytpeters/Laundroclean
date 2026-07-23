@@ -4,7 +4,24 @@ import type { SignupSchema, LoginSchema, ResetPasswordSchema } from '../../valid
 import asyncHandler from '../../utils/asyncHandler.js';
 import authUtils from './auth.utils.js';
 import { TokenType } from '@prisma/client';
+import config from '../../config/config.js';
+import ms from 'ms';
 
+
+const refreshTokenCookieOptions = {
+    httpOnly: true,
+    sameSite: 'lax' as const,
+    secure: config.NODE_ENV === 'production',
+    path: '/',
+    maxAge: Number(ms(config.REFRESH_TOKEN_EXPIRES || '7d')),
+};
+
+const refreshTokenCookieClearingOptions = {
+    httpOnly: true,
+    sameSite: 'lax' as const,
+    secure: config.NODE_ENV === 'production',
+    path: '/',
+};
 
 const clientRegister = asyncHandler(async (req, res) => {
     let newUser: SignupSchema = req.body;
@@ -18,12 +35,13 @@ const clientRegister = asyncHandler(async (req, res) => {
 
     const { user: savedUser, accessToken, refreshToken } = await authService.registerUser(newUser);
 
+    res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
+
     res.status(201).json({
         success: true,
         data: {
             user: savedUser,
             accessToken,
-            refreshToken
         },
         message: 'Account created successfully'
     });
@@ -32,17 +50,18 @@ const clientRegister = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
     let user: LoginSchema = req.body;
 
-    const { authenticatedUser: authenticatedUser, accessToken, refreshToken } = await authService.loginUser({
+    const { authenticatedUser, accessToken, refreshToken } = await authService.loginUser({
         email: user.email,
         password: user.password,
     });
+
+    res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
     res.status(200).json({
         success: true,
         data: {
             user: authenticatedUser,
             accessToken,
-            refreshToken,
         },
     });
 });
@@ -71,10 +90,28 @@ const resetPassword = asyncHandler(async (req, res) => {
     });
 });
 
+const logout = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId) {
+        return res.status(401).json({ 
+            success: false,
+            message: 'Unauthorized',
+        });
+    }
 
+    const result = await authService.logoutUser(userId);
+    res.clearCookie('refreshToken', refreshTokenCookieClearingOptions);
+
+    res.status(200).json({
+        success: true,
+        data: null,
+        message: result
+    });
+});
 
 export default {
     clientRegister,
     login,
-    resetPassword
+    resetPassword,
+    logout
 };

@@ -5,28 +5,27 @@ import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/C
 import { statMeta } from "src/components/ui/StatMeta";
 import styles from "./OverviewModal.module.css"
 import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
-import { mapDeliveryType, mapBookingStatus } from "src/types/bookingStatus";
+import { mapDeliveryType, mapBookingStatus } from "src/types/booking/bookingStatus";
 import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
-import { stats, bookingScheduleData, clientInfoData } from "./OverviewMockData";
+import { stats, bookingScheduleData } from "../../../../../services/bookingService/bookingMockData";
+import { clientInfoData } from "src/services/userService/mock";
+import Button from "src/components/ui/Button/Button";
+import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 
 export default function Overview() {
     const { user } = useCompanyUserMenu();
 
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
 
     const mappedDelivery =bookingScheduleData.map((item) => ({
         ...item,
         deliveryType: mapDeliveryType(item.deliveryType)
     }))
 
-    console.log(mappedDelivery);
-
     const mappedSchedule = mappedDelivery.map((item) => ({
         ...item,
         status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType}),
     }))
-
-    console.log(mappedSchedule);
     
 
     const clientInfoHeaderData = {
@@ -54,6 +53,7 @@ export default function Overview() {
                     );
                 })}
             </section>
+            {user?.uiRole === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
                
             <section aria-label="Information Section" className={styles.infosection}>
                 <ScheduleCard items={mappedSchedule}/>

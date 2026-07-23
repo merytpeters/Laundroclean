@@ -1,6 +1,6 @@
 "use client";
 
-import { CompanyUser } from "../../../types/user";
+import { CompanyUser } from "../../../types/users/user";
 import { roleConfig } from "src/lib/company-user/role-config";
 import AppHeader from "src/components/ui/AppHeader/AppHeader";
 import ActionButton from "src/components/ui/ActionButton/ActionButton";
@@ -8,19 +8,19 @@ import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from "@heroicons/react
 import AppHeaderMenu from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 import { CompanyUserMenuProvider, useCompanyUserMenu } from "./context/CompanyUserMenuContext";
 import WelcomeMessage from "src/components/ui/WelcomeMessage/WelcomeMessage";
-import styles from './CompanyUserLayout.module.css';
+import styles from 'src/components/layouts/UserLayout.module.css';
 import BackButton from "src/components/ui/Button/BackButton";
 
 interface CompanyUserLayoutProps {
   user: CompanyUser;
   children: React.ReactNode;
-  welcomeMessage?: { name: string; message: string };
+  welcomeMessage?: { name: string; message?: string };
   showMenu?: boolean;
 }
 
 const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: CompanyUserLayoutProps) => {
   const { activeMenu, setActiveMenu, menuItems, setMenuItems } = useCompanyUserMenu();
-  const config = roleConfig[user.role];
+  const config = roleConfig[user.uiRole];
 
   const isControlPanel = config.settingsAction === "CONTROL PANEL";
 
@@ -31,7 +31,7 @@ const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: Comp
 
   return (
       <div className={styles.layoutContainer}>
-        {user?.role === "STAFF" && <AppHeader
+        {user?.uiRole === "STAFF" && <AppHeader
           userButton={
             config && (
               <ActionButton
@@ -106,7 +106,7 @@ export default function CompanyUserLayout(props: CompanyUserLayoutProps) {
   return (
     <CompanyUserMenuProvider
       user={props.user}
-      initialMenuItems={props.user.role ? roleConfig[props.user.role].menuItems : []}
+      initialMenuItems={props.user.uiRole ? roleConfig[props.user.uiRole].menuItems : []}
     >
       <LayoutContent {...props} />
     </CompanyUserMenuProvider>

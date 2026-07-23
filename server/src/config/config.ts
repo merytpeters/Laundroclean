@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import type { string } from 'zod';
 
 const env = (variable: string, defaultValue?: string): any => {
   if (variable === 'PORT') return process.env.PORT || '3000';
@@ -42,6 +43,7 @@ const env = (variable: string, defaultValue?: string): any => {
       // case 'RL_MACHINE_MAX': return 30
       // case 'RL_PAYMENT_WINDOW_MS': return 300000
       // case 'RL_PAYMENT_MAX': return 3
+      case 'ALLOWED_ORIGINS': return 'http://localhost:3000';
     }
   }
 
@@ -79,6 +81,9 @@ const config = {
   // RL_PAYMENT_MAX: Number(env('RL_PAYMENT_MAX')),
   RL_AUTH_WINDOW_MS: Number(env('RL_AUTH_WINDOW_MS')),
   RL_AUTH_MAX: Number(env('RL_AUTH_MAX')),
+  ALLOWED_ORIGINS: env('ALLOWED_ORIGINS')
+    ? env('ALLOWED_ORIGINS').split(',').map((url: string) => url.trim())
+    : ['http://localhost:3000'],
 };
 
 export default config;

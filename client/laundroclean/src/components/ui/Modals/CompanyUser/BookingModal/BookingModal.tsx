@@ -1,18 +1,21 @@
 "use client";
 import StatCard from "src/components/ui/flexboxes/StatCard";
-import BookingDisplayCard from "src/components/ui/flexboxes/BookingDisplayCard";
-import { stats } from "../OverviewModal/OverviewMockData";
+import BookingDisplayTable from "src/components/ui/flexboxes/BookingDisplayTable";
+import { stats } from "../../../../../services/bookingService/bookingMockData";
 import { roleConfig } from "src/lib/company-user/role-config";
 import styles from "./BookingModal.module.css"
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
 import { BookingStatMeta } from "src/components/ui/StatMeta";
 import { LocalSearchBar, FilterSearch } from "src/components/ui/SearchBar/SearchBar"
-import { FiPlus } from "react-icons/fi";
+import { FiX, FiPlus as PlusIcon } from "react-icons/fi";
+import { useState } from 'react';
+import BookingForm from "src/components/ui/Forms/BookingForm";
 
 export default function BookingModal () {
     const { user } = useCompanyUserMenu();
     
-    const config = roleConfig[user.role];
+    const config = roleConfig[user.uiRole];
+    const [showForm, setShowForm] = useState(false);
     return (
         <div className={styles.bookingmodalcontainer}>
             <section className={styles.bookingrowgrid}>
@@ -44,14 +47,36 @@ export default function BookingModal () {
                 </section>
             </section>
 
-            <button className={styles.addnewbtn}>
-                <span>Add new</span>
-                    <FiPlus size={30}/>
-            </button>
+            
                
             <section aria-label="Booking display Section" className={styles.tablesection}>
-                <BookingDisplayCard />
+                <button className={styles.addnewbtn} onClick={() => setShowForm(true)}>
+                    <span>Add new</span>
+                        <PlusIcon size={30}/>
+                </button>
+                <BookingDisplayTable />
             </section>
+
+            {/* sliding drawer for new booking */}
+            <div className={`${styles.drawer} ${showForm ? styles.open : ''}`} role="dialog" aria-hidden={!showForm}>
+                <div className={styles.drawerHeader}>
+                    <h3>New Booking</h3>
+                    <button aria-label="Close" className={styles.drawerClose} onClick={() => setShowForm(false)}>
+                        <FiX size={20} />
+                    </button>
+                </div>
+                <div className={styles.drawerContent}>
+                    <BookingForm
+                        user={user}
+                        showStaffAssignedSlot={user.uiRole === 'ADMIN'}
+                        staffOptions={user.uiRole === 'ADMIN' ? [
+                            { id: 'staff-1', name: 'Alice' },
+                            { id: 'staff-2', name: 'Bob' },
+                        ] : undefined}
+                    />
+                </div>
+            </div>
+            {showForm && <div className={styles.drawerOverlay} onClick={() => setShowForm(false)} />}
         </div>
     )
 }

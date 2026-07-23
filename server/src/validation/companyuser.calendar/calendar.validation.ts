@@ -1,7 +1,7 @@
 import z from 'zod';
 
 const timeSlotSchema = z.object({
-    staffCalendarId: z.uuid().optional(),
+    staffCalendarId: z.uuid(),
     startTime: z.coerce.date(),
     endTime: z.coerce.date(),
     maxBookings: z.int(),

@@ -4,10 +4,11 @@ import validate from '../../middlewares/validate.js';
 import authController from './auth.controller.js';
 import { EmailController } from '../emailService/index.js';
 import { authLimiter } from '../../middlewares/rateLimiter.js';
-
+import UserAuth from '../../middlewares/auth.js';
 
 const router = express.Router();
 const emailController = new EmailController();
+const authenticate = UserAuth.authenticate();
 
 router.post(
     '/client/register',
@@ -34,6 +35,13 @@ router.post(
     '/reset-password',
     authLimiter,
     authController.resetPassword
+);
+
+router.post(
+    '/logout',
+    authLimiter,
+    UserAuth.authenticate(),
+    authController.logout
 );
 
 

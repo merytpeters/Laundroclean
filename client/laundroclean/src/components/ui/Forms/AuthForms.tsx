@@ -16,20 +16,21 @@ interface FieldConfig {
     options?: SelectOption[];
 }
 
-interface FormProps {
+export interface FormProps {
     title?: string;
     subtitle?: string;
     fields: FieldConfig[];
     actions: React.ReactNode;
+    onSubmit?: React.ComponentPropsWithoutRef<"form">["onSubmit"];
 }
 
 
-export default function AuthForm({ title, subtitle, fields, actions }: FormProps) {
+export default function AuthForm({ title, subtitle, fields, actions, onSubmit }: FormProps) {
     const pathname = usePathname();
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={onSubmit}>
             <legend>
                 <h4>{title}</h4>
                 <p>{subtitle}</p>

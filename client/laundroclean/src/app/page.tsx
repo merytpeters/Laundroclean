@@ -3,7 +3,7 @@ import Image from "next/image";
 import Header from "src/components/ui/Header/Header";
 import Button from "src/components/ui/Button/Button";
 import ReasonsFlexbox from "src/components/ui/flexboxes/ReasonsFlexbox";
-import Services from "src/components/ui/flexboxes/ServicesFlexbox";
+import { Services } from "src/components/ui/flexboxes/ServicesFlexbox";
 import Location from "src/components/ui/flexboxes/VisitUs";
 
 export default function Home() {
@@ -56,9 +56,9 @@ that clean thoroughly in record time without compromising quality."
           <p>Tailored solutions for every fabric and cleaning need.</p>
           <figure className={styles.servicesflex}>
             <Services
-              header="Regular Wash"
+              name="Regular Wash"
               icon="/icons/hanger.png"
-              paragraph="Perfect for everyday essentials"
+              description="Perfect for everyday essentials"
               orderedlist={[
                 "30-minute smart cycle",
                 "Temperature optimized",
@@ -66,9 +66,9 @@ that clean thoroughly in record time without compromising quality."
               ]}
             />
             <Services
-              header="Delicate Care"
+              name="Delicate Care"
               icon="/icons/waterdroplet.png"
-              paragraph="Gentle luxury for fine fabrics"
+              description="Gentle luxury for fine fabrics"
               orderedlist={[
                 "45-minute gentle cycle",
                 "Cold water protection",
@@ -76,9 +76,9 @@ that clean thoroughly in record time without compromising quality."
               ]}
             />
             <Services
-              header="Heavy Duty"
+              name="Heavy Duty"
               icon="/icons/washbath.png"
-              paragraph="Maximum power for tough stains"
+              description="Maximum power for tough stains"
               orderedlist={[
                 "60-minute deep clean",
                 "Hot water sanitization",
@@ -86,9 +86,9 @@ that clean thoroughly in record time without compromising quality."
               ]}
             />
             <Services
-              header="Express Dry"
+              name="Express Dry"
               icon="/icons/iron.png"
-              paragraph="Fast drying service"
+              description="Fast drying service"
               orderedlist={[
                 "20-minute rapid dry",
                 "Smart heat control",

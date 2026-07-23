@@ -16,6 +16,10 @@ export interface UserQuery extends PaginationQuery {
   type?: 'client' | 'company';
 }
 
+export interface ServiceQuery extends PaginationQuery {
+  includeDeleted?: 'true' | 'false' | 'only';
+}
+
 
 const asyncHandler =
   <T = any>(

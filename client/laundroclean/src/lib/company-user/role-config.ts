@@ -1,4 +1,4 @@
-import { Role } from "src/types/role";
+import { Role } from "src/types/roles/role";
 import { MenuItem } from "src/components/ui/AppHeaderMenu/AppHeaderMenu";
 
 export type SettingsActionType = "SETTINGS" | "CONTROL PANEL";
@@ -33,16 +33,16 @@ export const roleConfig: Record<Role, RoleConfig> = {
     dashboardText: "Admin Dashboard",
     dashboardHref: "/admin/dashboard",
     showNotifications: true,
-    settingsHref: "/admin/controlpanel",
+    settingsHref: "/admin/controlpanel/reports-analysis",
     settingsAction: "CONTROL PANEL",
     menuItems: [
       {label: "Overview", key: "overview"},
       {label: "Bookings", key: "bookings"},
       {label: "Delivery", key: "delivery"},
       {label: "Payment", key: "payment"},
-      {label: "Chat", key: "chat"},
+      //{label: "Chat", key: "chat"},
       {label: "Ratings", key: "ratings"},
-      {label: "Analytics", key: "analytics"}
+      {label: "Calendar", key: "calendar"}
     ],
     statCards: [
       {title: "Today's Revenue", key: "dailyRevenue"},
@@ -73,15 +73,16 @@ export const roleConfig: Record<Role, RoleConfig> = {
     dashboardText: "Staff Dashboard",
     dashboardHref: "/staff/dashboard",
     showNotifications: true,
-    settingsHref: "/settings",
+    settingsHref: "/staff/dashboard#settings",
     settingsAction: "SETTINGS",
     menuItems: [
       {label: "Overview", key: "overview"},
       {label: "Bookings", key: "bookings"},
       {label: "Delivery", key: "delivery"},
       {label: "Payment", key: "payment"},
-      {label: "Chat", key: "chat"},
-      {label: "Calendar", key: "calendar"}
+      {label: "Settings", key: "settings"},
+      {label: "Calendar", key: "calendar"},
+      {label: "Services", key: "services"}
     ],
     statCards: [
       {title: "Active Bookings", key: "activeBookings"},

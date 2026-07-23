@@ -1,13 +1,17 @@
 "use client";
+import { toast } from 'sonner';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import styles from './StaffTab.module.css';
 import Button from 'src/components/ui/Button/Button';
 import AuthForm from 'src/components/ui/Forms/AuthForms';
 import { useState } from 'react';
-import { useRoles } from 'src/app/admin/hooks/roles/useRoles';
+import { useRoles } from 'src/hooks/roles/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
+import { useRegisterUser } from 'src/hooks/auth/useAuth';
+import { validatePassword } from 'src/utils/validatePassword';
+import UserInfoUI from '../UserInfoUI/UserInfoUI';
 
-export default function StaffTab () {
+export default function StaffTab() {
     const [open, setOpen] = useState(false);
     const { data: roles, loading } = useRoles();
     const [formData, setFormData] = useState({
@@ -20,6 +24,7 @@ export default function StaffTab () {
             label: "Name",
             inputProps: {
                 id: "name",
+                name: "name",
                 type: "text",
                 placeholder: "Enter your first and last names",
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNameSplit(e.target.value),
@@ -30,6 +35,7 @@ export default function StaffTab () {
             label: "Email",
             inputProps: {
                 id: "email",
+                name: "email",
                 type: "email",
                 placeholder: "Enter your email",
                 required: true,
@@ -39,6 +45,7 @@ export default function StaffTab () {
             label: "Password",
             inputProps: {
                 id: "password",
+                name: "password",
                 type: "password",
                 placeholder: "Enter your password",
                 required: true,
@@ -48,6 +55,7 @@ export default function StaffTab () {
             label: "Role",
             inputProps: {
                 id: "role",
+                name: "role",
                 type: "select",
                 required: true,
             },
@@ -62,7 +70,7 @@ export default function StaffTab () {
         if (index === -1) {
             const firstName = name;
             const lastName = ''
-            setFormData({ ...formData, firstName, lastName});
+            setFormData({ ...formData, firstName, lastName });
             return [firstName, lastName]
         } else {
             const firstName = name.substring(0, index)
@@ -72,40 +80,94 @@ export default function StaffTab () {
                 firstName,
                 lastName,
             })
-        return [firstName, lastName]
+            return [firstName, lastName]
         }
+    }
+
+    const registerMutation = useRegisterUser();
+
+    const onSubmit: NonNullable<React.ComponentPropsWithoutRef<"form">["onSubmit"]> = (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+
+        const data = new FormData(e.currentTarget);
+        const email = String(data.get("email") ?? "").trim();
+        const password = String(data.get("password") ?? "");
+        const typedName = String(data.get("name") ?? "").trim();
+
+        const name = [formData.firstName, formData.lastName]
+            .filter(Boolean)
+            .join(" ")
+            .trim() || typedName;
+
+        const pwdError = validatePassword(password);
+        if (pwdError) {
+            toast.error(pwdError);
+            return;
+        }
+
+        registerMutation.mutate({
+            name,
+            email,
+            password,
+            type: "COMPANYUSER",
+        }, {
+            onSuccess(data) {
+                toast.success(data?.message);
+                form.reset();
+                setFormData({ firstName: '', lastName: '' });
+            },
+        });
     }
 
     if (loading) return <p>Loading</p>
     return (
-        <section className={styles.stafftab}>
-            <div className={styles.actionsWrap}>
-                <Button icon={open ? <FaTimes /> : <FaPlus />} text={open ? "Cancel" : "Add Staff"} className={open ? styles.cancelbtn : styles.addstaffbtn} onClick={() => setOpen(!open)}/> 
-                
-                <div className={`${styles.panel} ${open ? styles.open : ''}`}>
-                    <span className={styles.staffsignup}>
-                        <AuthForm
-                            title="Staff Registration"
-                            subtitle="Add a new staff"
-                            fields={getFields(handleNameSplit)}
-                            actions={
-                            <>
-                                <Button text="Sign Up" type="submit" className={styles.signupbutton}/>
-                            </>
-                            }
-                        />
-                    </span>
+        <section className={styles.stafftabContainer}>
+            <div className={styles.stafftab}>
+                <div className={styles.actionsWrap}>
+                    <Button icon={<FaPlus />} text="Add Staff" className={styles.addstaffbtn} onClick={() => setOpen(true)} />
 
-                    <span> Send staff invite</span>
+                    {open && <div>
+                        <span className={styles.staffregisterOverlay}></span>
+                        <div className={`${styles.panel} ${open ? styles.open : ''}`}>
+
+                            <span className={styles.staffsignup}>
+                                <span className={styles.cancelbtnwrapper}>
+                                    <Button icon={<FaTimes />} text="Cancel" className={styles.cancelbtn} onClick={() => setOpen(false)} />
+                                </span>
+                                
+
+                                <AuthForm
+                                    title="Staff Registration"
+                                    subtitle="Add a new staff"
+                                    fields={getFields(handleNameSplit)}
+                                    onSubmit={onSubmit}
+                                    actions={
+                                        <>
+                                            <Button text={registerMutation.isPending ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton} />
+                                        </>
+                                    }
+                                />
+                            </span>
+
+                            <span> Send staff invite</span>
+                        </div>
+                    </div>}
                 </div>
+
+                <span className={styles.localsearchfilter}>
+                    <LocalSearchBar placeholder="Find Staff" />
+                    <FilterSearch />
+                </span>
+
             </div>
 
-            <span className={styles.localsearchfilter}>
-                <LocalSearchBar placeholder="Find Staff" />
-                <FilterSearch />
-            </span>
-            
-            
+
+            <section className={styles.staffInfodetails}>
+                <UserInfoUI />
+            </section>
+
+
         </section>
     )
 }

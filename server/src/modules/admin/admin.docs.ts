@@ -151,14 +151,47 @@
  *           items:
  *             type: string
  *           example: ["read:bookings", "manage:staff"]
+ *     CompanyUsersRoleResponse:
+ *       type: object
+ *       properties:
+ *         users:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               profile:
+ *                 type: object
+ *                 properties:
+ *                   phoneNumber:
+ *                     type: string
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           example: 123e4567-e89b-12d3-a456-426614174000
+ *         title:
+ *           type: string
+ *         level:
+ *           type: integer
+ *         permissions:
+ *           type: array
+ *           items:
+ *             type: string
  *     CompanyRoleResponse:
  *       type: object
  *       properties:
  *         id:
- *           type: string
+ *           type: number
  *           example: 123e4567-e89b-12d3-a456-426614174000
  *         title:
  *           type: string
+ *         level:
+ *            type: integer
  *         permissions:
  *           type: array
  *           items:
@@ -284,7 +317,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CompanyRoleResponse'
+ *               $ref: '#/components/schemas/CompanyUsersRoleResponse'
  *       '401':
  *         description: Unauthorized
  *         content:
@@ -702,7 +735,8 @@
  *       - in: query
  *         name: includeDeleted
  *         schema:
- *           type: boolean
+ *           type: string
+ *           enum: [true, false, only]
  *     responses:
  *       '200':
  *         description: List of services for the company
@@ -922,6 +956,10 @@
  *         name: profileId
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: includeProfile
+ *         schema:
+ *           type: boolean
  *     responses:
  *       '200':
  *         description: List of bookings
@@ -1040,10 +1078,11 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *
- *   delete:
+ * /api/v1/admin/bookings/cancel/{bookingId}:
+ *   patch:
  *     tags:
  *       - Admin
- *     summary: Cancel (delete) a booking
+ *     summary: Cancel (soft delete) a booking
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -1067,7 +1106,7 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *
+ * 
  * components:
  *   schemas:
  *     CreateBookingRequest:
@@ -1704,7 +1743,9 @@
  *               $ref: '#/components/schemas/PromoCodeResponse'
  *       '404':
  *         description: Not found
- *   delete:
+ * 
+ * /api/v1/admin/promocodes/deactivate/{id}:
+ *   patch:
  *     tags:
  *       - Admin
  *     summary: Delete (deactivate) a promo code (admin only)
@@ -1719,14 +1760,13 @@
  *     responses:
  *       '200':
  *         description: Deleted
- */
+ *
 
-/**
- * @swagger
+ *
  * /api/v1/admin/analysis/promousages:
  *   get:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: List promo usage records
@@ -1748,7 +1788,7 @@
  * /api/v1/admin/analysis/promousages/{id}:
  *   get:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: Get a promo usage record
@@ -1772,7 +1812,7 @@
  *                   type: object
  *   delete:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: Delete a promo usage record
@@ -1785,14 +1825,11 @@
  *     responses:
  *       '204':
  *         description: Deleted
- */
-
-/**
- * @swagger
+ *
  * /api/v1/admin/analysis/promousages/user:
  *   get:
  *     tags:
- *       - Admin - PromoUsage
+ *       - Admin
  *     security:
  *       - bearerAuth: []
  *     summary: Get promo usage for a specific user and promo code
@@ -1821,5 +1858,5 @@
  *                   type: object
  */
 
-export {};
+export { };
 

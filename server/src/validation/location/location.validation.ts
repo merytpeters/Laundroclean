@@ -13,6 +13,10 @@ export type UpdateDropoffPointSchema = z.infer<typeof updateDropoffPointSchema>
 
 const serviceAreaSchema = z.object({
     name: z.string(),
+    latMin: z.number().optional(),
+    latMax: z.number().optional(),
+    lngMin: z.number().optional(),
+    lngMax: z.number().optional(),
 });
 
 export type ServiceAreaSchema = z.infer<typeof serviceAreaSchema>

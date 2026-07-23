@@ -60,10 +60,10 @@ describe('Promo Controller', () => {
     await PromoController.updatePromo(reqPatch, resPatch, next as any);
     expect(resPatch.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.objectContaining({ promo: expect.objectContaining({ description: 'updated' }) }) }));
 
-    // deletePromo
+    // softdeletePromo
     const reqDel: any = { params: { id: created.id } };
     const resDel: any = { json: jest.fn() };
-    await PromoController.deletePromo(reqDel, resDel, next as any);
+    await PromoController.softDeletePromo(reqDel, resDel, next as any);
     expect(resDel.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });
 });
