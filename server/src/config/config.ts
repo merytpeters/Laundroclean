@@ -44,6 +44,12 @@ const env = (variable: string, defaultValue?: string): any => {
       // case 'RL_PAYMENT_WINDOW_MS': return 300000
       // case 'RL_PAYMENT_MAX': return 3
       case 'ALLOWED_ORIGINS': return 'http://localhost:3000';
+      case 'OPAY_WEBHOOK_SECRET': return 'my-OPAY_WEBHOOK_SECRET';
+      case 'WEBHOOK_URL': return 'test-value-for-now';
+      case 'PAYMENT_REDIRECT_URL': return 'test-value-for-now';
+      case 'OPAY_MERCHANT_ID': return 'test-value-for-now';
+      case 'OPAY_PRIVATE_KEY': return 'test-value-for-now';
+      case 'OPAY_URL': return 'test-value-for-now';
     }
   }
 
@@ -84,6 +90,12 @@ const config = {
   ALLOWED_ORIGINS: env('ALLOWED_ORIGINS')
     ? env('ALLOWED_ORIGINS').split(',').map((url: string) => url.trim())
     : ['http://localhost:3000'],
+  OPAY_WEBHOOK_SECRET: env('OPAY_WEBHOOK_SECRET'),
+  WEBHOOK_URL: env('WEBHOOK_URL'),
+  PAYMENT_REDIRECT_URL: env('PAYMENT_REDIRECT_URL'),
+  OPAY_MERCHANT_ID: env('OPAY_MERCHANT_ID'),
+  OPAY_PRIVATE_KEY: env('OPAY_PRIVATE_KEY'),
+  OPAY_URL: env('OPAY_URL')
 };
 
 export default config;

@@ -21,7 +21,7 @@ function toDisplayAmount(amount: number | string): number {
 }
 
 function generateTransactionRef() {
-  return `tx_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  return `TXN_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 }
 
 export default {

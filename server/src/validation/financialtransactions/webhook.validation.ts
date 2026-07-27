@@ -7,6 +7,7 @@ const updatePaymentFromWebhookSchema = z.object({
   providerRef: z.string(),
   paidAt: z.coerce.date().optional(),
   channel: z.string().optional(),
+  authorization: z.json().optional(),
 });
 
 export type UpdatePaymentFromWebhookSchema = z.infer<typeof updatePaymentFromWebhookSchema>
