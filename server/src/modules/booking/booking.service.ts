@@ -14,6 +14,13 @@ type CreateBookingInput = CreateBookingSchema;
 type UpdateBookingInput = UpdateBookingSchema;
 type UpdateBookingStatusInput = UpdateBookingStatusSchema;
 type BookingWhereUniqueInput = Prisma.BookingWhereUniqueInput;
+type BookingWithOtherModels = Prisma.BookingGetPayload<{
+    include: {
+        service: true,
+        profile: true,
+        assignedTo: true,
+    }
+}>
 
 type QuantityInput = {
     pricingType: PricingType;
@@ -422,7 +429,7 @@ const getBooking = async (
     where: BookingWhereUniqueInput | string,
     currentUser?: { id?: string; type?: string },
     isAdmin: boolean = false
-): Promise<Booking> => {
+): Promise<BookingWithOtherModels> => {
     const whereObj = normalizeWhere(where);
 
     const booking = await prisma.booking.findUnique({
@@ -430,6 +437,7 @@ const getBooking = async (
         include: {
             profile: true,
             assignedTo: true,
+            service: true,
         },
     });
 

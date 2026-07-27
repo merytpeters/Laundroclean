@@ -19,6 +19,8 @@ import { ServiceAreaRoutes } from './modules/locations/index.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 import { globalLimiter } from './middlewares/rateLimiter.js';
+import { POSDeviceRoutes } from './modules/financialtransactions/devices/index.js';
+import { PaymentRoutes, WebhookRoutes } from './modules/financialtransactions/index.js';
 
 
 const app = express();
@@ -68,6 +70,9 @@ app.use('/api/v1/staff', StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRo
 app.use('/api/v1/client', ClientServiceRoutes, ClientBookingRoutes);
 app.use('/api/v1/dropoffpoint', DropOffPointRoutes);
 app.use('/api/v1/servicearea', ServiceAreaRoutes);
+app.use('/api/v1/posdevices', POSDeviceRoutes);
+app.use('/api/payments', PaymentRoutes);
+app.use('/api/webhooks', WebhookRoutes);
 
 app.use(errorHandler);
 

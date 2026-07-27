@@ -8,7 +8,6 @@ import UserAuth from '../../middlewares/auth.js';
 
 const router = express.Router();
 const emailController = new EmailController();
-const authenticate = UserAuth.authenticate();
 
 router.post(
     '/client/register',

@@ -85,6 +85,16 @@ class UnprocessableError extends Error {
     }
 }
 
+class ServiceUnavailableError extends Error {
+    statusCode: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = 'ServiceUnavailableError';
+        this.statusCode = 503;
+    }
+}
+
 
 const notFoundHandler = () => {
     throw new NotFoundError('route not found');
@@ -123,5 +133,6 @@ export {
     ConflictError,
     ForbiddenError,
     ProcessingError,
-    UnprocessableError
+    UnprocessableError,
+    ServiceUnavailableError,
 };
