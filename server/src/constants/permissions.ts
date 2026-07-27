@@ -52,6 +52,12 @@ export const PERMISSIONS = {
     UPDATE: 'timeslot:update',
     DELETE: 'timeslot:delete',
   },
+  POSDEVICE: {
+    VIEW: 'posDevice:view',
+    CREATE: 'posDevice:create',
+    UPDATE: 'posDevice:update',
+    DELETE: 'posDevice:delete',
+  },
 };
 
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS)

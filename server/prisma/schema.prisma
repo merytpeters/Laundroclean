@@ -483,6 +483,15 @@ model PaymentEvent {
   @@unique([providerRef, eventType])
 }
 
+model PosDevice {
+  id                            String                  @id @default(uuid())
+  serialNumber                  String                  @unique
+  name                          String?
+  isActive                      Boolean                 @default(true)
+
+  @@map("pos devices")
+}
+
 
 // model Refund
 // model Dispute

@@ -20,7 +20,10 @@ export interface ServiceQuery extends PaginationQuery {
   includeDeleted?: 'true' | 'false' | 'only';
 }
 
-
+export interface ByActiveQuery extends PaginationQuery
+ {
+  isActive: 'true' | 'false';
+ }
 const asyncHandler =
   <T = any>(
     callback: RequestHandler<
