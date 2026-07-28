@@ -12,6 +12,16 @@ class ValidationError extends Error {
     }
 }
 
+class BadRequest extends Error {
+    statusCode: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = 'BadRequest';
+        this.statusCode = 400;
+    }
+}
+
 
 class UnauthenticatedError extends Error {
     statusCode: number;
@@ -135,4 +145,5 @@ export {
     ProcessingError,
     UnprocessableError,
     ServiceUnavailableError,
+    BadRequest
 };

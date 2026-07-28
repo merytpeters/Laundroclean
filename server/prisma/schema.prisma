@@ -83,6 +83,7 @@ enum PricingType {
 enum PaymentProvider {
   PAYSTACK
   OPAY
+  INTERNAL
 }
 
 enum TransactionStatus {
@@ -442,7 +443,7 @@ model Payment {
   transaction                   Transaction             @relation(fields: [transactionId], references: [id])
 
   provider                      PaymentProvider
-  providerRef                   String                  @unique
+  providerRef                   String?                  @unique
 
   status                        PaymentStatus           @default(INITIATED)
 
