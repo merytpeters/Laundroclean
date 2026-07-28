@@ -1,7 +1,11 @@
+import AllPromotionsUI from "src/components/ui/Modals/AllPromotionsUI/AllPromotionsUI";
+import styles from './promotions.module.css'
+
 export default function ClientPromoView () {
     return (
-        <div style={{color: "black"}}>
+        <section className={styles.clientPromoContainer}>
             Client PromoView
-        </div>
+            <AllPromotionsUI />
+        </section>
     )
 }

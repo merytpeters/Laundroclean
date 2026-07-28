@@ -13,6 +13,7 @@ import { useCurrentUser } from "src/hooks/profile/useProfile";
 import { mockCompanyStaff } from "src/services/companyUser/mock";
 import { FaSpinner } from "react-icons/fa";
 import ErrorState from "src/components/ui/ErrorState/ErrorState";
+import CompanyUserPromotionsUI from "src/components/ui/Modals/CompanyUser/Promotions/Promotions";
 
 
 export default function StaffDashboard() {
@@ -39,6 +40,7 @@ export default function StaffDashboard() {
             {activeMenu === "services" && <StaffServicesModal />}
             {activeMenu === "calendar" && <CalendarModal />}
             {activeMenu === "payment" && <PaymentModal usertype={user}/>}
+            {activeMenu === "promotions" && <CompanyUserPromotionsUI />}
             {
                 activeMenu === "settings" &&
                 (<div id="settings" style={{ margin: "1em", minHeight: "100vh", display: "flex", borderRadius: "8px", height: "fit-content" }}>

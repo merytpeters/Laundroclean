@@ -1,12 +1,11 @@
-import Button from "src/components/ui/Button/Button";
-import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
 import styles from './promotions.module.css';
+import CompanyUserPromotionsUI from 'src/components/ui/Modals/CompanyUser/Promotions/Promotions';
 
 export default function Promotions () {
     return (
-        <div style={{ color: "#000"}}>
-            Promotions
-            <Button text="Create New Promos" className={styles.newpromobtn} href={`${controlpanelbasepath}/promotions`}/>
-        </div>
+        <section className={styles.promotionsContainer}>
+
+            <CompanyUserPromotionsUI />
+        </section>
     )
 }

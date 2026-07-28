@@ -1,10 +1,5 @@
-.newpromobtn {
-    width: 14em;
-    background: #0F233A;
-    color: var(--foreground);
-    border-radius: 18px;
-    height: 3em;
-    gap: 1em;
-    font-weight: 600;
-    font-size: small;
+.promotionsContainer {
+    display: flex;
+    width: 100%;
+    color: #000;
 }
