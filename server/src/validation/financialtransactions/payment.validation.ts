@@ -41,7 +41,13 @@ const createPaymentSchema = z.object({
   provider: z.enum(PaymentProvider),
   status: z.enum(PaymentStatus),
   amount: z.number().int().positive(),
-  channel: z.string().refine((val) => ['BANKCARD', 'BANK TRANSFER', 'OPAY WALLET', 'POS']),
+  channel: z.string().refine(
+    (val) =>
+      ['BANKCARD', 'BANK_TRANSFER', 'OPAY_WALLET', 'POS', 'CASH'].includes(val),
+    {
+      message: 'Invalid payment channel',
+    }
+  ),
   currency: z.enum(Object.values(Currency)),
   card: z.union([z.undefined(), cardSchema]) as z.ZodType<z.infer<typeof cardSchema> | undefined, z.ZodType, any>,
   userInfo: z.union([z.undefined(), userInfoSchema]) as z.ZodType<z.infer<typeof userInfoSchema> | undefined, z.ZodType, any>,
@@ -59,7 +65,7 @@ const createPaymentSchema = z.object({
 const initializePaymentSchema = createPaymentSchema.extend({
   authorization: z.json().optional(),
   transactionId: z.uuid().optional(),
-  providerRef: z.string(),
+  providerRef: z.string().optional(),
 });
 
 export type InitializePaymentSchema = z.infer<typeof initializePaymentSchema>

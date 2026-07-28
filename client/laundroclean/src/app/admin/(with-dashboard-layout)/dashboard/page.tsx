@@ -7,6 +7,7 @@ import BookingModal from "src/components/ui/Modals/CompanyUser/BookingModal/Book
 import DeliveryModal from "src/components/ui/Modals/CompanyUser/DeliveryModal/DeliveryModal";
 import CalendarModal from "src/components/ui/Modals/CompanyUser/CalendarModal/CalendarModal";
 import PaymentModal from "src/components/ui/Modals/CompanyUser/PaymentModal/PaymentModal";
+import { mockCompanyAdmin } from "src/services/companyUser/mock";
 
 export default function AdminDashboard () {
     const { activeMenu } = useCompanyUserMenu();
@@ -17,7 +18,7 @@ export default function AdminDashboard () {
           {activeMenu === "bookings" && <BookingModal />}
           {activeMenu === "delivery" && <DeliveryModal />}
           {activeMenu === "calendar" && <CalendarModal />}
-          {activeMenu === "payment" && <PaymentModal />}
+          {activeMenu === "payment" && <PaymentModal usertype={mockCompanyAdmin}/>}
         </div>
     )
 }

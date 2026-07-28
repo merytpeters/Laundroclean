@@ -1,9 +1,9 @@
 import prisma from '../../../config/prisma.js';
-import type { Prisma, Payment, PaymentEvent } from '@prisma/client';
+import type { Prisma, Payment, PaymentEvent, Transaction } from '@prisma/client';
 import { PaymentValidation } from '../../../validation/index.js';
 import type { InitializePaymentSchema, InitiatePaymentSchema, CreatePaymentEventSchema, UpdatePaymentSchema } from '../../../validation/financialtransactions/payment.validation.js';
 import type { UpdatePaymentFromWebhookSchema } from '../../../validation/financialtransactions/webhook.validation.js';
-import { NotFoundError, ServiceUnavailableError } from '../../../middlewares/errorHandler.js';
+import { BadRequest, NotFoundError, ServiceUnavailableError } from '../../../middlewares/errorHandler.js';
 import { TransactionService } from '../transaction/transaction.service.js';
 import { OpayService } from '../paymentProviders/opay.service.js';
 import config from '../../../config/config.js';
@@ -21,7 +21,6 @@ const WEBHOOK_URL = config.WEBHOOK_URL;
 const PAYMENT_REDIRECT_URL = config.PAYMENT_REDIRECT_URL;
 
 const opayService = new OpayService();
-const availablePaymentProvders = ['OPAY'];
 
 export class PaymentService {
 
@@ -30,84 +29,47 @@ export class PaymentService {
   ) { }
 
   async initiatePayment(payload: InitiatePaymentSchema) {
-    return await prisma.$transaction(async (tx) => {
-      const Tx = await this.transactionService.createTransaction({
-        bookingId: payload.bookingId,
-        userId: payload.userId,
-      }, tx);
-
-      const provider = payload.provider.toLowerCase();
-      const providerExists = availablePaymentProvders.some(p => p.toLowerCase() === provider);
-
-      if (!providerExists) return { message: 'More payment provider will be added soon!, please choose another provider' };
+    return prisma.$transaction(async (tx) => {
+      const transaction = await this.transactionService.createTransaction(
+        {
+          bookingId: payload.bookingId,
+          userId: payload.userId,
+        },
+        tx
+      );
 
       const { bookingId, userId, ...paymentPayload } = payload;
-      const profile = await ProfileService.getActiveProfile({ userId });
-      const name = `${profile?.user.firstName} ${profile?.user.lastName}`;
 
+      const profile = await ProfileService.getActiveProfile({ userId });
       const booking = await BookingService.getBooking({ id: bookingId });
 
-      let providerRef: string | undefined;
-      let paymentStatus = payload.status;
+      const customerName = `${profile?.user.firstName} ${profile?.user.lastName}`;
 
-      if (payload.provider === 'OPAY') {
-        try {
-
-          let opayResponse = await opayService.initializePayment({
-            amount: {
-              currency: paymentPayload.currency,
-              total: paymentPayload.amount,
-            },
-            callbackUrl: WEBHOOK_URL,
-            country: 'NG',
-            product: {
-              description: booking.service.description,
-              name: booking.service.name
-            },
-            reference: Tx.transactionRef,
-            payMethod: paymentPayload.channel,
-            bankcard: {
-              enable3DS: true,
-              ...paymentPayload.card
-            },
-            returnUrl: PAYMENT_REDIRECT_URL,
-            customerName: paymentPayload.userInfo?.customerName || name,
-            userPhone: paymentPayload.userInfo?.userPhone || profile?.phoneNumber,
-            sn: paymentPayload?.sn.serialNumber,
-            userInfo: {
-              userEmail: paymentPayload.userInfo?.email || profile?.user.email,
-              userId: userId,
-              userName: paymentPayload.userInfo?.customerName || name,
-              userMobile: paymentPayload.userInfo?.userMobile || profile?.phoneNumber
-            },
-          });
-
-          if (opayResponse.data.message === 'SUCCESSFUL' && opayResponse.data !== null) {
-            providerRef = opayResponse.data.data?.reference;
-            paymentStatus = this.mapPaymentStatus(opayResponse.data.data.status);
-          }
-
-        } catch {
-          throw new ServiceUnavailableError('Unable to initialize payment.');
+      switch (payload.provider) {
+        case 'OPAY': {
+          return this.handleOpayPayment(
+            paymentPayload,
+            transaction,
+            profile,
+            booking,
+            customerName,
+            tx
+          );
         }
 
+        case 'INTERNAL': {
+          return this.handleCashPayment(
+            paymentPayload,
+            transaction,
+            tx
+          );
+        }
+
+        default:
+          throw new BadRequest(
+            `${payload.provider} is not currently supported.`
+          );
       }
-
-      if (!providerRef) {
-        throw new ServiceUnavailableError(
-          'Unable to initialize payment.'
-        );
-      }
-
-      const payment = await this.createPayment({
-        ...paymentPayload,
-        status: paymentStatus,
-        providerRef,
-        transactionId: Tx.id,
-        amount: Tx.paidAmount,
-      }, { id: Tx.id }, tx);
-
-      return payment;
     });
   }
 
@@ -247,24 +209,52 @@ export class PaymentService {
       throw new NotFoundError('Transaction not found');
     }
 
-    const existingPayment = await db.payment.findUnique({
-      where: {
-        providerRef: validatedData.providerRef,
-      },
-    });
+    if (validatedData.providerRef) {
+      const existingPayment = await db.payment.findUnique({
+        where: {
+          providerRef: validatedData.providerRef,
+        },
+      });
 
-    if (existingPayment) return existingPayment;
+      if (existingPayment) {
+        return existingPayment;
+      }
+    }
 
     const data: PaymentCreateInput = {
       provider: validatedData.provider,
-      providerRef: validatedData.providerRef,
+      status: validatedData.status,
       amount: validatedData.amount,
+      currency: validatedData.currency,
+
       transaction: {
-        connect: { id: transaction.id },
+        connect: {
+          id: transaction.id,
+        },
       },
     };
 
-    return db.payment.create({ data });
+    if (validatedData.providerRef) {
+      data.providerRef = validatedData.providerRef;
+    }
+
+    if (validatedData.channel) {
+      data.channel = validatedData.channel;
+    }
+
+    if (validatedData.authorization !== undefined) {
+      data.authorization =
+        validatedData.authorization as Prisma.InputJsonValue;
+    }
+
+    // Internal cash payments are immediately successful
+    if (validatedData.provider === 'INTERNAL') {
+      data.paidAt = new Date();
+    }
+
+    return db.payment.create({
+      data,
+    });
   }
 
   // PRIVATE METHODS
@@ -316,6 +306,113 @@ export class PaymentService {
 
       return updatedPayment;
     });
+  }
+
+  private async handleCashPayment(
+    payload: Omit<InitiatePaymentSchema, 'bookingId' | 'userId'>,
+    transaction: Transaction,
+    tx: Prisma.TransactionClient
+  ): Promise<Payment> {
+    const payment = await this.createPayment(
+      {
+        ...payload,
+        provider: 'INTERNAL',
+        status: PaymentStatus.SUCCESS,
+        providerRef: undefined,
+        amount: transaction.paidAmount,
+        transactionId: transaction.id,
+      },
+      { id: transaction.id },
+      tx
+    );
+
+    await this.transactionService.syncTransaction(payment, tx);
+
+    return payment;
+  }
+
+  private async handleOpayPayment(
+    payload: Omit<InitiatePaymentSchema, 'bookingId' | 'userId'>,
+    transaction: Transaction,
+    profile: Awaited<ReturnType<typeof ProfileService.getActiveProfile>>,
+    booking: Awaited<ReturnType<typeof BookingService.getBooking>>,
+    customerName: string,
+    tx: Prisma.TransactionClient
+  ): Promise<Payment> {
+    let providerRef: string | undefined;
+    let paymentStatus = payload.status;
+
+    try {
+      const opayResponse = await opayService.initializePayment({
+        amount: {
+          currency: payload.currency,
+          total: payload.amount,
+        },
+        callbackUrl: WEBHOOK_URL,
+        country: 'NG',
+        product: {
+          description: booking.service.description,
+          name: booking.service.name,
+        },
+        reference: transaction.transactionRef,
+        payMethod: payload.channel,
+        bankcard: {
+          enable3DS: true,
+          ...payload.card,
+        },
+        returnUrl: PAYMENT_REDIRECT_URL,
+        customerName:
+          payload.userInfo?.customerName ?? customerName,
+        userPhone:
+          payload.userInfo?.userPhone ??
+          profile?.phoneNumber,
+        sn: payload.sn?.serialNumber,
+        userInfo: {
+          userEmail:
+            payload.userInfo?.email ??
+            profile?.user.email,
+          userId: transaction.userId,
+          userName:
+            payload.userInfo?.customerName ??
+            customerName,
+          userMobile:
+            payload.userInfo?.userMobile ??
+            profile?.phoneNumber,
+        },
+      });
+
+      if (
+        opayResponse.data.message === 'SUCCESSFUL' &&
+        opayResponse.data.data
+      ) {
+        providerRef = opayResponse.data.data.reference;
+        paymentStatus = this.mapPaymentStatus(
+          opayResponse.data.data.status
+        );
+      }
+    } catch {
+      throw new ServiceUnavailableError(
+        'Unable to initialize payment.'
+      );
+    }
+
+    if (!providerRef) {
+      throw new ServiceUnavailableError(
+        'Unable to initialize payment.'
+      );
+    }
+
+    return this.createPayment(
+      {
+        ...payload,
+        providerRef,
+        status: paymentStatus,
+        amount: transaction.paidAmount,
+        transactionId: transaction.id,
+      },
+      { id: transaction.id },
+      tx
+    );
   }
 
   mapPaymentStatus(status: string): PaymentStatus {

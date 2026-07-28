@@ -38,7 +38,7 @@ export default function StaffDashboard() {
             {activeMenu === "delivery" && <DeliveryModal />}
             {activeMenu === "services" && <StaffServicesModal />}
             {activeMenu === "calendar" && <CalendarModal />}
-            {activeMenu === "payment" && <PaymentModal />}
+            {activeMenu === "payment" && <PaymentModal usertype={user}/>}
             {
                 activeMenu === "settings" &&
                 (<div id="settings" style={{ margin: "1em", minHeight: "100vh", display: "flex", borderRadius: "8px", height: "fit-content" }}>
