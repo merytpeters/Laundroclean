@@ -4,7 +4,7 @@ import { mockClient } from "src/services/clientuser/mock"
 export default function ClientPayment () {
     return (
         <div style={{color: "black", flexShrink: 1, width: "100%", }}>
-            <PaymentModal usertype={mockClient}/>
+            <PaymentModal user={mockClient}/>
         </div>
     )
 }

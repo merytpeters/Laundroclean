@@ -39,7 +39,7 @@ export default function StaffDashboard() {
             {activeMenu === "delivery" && <DeliveryModal />}
             {activeMenu === "services" && <StaffServicesModal />}
             {activeMenu === "calendar" && <CalendarModal />}
-            {activeMenu === "payment" && <PaymentModal usertype={user}/>}
+            {activeMenu === "payment" && <PaymentModal user={user}/>}
             {activeMenu === "promotions" && <CompanyUserPromotionsUI />}
             {
                 activeMenu === "settings" &&

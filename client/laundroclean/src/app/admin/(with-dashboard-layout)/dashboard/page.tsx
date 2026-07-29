@@ -18,7 +18,7 @@ export default function AdminDashboard () {
           {activeMenu === "bookings" && <BookingModal />}
           {activeMenu === "delivery" && <DeliveryModal />}
           {activeMenu === "calendar" && <CalendarModal />}
-          {activeMenu === "payment" && <PaymentModal usertype={mockCompanyAdmin}/>}
+          {activeMenu === "payment" && <PaymentModal user={mockCompanyAdmin}/>}
         </div>
     )
 }

@@ -46,12 +46,12 @@ const paymentTabs: PaymentTab[] = [
 ];
 
 type PaymentProps = {
-    usertype: CompanyUser | Client;
+    user: CompanyUser | Client;
 };
 
-export default function PaymentModal({ usertype }: PaymentProps) {
-    const isCompany = usertype?.type === "COMPANYUSER";
-    console.log(usertype);
+export default function PaymentModal({ user }: PaymentProps) {
+    const isCompany = user?.type === "COMPANYUSER";
+    console.log(user);
 
     const tabs = paymentTabs.filter((tab) => {
         return isCompany
