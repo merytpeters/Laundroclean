@@ -1,7 +1,6 @@
 import Button from "src/components/ui/Button/Button";
 import styles from "./Promotions.module.css";
 import AllPromotionsUI from "../../AllPromotionsUI/AllPromotionsUI";
-import PromoUsageChart from "src/components/ui/Charts/PromoUsageChart";
 import { mockCompanyAdmin, mockCompanyStaff } from "src/services/companyUser/mock";
 
 
@@ -9,9 +8,6 @@ export default function CompanyUserPromotionsUI () {
     const user = mockCompanyAdmin || mockCompanyStaff
     return (
         <section className={styles.promoContainer}>
-            <section>
-                <PromoUsageChart />
-            </section>
             
             <span className={styles.promoheader}>
                 <h3>All Offers & Promotions</h3>

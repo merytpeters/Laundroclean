@@ -7,6 +7,7 @@ import { stats } from 'src/services/bookingService/bookingMockData';
 import styles from 'src/app/admin/(without-dashboard-layout)/controlpanel/reports-analysis/reportsanalysis.module.css';
 import { mockCompanyAdmin } from "src/services/companyUser/mock";
 import RevenueChart from "src/components/ui/Charts/RevenueChart";
+import PromoUsageChart from "src/components/ui/Charts/PromoUsageChart";
 
 export default function ControlPanel () {
     const user = mockCompanyAdmin;
@@ -36,6 +37,9 @@ export default function ControlPanel () {
                 <RevenueChart />
              </span>
            </section>
+           <section>
+                <PromoUsageChart />
+            </section>
            <section className={styles.recentactivities}>
             {/*<span> Recent Activities</span>*/}
            </section> 
