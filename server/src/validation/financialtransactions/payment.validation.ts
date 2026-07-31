@@ -37,6 +37,13 @@ const cardSchema = z.object({
   cardHolderName: z.string(),
 });
 
+const otherBankTransferSchema = z.object({
+  senderBankName: z.string(),
+  senderAccountName: z.string(),
+  senderTransactionRef: z.string().optional(),
+  transferredAt: z.coerce.date().optional(),
+});
+
 const createPaymentSchema = z.object({
   provider: z.enum(PaymentProvider),
   status: z.enum(PaymentStatus),
@@ -52,11 +59,19 @@ const createPaymentSchema = z.object({
   card: z.union([z.undefined(), cardSchema]) as z.ZodType<z.infer<typeof cardSchema> | undefined, z.ZodType, any>,
   userInfo: z.union([z.undefined(), userInfoSchema]) as z.ZodType<z.infer<typeof userInfoSchema> | undefined, z.ZodType, any>,
   sn: z.union([z.undefined(), posDeviceSchema]) as z.ZodType<z.infer<typeof posDeviceSchema> | undefined, z.ZodType, any>,
+  bankDetails: z.union([z.undefined(), otherBankTransferSchema]) as z.ZodType<z.infer<typeof otherBankTransferSchema> | undefined, z.ZodType, any>,
 }).superRefine((data, ctx) => {
   if (data.channel === 'BANKCARD' && !data.card) {
     ctx.addIssue({
       code: ZodIssueCode.custom,
       message: 'Card details are required for card payment',
+      path: ['card'],
+    });
+  }
+  if (data.provider === 'INTERNAL' && data.channel === 'BANK TRANSFER' && !data.bankDetails) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: 'bank details are required for bank transfer payment that are not OPAY',
       path: ['card'],
     });
   }
@@ -75,8 +90,6 @@ export type CreatePaymentSchema = z.infer<typeof createPaymentSchema>
 const updatePaymentSchema = z.object({
   status: z.enum(PaymentStatus).optional(),
   providerRef: z.string().optional(),
-  paidAt: z.coerce.date().optional(),
-  channel: z.string().optional(),
 });
 
 export type UpdatePaymentSchema = z.infer<typeof updatePaymentSchema>
@@ -99,6 +112,30 @@ const createPaymentEventSchema = z.object({
 
 export type CreatePaymentEventSchema = z.infer<typeof createPaymentEventSchema>
 
+const basePaymentProofSchema = z.object({
+  paymentId: z.uuid(),
+  fileUrl: z.url(),
+  fileName: z.string().optional(),
+  mimeType: z.string().optional(),
+  uploadedBy: z.string().optional(),
+});
+export type BasePaymentProofSchema = z.infer<typeof basePaymentProofSchema>
+
+const createPaymentProofSchema = basePaymentProofSchema.extend({
+  publicId: z.string(),
+});
+
+export type CreatePaymentProofSchema = z.infer<typeof createPaymentProofSchema>
+
+const updatePaymentProofSchema = z.object({
+  publicId: z.string().optional(),
+  fileUrl: z.url().optional(),
+  fileName: z.string().optional(),
+  mimeType: z.string().optional(),
+});
+
+export type UpdatePaymentProofSchema = z.infer<typeof updatePaymentProofSchema>
+
 export default {
   createPaymentSchema,
   initializePaymentSchema,
@@ -106,5 +143,8 @@ export default {
   initiatePaymentSchema,
   createPaymentEventSchema,
   posDeviceSchema,
-  posDeviceUpdateSchema
+  posDeviceUpdateSchema,
+  createPaymentProofSchema,
+  updatePaymentProofSchema,
+  basePaymentProofSchema,
 };
