@@ -90,7 +90,7 @@ export class PaymentService {
 
   async getPaymentById(paymentId: string) {
     const payment = await prisma.payment.findUnique({
-      where: {id: paymentId},
+      where: { id: paymentId },
       include: {
         transaction: true
       }
@@ -256,6 +256,10 @@ export class PaymentService {
       status: validatedData.status,
       amount: validatedData.amount,
       currency: validatedData.currency,
+      senderBankName: validatedData.bankDetails.senderBankName,
+      senderAccountName: validatedData.bankDetails.senderAccountName,
+      senderTransactionRef: validatedData.bankDetails.senderTransactionRef,
+      transferredAt: validatedData.bankDetails.transferredAt,
 
       transaction: {
         connect: {
@@ -446,9 +450,14 @@ export class PaymentService {
   ): Promise<Payment> {
     // user sends in bankinfo
     // keep payment as initiated
+    const { bankDetails, ...otherPayload } = payload;
+
+    const validatedData = PaymentValidation.otherBankTransferSchema.parse(bankDetails);
+
     const payment = await this.createPayment(
       {
-        ...payload,
+        ...validatedData,
+        ...otherPayload,
         provider: 'INTERNAL',
         status: PaymentStatus.PENDING_VERIFICATION,
         providerRef: undefined,

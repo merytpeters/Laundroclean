@@ -147,4 +147,5 @@ export default {
   createPaymentProofSchema,
   updatePaymentProofSchema,
   basePaymentProofSchema,
+  otherBankTransferSchema,
 };
