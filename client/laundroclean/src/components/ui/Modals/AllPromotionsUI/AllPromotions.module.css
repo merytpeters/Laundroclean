@@ -1,0 +1,60 @@
+.promotionslistcardcontainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.promolistrow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+    gap: 2em 3em;
+    border: 1px solid #f4f1f1;
+    background-color: var(--foreground);
+    border-radius: 8px;
+    padding: 2em 3em;
+    box-shadow: 5px 5px 10px 2px #e8e0e0;
+    max-width: 90%;
+}
+
+.allPromoConatiner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1em;
+}
+
+.promolistitem {
+    font-size: small;
+}
+
+.promocompanyitem {
+    display: flex;
+    flex-direction: column;
+    gap: 1em 3em;
+}
+
+.promototalusage {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em 3em;
+}
+
+.promotimestamp {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em 3em;
+}
+
+.allPromoConatiner h4 {
+    display: flex;
+    margin: 2em 0;
+}
+
+.validpromocontainer{
+    display: flex;
+    flex-direction: column;
+}

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from 'react';
+// import { useState } from 'react';
 import styles from 'src/components/ui/Modals/Sidebar.module.css';
-import { FaCog, FaFileAlt, FaPercent, FaCalendarCheck, FaChartBar, FaUsersCog, FaTshirt, FaUsers, FaUser} from 'react-icons/fa';
+import { FaCog, FaPercent, FaCalendarCheck, FaChartBar, FaUsersCog, FaTshirt, FaUsers, FaUser} from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 export const controlpanelbasepath = "/admin/controlpanel"
 
 export default function ControlPanelSidebar () {
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
     const path = usePathname();
     
 

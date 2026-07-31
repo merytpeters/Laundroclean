@@ -9,7 +9,7 @@ export default function UserInfoUI() {
     return (
         <section className={styles.userinfocontainer}>
             {!isOpenOverlay ? (
-                <span>
+                <span className={styles.infomain}>
 
 
                     <span className={styles.userdatasection}>

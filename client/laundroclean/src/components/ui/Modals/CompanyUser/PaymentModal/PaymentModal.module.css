@@ -1,7 +1,6 @@
 .paymentmodalcontainer {
     display: flex;
     flex-direction: column;
-    gap: 4em;
     padding: 1em;
     margin-bottom: 2rem;
     background: var(--foreground);
@@ -11,4 +10,144 @@
     margin: 1.5em;
     position: relative;
     color: black;
+    max-width: 100%;
+}
+
+.headertext {
+    padding: 1em 2em;
+    font-size: medium;
+}
+
+.headertab {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.tabbtn {
+    border: none;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: fit-content;
+    padding: 0.3rem 3rem;
+    border-radius: 12px;
+    background: transparent;
+    font-weight: 600;
+    font-size: small;
+}
+
+.tabbtn:hover {
+    background: #ffffff;
+}
+.iconnlabel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    font-weight: 300;
+}
+
+.simpleline {
+    border: none;
+    height: 4px;
+    width: 10em;
+    background: #dddcdc;
+    margin-top: 0.5em;
+}
+
+.simpleline:hover {
+    background: #D59056;
+}
+.simplelineactive {
+    background: #469BD3;
+}
+
+.active {
+    background: var(--foreground);
+}
+
+.tabSelect {
+    display: none;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(15, 35, 58, 0.08);
+    background: var(--foreground);
+    font-weight: 600;
+    font-size: small;
+    position: relative;
+    z-index: 1000;
+}
+
+.activetabcontainer {
+    display: flex;
+    padding: 0 1em;
+    max-width: 100%;
+}
+
+@media (max-width: 1280px) {
+    .simpleline {
+        width: 10em;
+    }
+}
+
+@media (max-width: 1024px) {
+     .simpleline {
+        width: 8em;
+    }
+    .tabbtn {
+        padding: 0.3rem 2rem;
+    }
+}
+
+@media (max-width: 950px) {
+    .simpleline {
+        width: 8em;
+    }
+}
+
+@media (max-width: 768px) {
+    .headertab {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .tabbtn {
+        display: none;
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem 1rem;
+        font-size: smaller;
+    }
+    .tabSelect {
+        display: block;
+        appearance: auto;
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+        margin-top: 0.5rem;
+        align-self: stretch;
+    }
+
+    .active {
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tabbtn {
+        padding: 0.4rem 0.6rem;
+        font-size: x-small;
+    }
+}
+
+@media (max-width: 350px) {
+    .headertab {
+        padding: 0.25rem;
+    }
+    .tabbtn {
+        padding: 0.25rem 0.5rem;
+    }
 }

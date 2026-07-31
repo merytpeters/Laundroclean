@@ -14,6 +14,7 @@ import { DropoffPoint } from "src/hooks/locations/useDropoffPoints";
 interface AllServicesProps {
     companyuser?: CompanyUser;
     clientuser?: Client;
+    user?: CompanyUser | Client;
 }
 
 type LocationViewType = "serviceAreas" | "dropoffPoints";
@@ -147,18 +148,30 @@ function ServiceManager() {
     )
 }
 
-function ServicesList() {
+function ServicesList({user}: AllServicesProps) {
     // const [isOpenOverlay, setIsOpenOverlay] = useState(false);
+    const isCompanyUser = user?.type === "COMPANYUSER";
+
     return (
         <div className={styles.serviceslist}>
-            <span><b>name</b></span>
-            <span>currency amount pricingType</span>
-            <span>description</span>
-            <span>maximum daily bookings for companyuser only</span>
-            <span>service status</span>
-            <span>timestamps</span>
-            <span>price timestamps</span>
-            <span>promocodes clickable link to promocode page</span>
+            <span className={styles.servicelistrow}>
+                <span><b>name</b></span>
+                <span>Description</span>
+                <span><b>Price:</b> currency amount</span>
+                <span><b>pricingType</b></span>
+                <span><b>Promocodes:</b>  clickable link to promocode page</span>
+                {isCompanyUser && (
+                    <span className={styles.companviewserviceitems}>
+                        <span><b>Maximum daily bookings: </b></span>
+                        <span className={styles.servicestimestamp}>
+                            <b>Timestamps</b>
+                            <span><b>Created at:</b></span>
+                            <span><b>Updated at</b></span>
+                            <span><b>Deleted at:</b></span>
+                        </span>
+                    </span>
+                )}
+            </span>
         </div>
     )
 }
@@ -236,10 +249,19 @@ export default function AllServices(props: AllServicesProps) {
 
             </section>}
             <section id="all-services" className={styles.serviceslistsection}>
-                <h3>All Services</h3>
-
-                <ServicesList />
+                {props.companyuser && (
+                    <h4>All Services</h4>
+                )}
+                <h4>Active Services</h4>
+                <ServicesList user={props.companyuser || props.clientuser}/>
                 {/*<Pagination totalPages={totalPages}/>*/}
+                {props.companyuser && (
+                    <section>
+                        <h4>Inactive Services</h4>
+                        <ServicesList user={props.companyuser}/>
+                    </section>
+                )}
+
             </section>
         </div>
     )

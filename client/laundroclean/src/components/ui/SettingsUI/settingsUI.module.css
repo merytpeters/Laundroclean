@@ -1,334 +1,335 @@
 .uiContainer {
-    display: grid;
-    color: #0f233a;
-    grid-template-columns: 1fr 3fr;
-    gap: 20px;
-    width: 100%;
-    height: 100%;
+  display: grid;
+  color: #0f233a;
+  grid-template-columns: 1fr 3fr;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
 }
 
 .uiContainer aside {
-    display: flex;
-    flex-direction: column;
-    padding: 2.5em;
-    background-color: #fff;
-    color: #0f233a;
-    height: fit-content;
-    border-radius: 4px;
-    font-size: small;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5em;
+  background-color: #fff;
+  color: #0f233a;
+  height: fit-content;
+  border-radius: 4px;
+  font-size: small;
 }
 
 .uiContainer ul {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
-.uiContainer li, .uiContainer a {
-    display: flex;
-    list-style-type: none;
-    gap: 20px;
-    font-size: small;
+.uiContainer li,
+.uiContainer a {
+  display: flex;
+  list-style-type: none;
+  gap: 20px;
+  font-size: small;
 }
 
 .destructiveactionbtns {
-    display: flex;
-    flex-direction: column;
-    gap: 3em;
-    align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  align-self: center;
 }
 
 .logoutbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-color: #0f233a;
-    --btn-bg: #e1e0e0;
-    --btn-width: 12em;
-    border-radius: 4px;
-    font-size: small;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-color: #0f233a;
+  --btn-bg: #e1e0e0;
+  --btn-width: 12em;
+  border-radius: 4px;
+  font-size: small;
+  box-shadow: none;
 }
 
 .deleteacctbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-color: #fdfdfd;
-    --btn-bg: #bf1717;
-    --btn-width: 12em;
-    border-radius: 4px;
-    font-size: small;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-color: #fdfdfd;
+  --btn-bg: #bf1717;
+  --btn-width: 12em;
+  border-radius: 4px;
+  font-size: small;
+  box-shadow: none;
 }
 
 .pagedisplay {
-    background-color: #fff;
-    border-radius: 4px;
-    padding-left: 2em;
-    padding-right: 2em;
-    font-size: small;
+  background-color: #fff;
+  border-radius: 4px;
+  padding-left: 2em;
+  padding-right: 2em;
+  font-size: small;
 }
 
 .profilesettings {
-    display: flex;
-    flex-direction: column;
-    padding: 1em;
-    width: 100%;
-    gap: 3em;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  width: 100%;
+  gap: 3em;
 }
 
 .profilepic {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: auto;
-    gap: 3em;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  gap: 3em;
 }
 
 .profileavatar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 260px;
-    height: 260px;
-    overflow: visible;
-    flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  height: 260px;
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 .avatarFrame {
-    width: 230px;
-    height: 230px;
-    overflow: hidden;
-    border-radius: 50%;
-    background-color: #f2f6fb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 230px;
+  height: 230px;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: #f2f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profileavatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .profileImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
 }
 
 .avataricon {
-    color: #ccc;
-    width: 100%;
-    height: 100%;
-    display: block;
-    flex-shrink: 0;
+  color: #ccc;
+  width: 100%;
+  height: 100%;
+  display: block;
+  flex-shrink: 0;
 }
 
 .camerabadge {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #007bff;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    box-sizing: border-box;
-    width: 52px;
-    height: 52px;
-    z-index: 2;
-    cursor: pointer;
-    padding: 0;
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #007bff;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-sizing: border-box;
+  width: 52px;
+  height: 52px;
+  z-index: 2;
+  cursor: pointer;
+  padding: 0;
 }
 
 .cameraicon {
-    stroke: #ffffff;
-    fill: #ffffff;
+  stroke: #ffffff;
+  fill: #ffffff;
 }
 
 .profilepicbtns {
-    display: flex;
-    margin-top: 6em;
-    padding: 2em;
-    height: fit-content;
-    gap: 1em;
+  display: flex;
+  margin-top: 6em;
+  padding: 2em;
+  height: fit-content;
+  gap: 1em;
 }
 
 .uploadnewbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-bg: #007bff;
-    --btn-color: #fff;
-    border-radius: 4px;
-    font-size: medium;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-bg: #007bff;
+  --btn-color: #fff;
+  border-radius: 4px;
+  font-size: medium;
+  box-shadow: none;
 }
 
 .deleteavatarbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-color: #0f233a;
-    --btn-bg: #e1e0e0;
-    border-radius: 4px;
-    font-size: medium;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-color: #0f233a;
+  --btn-bg: #e1e0e0;
+  border-radius: 4px;
+  font-size: medium;
+  box-shadow: none;
 }
 
 .profilesettings form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    padding: 2em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 2em 0;
 }
 
 .formrowgroup {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em;
 }
 
 .formitem {
-    display: flex;
-    flex-direction: column;
-    padding: 1em;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
 }
 
 .formitem label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .formitem input {
-    width: 22em;
-    height: 3em;
+  width: 22em;
+  height: 3em;
 }
 
 .adformrowgroup {
-    display: flex;
-    flex-direction: column;
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 1em;
 }
 
 .addressformgroup {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding-bottom: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 1em;
 }
 
-
 .addressdetails {
-    display: flex;
-    padding-bottom: 1em;
-    justify-content: space-between;
+  display: flex;
+  padding-bottom: 1em;
+  justify-content: space-between;
 }
 
 .citynstate {
-    display: flex;
+  display: flex;
 }
 
 .addressdetails .formitem input {
-    width: 10em;
+  width: 10em;
 }
 
 .actionbtn {
-    padding: 2em;
+  padding: 2em;
 }
 
 .savechangesbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-bg: #007bff;
-    --btn-color: #fff;
-    --btn-width: 10em;
-    border-radius: 4px;
-    font-size: medium;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-bg: #007bff;
+  --btn-color: #fff;
+  --btn-width: 10em;
+  border-radius: 4px;
+  font-size: medium;
+  box-shadow: none;
 }
 
 .cancelbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-bg: #ffffff;
-    --btn-color: #060606;
-    --btn-width: 10em;
-    --btn-border: 1px solid red;
-    border-radius: 4px;
-    font-size: medium;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-bg: #ffffff;
+  --btn-color: #060606;
+  --btn-width: 10em;
+  --btn-border: 1px solid red;
+  border-radius: 4px;
+  font-size: medium;
+  box-shadow: none;
 }
 
 .editbtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-bg: #d5d5d5;
-    --btn-border: #007bff;
-    --btn-color: #060606;
-    --btn-width: 10em;
-    border-radius: 4px;
-    font-size: medium;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-bg: #d5d5d5;
+  --btn-border: #007bff;
+  --btn-color: #060606;
+  --btn-width: 10em;
+  border-radius: 4px;
+  font-size: medium;
+  box-shadow: none;
 }
 
 .overlay {
-    position: fixed;
-    z-index: 9999;
-    background-color: rgb(152, 161, 169);
-    width: 20em;
-    height: 12em;
-    top: 60%;
-    left: 15%;
-    border-radius: 4px;
-    pointer-events: auto;
+  position: fixed;
+  z-index: 9999;
+  background-color: transparent;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  pointer-events: auto;
 }
 
 .destructiveaction {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    z-index: 10000;
-    border-radius: 4px;
-    top: 70%;
-    left: 25%;
-    transform: translate(-50%, -50%);
-    width: 18em;
-    padding: 1em;
-    color: white;
-    gap: 1em;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 10000;
+  border-radius: 4px;
+  top: 70%;
+  left: 40%;
+  background-color: rgb(152, 161, 169);
+  transform: translate(-50%, -50%);
+  width: 18em;
+  padding: 1em;
+  color: white;
+  gap: 1em;
 }
 
 .confirmationbtns {
-    display: flex;
-    gap: 2em;
+  display: flex;
+  gap: 2em;
 }
 
 .securitynpassword {
-    display: flex;
-    flex-direction: column;
-    padding: 1em;
-    width: 100%;
-    height: auto;
-    gap: 5em;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  width: 100%;
+  height: auto;
+  gap: 5em;
 }
 
 .securitynpassword h3 {
-    display: flex;
-    justify-self: center;
+  display: flex;
+  justify-self: center;
 }
 
 .securityformgroup {
-    display: flex;
-    flex-direction: column;
-    gap: 3em;
-    margin-top: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  margin-top: 2em;
 }
 
 .passwordWrapper {
@@ -364,160 +365,201 @@
 }
 
 .passwordbtncontainer {
-    display: flex;
-    align-items: center;
-    justify-self: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  justify-content: center;
 }
 
 .passwordchangebtn {
-    --btn-height: 3em;
-    --btn-padding: 1em;
-    --btn-bg: #ffffff;
-    --btn-color: #060606;
-    --btn-width: 10em;
-    --btn-border: 1px solid rgb(29, 32, 136);
-    border-radius: 14px;
-    font-size: medium;
-    box-shadow: none;
+  --btn-height: 3em;
+  --btn-padding: 1em;
+  --btn-bg: #ffffff;
+  --btn-color: #060606;
+  --btn-width: 10em;
+  --btn-border: 1px solid rgb(29, 32, 136);
+  border-radius: 14px;
+  font-size: medium;
+  box-shadow: none;
 }
 
 .passwordchangebtn:hover {
-    --btn-color: #ffffff;
-    --btn-bg: rgb(29, 32, 136);
+  --btn-color: #ffffff;
+  --btn-bg: rgb(29, 32, 136);
 }
 
 @media (max-width: 1024px) {
+  .pagedisplay {
+    display: flex;
+    width: 60dvw;
+    max-width: 70dvw;
+  }
 
-    .pagedisplay {
-        display: flex;
-        width: 60dvw;
-        max-width: 70dvw;
-    }
+  .profileavatar {
+    width: 180px;
+    height: 180px;
+  }
 
-    .profileavatar {
-        width: 180px;
-        height: 180px;
-    }
+  .profilepic {
+    gap: 1em;
+  }
 
-    .profilepic {
-        gap: 1em;
-    }
+  .formitem input {
+    width: 20dvw;
+    height: 3em;
+  }
 
-    .formitem input {
-        width: 20dvw;
-        height: 3em;
-    }
+  .addressdetails {
+    flex-direction: column;
+  }
 
-    .addressdetails {
-        flex-direction: column;
-    }
+  .actionbtn {
+    display: flex;
+    gap: 0.5em;
+  }
 
-    .actionbtn {
-        display: flex;
-        gap: 0.5em;
-    }
+  .destructiveaction {
+    top: 73%;
+    left: 43%;
+  }
+}
+
+@media (max-width: 1024px) and (min-height: 1024px) {
+  .overlay {
+    top: 30%;
+    left: 45%;
+  }
+  .destructiveaction {
+    top: 35%;
+    left: 58%;
+  }
+}
+
+@media (max-width: 850px) and (min-height: 1024px) {
+  .overlay {
+    top: 30%;
+    left: 45%;
+  }
+  .destructiveaction {
+    top: 37%;
+    left: 60%;
+  }
 }
 
 @media (max-width: 750px) {
+  .uiContainer aside {
+    width: fit-content;
+    padding: 1em;
+    position: relative;
+  }
 
-    .uiContainer aside {
-        width: fit-content;
-        padding: 1em;
-        position: relative;
-    }
+  .uiContainer li,
+  .uiContainer a {
+    font-size: xx-small;
+  }
 
-    .uiContainer li, .uiContainer a {
-        font-size: xx-small;
-    }
+  .destructiveactionbtns {
+    gap: 2em;
+    align-self: center;
+    align-items: center;
+  }
 
-    .destructiveactionbtns {
-        gap: 2em;
-        align-self: center;
-        align-items: center;
-    }
+  .logoutbtn {
+    --btn-height: 3em;
+    --btn-width: 6em;
+    font-size: smaller;
+  }
 
-    .logoutbtn {
-        --btn-height: 3em;
-        --btn-width: 6em;
-        font-size: smaller;
-    }
+  .deleteacctbtn {
+    --btn-height: 3em;
+    --btn-width: 6em;
+    font-size: smaller;
+  }
 
-    .deleteacctbtn {
-        --btn-height: 3em;
-        --btn-width: 6em;
-        font-size: smaller;
-    }
+  .pagedisplay {
+    display: flex;
+    max-width: 55vw;
+    padding: 0.2em;
+  }
 
-    .pagedisplay {
-        display: flex;
-        max-width: 55vw;
-        padding: 0.2em;
-    }
+  .profilesettings {
+    width: 100%;
+    gap: 1em;
+  }
 
-    .profilesettings {
-        width: 100%;
-        gap: 1em;
-    }
+  .profilepic {
+    flex-direction: column;
+    width: 100%;
+  }
 
-    .profilepic {
-        flex-direction: column;
-        width: 100%;
-    }
+  .profileavatar {
+    width: 100px;
+    height: 100px;
+  }
 
-    .profileavatar {
-        width: 100px;
-        height: 100px;
-    }
+  .camerabadge {
+    width: 20px;
+    height: 20px;
+  }
 
-    .camerabadge {
-        width: 20px;
-        height: 20px;
-    }
+  .uploadnewbtn {
+    font-size: smaller;
+  }
 
-    .uploadnewbtn {
-        font-size: smaller;
-    }
+  .deleteavatarbtn {
+    font-size: smaller;
+  }
 
-    .deleteavatarbtn {
-        font-size: smaller;
-    }
+  .formrowgroup {
+    flex-direction: column;
+  }
 
-    .formrowgroup {
-        flex-direction: column;
-    }
+  .formitem input {
+    width: 10em;
+    height: 2em;
+  }
 
-    .formitem input {
-        width: 10em;
-        height: 2em;
-    }
+  .addressformgroup {
+    flex-direction: column;
+  }
 
-    .addressformgroup {
-        flex-direction: column;
-    }
+  .addressdetails {
+    flex-direction: column;
+  }
 
-    .addressdetails {
-        flex-direction: column;
-    }
+  .citynstate {
+    display: flex;
+    flex-direction: column;
+  }
 
-    .citynstate {
-        display: flex;
-        flex-direction: column;
-    }
+  .editbtn {
+    --btn-width: 8em;
+    font-size: small;
+  }
 
-    .editbtn {
-        --btn-width: 8em;
-        font-size: small;
-    }
+  .savechangesbtn {
+    --btn-width: 8em;
+    font-size: small;
+  }
 
-    .savechangesbtn {
-        --btn-width: 8em;
-        font-size: small;
-    }
+  .cancelbtn {
+    --btn-width: 8em;
+    font-size: small;
+  }
 
-    .cancelbtn {
-        --btn-width: 8em;
-        font-size: small;
-    }
+  .overlay {
+    top: 55%;
+  }
+
+  .destructiveaction {
+    top: 65%;
+    left: 55%;
+  }
 }
 
+@media (max-width: 500px) {
+  .destructiveaction {
+    top: 65%;
+    left: 62%;
+  }
+}

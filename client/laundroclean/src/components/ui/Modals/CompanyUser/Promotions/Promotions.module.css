@@ -1,0 +1,33 @@
+.promoContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    margin-bottom: 2rem;
+    background: var(--foreground);
+    min-height: 85vh;
+    border-radius: 8px;
+    font-size: small;
+    margin: 1.5em;
+    position: relative;
+    color: black;
+    width: 100%;
+    gap: 1em;
+}
+
+.promoheader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.newpromobtn {
+    
+    width: 14em;
+    background: #0F233A;
+    color: var(--foreground);
+    border-radius: 18px;
+    height: 3em;
+    gap: 1em;
+    font-weight: 600;
+    font-size: small;
+}

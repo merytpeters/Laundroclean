@@ -1,73 +1,298 @@
 .BookingDisplayTable {
-    display: block;
-    color: #555;
-    margin: 1em 1em;
+  display: block;
+  color: #555;
+  margin: 1em 1em;
 }
 
 .BookingDisplayTable h3,
 .BookingDisplayTable span {
-    margin: 1em;
+  margin: 1em;
 }
 
 .bdctable {
-    width: 100%;
-    color: #555;
-    border-collapse: collapse;
+  width: 100%;
+  color: #555;
+  border-collapse: collapse;
 }
 
 .bdctable tr {
-    border-bottom: 1px solid #353535;
+  border-bottom: 1px solid #353535;
 }
 
 .moredetails {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .bdctable thead th,
 .bdctable tbody td {
-    text-align: left;
-    padding: 2em 1em;
-    white-space: nowrap;
+  text-align: left;
+  padding: 2em 1em;
+  white-space: nowrap;
 }
 
 .editbtn {
-    border: none;
-    background: transparent;
-    padding: 0.5em;
-    cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0.5em;
+  cursor: pointer;
 }
 
 .trashbtn {
-    color: red;
-    background-color: transparent;
-    border: 1px solid #555;
-    cursor: pointer;
+  color: red;
+  background-color: transparent;
+  border: 1px solid #555;
+  cursor: pointer;
 }
 
 .actions {
-    flex-shrink: 0;
-    position: relative;
-    display: flex;
-    margin-bottom: 0;
-    margin-top: auto;
-    justify-content: flex-end;
-    padding: 0.5em 0 0 0;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  margin-bottom: 0;
+  margin-top: auto;
+  justify-content: flex-end;
+  padding: 0.5em 0 0 0;
 }
 
 .viewmore {
-    font-weight: bold;
-    font-size: small;
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    margin-top: 1em;
-    cursor: pointer;
-    color: inherit;
-    text-decoration: none;
+  font-weight: bold;
+  font-size: small;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 1em;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
 }
 
 .viewmore a {
-    font-weight: bold;
-    font-size: small;
+  font-weight: bold;
+  font-size: small;
+}
+
+/*Admin all bookings component styles */
+.bookingdetailsection {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5em 2em;
+  color: #000;
+  width: 100%;
+}
+
+.bookingsettingssection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bookingsettingssection p {
+  font-size: small;
+}
+
+.bookingsettingssection input {
+  height: 2em;
+}
+
+.allbookingsheader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2em;
+  padding: 0 1em;
+}
+
+.bookingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 1em 1em;
+}
+
+.bookingInfoHeader {
+  display: flex;
+  flex-direction: row;
+  gap: 4em;
+  max-width: 100%;
+  padding: 0 4em;
+}
+
+.bookingInfoHeader span {
+  display: flex;
+  font-size: small;
+  font-weight: bold;
+}
+
+.bookingInfodetails {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  border: #555 2px solid;
+  border-radius: 10px;
+  padding: 1em;
+  background: #fff;
+}
+
+/*Overlay component css*/
+.overlay {
+  position: fixed;
+  z-index: 9999;
+  background-color: transparent;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  pointer-events: auto;
+  overscroll-behavior: contain;
+  backdrop-filter: blur(8px);
+}
+
+.bookingOverlay {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 10000;
+  border-radius: 4px;
+  top: 25%;
+  left: 10%;
+  width: 80%;
+  padding: 3em;
+  height: fit-content;
+  color: #fff;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background-color: #0f233a;
+  gap: 1em;
+}
+
+.bookingOverlay button {
+  display: flex;
+  align-self: self-end;
+  width: fit-content;
+  padding: 0.5em;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #fff;
+  border: #fff 2px solid;
+  cursor: pointer;
+}
+
+.bookingoverlayinfo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 2em;
+  border: #555 2px solid;
+  border-radius: 10px;
+  padding: 2em;
+}
+
+/*.itemspan {
+    width: 200px;
+    padding: 0 0.5em;
+}*/
+
+.adminonlyui {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+.timestamps {
+  display: flex;
+  gap: 2em;
+}
+
+@media (max-width: 1280px) {
+  .bookingInfoHeader {
+    padding: 0 1em;
+  }
+
+  .bookingInfoHeader span {
+    overflow-wrap: break-word;
+    font-size: smaller;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bookingInfoHeader {
+    gap: 2em;
+  }
+}
+
+@media (max-width: 850px) {
+  .bookingInfo {
+    padding: 0;
+  }
+  .bookingInfoHeader {
+    gap: 1em;
+    padding: 0;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 780px) {
+  .bookingInfoHeader {
+    gap: 0.5em;
+  }
+
+  .bookingInfoHeader span {
+    font-size:smaller;
+  }
+}
+
+@media (max-width: 750px) {
+    .bookingdetailsection {
+        font-size: small;
+        padding: 1em 0.5em;
+    }
+
+    .allbookingsheader,
+    .allbookingsheader span,
+    .allbookingsheader h3 {
+        font-size: smaller;
+        padding: auto;
+        margin-bottom: 1.5em;
+    }
+
+    .bookingsettingssection p{
+        font-size: xx-small;
+    }
+
+    .bookingsettingssection input {
+        font-size: smaller;
+        height: 2em;
+        width: 10em;
+    }
+  .bookingInfoHeader {
+    display: none;
+  }
+
+  .bookingInfodetails {
+    font-size: smaller;
+    padding: 0.5em;
+    gap: 1em;
+  }
+
+  .bookingOverlay {
+    padding: 1em;
+    gap: 0.5em;
+    top: 13%;
+  }
+
+  .bookingoverlayinfo {
+    padding: 1em;
+    gap: 1em 2em;
+    overflow-x: scroll;
+  }
+
+  .adminonlyui {
+    flex-direction: column;
+    gap: 1em;
+  }
 }

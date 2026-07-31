@@ -43,7 +43,8 @@
 
 .morebtn {
     display: flex;
-    justify-content: flex-end;
+    align-self: self-end;
+    width: fit-content;
 }
 
 .viewmore {
@@ -136,3 +137,105 @@
 .bookingSnapShot span{
     display: flex;
 }
+
+@media (max-width: 1300px) {
+    .userinfocontainer {
+        padding: 1em 2em;
+    }
+
+    .userdatasectionOverlay {
+        padding: 2em;
+    }
+
+    .avataricon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .bookingSummary h4{
+        font-size: small;
+    }
+
+    .bookingSnapShot {
+        gap: 1em 18em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .userdatasectionOverlay {
+        top: 10%;
+    }
+}
+
+@media (max-width: 950px) {
+    .userinfocontainer {
+        padding: 1em;
+    }
+
+    .contactInfo {
+        gap: 1em 10em;
+    }
+
+    .userAddresses {
+        gap: 1em 10em;
+    }
+}
+
+@media (max-width: 650px) {
+    .infomain {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .infomain span {
+        font-size: smaller;
+    }
+    .usernames {
+        flex-direction: row;
+        gap: 1em;
+    }
+
+    .statustag {
+        padding: 0.1em;
+    }
+
+    .statustag button {
+        font-size: smaller;
+    }
+
+    .userAddresses {
+        gap: 1em 9em;
+    }
+
+    .morebtn {
+        width: fit-content;
+    }
+
+    .viewmore {
+        --btn-padding: 0.2em;
+    }
+
+    .userdatasectionOverlay {
+        padding: 1.5em;
+    }
+
+    .avataricon {
+        width: 40px;
+        height: 40px;
+    }
+
+     .bookingSnapShot {
+        gap: 1em 3em;
+    }
+}
+
+@media (max-width: 390px) { 
+    .userdatasectionOverlay {
+        top: 8%;
+    }
+}
+
+/*@media (max-width: 750px) {
+   
+}*/
