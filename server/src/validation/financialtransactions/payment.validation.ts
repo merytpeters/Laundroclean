@@ -71,8 +71,8 @@ const createPaymentSchema = z.object({
   if (data.provider === 'INTERNAL' && data.channel === 'BANK TRANSFER' && !data.bankDetails) {
     ctx.addIssue({
       code: ZodIssueCode.custom,
-      message: 'bank details are required for bank transfer payment that are not OPAY',
-      path: ['card'],
+      message: 'Bank details are required for bank transfer payments that are not OPAY',
+      path: ['bankDetails'],
     });
   }
 });
