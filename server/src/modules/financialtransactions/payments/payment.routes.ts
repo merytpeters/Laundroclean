@@ -50,7 +50,7 @@ router.get(
 );
 
 router.patch(
-    '/:paymentId',
+    '/companyuser/update/:paymentId',
     UserAuth.requireCompanyUser(),
     UserAuth.requirePermission(PERMISSIONS.PAYMENT.UPDATE),
     validate(PaymentValidation.updatePaymentSchema),
