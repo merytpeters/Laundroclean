@@ -14,7 +14,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // ENUMS
 
 enum UserType {
@@ -55,29 +54,29 @@ enum Currency {
 enum BookingStatus {
   PENDING
   CONFIRMED
-  IN_PROGRESS                             @map("IN PROGRESS")
+  IN_PROGRESS @map("IN PROGRESS")
   COMPLETED
   CANCELLED
-  IN_TRANSIT                              @map("IN TRANSIT")
+  IN_TRANSIT  @map("IN TRANSIT")
   DELIVERED
 
-  CUSTOMER_DROPPED_OFF_AT_POINT           @map("CUSTOMER DROPPED OFF AT POINT")
-  CUSTOMER_PICKED_UP_FROM_POINT           @map("CUSTOMER PICKED UP FROM POINT")
+  CUSTOMER_DROPPED_OFF_AT_POINT @map("CUSTOMER DROPPED OFF AT POINT")
+  CUSTOMER_PICKED_UP_FROM_POINT @map("CUSTOMER PICKED UP FROM POINT")
 
-  COMPANY_PICKED_UP_FROM_CUSTOMER         @map("COMPANY PICKED UP FROM CUSTOMER")
-  COMPANY_PICKED_UP_FROM_POINT            @map("COMPANY PICKED UP FROM POINT")
-  COMPANY_DROPPED_OFF_AT_POINT            @map("COMPANY DROPPED OFF AT POINT")
+  COMPANY_PICKED_UP_FROM_CUSTOMER @map("COMPANY PICKED UP FROM CUSTOMER")
+  COMPANY_PICKED_UP_FROM_POINT    @map("COMPANY PICKED UP FROM POINT")
+  COMPANY_DROPPED_OFF_AT_POINT    @map("COMPANY DROPPED OFF AT POINT")
 }
 
 enum DeliveryType {
-  DROP_OFF  @map("DROP OFF")
-  PICK_UP   @map("PICK UP")
+  DROP_OFF @map("DROP OFF")
+  PICK_UP  @map("PICK UP")
 }
 
 enum PricingType {
-  PER_KG        @map("PER KG")
-  PER_ITEM      @map("PER ITEM")
-  FLAT_RATE     @map("FLAT RATE")
+  PER_KG    @map("PER KG")
+  PER_ITEM  @map("PER ITEM")
+  FLAT_RATE @map("FLAT RATE")
 }
 
 enum PaymentProvider {
@@ -104,94 +103,95 @@ enum PaymentStatus {
   EXPIRED
   ABANDONED
   REFUNDED
+  PARTIALLY_REFUNDED
+  PENDING_VERIFICATION
+  REJECTED
 }
-
 
 // MODELS
 
-
 model CompanyRoleTitle {
-  id              Int      @id @default(autoincrement())
-  title           String   @unique
-  level           Int?
-  permissions     String[] @default([])
-  users           User[]
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  level       Int?
+  permissions String[] @default([])
+  users       User[]
 
   @@map("companyRoleTitle")
 }
 
 model User {
-  id                  String              @id @default(uuid())
-  firstName           String?             @map("first_name")
-  lastName            String?             @map("last_name")
-  email               String              @unique
-  password            String
-  type                UserType
-  roleId              Int?
-  role                CompanyRoleTitle?   @relation(fields: [roleId], references: [id])
-  createdAt           DateTime            @default(now()) @map("created_at")
-  updatedAt           DateTime            @updatedAt @map("updated_at")
-  deletedAt           DateTime?           @map("deleted_at")
-  isActive            Boolean             @default(true)
+  id        String            @id @default(uuid())
+  firstName String?           @map("first_name")
+  lastName  String?           @map("last_name")
+  email     String            @unique
+  password  String
+  type      UserType
+  roleId    Int?
+  role      CompanyRoleTitle? @relation(fields: [roleId], references: [id])
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  deletedAt DateTime?         @map("deleted_at")
+  isActive  Boolean           @default(true)
 
-  tokens              Token[]
-  profile             Profile?
-  notifications       Notification[]
-  assignedBookings    Booking[]           @relation("AssignedBookings")
-  staffCalendar       StaffCalendar[]
-  promoUsages         PromoUsage[]
+  tokens           Token[]
+  profile          Profile?
+  notifications    Notification[]
+  assignedBookings Booking[]       @relation("AssignedBookings")
+  staffCalendar    StaffCalendar[]
+  promoUsages      PromoUsage[]
 
   @@map("users")
 }
 
 model Token {
-  id         String     @id @default(uuid())
-  token      String     @unique
-  userId     String
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type       TokenType
-  expiresAt  DateTime   @map("expires_at")
-  valid      Boolean    @default(true)
-  createdAt  DateTime   @default(now()) @map("created_at")
-  updatedAt  DateTime   @updatedAt @map("updated_at")
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      TokenType
+  expiresAt DateTime  @map("expires_at")
+  valid     Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@map("tokens")
 }
 
 model Profile {
-  id                  String     @id @default(uuid())
-  userId              String     @unique @map("user_id")
-  user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isTemp              Boolean    @default(false)
-  avatarUrl           String?    @map("avatar_url")
-  avatarPublicId      String?    @map("avatar_public_id")
-  phoneNumber         String?    @map("phone_number")
-  addressLine1        String?    @map("address_line_1")
-  addressLine2        String?    @map("address_line_2")
-  city                String?
-  state               String?
-  postalCode          String?    @map("postal_code")
-  paymentMethodToken  String?    @map("payment_method_token")
-  createdAt           DateTime   @default(now()) @map("created_at")
-  updatedAt           DateTime   @updatedAt @map("updated_at")
-  deletedAt           DateTime?  @map("deleted_at")
+  id                 String    @id @default(uuid())
+  userId             String    @unique @map("user_id")
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isTemp             Boolean   @default(false)
+  avatarUrl          String?   @map("avatar_url")
+  avatarPublicId     String?   @map("avatar_public_id")
+  phoneNumber        String?   @map("phone_number")
+  addressLine1       String?   @map("address_line_1")
+  addressLine2       String?   @map("address_line_2")
+  city               String?
+  state              String?
+  postalCode         String?   @map("postal_code")
+  paymentMethodToken String?   @map("payment_method_token")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
 
-  bookings            Booking[]  @relation("BookingProfile")
-  addressBookings     Booking[]  @relation("BookingAddress")
+  bookings        Booking[] @relation("BookingProfile")
+  addressBookings Booking[] @relation("BookingAddress")
 
   @@map("profiles")
 }
 
 model Notification {
-  id                   String                  @id @default(uuid())
-  userId               String?                 @map("user_id")
-  user                 User?                   @relation(fields: [userId], references: [id])
-  types                NotificationType[]
-  title                String?
-  message              String
-  status               NotificationStatus
-  sentAt               DateTime?               @map("sent_at")
-  priority             NotificationPriority
+  id       String               @id @default(uuid())
+  userId   String?              @map("user_id")
+  user     User?                @relation(fields: [userId], references: [id])
+  types    NotificationType[]
+  title    String?
+  message  String
+  status   NotificationStatus
+  sentAt   DateTime?            @map("sent_at")
+  priority NotificationPriority
 
   bookingNotifications BookingNotifications[]
 
@@ -199,170 +199,163 @@ model Notification {
 }
 
 model Service {
-  id                    String           @id @default(uuid())
-  name                  String
-  description           String
-  maxDailyBookings      Int?             @map("max_daily_bookings")
-  isActive              Boolean          @default(true) @map("is_active")
-  createdAt             DateTime         @default(now()) @map("created_at")
-  updatedAt             DateTime         @updatedAt @map("updated_at")
-  deletedAt             DateTime?        @map("deleted_at")
+  id               String    @id @default(uuid())
+  name             String
+  description      String
+  maxDailyBookings Int?      @map("max_daily_bookings")
+  isActive         Boolean   @default(true) @map("is_active")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
 
-  bookings              Booking[]
-  prices                ServicePrice[]
+  bookings Booking[]
+  prices   ServicePrice[]
 
   // One optional promo code may be tied to a service
-  promoCodes            PromoCode[]
+  promoCodes PromoCode[]
 
   @@map("services")
 }
 
 model ServicePrice {
-  id            String        @id @default(uuid())
-  serviceId     String        @map("service_id")
-  service       Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  id        String  @id @default(uuid())
+  serviceId String  @map("service_id")
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  amount        Decimal
-  currency      Currency
-  pricingType   PricingType   @map("pricing_type")
+  amount      Decimal
+  currency    Currency
+  pricingType PricingType @map("pricing_type")
 
-  isActive      Boolean       @default(true) @map("is_active")
+  isActive Boolean @default(true) @map("is_active")
 
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([serviceId, isActive])
   @@map("service prices")
 }
 
 model ServiceArea {
-  id            String             @id  @default(uuid())
-  name          String             @unique
-  isActive      Boolean            @default(true)
-  latMin        Float?
-  latMax        Float?
-  lngMin        Float?
-  lngMax        Float?
+  id       String  @id @default(uuid())
+  name     String  @unique
+  isActive Boolean @default(true)
+  latMin   Float?
+  latMax   Float?
+  lngMin   Float?
+  lngMax   Float?
 
   @@map("service areas")
 }
 
-
 model DropOffPoint {
-  id            String              @id @default(uuid())
-  name          String              @unique
-  address       String
-  lat           Float?
-  lng           Float?
-  isActive      Boolean             @default(true)
+  id       String  @id @default(uuid())
+  name     String  @unique
+  address  String
+  lat      Float?
+  lng      Float?
+  isActive Boolean @default(true)
 
   @@map("dropoff points")
 }
 
-
-
 model Booking {
-  id                String           @id @default(uuid())
-  profileId         String           @map("profile_id")
-  profile           Profile          @relation("BookingProfile", fields: [profileId], references: [id])
-  customBookingId   String           @unique @map("custom_booking_id")
+  id              String  @id @default(uuid())
+  profileId       String  @map("profile_id")
+  profile         Profile @relation("BookingProfile", fields: [profileId], references: [id])
+  customBookingId String  @unique @map("custom_booking_id")
 
-  serviceId         String           @map("service_id")
-  service           Service          @relation(fields: [serviceId], references: [id])
+  serviceId String  @map("service_id")
+  service   Service @relation(fields: [serviceId], references: [id])
 
-  unitPrice         Decimal          @map("unit_price")
-  currency          Currency
-  pricingType       PricingType      @map("pricing_type")
-  totalAmount       Decimal          @map("total_amount")
+  unitPrice   Decimal     @map("unit_price")
+  currency    Currency
+  pricingType PricingType @map("pricing_type")
+  totalAmount Decimal     @map("total_amount")
 
-  status            BookingStatus
+  status BookingStatus
 
-  deliveryType      DeliveryType     @map("delivery_type")
-  scheduledDate     DateTime?        @map("scheduled_date")
-  pickupTime        DateTime?        @map("pickup_time")
+  deliveryType  DeliveryType @map("delivery_type")
+  scheduledDate DateTime?    @map("scheduled_date")
+  pickupTime    DateTime?    @map("pickup_time")
 
-  weight            Float?
-  itemCount         Int?             @map("item_count")
+  weight    Float?
+  itemCount Int?   @map("item_count")
 
-  addressId         String?          @map("address_id")
-  address           Profile?         @relation("BookingAddress", fields: [addressId], references: [id])
-  additionalNote    String?          @map("additional_note")
+  addressId      String?  @map("address_id")
+  address        Profile? @relation("BookingAddress", fields: [addressId], references: [id])
+  additionalNote String?  @map("additional_note")
 
-  createdAt         DateTime         @default(now()) @map("created_at")
-  updatedAt         DateTime         @updatedAt @map("updated_at")
-  deletedAt         DateTime?        @map("deleted_at")
-  isActive          Boolean          @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  isActive  Boolean   @default(true)
 
-  assignedToId      String?
-  assignedTo        User?            @relation("AssignedBookings", fields: [assignedToId], references: [id])
+  assignedToId String?
+  assignedTo   User?   @relation("AssignedBookings", fields: [assignedToId], references: [id])
 
-  timeSlotId        String?
-  timeSlot          TimeSlot?        @relation("TimeSlotBookings", fields: [timeSlotId], references: [id])
-
-  
+  timeSlotId String?
+  timeSlot   TimeSlot? @relation("TimeSlotBookings", fields: [timeSlotId], references: [id])
 
   // Promo fields: record applied promo immutably at booking time
-  promoCodeId       String?          @map("promo_code_id")
-  promoCode         PromoCode?       @relation(fields: [promoCodeId], references: [id])
-  discountAmount    Decimal?         @map("discount_amount")
-  finalAmount       Decimal?         @map("final_amount")
-  bookingNotifications          BookingNotifications[]
-  Transaction                   Transaction[]
+  promoCodeId          String?                @map("promo_code_id")
+  promoCode            PromoCode?             @relation(fields: [promoCodeId], references: [id])
+  discountAmount       Decimal?               @map("discount_amount")
+  finalAmount          Decimal?               @map("final_amount")
+  bookingNotifications BookingNotifications[]
+  Transaction          Transaction[]
 
   @@map("bookings")
 }
 
 model BookingSettings {
-  id                     Int          @id @default(autoincrement())
-  minPickupDays          Int          @default(3)
-  updatedAt              DateTime     @updatedAt
+  id            Int      @id @default(autoincrement())
+  minPickupDays Int      @default(3)
+  updatedAt     DateTime @updatedAt
 
   @@map("booking settings")
 }
 
 model StaffCalendar {
-  id                    String          @id @default(uuid())
-  userId                String
-  user                  User            @relation(fields: [userId], references: [id])
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  date                  DateTime
-  notes                 String?
-  
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  date  DateTime
+  notes String?
 
-  timeSlots             TimeSlot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  timeSlots TimeSlot[]
 
   @@map("staff calendar")
 }
 
 model TimeSlot {
-  id                    String              @id @default(uuid())
-  staffCalendarId       String
-  staffCalendar         StaffCalendar       @relation(fields: [staffCalendarId], references: [id])
-  startTime             DateTime
-  endTime               DateTime
-  notes                 String?
-  maxBookings           Int                 @default(5)
-  bookings              Booking[]           @relation("TimeSlotBookings")
+  id              String        @id @default(uuid())
+  staffCalendarId String
+  staffCalendar   StaffCalendar @relation(fields: [staffCalendarId], references: [id])
+  startTime       DateTime
+  endTime         DateTime
+  notes           String?
+  maxBookings     Int           @default(5)
+  bookings        Booking[]     @relation("TimeSlotBookings")
 
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("timeslots")
 }
 
-
 model BookingNotifications {
-  bookingId      String @map("booking_id")
-  booking        Booking @relation(fields: [bookingId], references: [id])
-  notificationId String @map("notification_id")
+  bookingId      String       @map("booking_id")
+  booking        Booking      @relation(fields: [bookingId], references: [id])
+  notificationId String       @map("notification_id")
   notification   Notification @relation(fields: [notificationId], references: [id])
 
-  @@map("booking notifications")
   @@id([bookingId, notificationId])
+  @@map("booking notifications")
 }
-
 
 enum PromoType {
   PERCENTAGE
@@ -370,25 +363,25 @@ enum PromoType {
 }
 
 model PromoCode {
-  id                      String          @id @default(uuid())
-  code                    String          @unique
-  description             String?
-  serviceId               String
-  service                 Service         @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  bookings                Booking[]
-  type                    PromoType
-  value                   Decimal
-  currency                Currency?
-  isActive                Boolean         @default(true)
-  startsAt                DateTime?
-  expiresAt               DateTime?
-  usageLimit              Int?
-  perUserLimit            Int?
-  timesUsed               Int             @default(0)
-  createdAt               DateTime        @default(now())
-  updatedAt               DateTime        @updatedAt
-  deletedAt               DateTime?
-  promoUsages             PromoUsage[]
+  id           String       @id @default(uuid())
+  code         String       @unique
+  description  String?
+  serviceId    String
+  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+  type         PromoType
+  value        Decimal
+  currency     Currency?
+  isActive     Boolean      @default(true)
+  startsAt     DateTime?
+  expiresAt    DateTime?
+  usageLimit   Int?
+  perUserLimit Int?
+  timesUsed    Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deletedAt    DateTime?
+  promoUsages  PromoUsage[]
 
   @@map("promo codes")
 }
@@ -403,34 +396,34 @@ model PromoUsage {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@map("promo usages")
   @@index([userId, promoCodeId])
+  @@map("promo usages")
 }
 
 // Financial models
 
 model Transaction {
-  id                      String                  @id @default(uuid())
+  id String @id @default(uuid())
 
-  bookingId               String
-  userId                  String
+  bookingId String
+  userId    String
 
-  booking                 Booking                 @relation(fields: [bookingId], references: [id])
+  booking Booking @relation(fields: [bookingId], references: [id])
 
-  paidAmount              Int
-  platformFee             Int                     @default(0)
-  merchantAmount          Int                     @default(0)
+  paidAmount     Int
+  platformFee    Int @default(0)
+  merchantAmount Int @default(0)
 
-  currency                Currency                @default(NAIRA)
+  currency Currency @default(NAIRA)
 
-  status                  TransactionStatus       @default(PENDING)
+  status TransactionStatus @default(PENDING)
 
-  paidAt                  DateTime?
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
-  transactionRef          String                  @unique
+  paidAt         DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  transactionRef String    @unique
 
-  payment                 Payment[]
+  payment Payment[]
   // refunds                 Refund[]
   // disputes                Dispute[]
 
@@ -438,74 +431,109 @@ model Transaction {
 }
 
 model Payment {
-  id                            String                  @id @default(uuid())
-  transactionId                 String
-  transaction                   Transaction             @relation(fields: [transactionId], references: [id])
+  id            String      @id @default(uuid())
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
 
-  provider                      PaymentProvider
-  providerRef                   String?                  @unique
+  provider    PaymentProvider
+  providerRef String?          @unique
 
-  status                        PaymentStatus           @default(INITIATED)
+  status PaymentStatus @default(INITIATED)
 
-  amount                        Int
-  channel                       String?
+  amount  Int
+  channel String?
 
-  authorization                 Json?
-  currency                      Currency                @default(NAIRA)
+  authorization Json?
+  currency      Currency @default(NAIRA)
 
-  initiatedAt                   DateTime                @default(now())
-  paidAt                        DateTime?
+  initiatedAt DateTime  @default(now())
+  paidAt      DateTime?
 
-  updatedAt                     DateTime                @updatedAt
-  events                        PaymentEvent[]
+  updatedAt DateTime @updatedAt
+
+  // for other bank transfer order than OPAY
+  senderBankName       String?
+  senderAccountName    String?
+  senderTransactionRef String?
+  transferredAt        DateTime?
+
+  companyBankAccountId String?
+  companyBankAccount   CompanyBankAccount? @relation(fields: [companyBankAccountId], references: [id])
+  events               PaymentEvent[]
+  paymentProofs        PaymentProof[]
 
   @@map("payments")
 }
 
-
 model PaymentEvent {
-  id                            String                  @id @default(uuid())
+  id String @id @default(uuid())
 
-  paymentId                     String?
-  payment                       Payment?                @relation(fields: [paymentId], references: [id])
+  paymentId String?
+  payment   Payment? @relation(fields: [paymentId], references: [id])
 
-  provider                      PaymentProvider
+  provider PaymentProvider
 
-  eventType                     String
-  providerRef                   String?
+  eventType   String
+  providerRef String?
 
-  payload                       Json
+  payload Json
 
-  signature                     String?
-  processed                     Boolean                 @default(false)
-  createdAt                     DateTime                @default(now())
+  signature String?
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  @@map("payment events")
   @@unique([providerRef, eventType])
+  @@map("payment events")
 }
 
 model PosDevice {
-  id                            String                  @id @default(uuid())
-  serialNumber                  String                  @unique
-  name                          String?
-  isActive                      Boolean                 @default(true)
+  id           String  @id @default(uuid())
+  serialNumber String  @unique
+  name         String?
+  isActive     Boolean @default(true)
 
   @@map("pos devices")
 }
 
+model CompanyBankAccount {
+  id                  String              @id       @default(cuid())
+  bankName            String
+  accountName         String
+  accountNumber       String
+
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
+  isActive            Boolean                       @default(true)
+  isDefault           Boolean                       @default(false)
+
+  payments Payment[]
+
+  @@map("company bank accounts")
+}
+
+model PaymentProof {
+  id         String   @id @default(cuid())
+  paymentId  String
+  payment    Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  fileUrl    String
+  publicId   String
+  fileName   String?
+  mimeType   String?
+  uploadedBy String?
+  uploadedAt DateTime @default(now())
+
+  @@map("payment proofs")
+}
 
 // model Refund
 // model Dispute
 // model Expense
 // enum ExpenseCategory
 
-
-
 // FUTURE Features
 // model Wallet - later feature
 // model Invoice - later feature
 // model LedgerEntry
-
 
 // model HomePageContent {
 //  id String                  @id @default(uuid())
