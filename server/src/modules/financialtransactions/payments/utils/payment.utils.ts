@@ -24,8 +24,19 @@ function generateTransactionRef() {
   return `TXN_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 }
 
+function generateInternalProviderRef(channel: string) {
+  if (channel === 'CASH') {
+    return `CASHTXN_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  }
+
+  if (channel === 'BANK TRANSFER') {
+    return `BANKTRANSFERTXN_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  }
+}
+
 export default {
     toMinorUnit,
     toDisplayAmount,
-    generateTransactionRef
+    generateTransactionRef,
+    generateInternalProviderRef
 };

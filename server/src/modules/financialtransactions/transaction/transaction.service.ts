@@ -13,12 +13,15 @@ type TransactionCreateInput = Prisma.TransactionCreateInput;
 const paymentToTransactionMap: Record<PaymentStatus, TransactionStatus | null> = {
     INITIATED: TransactionStatus.PENDING,
     PENDING: TransactionStatus.PENDING,
+    PENDING_VERIFICATION: TransactionStatus.PENDING,
+    REJECTED: TransactionStatus.PENDING,
     SUCCESS: TransactionStatus.SUCCESS,
     FAILED: TransactionStatus.FAILED,
     REVERSED: TransactionStatus.REFUNDED,
     EXPIRED: TransactionStatus.CANCELLED,
     ABANDONED: TransactionStatus.CANCELLED,
     REFUNDED: TransactionStatus.REFUNDED,
+    PARTIALLY_REFUNDED: TransactionStatus.PARTIALLY_REFUNDED,
 };
 
 export class TransactionService {
@@ -97,7 +100,8 @@ export class TransactionService {
 
         if (
             transactionStatus === TransactionStatus.FAILED ||
-            transactionStatus === TransactionStatus.CANCELLED
+            transactionStatus === TransactionStatus.CANCELLED|| 
+            transactionStatus === TransactionStatus.PENDING
         ) {
             await db.booking.update({
                 where: { id: fullPayment.transaction.bookingId },

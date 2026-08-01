@@ -58,6 +58,12 @@ export const PERMISSIONS = {
     UPDATE: 'posDevice:update',
     DELETE: 'posDevice:delete',
   },
+  PAYMENT: {
+    VIEW: 'payment:view',
+    CREATE: 'payment:create',
+    UPDATE: 'payment:update',
+    DELETE: 'payment:delete',
+  }
 };
 
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS)

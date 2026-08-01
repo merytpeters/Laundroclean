@@ -10,6 +10,7 @@ import config from '../../../config/config.js';
 import { ProfileService } from '../../common/index.js';
 import { BookingService } from '../../booking/index.js';
 import { PrismaClient, PaymentStatus } from '@prisma/client';
+import { PaymentUtils } from '../index.js';
 
 
 type TransactionWhereUniqueInput = Prisma.TransactionWhereUniqueInput;
@@ -17,7 +18,7 @@ type PaymentCreateInput = Prisma.PaymentCreateInput;
 type PaymentEventCreateInput = Prisma.PaymentEventCreateInput
 type PaymentUpdateInput = Prisma.PaymentUpdateInput;
 
-const WEBHOOK_URL = config.WEBHOOK_URL;
+const WEBHOOK_URL_FOR_OPAY = config.WEBHOOK_URL_FOR_OPAY;
 const PAYMENT_REDIRECT_URL = config.PAYMENT_REDIRECT_URL;
 
 const opayService = new OpayService();
@@ -42,6 +43,11 @@ export class PaymentService {
 
       const profile = await ProfileService.getActiveProfile({ userId });
       const booking = await BookingService.getBooking({ id: bookingId });
+      const expectedAmount = Number(booking.finalAmount);
+
+      if (payload.amount !== expectedAmount) {
+        throw new Error(`The amount entered is less ${payload.amount} is less than ${expectedAmount}`);
+      }
 
       const customerName = `${profile?.user.firstName} ${profile?.user.lastName}`;
 
@@ -58,11 +64,20 @@ export class PaymentService {
         }
 
         case 'INTERNAL': {
-          return this.handleCashPayment(
-            paymentPayload,
-            transaction,
-            tx
-          );
+          if (paymentPayload.channel === 'CASH') {
+            return this.handleCashPayment(
+              paymentPayload,
+              transaction,
+              tx
+            );
+          }
+          if (paymentPayload.channel === 'BANK TRANSFER') {
+            return this.handleOtherBankTransfers(
+              paymentPayload,
+              transaction,
+              tx
+            );
+          }
         }
 
         default:
@@ -71,6 +86,21 @@ export class PaymentService {
           );
       }
     });
+  }
+
+  async getPaymentById(paymentId: string) {
+    const payment = await prisma.payment.findUnique({
+      where: { id: paymentId },
+      include: {
+        transaction: true
+      }
+    });
+
+    if (!payment) {
+      throw new NotFoundError('This payment can not be found');
+    };
+
+    return payment;
   }
 
   async getPaymentByTransactionId(transactionId: string) {
@@ -138,7 +168,7 @@ export class PaymentService {
     });
   }
 
-  async updatePaymentStatus(
+  async updatePaymentStatusForWebhookServices(
     payload: UpdatePaymentFromWebhookSchema
   ): Promise<Payment> {
 
@@ -226,6 +256,10 @@ export class PaymentService {
       status: validatedData.status,
       amount: validatedData.amount,
       currency: validatedData.currency,
+      senderBankName: validatedData.bankDetails.senderBankName,
+      senderAccountName: validatedData.bankDetails.senderAccountName,
+      senderTransactionRef: validatedData.bankDetails.senderTransactionRef,
+      transferredAt: validatedData.bankDetails.transferredAt,
 
       transaction: {
         connect: {
@@ -257,19 +291,7 @@ export class PaymentService {
     });
   }
 
-  // PRIVATE METHODS
-  async applyPaymentUpdate(
-    paymentId: string,
-    data: PaymentUpdateInput,
-    db: Prisma.TransactionClient | PrismaClient = prisma
-  ): Promise<Payment> {
-    return db.payment.update({
-      where: { id: paymentId },
-      data,
-    });
-  }
-
-  private async updatePaymentManually(
+  async updatePaymentManually(
     paymentId: string,
     payload: UpdatePaymentSchema
   ): Promise<Payment> {
@@ -282,18 +304,11 @@ export class PaymentService {
         throw new NotFoundError('Payment not found');
       }
 
-      const paidAtValue =
-        payload.status === 'SUCCESS'
-          ? payload.paidAt ?? new Date()
-          : payload.paidAt ?? undefined;
-
       const data: PaymentUpdateInput = {
         ...(payload.status !== undefined && { status: payload.status }),
         ...(payload.providerRef !== undefined && {
           providerRef: payload.providerRef,
         }),
-        ...(paidAtValue !== undefined && { paidAt: paidAtValue }),
-        ...(payload.channel !== undefined && { channel: payload.channel }),
       };
 
       const updatedPayment = await this.applyPaymentUpdate(
@@ -308,17 +323,30 @@ export class PaymentService {
     });
   }
 
+  // PRIVATE METHODS
+  private async applyPaymentUpdate(
+    paymentId: string,
+    data: PaymentUpdateInput,
+    db: Prisma.TransactionClient | PrismaClient = prisma
+  ): Promise<Payment> {
+    return db.payment.update({
+      where: { id: paymentId },
+      data,
+    });
+  }
+
   private async handleCashPayment(
     payload: Omit<InitiatePaymentSchema, 'bookingId' | 'userId'>,
     transaction: Transaction,
     tx: Prisma.TransactionClient
   ): Promise<Payment> {
+    const generatedProvRef = PaymentUtils.generateInternalProviderRef(payload.channel);
     const payment = await this.createPayment(
       {
         ...payload,
         provider: 'INTERNAL',
         status: PaymentStatus.SUCCESS,
-        providerRef: undefined,
+        providerRef: generatedProvRef,
         amount: transaction.paidAmount,
         transactionId: transaction.id,
       },
@@ -348,7 +376,7 @@ export class PaymentService {
           currency: payload.currency,
           total: payload.amount,
         },
-        callbackUrl: WEBHOOK_URL,
+        callbackUrl: WEBHOOK_URL_FOR_OPAY,
         country: 'NG',
         product: {
           description: booking.service.description,
@@ -413,6 +441,35 @@ export class PaymentService {
       { id: transaction.id },
       tx
     );
+  }
+
+  private async handleOtherBankTransfers(
+    payload: Omit<InitiatePaymentSchema, 'bookingId' | 'userId'>,
+    transaction: Transaction,
+    tx: Prisma.TransactionClient
+  ): Promise<Payment> {
+    // user sends in bankinfo
+    // keep payment as initiated
+    const { bankDetails, ...otherPayload } = payload;
+
+    const validatedData = PaymentValidation.otherBankTransferSchema.parse(bankDetails);
+
+    const payment = await this.createPayment(
+      {
+        ...validatedData,
+        ...otherPayload,
+        provider: 'INTERNAL',
+        status: PaymentStatus.PENDING_VERIFICATION,
+        providerRef: undefined,
+        amount: transaction.paidAmount,
+        transactionId: transaction.id,
+      },
+      { id: transaction.id },
+      tx
+    );
+    //sync for accuracy
+    await this.transactionService.syncTransaction(payment, tx);
+    return payment;
   }
 
   mapPaymentStatus(status: string): PaymentStatus {

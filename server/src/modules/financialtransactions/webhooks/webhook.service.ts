@@ -20,7 +20,7 @@ export class WebhookService {
             signature: payload.signature,
         });
         try {
-            const updatedPayment = await paymentService.updatePaymentStatus(
+            const updatedPayment = await paymentService.updatePaymentStatusForWebhookServices(
                 payload.paymentUpdate
             );
 
