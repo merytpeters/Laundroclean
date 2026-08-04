@@ -44,7 +44,7 @@ export default function StaffAccess () {
                     </button>
                 ))}
             </section>
-            <section>
+            <section className={styles.activetabsection}>
                 {tabs.find((t) => t.key === activeTab)?.component}
             </section>
         </div>

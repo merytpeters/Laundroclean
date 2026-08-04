@@ -156,7 +156,7 @@ export default function StaffTab() {
                 </div>
 
                 <span className={styles.localsearchfilter}>
-                    <LocalSearchBar placeholder="Find Staff" />
+                    {/*<LocalSearchBar placeholder="Find Staff" />*/}
                     <FilterSearch />
                 </span>
 

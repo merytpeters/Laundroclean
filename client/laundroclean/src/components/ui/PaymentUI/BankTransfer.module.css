@@ -1,0 +1,224 @@
+.opaybankformContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.opaybankformContainer form {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    width: 500px;
+    aspect-ratio: 1/1;
+    margin-top: 4em;
+    padding: 3em;
+    display: flex;
+    box-shadow: 10px 12px 4px rgba(0, 0, 0, .25);
+    gap: 3em;
+    align-items: center;
+    justify-content: center;
+    font-size: smaller;
+}
+
+.opaybankformContainer legend {
+    font-size: small;
+}
+
+.opaybankformContainer p {
+    display: flex;
+    flex-direction: column;
+    align-items: self-start;
+    width: 100%;
+    gap: 0.5em;
+    font-size: small;
+}
+
+.opaybankformrow {
+    display: flex;
+    gap: 5em;
+}
+
+.opaybankitem {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.opaybankitem input {
+    height: 2.5em;
+    width: 14em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.opayproofitem {
+    display: flex;
+    width: 39em;
+}
+
+.opayformactionbtns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1em 1em;
+}
+
+.initiatePaymentbtn {
+    --btn-border: 1px solid var(--background);
+    --btn-padding: 0.7em 1.5em;
+    --btn-border-radius: 8px;
+    font-size: small;
+}
+
+.initiatePaymentbtn:hover {
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.cancelbtn {
+    --btn-border: 1px solid red;
+    --btn-padding: 0.7em 1.4em;
+    --btn-border-radius: 8px;
+    font-size: small;
+}
+
+.cancelbtn:hover {
+    background: red;
+    color: var(--foreground);
+}
+
+.opaypaymentoverlay {
+    position: fixed;
+    z-index: 9999;
+    background-color: transparent;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+    pointer-events: auto;
+    overflow-y: auto;
+    overscroll-behavior: smooth;
+    backdrop-filter: blur(8px);
+    inset: 0;
+}
+
+.opaypayment {
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    position: fixed;
+    z-index: 10000;
+    border-radius: 4px;
+    top: 30%;
+    width: 50%;
+    padding: 3em;
+    color: #fff;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    background-color: transparent;
+    gap: 2em;
+}
+
+.opaypayment strong {
+    color: red;
+    font-size: medium;
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+
+
+.opaypaymentactionbtns {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.opayPaymentbtn {
+    background-color: #d59056;
+    --btn-padding: 0.7em 1.5em;
+    --btn-border-radius: 8px;
+    font-size: small;
+}
+
+.opayPaymentbtn:hover {
+    --btn-border: 1px solid #d59056;
+    background: var(--foreground);
+    color: #0F233A;
+}
+
+.opayPaymentcancelbtn {
+    font-size: small;
+    --btn-border: 1px solid red;
+    --btn-padding: 0.7em 1.4em;
+    --btn-border-radius: 8px;
+    background-color: var(--foreground);
+    color: red;
+}
+
+.opayPaymentcancelbtn:hover {
+    background: red;
+    color: var(--foreground);
+}
+
+
+/* Payment proof css*/
+.paymentProofContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1em;
+}
+
+
+/* Other banks*/
+
+.otherbanksContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+} 
+
+
+
+/* Bank transfer css*/
+
+.banktransferContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2em 2em;
+    width: 100%;
+    align-items: center;
+}
+
+.banktransferselection {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    padding-top: 10em;
+}
+
+.useopaybtn {
+    --btn-border: 1px solid var(--background);
+    --btn-padding: 0.7em 1.5em;
+    --btn-border-radius: 8px;
+    box-shadow: none;
+}
+
+.useopaybtn:hover {
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.otherbanksbtn {
+    --btn-border: 1px solid var(--background);
+    --btn-padding: 0.7em 1.5em;
+    --btn-border-radius: 8px;
+    box-shadow: none;
+}
+
+.otherbanksbtn:hover {
+    background: var(--background);
+    color: var(--foreground);
+}

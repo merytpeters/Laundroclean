@@ -1,10 +1,11 @@
 .userinfocontainer {
     display: flex;
     flex-direction: column;
-    width: 90%;
+    width: 95%;
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    padding: 2em 6em 2em 6em;
+    padding: 2em 3em 2em 3em;
     gap: 1em;
+    border-radius: 8px;
 }
 
 .userdatasection {
@@ -65,8 +66,10 @@
     left: 0;
     border-radius: 4px;
     pointer-events: auto;
-    overscroll-behavior: contain;
+    overflow-y: auto;
+    overscroll-behavior: smooth;
     backdrop-filter: blur(8px);
+    inset: 0;
 }
 
 .userdatasectionOverlay {
@@ -75,11 +78,11 @@
     position: fixed;
     z-index: 10000;
     border-radius: 4px;
-    top: 25%;
-    left: 10%;
-    width: 80%;
+    top: 9%;
+    left: 5%;
+    width: 90%;
     padding: 3em;
-    height: fit-content;
+    height: 80%;
     color: #fff;
     overflow-y: auto;
     scroll-behavior: smooth;
@@ -89,7 +92,7 @@
 .cancelbtncontainer {
     display: flex;
     justify-content: flex-end;
-    bottom: 1em;
+    margin-bottom: 2em;
 }
 
 .statustag {

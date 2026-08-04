@@ -20,6 +20,10 @@ body {
   scrollbar-width: none;
 }
 
+/*.no-scroll {
+  overflow: hidden;
+}*/
+
 /* Hide scrollbars globally while keeping scrolling functional */
 html,
 body,

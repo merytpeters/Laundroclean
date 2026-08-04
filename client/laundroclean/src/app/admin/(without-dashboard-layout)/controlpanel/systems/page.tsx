@@ -1,11 +1,32 @@
-export default function Systems () {
+import styles from "./systems.module.css"
+
+export default function Systems() {
     return (
-        <div style={{ color: "#000"}}>
-            General Settings
-            payment and billings
-            Notification Settings
-            Google calendar Settings
-            Feature Control
-        </div>
+        <section className={styles.systemContainer}>
+
+            <section>
+                payment and billings
+            </section>
+            <hr />
+            <section>
+
+                Google calendar Settings
+
+            </section>
+
+            <hr />
+
+            <section>
+                Notification Settings
+            </section>
+
+            <hr />
+
+            <section>
+                Feature Control
+            </section>
+
+
+        </section>
     )
 }

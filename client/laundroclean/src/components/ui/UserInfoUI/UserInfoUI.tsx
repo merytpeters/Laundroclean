@@ -1,10 +1,25 @@
 import { FaUserCircle } from "react-icons/fa";
 import styles from "./UserInfoUI.module.css";
 import Button from "../Button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PaymentHistory from "../PaymentUI/PaymentHistory";
 
 export default function UserInfoUI() {
     const [isOpenOverlay, setIsOpenOverlay] = useState(false);
+
+    useEffect(() => {
+        if (isOpenOverlay) {
+            document.documentElement.style.overflow = "hidden";
+            document.body.style.overflow = "hidden";
+        } else {
+            document.documentElement.style.overflow = "";
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.documentElement.style.overflow = "";
+            document.body.style.overflow = "";
+        }
+    }, [isOpenOverlay])
 
     return (
         <section className={styles.userinfocontainer}>
@@ -16,7 +31,7 @@ export default function UserInfoUI() {
                         <span className={styles.usernames}>
                             <span> first name</span>
                             <span>last name</span>
-                            <span className={styles.statustag}> <Button text="active or inactive" className={styles.statustagbtn}/></span>
+                            <span className={styles.statustag}> <Button text="active or inactive" className={styles.statustagbtn} /></span>
                         </span>
 
                         <span className={styles.usericon}>
@@ -47,11 +62,14 @@ export default function UserInfoUI() {
                 <span>
                     <span className={styles.userOverlay}></span>
                     <span className={styles.userdatasectionOverlay}>
+                        <span className={styles.cancelbtncontainer}>
+                            <Button type="button" text="Cancel" onClick={() => (setIsOpenOverlay(false))} />
+                        </span>
                         <span className={styles.userdatasection}>
                             <span className={styles.usernames}>
                                 <span> first name</span>
                                 <span>last name</span>
-                                <span className={styles.statustag}> <Button text="active or inactive" className={styles.statustagbtn}/></span>
+                                <span className={styles.statustag}> <Button text="active or inactive" className={styles.statustagbtn} /></span>
                             </span>
 
                             <span>
@@ -76,25 +94,31 @@ export default function UserInfoUI() {
                             <span>Last updated:</span>
                             <span> Deleted: </span>
                         </span>
-                        <span className={styles.bookingSummary}> 
+                        <span className={styles.bookingSummary}>
                             <h4> Booking History summary - For staff booking they made</h4>
                             <span className={styles.bookingSnapShot}>
                                 <span>Total bookings made:</span>
-                            <span>Total fulfilled order: </span>
-                            <span>Cncelled bookings</span>
-                            <span>Upcoming booking or Upcoming assigned booking</span>
-                            <span>Lifetime spend</span>
-                            <span>Average spend</span>
-                            <span>Last Booking or last Booking fulfilled: 2days ago</span>
+                                <span>Total fulfilled order: </span>
+                                <span>Cncelled bookings</span>
+                                <span>Upcoming booking or Upcoming assigned booking</span>
+                                <span>Lifetime spend</span>
+                                <span>Average spend</span>
+                                <span>Last Booking or last Booking fulfilled: 2days ago</span>
                             </span>
-                            
+
                         </span>
-                        <span className={styles.cancelbtncontainer}>
-                            <Button type="button" text="Cancel" onClick={() => (setIsOpenOverlay(false))} />
+                        <span>
+                            All booking and payment history made by client user
+                        </span>
+                        <span>
+                            All bookings and payment made by staff user
+                        </span>
+                        <span>
+                            <PaymentHistory />
+                            Payment history of the individual , for staff payment transactions they carried out
                         </span>
                     </span>
                 </span>
-
             )}
         </section>
     )
