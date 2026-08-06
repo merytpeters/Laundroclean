@@ -1,6 +1,6 @@
-import prisma from '../../config/prisma.js';
-import type { Prisma, Booking, User } from '@prisma/client';
-import { PricingType } from '@prisma/client';
+import prisma from '../../config/prisma.js';;
+import type { Booking, User } from '@prisma/client';
+import { PricingType, Prisma } from '@prisma/client';
 import { BookingUtils } from './index.js';
 import { AuthUtils } from '../auth/index.js';
 import { NotFoundError, ConflictError, UnauthorizedError, ForbiddenError } from '../../middlewares/errorHandler.js';
@@ -176,15 +176,15 @@ const createBooking = async (
                 // Enforce per-service daily booking limit (if set)
                 const svc = await tx.service.findUnique({ where: { id: input.serviceId } });
                 if (svc && svc.maxDailyBookings !== null && svc.maxDailyBookings !== undefined) {
-                    const scheduled = scheduledPickupDay ?? new Date();
-                    const dayStart = new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate(), 0, 0, 0));
+                    const today = new Date(); // max booking count against the day it was created not scheduled pick up day
+                    const dayStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0));
                     const dayEnd = new Date(dayStart);
                     dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
 
                     const existingCount = await tx.booking.count({
                         where: {
                             serviceId: input.serviceId,
-                            scheduledDate: { gte: dayStart, lt: dayEnd },
+                            createdAt: { gte: dayStart, lt: dayEnd },
                             status: { not: 'CANCELLED' }
                         }
                     });
@@ -255,12 +255,29 @@ const createBooking = async (
                     include: { assignedTo: true }
                 });
             } catch (error: any) {
-                if (error.code !== 'P2002') throw error;
+                if (error instanceof ConflictError || NotFoundError) {
+                    throw error;
+                }
+                if (
+                    error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code === 'P2034'
+                ) {
+                    if (i < 2) continue;
+                    throw new ConflictError('Please try again.');
+                }
+                if (error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code !== 'P2002'
+                ) {
+                    throw error;
+                }
             }
         }
 
         throw new ConflictError('Failed to generate unique booking ID');
-    });
+    }, {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+    }
+    );
 };
 
 // for client and companyuser same approach as create
@@ -387,15 +404,15 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             if (targetServiceId && targetScheduled) {
                 const svc = await tx.service.findUnique({ where: { id: targetServiceId } });
                 if (svc && svc.maxDailyBookings !== null && svc.maxDailyBookings !== undefined) {
-                    const scheduled = targetScheduled as Date;
-                    const dayStart = new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate(), 0, 0, 0));
+                    const today = new Date();
+                    const dayStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0));
                     const dayEnd = new Date(dayStart);
                     dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
 
                     const existingCount = await tx.booking.count({
                         where: {
                             serviceId: targetServiceId,
-                            scheduledDate: { gte: dayStart, lt: dayEnd },
+                            createdAt: { gte: dayStart, lt: dayEnd },
                             status: { not: 'CANCELLED' },
                             id: { not: booking.id }
                         }
@@ -414,9 +431,26 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             });
             return updatedbooking;
         } catch (_error: any) {
-            throw new NotFoundError('Booking not found');
+            if (_error instanceof ConflictError || NotFoundError) {
+                    throw _error;
+                }
+            if (
+                _error instanceof Prisma.PrismaClientKnownRequestError
+            ) {
+                if (_error.code === 'P2034') {
+                    throw new ConflictError('Your request conflicted with another operation. Please try again.');
+                }
+                if (_error.code !== 'P2002') {
+                    throw _error;
+                }
+            }
+            throw new _error;
         }
-    });
+    },
+        {
+            isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        }
+    );
 };
 
 const normalizeWhere = (where: any): BookingWhereUniqueInput => {
