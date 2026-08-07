@@ -9,19 +9,17 @@ import CalendarModal from "src/components/ui/Modals/CompanyUser/CalendarModal/Ca
 import PaymentModal from "src/components/ui/Modals/CompanyUser/PaymentModal/PaymentModal";
 import SettingsUI from "src/components/ui/SettingsUI/settingsUI";
 import styles from '../../admin/(without-dashboard-layout)/controlpanel/settings/settings.module.css';
-import { useCurrentUser } from "src/hooks/profile/useProfile";
-import { mockCompanyStaff } from "src/services/companyUser/mock";
 import { FaSpinner } from "react-icons/fa";
 import ErrorState from "src/components/ui/ErrorState/ErrorState";
 import CompanyUserPromotionsUI from "src/components/ui/Modals/CompanyUser/Promotions/Promotions";
+import { useAuth } from "src/context/AuthContext";
 
 
 export default function StaffDashboard() {
     const { activeMenu } = useCompanyUserMenu();
 
-    const { data, isLoading, isError, refetch } = useCurrentUser();
-    const user = data?.user || mockCompanyStaff;
-    const profile = data?.profile;
+    const { authUser, authProfile, isLoading, isError, refetch } = useAuth();
+    
     if (isLoading) return <FaSpinner />;
     if (isError) {
         return (
@@ -32,6 +30,10 @@ export default function StaffDashboard() {
         )
     }
 
+    if (!authUser || !authProfile) {
+        return null;
+    }
+
     return (
         <div>
             {activeMenu === "overview" && <Overview />}
@@ -39,14 +41,14 @@ export default function StaffDashboard() {
             {activeMenu === "delivery" && <DeliveryModal />}
             {activeMenu === "services" && <StaffServicesModal />}
             {activeMenu === "calendar" && <CalendarModal />}
-            {activeMenu === "payment" && <PaymentModal user={user}/>}
+            {activeMenu === "payment" && <PaymentModal user={authUser} />}
             {activeMenu === "promotions" && <CompanyUserPromotionsUI />}
             {
                 activeMenu === "settings" &&
                 (<div id="settings" style={{ margin: "1em", minHeight: "100vh", display: "flex", borderRadius: "8px", height: "fit-content" }}>
                     <section className={styles.pageContainer}>
                         <h3>Account Settings</h3>
-                        <SettingsUI user={user} profile={profile} />
+                        <SettingsUI user={authUser} profile={authProfile} />
                     </section>
                 </div>)}
 

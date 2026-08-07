@@ -1,29 +1,43 @@
+"use client";
+
 import {DashboardServices } from "src/components/ui/flexboxes/ServicesFlexbox";
 import styles from "./dashboard.module.css";
 import { mapCurrencySymbol, mapPricingType } from "src/types/laundrocleanServices/laundroservices";
-import { mockServices } from "src/services/laundrocleanservices/mock";
 import ActiveOrder from "src/components/ui/flexboxes/ActiveOrder";
 import PromoCard from "src/components/ui/flexboxes/PromoCard";
-import { transformFieldInArray } from "src/utils/mapData";
+import { useServices } from "src/hooks/laundroCleanServices/useServices";
 
 export default function ClientDashboard () {
-    const currencyMappedData = transformFieldInArray(mockServices, "currency", mapCurrencySymbol)
-    const mappedServiceFields = transformFieldInArray(currencyMappedData, "pricingType", mapPricingType)
+    const { data } = useServices({
+            params: {
+                page: 1,
+                limit: 10
+            }
+        })
+
+    const services = data?.data ?? [];
+    const filteredServices = services.filter(
+        (service) => service.isActive === true
+    );
 
     return (
         <div className={styles.clientdashboardcontainer}>
             <section aria-describedby="laundrocleanservices display" className={styles.servicesdisplaysection}>
                 <span className={styles.displaytext}><b> <i>Here&apos;s</i> our Laundry Services.</b></span>
                 <span className={styles.servicesdisplaybox}>
-                    { mappedServiceFields?.map((service) => {
+                    { filteredServices?.slice(0, 8).map((service) => {
                         return (
                             <DashboardServices
                                key={service.id}
                                name={service.name}
                                description={service?.description}
-                               pricingType={service.pricingType}
-                               amount={service.amount}
-                               currency={service.currency}
+                               pricingType={
+                                service.prices?.[0]
+                                ? mapPricingType(service.prices?.[0]?.pricingType) : ""}
+                               amount={service.prices?.[0] 
+                                ? service.prices?.[0]?.amount : 0}
+                               currency={service.prices?.[0]
+                                ? mapCurrencySymbol(service.prices?.[0]?.currency) : "" }
                                />
                         )
                     })

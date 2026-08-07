@@ -1,17 +1,15 @@
 "use client";
 
-import { useCurrentUser } from 'src/hooks/profile/useProfile';
 import styles from '../../admin/(without-dashboard-layout)/controlpanel/settings/settings.module.css';
 import SettingsUI from 'src/components/ui/SettingsUI/settingsUI';
-import { mockClient } from 'src/services/clientuser/mock';
 import { FaSpinner } from 'react-icons/fa';
 import ErrorState from 'src/components/ui/ErrorState/ErrorState';
+import { useAuth } from 'src/context/AuthContext';
 
 export default function ClientSettings() {
 
-    const { data, isLoading, isError, refetch } = useCurrentUser();
-    const user = data?.user || mockClient;
-    const profile = data?.profile;
+    const { authUser, authProfile, isLoading, isError, refetch } = useAuth();
+
     if (isLoading) return <FaSpinner />;
     if (isError) {
         return (
@@ -21,10 +19,15 @@ export default function ClientSettings() {
             />
         )
     }
+
+    if (!authUser || !authProfile) {
+        return null;
+    }
+
     return (
         <div className={styles.pageContainer}>
             <h3>Account Settings</h3>
-            <SettingsUI user={user} profile={profile} />
+            <SettingsUI user={authUser} profile={authProfile} />
         </div>
     )
 }

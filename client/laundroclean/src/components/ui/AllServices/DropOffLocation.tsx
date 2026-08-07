@@ -9,12 +9,59 @@ import {
 
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
+import Button from "../Button/Button";
+import { Client, CompanyUser } from "src/types/users/user";
 
 export type CloseProps = {
     onClose: () => void;
+    usertype?: CompanyUser | Client;
 };
 
-export default function DropOffLocation({ onClose }: CloseProps) {
+function DropOffPoints() {
+    const [dropoffPoints] = useState<DropoffPoint[]>([]);
+    const headerText = "Add Your First Drop off location";
+
+    const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+    return (
+        <div className={styles.servicemanager}>
+            {!isFormOpen && (
+                <Button
+                    text={dropoffPoints.length === 0 ? "Create First Drop off point" : "Create Drop off point"}
+                    onClick={() => setIsFormOpen(true)}
+                    className={styles.addservicebtn}
+                />
+            )}
+            {isFormOpen && (
+                <div>
+                    <span className={styles.overlay}></span>
+                    <form action="">
+                        <p className={styles.newdropoffHeader}>{dropoffPoints.length === 0 ? headerText : "Add a New Drop off Location"}</p>
+                        <legend><b>Create a new drop off point, an address where clients can drop their laundry for collective pick up</b></legend>
+                        <span className={styles.formgroup}>
+                            <span className={styles.formitem}>
+                                <label htmlFor="name">Drop off location name</label>
+                                <input type="text" id="name" />
+                            </span>
+
+
+                            <span className={styles.formitem}>
+                                <label htmlFor="address">Address</label>
+                                <input type="text" id="address" />
+                            </span>
+                        </span>
+                        <span className={styles.actionbuttons}>
+                            <Button type="button" text="cancel" onClick={() => setIsFormOpen(false)} className={styles.cancelbutton} />
+                            <Button text="save" type="submit" className={styles.savebtn} />
+                        </span>
+
+                    </form>
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default function DropOffLocation({ onClose, usertype }: CloseProps) {
     const { data: dropoffPoints = [], isLoading, error } = useDropoffPoints();
 
     const [selectedPoint, setSelectedPoint] =
@@ -57,7 +104,14 @@ export default function DropOffLocation({ onClose }: CloseProps) {
 
     return (
         <div className={styles.locationContainer}>
-            <h4>Drop-Off Locations</h4>
+            <span className={styles.dropoffPointsHeader}>
+
+                <h4>Drop-Off Locations</h4>
+
+                {usertype?.type === "COMPANYUSER" && (<DropOffPoints /> )}
+
+            </span>
+
 
             <div className={styles.mapWrapper}>
                 {validPoint ? (
@@ -92,8 +146,8 @@ export default function DropOffLocation({ onClose }: CloseProps) {
                             key={point.id}
                             onClick={() => setSelectedPoint(point)}
                             className={`${styles.listItem} ${selectedPoint?.id === point.id
-                                    ? styles.selectedItem
-                                    : ""
+                                ? styles.selectedItem
+                                : ""
                                 }`}
                             style={{ cursor: "pointer" }}
                         >

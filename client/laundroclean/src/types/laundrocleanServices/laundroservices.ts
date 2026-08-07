@@ -69,9 +69,9 @@ export interface ServiceDisplayProp {
 
 export type ServicePricePayload = {
     serviceId?: string;
-    amount: number;
-    currency: "DOLLAR" | "NAIRA" | "POUNDS";
-    pricingType: "PER_KG" | "PER_ITEM" | "FLAT_RATE";
+    amount?: number;
+    currency?: "DOLLAR" | "NAIRA" | "POUNDS";
+    pricingType?: "PER_KG" | "PER_ITEM" | "FLAT_RATE";
 }
 
 export type ServicePriceResponse = {
@@ -94,17 +94,14 @@ export type ServicePayload = {
 export type ServiceResponse = {
     name: string;
     description: string;
-    maxDailyBookings?: number;
+    maxDailyBookings: number;
     id: string;
     isActive: boolean;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
-}
-
-export type CombinedServiceandPriceResponse = {
-    service: ServiceResponse,
-    price?: ServicePriceResponse
+    prices?: ServicePriceResponse[],
+    promoCodes?: PromoDetail[]
 }
 
 export interface GetActiveServicesParams {
@@ -113,10 +110,8 @@ export interface GetActiveServicesParams {
     search?: string;
 }
 
-export type ServicesResponse = {
-    services: ServiceResponse[];
-    meta: Meta;
-}
+export type ServicesResponse = ServiceResponse[] & Meta;
+
 
 {/*export interface ServicesPromoResponse {
   data: ServiceDisplayProp[];
@@ -127,11 +122,6 @@ export type ServicesResponse = {
   };
 }*/}
 
-export type ServiceWithPromoCodesAndPriceResponse = {
-    service: ServiceResponse
-    prices: ServicePriceResponse[],
-    promoCodes?: PromoDetail[],
-}
 
 export type UpdateServicePayload = {
     name?: string;

@@ -5,8 +5,8 @@ import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, mi
 import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
-import { ServiceWithServicePriceAndPromoCodesDto, ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
-import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServiceWithPromoCodesAndPriceResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
+import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServicesResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
 import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { RolePayload } from "src/types/roles/role";
@@ -71,7 +71,7 @@ export const adminApi = {
         }),
     
     getActiveServiceById: (serviceId: string) =>
-        apiRequest<ServiceWithServicePriceAndPromoCodesDto>(`/admin/services/${serviceId}`),
+        apiRequest<ServiceDto>(`/admin/services/${serviceId}`),
 
     // also deactivates and activates a service
     updateServiceById: (serviceId: string, payload: UpdateServicePayload) =>
@@ -92,7 +92,7 @@ export const adminApi = {
         }),
 
     getInactiveOrActiveServiceById: (serviceId: string) =>
-        apiRequest<ServiceWithPromoCodesAndPriceResponse>(`/admin/services/all-services/${serviceId}`),
+        apiRequest<ServicesResponse>(`/admin/services/all-services/${serviceId}`),
 
     restoreServiceById: (serviceId: string) =>
         apiRequest<ServiceDto>(`/admin/services/all-services/${serviceId}/restore`, {

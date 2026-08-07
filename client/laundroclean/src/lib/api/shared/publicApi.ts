@@ -1,10 +1,10 @@
 import { PublicServicesParams } from "src/types/laundrocleanServices/laundroservices";
 import { apiRequest } from "../requests";
-import { ServiceDto, ServiceWithServicePriceAndPromoCodesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 
 export const publicApi = {
     getAndSearchServices: (params?: PublicServicesParams ) =>
-        apiRequest<ServiceWithServicePriceAndPromoCodesDto>('/services', {
+        apiRequest<ServicesDto>('/services', {
             params: params
         }),
 

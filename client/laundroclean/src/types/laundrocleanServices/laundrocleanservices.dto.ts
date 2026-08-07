@@ -10,7 +10,8 @@ export type ServiceDto = {
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
-    prices?: ServicePriceDto
+    prices?: ServicePriceDto[];
+    promoCodes?: PromoCodeDto[];
 }
 
 export type ServicePriceDto = {
@@ -25,9 +26,3 @@ export type ServicePriceDto = {
 }
 
 export type ServicesDto = ServiceDto[] & Meta;
-
-export type ServiceWithServicePriceAndPromoCodesDto = {
-    prices: ServicePriceDto[];
-    promoCodes?: PromoCodeDto[];
-    service: ServiceDto;
-}

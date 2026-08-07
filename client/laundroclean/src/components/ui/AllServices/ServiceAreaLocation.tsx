@@ -12,14 +12,9 @@ import {
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
 import { CloseProps } from "./DropOffLocation";
-import { CompanyUser, Client } from "src/types/users/user";
 import Button from "../Button/Button";
 
-type ServiceAreaLocationProps = CloseProps & {
-    usertype?: CompanyUser | Client;
-};
-
-export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLocationProps) {
+export default function ServiceAreaLocation({ onClose, usertype }: CloseProps) {
     const { data: serviceAreas = [], isLoading, error } = useServiceAreas();
     const [selectedArea, setSelectedArea] = useState<ServiceArea | null>(null);
     const [isCreating, setIsCreating] = useState(false);
@@ -69,7 +64,7 @@ export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLo
             <div className={styles.mapHeader}>
                 <h4>Service Area Locations</h4>
 
-                {usertype && (<Button
+                {usertype?.type === "COMPANYUSER" && (<Button
                     onClick={() => {
                         console.log("creating");
                         setIsCreating(true);

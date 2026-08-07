@@ -16,7 +16,7 @@ export type PromoDetail = {
     startsAt?: string;
     usageLimit?: number;
     perUserLimit?: number;
-    isActive?: boolean;
+    isActive: boolean;
 }
 
 export type PromoCodePayload = {

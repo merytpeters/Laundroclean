@@ -1,7 +1,7 @@
 
 import { GetActiveServicesParams } from "src/types/laundrocleanServices/laundroservices";
 import { apiRequest } from "./requests";
-import { ServicesDto, ServiceWithServicePriceAndPromoCodesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, UpdateBookingPayload } from "src/types/booking/booking";
 import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
@@ -12,7 +12,7 @@ export const clientApi = {
         }),
 
     getServiceById: (id: string) =>
-        apiRequest<ServiceWithServicePriceAndPromoCodesDto>(`/client/services/${id}`),
+        apiRequest<ServiceDto>(`/client/services/${id}`),
 
     createBooking: (payload: BookingPayload) =>
         apiRequest<BookingDto>('/client/booking', {

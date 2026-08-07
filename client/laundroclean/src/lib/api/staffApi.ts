@@ -1,6 +1,6 @@
 import { GetActiveServicesParams, ServicePayload, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
 import { apiRequest } from "./requests";
-import { ServiceDto, ServicesDto, ServiceWithServicePriceAndPromoCodesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, UpdateBookingPayload } from "src/types/booking/booking";
 import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
@@ -19,7 +19,7 @@ export const staffApi = {
         }),
 
     getActiveServiceById: (serviceId: string) =>
-        apiRequest<ServiceWithServicePriceAndPromoCodesDto>(`/staff/services/${serviceId}`),
+        apiRequest<ServiceDto>(`/staff/services/${serviceId}`),
 
     // also deactivates and activates a service
     updateServiceById: (serviceId: string, payload: UpdateServicePayload) =>

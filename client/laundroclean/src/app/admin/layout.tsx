@@ -5,22 +5,50 @@ import ActionButton from 'src/components/ui/ActionButton/ActionButton';
 import styles from 'src/components/layouts/UserLayout.module.css';
 import { BellIcon, Cog6ToothIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { roleConfig } from 'src/lib/company-user/role-config';
-import { mockCompanyAdmin } from 'src/services/companyUser/mock';
 import BackButton from 'src/components/ui/Button/BackButton';
-import { useCurrentUser } from 'src/hooks/profile/useProfile';
-// import ProtectedRoute from 'src/components/ui/ProtectedRoutes';
+import ProtectedRoute from 'src/components/ui/ProtectedRoutes';
+import { useAuth } from 'src/context/AuthContext';
+import { FaSpinner } from 'react-icons/fa';
+import ErrorState from 'src/components/ui/ErrorState/ErrorState';
+import { LoadingState } from 'src/components/ui/ErrorState/ErrorState';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 
-    const userProfile = useCurrentUser();
-    const user = userProfile.data?.user || mockCompanyAdmin;
-    const userRole = "uiRole" in user ? user.uiRole : mockCompanyAdmin.uiRole;
-    const config = roleConfig[userRole];
-    const isControlPanel = config.settingsAction === "CONTROL PANEL";
+    const { authUser, isLoading, refetch, isError } = useAuth();
+
+    console.log({
+        authUser,
+        isLoading,
+        isError,
+    });
+
+    if (isLoading) {
+        return (
+            <LoadingState />
+        )
+    }
+
+    if (isError) {
+        return (
+            <ErrorState
+                message="Failed to load your profile."
+                onRetry={refetch}
+            />
+        );
+    }
+
+    if (!authUser || authUser.type !== "COMPANYUSER" || authUser.uiRole !== "ADMIN") {
+        return null
+    }
+
+    const userRole = "uiRole" in authUser ? authUser.uiRole : undefined;
+    const config = userRole ? roleConfig[userRole] : undefined;
+    const isControlPanel =
+        config?.settingsAction === "CONTROL PANEL";
 
 
     return (
-        //<ProtectedRoute>
+        <ProtectedRoute>
             <div>
                 <div className={styles.layoutContainer}>
                     <AppHeader
@@ -71,6 +99,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
                 {children}
             </div>
-        //</ProtectedRoute>
+        </ProtectedRoute>
     )
 }
