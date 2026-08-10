@@ -2,6 +2,7 @@
 
 import {
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
@@ -11,6 +12,10 @@ import {
 import type { User, ProfileResponse } from "src/types/users/user";
 import { hasAccessToken } from "src/lib/api/auth-store";
 import { useCurrentUser } from "src/hooks/profile/useProfile";
+import {
+    type Permission,
+    hasPermission as checkPermission,
+} from '../types/roles/permissions';
 
 type AuthContextType = {
     authUser: User | null;
@@ -21,6 +26,9 @@ type AuthContextType = {
     isLoading: boolean;
     refetch: ReturnType<typeof useCurrentUser>["refetch"];
     isError: boolean;
+    hasPermission: (
+        permission: Permission
+    ) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,6 +49,21 @@ export function AuthProvider({
         setAuthProfile(data.profile);
     }, [data]);
 
+    const hasPermission = useCallback(
+        (permission: Permission): boolean => {
+            // Clients don't use role permissions
+            if (authUser?.type !== "COMPANYUSER") {
+                return false;
+            }
+
+            return checkPermission(
+                authUser.role?.permissions,
+                permission
+            );
+        },
+        [authUser]
+    );
+
     const value = useMemo(
         () => ({
             authUser,
@@ -51,6 +74,7 @@ export function AuthProvider({
             isLoading,
             refetch,
             isError,
+            hasPermission,
         }),
         [authUser, authProfile, isLoading, refetch, isError]
     );

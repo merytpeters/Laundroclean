@@ -31,14 +31,20 @@ export async function adminCreateLCServiceService(payload: ServicePayload, servi
       serviceId: serviceId
     }
 
-    const servicepriceRes = await createServicePriceService(serviceId, finalPricePayload);
-    if (!servicepriceRes || ! servicepriceRes.data) return null;
+    
+    const priceRes = await createServicePriceService(serviceId, finalPricePayload);
+    if (!priceRes || ! priceRes.data) return null;
+    const servicepriceRes: ServicePriceResponse[] = []
 
-    const { data: servicePriceData, ...apires} = servicepriceRes;
+    const { data: servicePriceData, ...apires} = priceRes;
+
+    servicepriceRes.push(servicePriceData)
+  
+    
 
     const updatedService = {
       ...service,
-      prices: servicePriceData
+      prices: servicepriceRes
     }
 
     return {
@@ -65,11 +71,38 @@ export async function adminGetActiveServiceByIdService(serviceId: string): Promi
   return res
 }
 
-export async function adminUpdateServceByIdService(serviceId: string, payload: UpdateServicePayload): Promise<ApiResponse<ServiceResponse> | null> {
+export async function adminUpdateServceByIdService(serviceId: string, payload: UpdateServicePayload, servicePricePayload?: ServicePricePayload): Promise<ApiResponse<ServiceResponse> | null> {
   const res = await adminApi.updateServiceById(serviceId, payload);
-
   if (!res.success || !res.data) return null;
+  const {data, ...rest} = res
 
+  const {prices, ...service} = data
+  if (servicePricePayload) {
+    const finalPricePayload = {
+      ...servicePricePayload,
+      serviceId: serviceId
+    }
+
+    const priceRes = await createServicePriceService(serviceId, finalPricePayload);
+    if (!priceRes || ! priceRes.data) return null;
+    const servicepriceRes: ServicePriceResponse[] = []
+
+    const { data: servicePriceData, ...apires} = priceRes;
+
+    servicepriceRes.push(servicePriceData)
+  
+    
+
+    const updatedService = {
+      ...service,
+      prices: servicepriceRes
+    }
+
+    return {
+      ...rest,
+      data: updatedService
+    }
+  }
   return res
 }
 
@@ -84,7 +117,7 @@ export async function adminSearchAllServicesService(params?: AllServicesParams):
 export async function adminDeactivateMultipleServices(payload: ActivateOrDeactivateServicesPayload): Promise<ApiResponse<ActivatedOrDeactivatedServicesResponse> | null> {
   const res = await adminApi.deactivateServices(payload);
 
-  if (!res.success || !res.data) return null;
+  if (!res.success || !res.data || !res.message) return null;
 
   return res
 }
@@ -108,7 +141,7 @@ export async function adminRestoreServiceById(serviceId: string): Promise<ApiRes
 export async function adminRestoreMuulitpleServices(payload: ActivateOrDeactivateServicesPayload): Promise<ApiResponse<ActivatedOrDeactivatedServicesResponse> | null> {
   const res = await adminApi.restoreMultipleServices(payload);
 
-  if (!res.success || !res.data) return null;
+  if (!res.success || !res.data || !res.message) return null;
 
   return res
 }
@@ -167,14 +200,19 @@ export async function staffCreateLCServiceService(payload: ServicePayload, servi
       serviceId: serviceId
     }
 
-    const servicepriceRes = await createServicePriceService(serviceId, finalPricePayload);
-    if (!servicepriceRes || !servicepriceRes.data) return null;
+    const priceRes = await createServicePriceService(serviceId, finalPricePayload);
+    if (!priceRes || ! priceRes.data) return null;
+    const servicepriceRes: ServicePriceResponse[] = []
 
-    const {data: servicepriceData, ...apires} = servicepriceRes;
+    const { data: servicePriceData, ...apires} = priceRes;
+
+    servicepriceRes.push(servicePriceData)
+  
+    
 
     const updatedService = {
       ...services,
-      prices: servicepriceData
+      prices: servicepriceRes
     }
 
     return {
@@ -201,12 +239,40 @@ export async function staffGetActiveServiceByIdService(serviceId: string): Promi
   return res
 }
 
-export async function staffUpdateServceByIdService(serviceId: string, payload: UpdateServicePayload): Promise<ApiResponse<ServiceResponse> | null> {
+export async function staffUpdateServceByIdService(serviceId: string, payload: UpdateServicePayload, servicePricePayload?: ServicePricePayload): Promise<ApiResponse<ServiceResponse> | null> {
   const res = await staffApi.updateServiceById(serviceId, payload);
 
   if (!res.success || !res.data) return null;
 
+  const {data, ...rest} = res
+
+  const {prices, ...service} = data
+  if (servicePricePayload) {
+    const finalPricePayload = {
+      ...servicePricePayload,
+      serviceId: serviceId
+    }
+
+    const priceRes = await createServicePriceService(serviceId, finalPricePayload);
+    if (!priceRes || ! priceRes.data) return null;
+    const servicepriceRes: ServicePriceResponse[] = []
+
+    const { data: servicePriceData, ...apires} = priceRes;
+
+    servicepriceRes.push(servicePriceData)
+  
+    
+
+    const updatedService = {
+      ...service,
+      prices: servicepriceRes
+    }
+
+    return {
+      ...rest,
+      data: updatedService
+    }
+  }
   return res
 }
-
 

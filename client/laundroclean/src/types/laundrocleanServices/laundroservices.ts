@@ -2,6 +2,12 @@ import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { PromoDetail } from "./promoCode";
 import { Meta } from "../shared";
 
+
+export type PricingTypeValue =
+    | "PER_KG"
+    | "PER_ITEM"
+    | "FLAT_RATE";
+
 export type PricingType = "per kg" | "per item" | "flat rate"
 
 export function mapPricingType(pricingType: string): PricingType {
@@ -17,6 +23,11 @@ export function mapPricingType(pricingType: string): PricingType {
     }
 }
 
+export type CurrencyTypeValue =
+    | "NAIRA"
+    | "POUNDS"
+    | "DOLLAR";
+
 export type Currency = "USD" | "NGN" | "GBP"
 
 export function mapCurrency(currency: string): Currency {
@@ -31,6 +42,24 @@ export function mapCurrency(currency: string): Currency {
             throw new Error(`Unknown currency: ${currency}`)
     }
    
+}
+
+export function mapCurrencyType(
+    currency: Currency
+): CurrencyTypeValue {
+    switch (currency) {
+        case "NGN":
+            return "NAIRA";
+
+        case "GBP":
+            return "POUNDS";
+
+        case "USD":
+            return "DOLLAR";
+
+        default:
+            throw new Error(`Unknown currency: ${currency}`);
+    }
 }
 
 export type CurrencySymbol = "$" | "₦" | "£"
@@ -142,7 +171,7 @@ export type ServiceIdPayload = {
 }
 
 export type ActivateOrDeactivateServicesPayload = {
-    ids: ServiceIdPayload[];
+    ids: string[];
 }
 
 export type ActivatedOrDeactivatedServicesResponse = {

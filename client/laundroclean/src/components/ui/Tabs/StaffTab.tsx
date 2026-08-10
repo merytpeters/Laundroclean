@@ -5,7 +5,7 @@ import styles from './StaffTab.module.css';
 import Button from 'src/components/ui/Button/Button';
 import AuthForm from 'src/components/ui/Forms/AuthForms';
 import { useState } from 'react';
-import { useRoles } from 'src/hooks/roles/useRoles';
+import { useRoles } from 'src/hooks/rolesNpermissions/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
 import { useRegisterUser } from 'src/hooks/auth/useAuth';
 import { validatePassword } from 'src/utils/validatePassword';

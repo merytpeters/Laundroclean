@@ -372,6 +372,18 @@
   padding: 1em 0;
 }
 
+.serviceupdatespan {
+  display: inline;
+  padding: 0.7em 0.4em;
+}
+
+.companyOnlyserviceitemContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .servicelistrow {
   display: flex;
   flex-direction: row;
@@ -384,6 +396,26 @@
   padding: 2em 3em;
   box-shadow: 5px 5px 10px 2px #e8e0e0;
   max-width: 100%;
+  
+}
+
+.serviceListactionbtns {
+  display: flex;
+  height: fit-content;
+}
+
+.editbtn {
+  border: none;
+  background: transparent;
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+.trashbtn {
+  color: red;
+  background-color: transparent;
+  border: 1px solid #555;
+  cursor: pointer;
 }
 
 .allServicesHeader {

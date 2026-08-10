@@ -1,0 +1,60 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dropdown button {
+    display: flex;
+    width: 100%;
+    padding: 0.3em 1em;
+    justify-content: space-between;
+    background-color: #f4f0f0;
+    border: #ccc 1px solid;
+}
+
+.dropdownMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+/*.allOption {
+
+}*/
+
+.permissionGroup {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.featureOption {
+    display: flex;
+    flex-direction: row;
+}
+
+.permissionList {
+    display: flex;
+    flex-direction: column;
+    padding: 0 2em;
+    gap: 0.2em;
+}
+
+.permissionOption {
+    display: flex;
+    gap: 0.5em;
+}

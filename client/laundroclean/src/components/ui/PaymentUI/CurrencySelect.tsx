@@ -10,13 +10,15 @@ interface CurrencySelectProps {
     currentCurrency: string;
     onCurrencyChange: (newCurrency: string) => void;
     className?: string;
+    id?: string;
 }
 
 
 export default function CurrencySelect({
     currentCurrency,
     onCurrencyChange,
-    className = ""
+    className = "",
+    id = "currency-select",
 }: CurrencySelectProps) {
     return (
         <div className={`${styles.currencySelectWrapper} ${className}`}>
@@ -25,7 +27,7 @@ export default function CurrencySelect({
             </label>
             <select 
                 name=""
-                id="global-currency-select"
+                id={id}
                 value={currentCurrency}
                 onChange={(e) => onCurrencyChange(e.target.value)}
                 className={styles.currencyDropdown}

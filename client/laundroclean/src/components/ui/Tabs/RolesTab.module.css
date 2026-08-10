@@ -1,23 +1,129 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  border: #ccc 1px solid;
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  padding: 2em;
+  gap: 2em;
+  background-color: #fff;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+.field input {
+  height: 2em;
+  width: 80%;
+  border-radius: 4px;
+}
+
+.permissionSelectitem {
+  width: 80%;
+}
+
+.actions {
+  display: flex;
+  align-self: center;
+  margin-top: 2em;
+}
+
 .roletabContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    padding: 1em 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em 2em;
 }
 
 .actionbtn {
+  display: flex;
+  align-self: self-end;
+}
+
+.newrolebtn {
+  width: 12em;
+  background: #0f233a;
+  color: var(--foreground);
+  border-radius: 18px;
+  height: 3em;
+  align-items: center;
+  gap: 1em;
+  font-weight: 600;
+  font-size: small;
+}
+
+.createformOverlay {
+  position: fixed;
+  z-index: 9999;
+  background-color: transparent;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  pointer-events: auto;
+  overflow-y: auto;
+  overscroll-behavior: smooth;
+  backdrop-filter: blur(8px);
+  inset: 0;
+}
+
+.createformsection {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  border: #ccc 1px solid;
+  border-radius: 8px;
+  padding: 2em;
+  gap: 2em;
+  position: fixed;
+  z-index: 10000;
+  top: 12%;
+  left: 35%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background-color: transparent;
+}
+
+.cancelbtnspan {
     display: flex;
     align-self: self-end;
 }
 
-.newrolebtn {
-    width: 12em;
-    background: #0F233A;
-    color: var(--foreground);
-    border-radius: 18px;
-    height: 3em;
-    align-items: center;
-    gap: 1em;
-    font-weight: 600;
+.cancelbtn {
+    --btn-border: 1px solid #0f233a;
+    --btn-padding: 0.7em 1.4em;
+    --btn-border-radius: 8px;
     font-size: small;
+    background-color: #0f233a;
+    color: #fff;
+}
+
+.cancelbtn:hover {
+    background: red;
+    color: var(--foreground);
+    --btn-border: 1px solid red;
+}
+
+.createrolebtn {
+  border: #d59056 2px solid;
+  padding: auto;
+  width: 8em;
+  border-radius: 24px;
+  color: #0f172a;
+  background-color: #f5f5f5;
+  height: 2.5em;
+  align-self: center;
+  justify-content: center;
+}
+
+.createrolebtn:hover {
+  background: #d59056;
+  color: #f5f5f5;
 }

@@ -31,9 +31,9 @@ export function useLoginUser() {
             if (user.type === "CLIENT") {
                 router.push("/user/dashboard");
             } else if (user.uiRole === "ADMIN") {
-                router.push("/admin/dashboard");
+                router.push("/admin/dashboard#overview");
             } else {
-                router.push("/staff/dashboard");
+                router.push("/staff/dashboard#overview");
             }
         },
         onError(error) {
