@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { companyRolesKeys } from "./keys";
-import { 
+import {
     createRoleService,
     getRolesService,
     getUsersByRoleService,
@@ -12,9 +12,11 @@ import {
 
 import { useEffect, useState } from "react";
 import { SelectOption } from "src/components/ui/Forms/AuthForms";
-import { RolePayload } from "src/types/roles/role";
+import { RolePayload, UsersRoleResponse } from "src/types/roles/role";
 import { useAuth } from "src/context/AuthContext";
 import { toast } from "sonner";
+import { ApiResponse } from "src/lib/api/requests";
+import { RoleDto, RolesDto, UserRoleDto } from "src/types/roles/role.dto";
 
 
 type roleMutationVariables = {
@@ -46,20 +48,34 @@ export function useCreateRole() {
     return mutation
 }
 
-export function useRoles () {
-    const [data, setData] = useState<SelectOption[]>([]);
-    const [loading, setLoading] = useState(true);
+export function useRole(id: number) {
+    const { authUser } = useAuth();
 
-    useEffect(() => {
-        const timeout = setTimeout(() =>{
-            setData([
-                {label: "Admin", value: "admin"},
-                {label: "Staff", value: "staff"},
-                {label: "Cashier", value: "cashier"},
-            ]);
-            setLoading(false)
-        }, 500);
-        return () => clearTimeout(timeout);
-    }, [])
-    return { data, loading}
+    return useQuery<ApiResponse<UserRoleDto> | null>({
+        queryKey: companyRolesKeys.detail(id),
+        queryFn: () => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return getUsersByRoleService(id)
+                }
+            }
+            throw new Error("Unsupported user type");
+        }
+    });
+}
+
+export function useRoles() {
+    const { authUser } = useAuth();
+
+    return useQuery<ApiResponse<RolesDto> | null>({
+        queryKey: companyRolesKeys.list(),
+        queryFn: () => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return getRolesService()
+                }
+            }
+            throw new Error("Unsupported user type");
+        }
+    });
 }

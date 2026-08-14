@@ -5,7 +5,11 @@ import styles from './RolesTab.module.css';
 import { useState } from "react";
 
 import { PermissionsSelect } from "./PermissionsTab";
-import { useCreateRole } from "src/hooks/rolesNpermissions/useRoles";
+import { useCreateRole, useRole, useRoles } from "src/hooks/rolesNpermissions/useRoles";
+import { FilterSearch } from "../SearchBar/SearchBar";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FaUserCircle } from "react-icons/fa";
+import { LoadingState } from "../ErrorState/ErrorState";
 
 interface CreateRoleFormProps {
     title: string;
@@ -102,12 +106,12 @@ export function CreateRoleForm({
             <span className={styles.permissionSelectitem}>
 
                 <PermissionsSelect
-                value={permissions}
-                onChange={setPermissions}
-            />
+                    value={permissions}
+                    onChange={setPermissions}
+                />
 
             </span>
-            
+
 
             {actions && (
                 <div className={styles.actions}>
@@ -118,19 +122,112 @@ export function CreateRoleForm({
     );
 }
 
+export function RoleUsers({ roleId }: { roleId: number }) {
+    const { data, isLoading } = useRole(roleId);
+    if (isLoading) return <LoadingState />
+
+    const userRoledata = data?.data?.role.users
+    console.log("Role data:", data?.data?.role)
+    console.log("User Role data:", userRoledata)
+
+    if (userRoledata?.length === 0) return (
+        <tbody>
+            <tr className={styles.tablebodyrow}>
+                <td>Add staff to this role </td>
+                <td> List of all staff will show to select</td>
+            </tr>
+        </tbody>
+    )
+
+    return (
+        <tbody>
+            {userRoledata?.map((user) => (
+                <tr key={user.id} className={styles.tablebodyrow}>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td className={styles.fullnametd}> <FaUserCircle /> {user.firstName} {user.lastName}</td>
+                    <td className={styles.emailtd}>{user.email}</td>
+                    <td>{user.isActive ? "Active": "Inactive"}</td>
+                    <td className={styles.joineddatetd}>{user.createdAt}</td>
+                    <td><FiEdit color="blue" /> <FiTrash2 color="red" /> </td>
+                </tr>
+            ))}
+
+        </tbody>
+
+    )
+}
+
+
+export function RoleList() {
+
+    const { data, isLoading } = useRoles()
+
+    if (isLoading) return <LoadingState />
+
+    const rolesObj = data?.data?.roles ?? [];
+
+
+    return (
+        <section className={styles.roleList}>
+            <span className={styles.filterrole}>
+                <FilterSearch />
+            </span>
+            <section className={styles.roleListmapsection}>
+                {rolesObj?.map((roleObj) => (
+
+                    <section className={styles.rolelistitem} key={roleObj.id}>
+                        <span className={styles.roleinfo}>
+                            <b>
+                                <span>{roleObj.title}</span>
+                                <span>Level: {roleObj.level}</span>
+                                <span className={styles.rolepermissionslist}>
+                                    {roleObj.permissions?.length !== undefined && (
+                                        <button
+                                            type="button"
+                                            //onClick={}  go to permissions tab
+                                            style={{ backgroundColor: "#fff", cursor: "pointer", border: "none", fontSize: "small" }}
+                                        >
+                                            See all permissions for this role
+                                        </button>
+                                    )}
+                                </span>
+                            </b>
+                        </span>
+                        <table>
+                            <thead>
+                                <tr className={styles.tableheader}>
+                                    <th>
+                                        <input type="checkbox" />
+                                    </th>
+                                    <th> Full Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Joined Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <RoleUsers key={roleObj.id} roleId={roleObj.id} />
+                        </table>
+                        <hr />
+                    </section>
+                ))}
+
+            </section>
+
+        </section>
+    )
+}
+
 
 export default function RolesTab() {
     const [isCreateRole, setIsCreateRole] = useState<boolean>(false);
 
-    const createRoleMutation = useCreateRole(); 
+    const createRoleMutation = useCreateRole();
 
     return (
         <section className={styles.roletabContainer}>
-
-            <span className={styles.actionbtn}>
-                <Button text="Create new role" className={styles.newrolebtn} onClick={() => setIsCreateRole(true)} />
-            </span>
-
             {isCreateRole && (
                 <span>
 
@@ -138,40 +235,40 @@ export default function RolesTab() {
 
                     <span className={styles.createformsection}>
 
-                    
-                    <span className={styles.cancelbtnspan}>
-                        <Button text="Cancel" type="reset" onClick={() => setIsCreateRole(false)} className={styles.cancelbtn}/>
-                    </span>
 
-                    <CreateRoleForm
-                        title="Create Role"
-                        subtitle="Create a role and assign its permissions."
-                        onSubmit={(data) => {
-                            createRoleMutation.mutate({payload: data});
-                        }}
-                        actions={
-                            <button type="submit" className={styles.createrolebtn}>
-                                Create Role
-                            </button>
-                        }
-                    />
+                        <span className={styles.cancelbtnspan}>
+                            <Button text="Cancel" type="reset" onClick={() => setIsCreateRole(false)} className={styles.cancelbtn} />
+                        </span>
+
+                        <CreateRoleForm
+                            title="Create Role"
+                            subtitle="Create a role and assign its permissions."
+                            onSubmit={(data) => {
+                                createRoleMutation.mutate(
+                                    { payload: data },
+                                    {
+                                        onSuccess: () => {
+                                            setIsCreateRole(false);
+                                        }
+                                    }
+                                );
+                            }}
+                            actions={
+                                <button type="submit" className={styles.createrolebtn}>
+                                    Create Role
+                                </button>
+                            }
+                        />
                     </span>
                 </span>
             )}
 
-
-
-
-            <h3> All Roles</h3>
-
-            <p>Edit, add permissions and deactivate roles</p>
+            <h3> All Roles
+                <span className={styles.actionbtn}>
+                    <Button text="Create new role" className={styles.newrolebtn} onClick={() => setIsCreateRole(true)} />
+                </span></h3>
             <section>
-
-
-                Role lists - edit, deactivate toggle, add permissions to role
-                <hr />
-
-                staff list for each role add, remove staff from each role
+                <RoleList />
             </section>
 
 

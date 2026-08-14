@@ -1,3 +1,4 @@
+/* role form styles*/
 .form {
   display: flex;
   flex-direction: column;
@@ -34,11 +35,122 @@
   margin-top: 2em;
 }
 
-.roletabContainer {
+/* Role List styles*/
+.roleList {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterrole {
+  display: flex;
+  align-self: self-end;
+}
+
+.roleListmapsection {
+  display: flex;
+  flex-direction: column;
+  gap: 6em;
+}
+
+.rolelistitem {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+
+.roleinfo,
+.roleinfo b {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 14em;
+}
+
+.rolepermissionslist {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.rolelistactionbtns {
+  display: flex;
+}
+
+.rolepermissionslist button:hover {
+  color: red;
+}
+
+.roleListmapsection table {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.roleListmapsection thead,
+.tableheader {
+  display: flex;
+  width: 100%;
+  gap: 11em;
+  padding: 0.5em 1em;
+  background-color: #0f172a;
+  color: #fff;
+}
+
+.roleListmapsection tbody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* styles for roleUsers*/
+
+.tablebodyrow {
+  display: flex;
+  width: 100%;
+  gap: 5em;
+  padding: 0.5em 2em;
+}
+
+.tablebodyrow td {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.fullnametd {
+  width: 14em;
+}
+
+.emailtd {
+  width: 12em;
+}
+
+.joineddatetd {
+  width: 18em;
+  align-items: center;
+}
+
+.tablebodyrow:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.tablebodyrow:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+/*Roles tab styles*/
+.roletabContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
   padding: 1em 2em;
+}
+
+.roletabContainer h3 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .actionbtn {

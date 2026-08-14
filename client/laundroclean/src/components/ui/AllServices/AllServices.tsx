@@ -6,7 +6,7 @@ import { CompanyUser, Client } from "src/types/users/user";
 import ServiceAreaLocation from "./ServiceAreaLocation";
 import DropOffLocation from "./DropOffLocation";
 import Button from "../Button/Button";
-import { ActivateOrDeactivateServicesPayload, Currency, mapCurrency, mapCurrencySymbol, mapCurrencyType, mapPricingType, PricingTypeValue, ServicePayload, ServicePricePayload } from "src/types/laundrocleanServices/laundroservices";
+import { Currency, mapCurrency, mapCurrencySymbol, mapCurrencyType, mapPricingType, PricingTypeValue, ServicePayload, ServicePricePayload } from "src/types/laundrocleanServices/laundroservices";
 import { useCreateService, useDeactiveServices, useReactiveServices, useServices, useUpdateService } from "src/hooks/laundroCleanServices/useServices";
 import { useForm } from "react-hook-form";
 import ErrorState, { LoadingState } from "../ErrorState/ErrorState";
@@ -1047,7 +1047,7 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                                     )
                                                 }
                                             >
-                                                <FiEdit />
+                                                <FiEdit color="blue" />
                                             </button>
                                         ) : (
                                             <>

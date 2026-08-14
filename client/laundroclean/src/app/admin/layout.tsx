@@ -16,11 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const { authUser, isLoading, refetch, isError } = useAuth();
 
-    console.log({
-        authUser,
-        isLoading,
-        isError,
-    });
+    // console.log({ authUser, isLoading, isError, });
 
     if (isLoading) {
         return (

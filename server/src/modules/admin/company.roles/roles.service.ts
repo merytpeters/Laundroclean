@@ -20,6 +20,8 @@ const getRoleById = async (id: string | number) => {
     include: {
       users: {
         select: {
+          id: true,
+          isActive: true,
           firstName: true,
           lastName: true,
           email: true,
@@ -27,7 +29,8 @@ const getRoleById = async (id: string | number) => {
             select: {
               phoneNumber: true
             }
-          }
+          },
+          createdAt: true,
         }
       },
     }

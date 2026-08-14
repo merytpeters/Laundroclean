@@ -10,7 +10,7 @@ import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeac
 import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { RolePayload } from "src/types/roles/role";
-import { RoleDto, UserRoleDto } from "src/types/roles/role.dto";
+import { RoleDto, RolesDto, UserRoleDto } from "src/types/roles/role.dto";
 import { GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
 import { UserDto, UserProfileDto } from "src/types/users/user.dto";
 
@@ -28,9 +28,9 @@ export const adminApi = {
         }),
 
     getRoles: () =>
-        apiRequest<RoleDto[]>("/admin/company-roles"),
+        apiRequest<RolesDto>("/admin/company-roles"),
 
-    getUsersByRole: (id: string) =>
+    getUsersByRole: (id: number) =>
         apiRequest<UserRoleDto>(`/admin/company-roles/${id}`),
     
     updateRole: (id: string, payload: RolePayload) =>

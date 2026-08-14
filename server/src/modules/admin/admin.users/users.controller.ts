@@ -78,6 +78,9 @@ const restoreUserController = asyncHandler(async (req, res) => {
     return res.status(200).json({ success: true, message: 'User restored successfully', data: restored });
 });
 
+
+// add an update user role and add users to role endpoint
+
 export default {
     getProfile,
     getUsersController,

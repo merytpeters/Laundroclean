@@ -13,11 +13,7 @@ import ErrorState from "src/components/ui/ErrorState/ErrorState";
 
 export default function ControlPanel() {
     const { authUser, isLoading, refetch, isError } = useAuth();
-    console.log({
-        authUser,
-        isLoading,
-        isError,
-    });
+    //console.log({ authUser, isLoading, isError });
 
     if (isLoading) {
         return (

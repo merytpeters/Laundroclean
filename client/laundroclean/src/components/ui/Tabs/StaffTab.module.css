@@ -69,15 +69,83 @@
     display: flex;
     flex-direction: column;
     z-index: 900;
-    position: fixed;
+    position: relative;
     top: 10%;
-    left: 30%;
-    width: 45%;
-    background-color: #f3f1f1;
+    left: 10%;
+    width: 40%;
+    background-color: transparent;
     padding: 1em;
     padding-left: 1.5em;
     gap: 0.5em;
     border-radius: 3px;
+    scroll-behavior: smooth;
+}
+
+.staffsignupform {
+  width: 400px;
+  aspect-ratio: 1/1;
+  padding: 2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2000;
+  background-color: #f3f1f1;
+}
+
+.staffsignupform legend {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.staffsignupform p {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: small;
+}
+
+.staffsignupform input {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  font-size: smaller;
+}
+
+.staffsignupform select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  font-size: smaller;
+}
+
+.staffsignupform span {
+  display: flex;
+  align-self: center;
+  font-size: small;
+}
+
+.inputWrapper {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.inputWrapper label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111;
+  display: block;
+  margin-bottom: 4px;
+  font-size: smaller;
 }
 
 .signupbutton {
@@ -100,19 +168,21 @@
 .cancelbtnwrapper {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 }
 
 .cancelbtn {
+    display: flex;
     margin: 1em;
-    width: 10em;
-    height: 40px;
     border: red 2px solid;
     background-color: #f3f1f1;
     border-radius: 18px;
     color: #000;
-    gap: 1em;
     font-weight: 600;
     font-size: small;
+    width: 40px;
+    height: 40px;
+    border-radius: 50% ;
 }
 
 .cancelbtn:hover {

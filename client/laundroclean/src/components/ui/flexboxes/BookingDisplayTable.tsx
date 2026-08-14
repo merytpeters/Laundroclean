@@ -66,7 +66,7 @@ export default function BookingDisplayTable() {
                             </td>
                             <td>
                                 <button className={styles.editbtn}>
-                                    <FiEdit />
+                                    <FiEdit color="blue" />
                                 </button>
                                 {user.uiRole === "ADMIN" && (
                                     <button className={styles.trashbtn}>
@@ -149,7 +149,7 @@ export function AdminAllBookings() {
                         <span>{bookingDetail.assignedStaff ?? '—'}</span>
                         <span>
                             <button className={styles.editbtn}>
-                                <FiEdit />
+                                <FiEdit color="blue" />
                             </button>
 
                             <button className={styles.trashbtn}>

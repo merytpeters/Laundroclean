@@ -7,5 +7,5 @@ export const companyRolesKeys = {
 
     ) => ["roles", "list"] as const,
 
-    detail: (id: string) => ["role", id] as const
+    detail: (id: number) => ["role", id] as const
 }

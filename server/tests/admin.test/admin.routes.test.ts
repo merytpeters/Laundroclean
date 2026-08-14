@@ -77,7 +77,7 @@ describe('Admin Routes', () => {
                     email: 'companyuser@exampletest.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: staffRole.id,
+                    role: staffRole,
                 });
 
             expect(response.status).toBe(201);
@@ -94,7 +94,7 @@ describe('Admin Routes', () => {
                     email: 'newadmin@exampletest.com',
                     password: 'Password123!',
                     type: UserType.COMPANYUSER,
-                    role: adminRole.id,
+                    role: adminRole,
                 });
 
             expect(response.status).toBe(201);

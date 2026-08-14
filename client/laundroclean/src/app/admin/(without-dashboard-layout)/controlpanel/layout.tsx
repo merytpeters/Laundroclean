@@ -14,11 +14,7 @@ export default function ControlPanelLayout({ children }: { children: React.React
     const { authUser, isLoading, refetch, isError } = useAuth();
     const [open, setOpen] = useState(false);
 
-    console.log({
-        authUser,
-        isLoading,
-        isError,
-    });
+    //console.log({ authUser, isLoading, isError });
 
     if (isLoading) {
         return (

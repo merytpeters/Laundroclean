@@ -3,17 +3,33 @@ import { toast } from 'sonner';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import styles from './StaffTab.module.css';
 import Button from 'src/components/ui/Button/Button';
-import AuthForm from 'src/components/ui/Forms/AuthForms';
-import { useState } from 'react';
+import AuthForm, { SelectOption } from 'src/components/ui/Forms/AuthForms';
+import { useEffect, useState } from 'react';
 import { useRoles } from 'src/hooks/rolesNpermissions/useRoles';
 import { LocalSearchBar, FilterSearch } from '../SearchBar/SearchBar';
 import { useRegisterUser } from 'src/hooks/auth/useAuth';
 import { validatePassword } from 'src/utils/validatePassword';
 import UserInfoUI from '../UserInfoUI/UserInfoUI';
+import { capitalilzeFirstLetter } from 'src/utils/capitalize';
+import { LoadingState } from '../ErrorState/ErrorState';
 
 export default function StaffTab() {
     const [open, setOpen] = useState(false);
-    const { data: roles, loading } = useRoles();
+    const { data, isLoading } = useRoles()
+    //console.log("Response object:", data?.data?.roles)
+
+    const [roles, setData] = useState<SelectOption[]>([]);
+    useEffect(() => {
+        if (data && data.data && data.data.roles) {
+            const formattedRoleData = data.data.roles.map((role) => ({
+                label: capitalilzeFirstLetter(role.title),
+                value: role.title.toLowerCase()
+            }))
+            setData(formattedRoleData);
+        }
+    }, [data])
+
+    //console.log("Roles:", roles);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -94,6 +110,7 @@ export default function StaffTab() {
         const email = String(data.get("email") ?? "").trim();
         const password = String(data.get("password") ?? "");
         const typedName = String(data.get("name") ?? "").trim();
+        const roletitle = String(data.get("role") ?? "").trim();
 
         const name = [formData.firstName, formData.lastName]
             .filter(Boolean)
@@ -111,16 +128,20 @@ export default function StaffTab() {
             email,
             password,
             type: "COMPANYUSER",
+            role: {
+                title: roletitle
+            },
         }, {
             onSuccess(data) {
                 toast.success(data?.message);
                 form.reset();
                 setFormData({ firstName: '', lastName: '' });
+                setOpen(false);
             },
         });
     }
 
-    if (loading) return <p>Loading</p>
+    if (isLoading) return <LoadingState />
     return (
         <section className={styles.stafftabContainer}>
             <div className={styles.stafftab}>
@@ -133,9 +154,9 @@ export default function StaffTab() {
 
                             <span className={styles.staffsignup}>
                                 <span className={styles.cancelbtnwrapper}>
-                                    <Button icon={<FaTimes />} text="Cancel" className={styles.cancelbtn} onClick={() => setOpen(false)} />
+                                    <Button icon={<FaTimes />} text="" className={styles.cancelbtn} onClick={() => setOpen(false)} />
                                 </span>
-                                
+
 
                                 <AuthForm
                                     title="Staff Registration"
@@ -147,6 +168,7 @@ export default function StaffTab() {
                                             <Button text={registerMutation.isPending ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton} />
                                         </>
                                     }
+                                    className={styles.staffsignupform}
                                 />
                             </span>
 

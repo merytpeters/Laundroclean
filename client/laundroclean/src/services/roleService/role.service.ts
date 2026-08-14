@@ -1,6 +1,7 @@
 import { adminApi } from "src/lib/api/adminApi";
-import { RolePayload, UsersRoleResponse, RoleResponse } from "src/types/roles/role";
+import { RolePayload, UsersRoleResponse, RoleResponse, RolesResponse } from "src/types/roles/role";
 import { ApiResponse } from "src/lib/api/requests";
+
 
 export async function createRoleService(payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
     const res = await adminApi.createRole(payload);
@@ -11,17 +12,17 @@ export async function createRoleService(payload: RolePayload): Promise<ApiRespon
     return res;
 }
 
-export async function getRolesService(): Promise<ApiResponse<RoleResponse[]> | []> {
+export async function getRolesService(): Promise<ApiResponse<RolesResponse> | null> {
     const res = await adminApi.getRoles();
 
     if (!res.success || !res.data) {
-        return [];
+        return null;
     }
 
     return res;
 }
 
-export async function getUsersByRoleService(id: string): Promise<ApiResponse<UsersRoleResponse> | null> {
+export async function getUsersByRoleService(id: number): Promise<ApiResponse<UsersRoleResponse> | null> {
     const res = await adminApi.getUsersByRole(id);
 
     if (!res.success || !res.data) {

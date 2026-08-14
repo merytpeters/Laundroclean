@@ -15,11 +15,10 @@ export type RolePayload = {
 }
 
 export type RoleResponse = {
-    permissions?: string[];
     title: string;
     level?: number | null;
-    id?: number;
-    role?: string;
+    permissions?: string[];
+    id: number;
 }
 
 export type UserInfoSummary = {
@@ -29,8 +28,19 @@ export type UserInfoSummary = {
     profile?: {
         phoneNumber?: string;
     }
+    id: string;
+    isActive: boolean;
+    createdAt: string;
 }
 
-type users = UserInfoSummary
+type UserRoleResponse = {
+    role: RoleResponse & {
+        users: UserInfoSummary[] 
+    }
+}
 
-export type UsersRoleResponse = users & RoleResponse
+export type UsersRoleResponse = UserRoleResponse
+
+export type RolesResponse = {
+    roles: RoleResponse[];
+}
