@@ -1,3 +1,5 @@
+"use client";
+
 import AllPromotionsUI from "src/components/ui/Modals/AllPromotionsUI/AllPromotionsUI";
 import styles from './promotions.module.css';
 import { useAuth } from "src/context/AuthContext";

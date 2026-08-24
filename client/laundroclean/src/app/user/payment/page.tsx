@@ -1,3 +1,5 @@
+"use client";
+
 import { FaSpinner } from "react-icons/fa";
 import ErrorState from "src/components/ui/ErrorState/ErrorState";
 import PaymentModal from "src/components/ui/Modals/CompanyUser/PaymentModal/PaymentModal";
