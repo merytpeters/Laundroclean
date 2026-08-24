@@ -1,3 +1,5 @@
+"use client";
+
 import Button from "src/components/ui/Button/Button";
 import styles from "./Promotions.module.css";
 import AllPromotionsUI from "../../AllPromotionsUI/AllPromotionsUI";

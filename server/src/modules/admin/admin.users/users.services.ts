@@ -1,5 +1,5 @@
 import prisma from '../../../config/prisma.js';
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Prisma as PrismaNamespace } from '@prisma/client';
 import { UserType } from '@prisma/client';
 import { ProcessingError } from '../../../middlewares/errorHandler.js';
@@ -7,6 +7,7 @@ import { NotFoundError, UnauthorizedError } from '../../../middlewares/errorHand
 import type { SafeProfileWithUser } from '../../../constants/safeUser.js';
 import { safeUserSelect } from '../../../constants/safeUser.js';
 import { getPagination } from '../../common/pagination/paginate.js';
+import type { PaginationMeta } from '../../../types/index.js';
 
 type ProfileWhereUniqueInput = Prisma.ProfileWhereUniqueInput
 type ProfileWhereInput = Prisma.ProfileWhereInput
@@ -14,14 +15,14 @@ type ProfileOrderByWithRelationInput = Prisma.ProfileOrderByWithRelationInput
 type UserWhereInput = Prisma.UserWhereInput
 
 export interface UserFilter {
-  status?: 'active' | 'inactive';
-  type?: 'client' | 'company';
-  search?: string;
+    status?: 'active' | 'inactive';
+    type?: 'CLIENT' | 'COMPANYUSER';
+    search?: string;
 }
 
 // get a user's profile by id - whether active or inactive
 const getProfile = async (where: ProfileWhereUniqueInput): Promise<SafeProfileWithUser | null> => {
-    try{
+    try {
         const profile = await prisma.profile.findUnique({
             where,
             include: {
@@ -49,7 +50,7 @@ const buildProfileWhere = (
 
     if (filter.type) {
         userFilter.type =
-        filter.type.toUpperCase() === 'CLIENT' ? UserType.CLIENT : UserType.COMPANYUSER;
+            filter.type.toUpperCase() === 'CLIENT' ? UserType.CLIENT : UserType.COMPANYUSER;
     }
 
     const where: ProfileWhereInput = {};
@@ -60,8 +61,8 @@ const buildProfileWhere = (
 
     if (filter.search) {
         where.OR = [
-        { user: { firstName: { contains: filter.search, mode: 'insensitive' } } },
-        { user: { lastName: { contains: filter.search, mode: 'insensitive' } } },
+            { user: { firstName: { contains: filter.search, mode: 'insensitive' } } },
+            { user: { lastName: { contains: filter.search, mode: 'insensitive' } } },
         ];
     }
 
@@ -72,36 +73,47 @@ const getUsers = async (
     filter?: UserFilter,
     orderBy?: ProfileOrderByWithRelationInput,
     paginationQuery?: { page?: number; limit?: number }
-): Promise<SafeProfileWithUser[]> => {
+): Promise<{ data: SafeProfileWithUser[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
     try {
-        const { skip, limit } = getPagination(paginationQuery || {});
+        const { page, skip, limit } = getPagination(paginationQuery || {});
 
-        const where = buildProfileWhere(filter);
+        const where: ProfileWhereInput = buildProfileWhere(filter) ?? {};
 
-        const profiles = await prisma.profile.findMany({
-        ...(where && { where }),
-        include: { user: { select: safeUserSelect } },
-        orderBy: orderBy ?? { createdAt: 'asc' },
-        skip,
-        take: limit,
-        });
+        const [profiles, total] = await Promise.all([
+            prisma.profile.findMany({
+                where,
+                include: { user: { select: safeUserSelect } },
+                orderBy: orderBy ?? { createdAt: 'asc' },
+                skip,
+                take: limit,
+            }),
+            prisma.profile.count({ where })
+        ]);
 
-        return profiles;
+        return {
+            data: profiles,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        };
     } catch (error: any) {
         throw new ProcessingError(error?.message || 'Failed to fetch users');
     }
 };
 
 export const setUserActiveStatus = async (userId: string, isActive: boolean) => {
-  try {
-    return prisma.user.update({
-      where: { id: userId },
-      data: { isActive },
-      select: safeUserSelect,
-    });
-  } catch (error: any) {
-    throw new ProcessingError(error?.message || 'Failed to update user status');
-  }
+    try {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { isActive, deletedAt: isActive ? null : new Date() },
+            select: safeUserSelect,
+        });
+    } catch (error: any) {
+        throw new ProcessingError(error?.message || 'Failed to update user status');
+    }
 };
 
 export const restoreUser = async (userId: string, actorRoleTitle?: string) => {

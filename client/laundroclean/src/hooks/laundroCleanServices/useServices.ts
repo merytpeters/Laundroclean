@@ -49,7 +49,7 @@ export function useGetServicesForPublic({ id, params }: PublicServiceQueryPayloa
 
 type CreateServiceVariables = {
     service: ServicePayload;
-    servicePrice?: ServicePricePayload
+    servicePrice?: ServicePricePayload;
 }
 
 

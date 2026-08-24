@@ -13,6 +13,7 @@ import ErrorState, { LoadingState } from "../ErrorState/ErrorState";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { ServiceDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import CurrencySelect from "../PaymentUI/CurrencySelect";
+import { formatDateTime } from "src/utils/globalTimezone";
 // import Pagination from "../Pagination";
 
 
@@ -986,18 +987,17 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                                     at:
                                                 </b>{" "}
                                                 {
-                                                    service.createdAt
+                                                   formatDateTime(service.createdAt)
                                                 }
                                             </span>
 
                                             {service.updatedAt && (
                                                 <span>
                                                     <b>
-                                                        Updated
-                                                        at:
+                                                        Last updated:
                                                     </b>{" "}
                                                     {
-                                                        service.updatedAt
+                                                        formatDateTime(service.updatedAt)
                                                     }
                                                 </span>
                                             )}
@@ -1009,7 +1009,7 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                                         at:
                                                     </b>{" "}
                                                     {
-                                                        service.deletedAt
+                                                        formatDateTime(service.deletedAt)
                                                     }
                                                 </span>
                                             )}

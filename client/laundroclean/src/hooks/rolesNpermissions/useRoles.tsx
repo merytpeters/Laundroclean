@@ -9,9 +9,6 @@ import {
     updateRoleService,
     deleteRoleService
 } from "src/services/roleService/role.service";
-
-import { useEffect, useState } from "react";
-import { SelectOption } from "src/components/ui/Forms/AuthForms";
 import { RolePayload, UsersRoleResponse } from "src/types/roles/role";
 import { useAuth } from "src/context/AuthContext";
 import { toast } from "sonner";

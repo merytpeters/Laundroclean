@@ -10,6 +10,7 @@ import { FilterSearch } from "../SearchBar/SearchBar";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
 import { LoadingState } from "../ErrorState/ErrorState";
+import { formatDateTime } from "src/utils/globalTimezone";
 
 interface CreateRoleFormProps {
     title: string;
@@ -127,8 +128,8 @@ export function RoleUsers({ roleId }: { roleId: number }) {
     if (isLoading) return <LoadingState />
 
     const userRoledata = data?.data?.role.users
-    console.log("Role data:", data?.data?.role)
-    console.log("User Role data:", userRoledata)
+    // console.log("Role data:", data?.data?.role)
+    // console.log("User Role data:", userRoledata)
 
     if (userRoledata?.length === 0) return (
         <tbody>
@@ -149,7 +150,7 @@ export function RoleUsers({ roleId }: { roleId: number }) {
                     <td className={styles.fullnametd}> <FaUserCircle /> {user.firstName} {user.lastName}</td>
                     <td className={styles.emailtd}>{user.email}</td>
                     <td>{user.isActive ? "Active": "Inactive"}</td>
-                    <td className={styles.joineddatetd}>{user.createdAt}</td>
+                    <td className={styles.joineddatetd}>{formatDateTime(user.createdAt)}</td>
                     <td><FiEdit color="blue" /> <FiTrash2 color="red" /> </td>
                 </tr>
             ))}

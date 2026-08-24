@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
-import { registerUserService, loginUserService, forgotPasswordService, resetPasswordService, logoutService } from "src/services/authService/auth.service";
+import { registerUserService, loginUserService, forgotPasswordService, resetPasswordService, logoutService, refreshSessionService } from "src/services/authService/auth.service";
 import { useRouter } from "next/navigation";
 import { clearAccessToken, setAccessToken } from "src/lib/api/auth-store";
 import { useAuth } from "src/context/AuthContext";
@@ -87,4 +87,30 @@ export function useLogout() {
             toast.error(error.message);
         }
     })
+}
+
+export function useRefreshSession() {
+    const { refetch, setAuthUser, setAuthProfile } = useAuth();
+
+    return useMutation({
+        mutationFn: refreshSessionService,
+
+        async onSuccess(data) {
+            setAccessToken(data?.accessToken ?? null);
+            if (data?.accessToken) {
+                await refetch();
+            } else {
+                clearAccessToken();
+                setAuthUser(null);
+                setAuthProfile(null);
+            }
+        },
+
+        onError(error) {
+            clearAccessToken();
+            setAuthUser(null);
+            setAuthProfile(null);
+            toast.error(error.message);
+        }
+    });
 }

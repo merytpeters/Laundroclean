@@ -1,6 +1,6 @@
 import { apiRequest } from "./requests";
 import { LoginPayload, RegisterPayload, ForgotPasswordPayload, ResetPasswordPayload } from "src/types/auth/auth";
-import { LoginResponseDto, AuthResponseDto } from "src/types/auth/auth.dto";
+import { LoginResponseDto, AuthResponseDto, RefreshTokenResponseDto } from "src/types/auth/auth.dto";
 
 export const authApi = {
     registerUser: (payload: RegisterPayload) =>
@@ -30,5 +30,10 @@ export const authApi = {
     logout: () =>
         apiRequest<string>("auth/logout", {
             method: "POST"
+        }),
+
+    refreshToken: () =>
+        apiRequest<RefreshTokenResponseDto>("/auth/refresh", {
+            method: "POST",
         })
 };

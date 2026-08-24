@@ -1,10 +1,22 @@
 .userinfocontainer {
     display: flex;
     flex-direction: column;
-    width: 95%;
+    width: 100%;
+    gap: 3em;
+    
+}
+
+.userinfodetailbox {
+    display: flex;
+    gap: 1em;
+}
+
+.infomain {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     padding: 2em 3em 2em 3em;
-    gap: 1em;
     border-radius: 8px;
 }
 
@@ -28,18 +40,26 @@
 
 .contactInfo {
     display: flex;
-    gap: 2em 20em;
+    gap: 1em 4em;
     width: 90%;
     margin-top: 1em;
     flex-wrap: wrap;
 }
 
+.contactInfo span {
+    flex: 0 0 calc((100% - 128px) / 3);
+}
+
 .userAddresses {
     display: flex;
     flex-wrap: wrap;
-    gap: 2em 18em;
+    gap: 1em 4em;
     width: 90%;
     margin-top: 2em;
+}
+
+.userAddresses span {
+    flex: 0 0 calc((100% - 128px) / 3);
 }
 
 .morebtn {
@@ -96,15 +116,20 @@
 }
 
 .statustag {
-    background-color: red;
     height: fit-content;
     padding: 0.5em;
     width: fit-content;
     border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
 }
 
-.statustag.active {
-    color: green;
+.statustagactive {
+    background-color: green;
+}
+
+.statustaginactive {
+    background-color: red;
 }
 
 .statustagbtn {
@@ -115,8 +140,12 @@
 
 .timestamps {
     display: flex;
-    gap: 18em;
+    gap: 1em 1em;
     margin-top: 2em;
+}
+
+.timestamps span {
+    flex: 0 0 calc((100% - 128px) / 3);
 }
 
 .bookingSummary {

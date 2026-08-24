@@ -1,4 +1,4 @@
-import { getAccessToken } from "./auth-store";
+import { clearAccessToken, getAccessToken, setAccessToken } from "./auth-store";
 
 export interface ApiResponse<T> {
     success: boolean;
@@ -9,9 +9,35 @@ export interface ApiResponse<T> {
 
 interface CustomRequestInit extends RequestInit {
     params?: Record<string, unknown> | object;
+    skipAuthRetry?: boolean;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+
+const refreshAccessToken = async (): Promise<boolean> => {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const json = await response.json() as ApiResponse<{ accessToken: string }>;
+
+        if (!response.ok || !json.success || !json.data?.accessToken) {
+            clearAccessToken();
+            return false;
+        }
+
+        setAccessToken(json.data.accessToken);
+        return true;
+    } catch (_err) {
+        clearAccessToken();
+        return false;
+    }
+};
 
 export async function apiRequest<T>(
     endpoint: string,
@@ -68,6 +94,22 @@ export async function apiRequest<T>(
         }
 
         if (!response.ok) {
+            const shouldRetryWithRefresh =
+                response.status === 401 &&
+                !!token &&
+                !fetchOptions.skipAuthRetry &&
+                cleanEndpoint !== 'auth/refresh';
+
+            if (shouldRetryWithRefresh) {
+                const refreshed = await refreshAccessToken();
+                if (refreshed) {
+                    return apiRequest<T>(endpoint, {
+                        ...options,
+                        skipAuthRetry: true,
+                    });
+                }
+            }
+
             return {
                 success: false,
                 data: null,

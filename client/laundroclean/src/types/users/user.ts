@@ -8,7 +8,7 @@ export interface BaseUser {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;
-    isActive?: boolean;
+    isActive: boolean;
 }
 
 export interface Client extends BaseUser {
@@ -17,8 +17,9 @@ export interface Client extends BaseUser {
 
 export interface CompanyUser extends BaseUser {
     type: "COMPANYUSER";
-    uiRole: Role // this represents ui role for component display
+    uiRole?: Role // this represents ui role for component display
     role?: {
+        id: number;
         title: string;
         level?: number;
         permissions?: string[];
@@ -50,6 +51,12 @@ export type UserProfileResponse = {
     user: User;
     profile: ProfileResponse;
 }
+
+export type adminViewUserResponse = {
+    user: User;
+}
+
+export type AdminViewUserProfileResponse = adminViewUserResponse & ProfileResponse
 
 export type UserPayload = {
     email?: string;
@@ -98,7 +105,7 @@ export interface GetUsersParams {
     page?: number;
     limit?: number;
     status?: "active" | "inactive";
-    type?: "client" | "company";
+    type?: 'CLIENT' | 'COMPANYUSER';
     search?: string;
 }
 

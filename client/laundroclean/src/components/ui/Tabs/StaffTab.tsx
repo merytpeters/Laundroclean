@@ -186,7 +186,7 @@ export default function StaffTab() {
 
 
             <section className={styles.staffInfodetails}>
-                <UserInfoUI />
+                <UserInfoUI usertype="COMPANYUSER" />
             </section>
 
 

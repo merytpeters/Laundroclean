@@ -1,10 +1,14 @@
 import prisma from '../../config/prisma.js';
 import { Prisma } from '@prisma/client';
 import { type User, type Profile, TokenType } from '@prisma/client';
-import { NotFoundError, ConflictError, ValidationError } from '../../middlewares/errorHandler.js';
+import { NotFoundError, ConflictError, ValidationError, UnauthenticatedError } from '../../middlewares/errorHandler.js';
 import authUtils from './auth.utils.js';
-import tokenService, { refreshToken } from '../token/token.service.js';
+import tokenService from '../token/token.service.js';
 import type { SignupSchema } from '../../validation/auth/auth.validation.js';
+import config from '../../config/config.js';
+import ms from 'ms';
+
+const REFRESH_TOKEN_EXPIRES_MS = ms(config.REFRESH_TOKEN_EXPIRES || '7d');
 
 export type UserWhereInput = Prisma.UserWhereInput
 export type UserWhereUniqueInput = Prisma.UserWhereUniqueInput
@@ -105,6 +109,7 @@ const registerUser = async (
 
     const accessToken = await tokenService.createAccessToken(user.id);
     const refreshToken = await tokenService.createRefreshToken(user.id);
+    await tokenService.saveRefreshToken(user.id, refreshToken);
 
     const { password: _password, ...safeUser } = user;
 
@@ -159,6 +164,70 @@ const logoutUser = async (userId: string): Promise<string> => {
     return message;
 };
 
+const refreshSession = async (
+    incomingRefreshToken: string
+): Promise<{ accessToken: string; refreshToken: string }> => {
+    let payload;
+    try {
+        payload = tokenService.verifyToken(incomingRefreshToken);
+    } catch (_err) {
+        throw new UnauthenticatedError('Invalid refresh token');
+    }
+
+    if (payload.tokenType !== TokenType.REFRESH) {
+        throw new UnauthenticatedError('Invalid refresh token type');
+    }
+
+    const storedToken = await prisma.token.findUnique({
+        where: { token: incomingRefreshToken },
+        include: { user: { include: { role: true } } },
+    });
+
+    if (!storedToken || storedToken.type !== TokenType.REFRESH || !storedToken.valid) {
+        throw new UnauthenticatedError('Refresh token not recognized');
+    }
+
+    if (storedToken.expiresAt < new Date()) {
+        await prisma.token.update({
+            where: { id: storedToken.id },
+            data: { valid: false },
+        });
+        throw new UnauthenticatedError('Refresh token has expired');
+    }
+
+    if (storedToken.userId !== payload.id) {
+        throw new UnauthenticatedError('Invalid refresh token subject');
+    }
+
+    if (!storedToken.user || !storedToken.user.isActive) {
+        throw new UnauthenticatedError('User account is inactive');
+    }
+
+    const newAccessToken = await tokenService.createAccessToken(storedToken.userId);
+    const newRefreshToken = await tokenService.createRefreshToken(storedToken.userId);
+
+    await prisma.$transaction([
+        prisma.token.update({
+            where: { id: storedToken.id },
+            data: { valid: false },
+        }),
+        prisma.token.create({
+            data: {
+                userId: storedToken.userId,
+                token: newRefreshToken,
+                type: TokenType.REFRESH,
+                expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
+                valid: true,
+            },
+        }),
+    ]);
+
+    return {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+    };
+};
+
 
 export default {
     findUser,
@@ -167,5 +236,6 @@ export default {
     registerUser,
     loginUser,
     findUserByEmail,
-    logoutUser
+    logoutUser,
+    refreshSession
 };

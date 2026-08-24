@@ -54,7 +54,7 @@ type PaymentProps = {
 
 export default function PaymentModal({ user }: PaymentProps) {
     const isCompany = user?.type === "COMPANYUSER";
-    console.log(user);
+    // console.log(user);
 
     const tabs = paymentTabs.filter((tab) => {
         return isCompany

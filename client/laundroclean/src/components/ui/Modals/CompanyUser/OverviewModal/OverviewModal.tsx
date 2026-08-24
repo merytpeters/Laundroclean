@@ -14,6 +14,7 @@ import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin
 
 export default function Overview() {
     const { user } = useCompanyUserMenu();
+    if (!user.uiRole) return null;
 
     const config = roleConfig[user.uiRole];
 

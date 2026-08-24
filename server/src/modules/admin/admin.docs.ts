@@ -498,7 +498,7 @@
  *         name: type
  *         schema:
  *           type: string
- *           enum: [client, company]
+ *           enum: [CLIENT, COMPANYUSER]
  *       - in: query
  *         name: search
  *         schema:

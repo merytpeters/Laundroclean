@@ -7,6 +7,7 @@ import { DeliveryStatMeta } from "src/components/ui/StatMeta";
 
 export default function DeliveryModal () {
     const { user } = useCompanyUserMenu();
+    if (!user.uiRole) return null;
     
     const config = roleConfig[user.uiRole];
     return (

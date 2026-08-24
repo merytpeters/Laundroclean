@@ -9,6 +9,7 @@ export type UserDto = {
     type: "CLIENT" | "COMPANYUSER";
     roleId?: number;
     role?: {
+        id: number;
         title: string;
         level?: number;
         permissions?: string[];
@@ -16,7 +17,7 @@ export type UserDto = {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;
-    isActive?: boolean;
+    isActive: boolean;
 };
 
 export function mapUser(dto: UserDto): User {
@@ -25,7 +26,15 @@ export function mapUser(dto: UserDto): User {
         email: dto.email,
         firstName: dto.firstName,
         lastName: dto.lastName,
+        createdAt: dto.createdAt,
+        updatedAt: dto.updatedAt,
+        deletedAt: dto.deletedAt,
+        isActive: dto.isActive
     };
+
+    const companyuserrole = {
+        role: dto.role
+    }
 
     if (dto.type === "CLIENT") {
         return {
@@ -36,6 +45,7 @@ export function mapUser(dto: UserDto): User {
 
     return {
         ...base,
+        ...companyuserrole,
         type: "COMPANYUSER",
         uiRole: mapRole(dto.role?.title),
     };
@@ -60,7 +70,7 @@ export type ProfileDto = {
 }
 
 type user = {
-   user: UserDto
-} 
+    user: UserDto;
+}
 
 export type UserProfileDto = user & ProfileDto

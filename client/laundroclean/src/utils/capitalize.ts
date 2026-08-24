@@ -1,5 +1,5 @@
-export function capitalilzeFirstLetter(str: string) {
+export function capitalilzeFirstLetter(str?: string) {
     if (!str) return '';
-    str = str.toLowerCase()
-    return str.charAt(0).toUpperCase() + str.slice(1)
+    const cleaned = str.replace(/^["']|["']$/g, "");
+    return cleaned.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }

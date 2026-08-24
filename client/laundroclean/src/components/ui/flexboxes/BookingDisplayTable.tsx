@@ -7,6 +7,7 @@ import { BookingDetail } from "src/types/booking/bookingOrder";
 import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
 import { useState } from "react";
+import { formatDateTime } from "src/utils/globalTimezone";
 
 
 const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -20,6 +21,7 @@ export default function BookingDisplayTable() {
         STAFF: "/dashboard"
     }
 
+    if (!user.uiRole) return null;
     const href = roleRoutes[user.uiRole] || "/dashboard";
 
     return (
@@ -233,17 +235,17 @@ export function BookingDetailsOverlay({
                                 <span className={styles.timestamps}>
                                     <span>
                                         {item.createdAt && (
-                                            <span className={styles.itemspan}><strong>Created at: </strong> {item.createdAt}</span>
+                                            <span className={styles.itemspan}><strong>Created at: </strong> {formatDateTime(item.createdAt)}</span>
                                         )}
                                     </span>
                                     <span>
                                         {item.updatedAt && (
-                                            <span className={styles.itemspan}><strong>Updated at: </strong> {item.updatedAt}</span>
+                                            <span className={styles.itemspan}><strong>Updated at: </strong> {formatDateTime(item.updatedAt)}</span>
                                         )}
                                     </span>
                                     <span>
                                         {item.deletedAt && (
-                                            <span className={styles.itemspan}><strong>Deleted at: </strong> {item.deletedAt}</span>
+                                            <span className={styles.itemspan}><strong>Deleted at: </strong> {formatDateTime(item.deletedAt)}</span>
                                         )}
                                     </span>
                                 </span>

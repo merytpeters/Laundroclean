@@ -49,6 +49,15 @@ export function AuthProvider({
         setAuthProfile(data.profile);
     }, [data]);
 
+    useEffect(() => {
+        if (isLoading) return;
+        if (data) return;
+        if (hasAccessToken()) return;
+
+        setAuthUser(null);
+        setAuthProfile(null);
+    }, [data, isLoading]);
+
     const hasPermission = useCallback(
         (permission: Permission): boolean => {
             // Clients don't use role permissions

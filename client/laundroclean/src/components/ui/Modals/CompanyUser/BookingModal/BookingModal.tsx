@@ -13,9 +13,10 @@ import BookingForm from "src/components/ui/Forms/BookingForm";
 
 export default function BookingModal () {
     const { user } = useCompanyUserMenu();
-    
-    const config = roleConfig[user.uiRole];
     const [showForm, setShowForm] = useState(false);
+    if (!user.uiRole) return null;
+    const config = roleConfig[user.uiRole];
+    
     return (
         <div className={styles.bookingmodalcontainer}>
             <section className={styles.bookingrowgrid}>

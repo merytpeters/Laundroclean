@@ -6,6 +6,7 @@ import authUtils from './auth.utils.js';
 import { TokenType } from '@prisma/client';
 import config from '../../config/config.js';
 import ms from 'ms';
+import { UnauthenticatedError } from '../../middlewares/errorHandler.js';
 
 
 const refreshTokenCookieOptions = {
@@ -21,6 +22,16 @@ const refreshTokenCookieClearingOptions = {
     sameSite: 'lax' as const,
     secure: config.NODE_ENV === 'production',
     path: '/',
+};
+
+const getCookieValue = (cookieHeader: string | undefined, key: string): string | null => {
+    if (!cookieHeader) return null;
+
+    const entries = cookieHeader.split(';').map((item) => item.trim());
+    const match = entries.find((item) => item.startsWith(`${key}=`));
+    if (!match) return null;
+
+    return decodeURIComponent(match.slice(key.length + 1));
 };
 
 const clientRegister = asyncHandler(async (req, res) => {
@@ -109,9 +120,30 @@ const logout = asyncHandler(async (req, res) => {
     });
 });
 
+const refresh = asyncHandler(async (req, res) => {
+    const refreshToken = getCookieValue(req.headers.cookie, 'refreshToken');
+
+    if (!refreshToken) {
+        throw new UnauthenticatedError('Refresh token is required');
+    }
+
+    const session = await authService.refreshSession(refreshToken);
+
+    res.cookie('refreshToken', session.refreshToken, refreshTokenCookieOptions);
+
+    return res.status(200).json({
+        success: true,
+        data: {
+            accessToken: session.accessToken,
+        },
+        message: 'Token refreshed successfully',
+    });
+});
+
 export default {
     clientRegister,
     login,
     resetPassword,
-    logout
+    logout,
+    refresh
 };

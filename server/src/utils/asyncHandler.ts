@@ -13,7 +13,7 @@ export interface PaginationQuery {
 
 export interface UserQuery extends PaginationQuery {
   status?: 'active' | 'inactive';
-  type?: 'client' | 'company';
+  type?: 'CLIENT' | 'COMPANYUSER';
 }
 
 export interface ServiceQuery extends PaginationQuery {
