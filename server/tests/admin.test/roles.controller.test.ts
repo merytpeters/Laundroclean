@@ -45,7 +45,7 @@ describe('Roles Controller', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         success: true,
-        data: expect.objectContaining({ roles: expect.any(Array) }),
+        data: expect.any(Array),
       })
     );
   });

@@ -11,7 +11,7 @@ import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundroclean
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { RolePayload } from "src/types/roles/role";
 import { RoleDto, RolesDto, UserRoleDto } from "src/types/roles/role.dto";
-import { GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
+import { GetUsersParams, PaginationParamQuery, UpdateUserStatusPayload } from "src/types/users/user";
 import { UserDto, UserProfileDto } from "src/types/users/user.dto";
 
 export const adminApi = {
@@ -27,8 +27,11 @@ export const adminApi = {
             body: JSON.stringify(payload),
         }),
 
-    getRoles: () =>
-        apiRequest<RolesDto>("/admin/company-roles"),
+    getRoles: (params?: PaginationParamQuery) =>
+        apiRequest<RolesDto>("/admin/company-roles", {
+            method: "GET",
+            params: params,
+        }),
 
     getUsersByRole: (id: number) =>
         apiRequest<UserRoleDto>(`/admin/company-roles/${id}`),
@@ -39,7 +42,7 @@ export const adminApi = {
             body: JSON.stringify(payload),
         }),
 
-    deleteRole: (id: string) =>
+    deleteRole: (id: number) =>
         apiRequest<string>(`/admin/company-roles/${id}`, {
             method: "DELETE",
         }),

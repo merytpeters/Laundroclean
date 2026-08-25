@@ -1,6 +1,7 @@
 import { adminApi } from "src/lib/api/adminApi";
 import { RolePayload, UsersRoleResponse, RoleResponse, RolesResponse } from "src/types/roles/role";
 import { ApiResponse } from "src/lib/api/requests";
+import { PaginationParamQuery } from "src/types/users/user";
 
 
 export async function createRoleService(payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
@@ -12,8 +13,8 @@ export async function createRoleService(payload: RolePayload): Promise<ApiRespon
     return res;
 }
 
-export async function getRolesService(): Promise<ApiResponse<RolesResponse> | null> {
-    const res = await adminApi.getRoles();
+export async function getRolesService(params?: PaginationParamQuery): Promise<ApiResponse<RolesResponse> | null> {
+    const res = await adminApi.getRoles(params);
 
     if (!res.success || !res.data) {
         return null;
@@ -42,7 +43,7 @@ export async function updateRoleService(id: string, payload: RolePayload): Promi
     return res
 }
 
-export async function deleteRoleService(id: string): Promise<ApiResponse<string> | null> {
+export async function deleteRoleService(id: number): Promise<ApiResponse<string> | null> {
     const res = await adminApi.deleteRole(id);
 
    if  (!res.success) return null;

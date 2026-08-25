@@ -22,12 +22,12 @@ export function useAdminGetUsers({ type }: GetUserTypeVariable, params?: GetUser
     return useQuery<ApiResponse<UserProfileDto[]> | null>({
         queryKey: adminUseUserKeys.list({ ...params, type }),
         queryFn: () => adminGetUsersService(params),
-        select: (users) => {
-            if (!users) return null;
+        select: (result) => {
+            if (!result) return null;
 
             return {
-                ...users,
-                data: users.data?.filter(
+                ...result,
+                data: result.data?.filter(
                     (user) => user.user.type === type
                 ) ?? [],
             };

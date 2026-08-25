@@ -34,6 +34,8 @@ export default function Overview() {
         subheading: config.clientInfoCardMessage,
     }
 
+    // clientinfodetails will come from calendar
+
     
     return (
         <div className={styles.overviewmodalcontainer}>

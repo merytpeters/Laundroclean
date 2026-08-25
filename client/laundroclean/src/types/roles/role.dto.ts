@@ -25,6 +25,4 @@ type UsersRoleDto = {
 
 export type UserRoleDto =  UsersRoleDto
 
-export type RolesDto = {
-    roles: RoleDto[];
-}
+export type RolesDto = RoleDto[];

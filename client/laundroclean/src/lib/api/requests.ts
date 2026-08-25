@@ -1,10 +1,11 @@
+import { Meta } from "src/types/shared";
 import { clearAccessToken, getAccessToken, setAccessToken } from "./auth-store";
 
 export interface ApiResponse<T> {
     success: boolean;
     data: T | null;
     message?: string;
-    meta?: T | null;
+    meta?: Meta | null;
 }
 
 interface CustomRequestInit extends RequestInit {

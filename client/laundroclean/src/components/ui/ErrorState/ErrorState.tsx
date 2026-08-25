@@ -11,14 +11,14 @@ export default function ErrorState({
     onRetry,
 }: StateProps) {
     return (
-        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh"}}>
+        <section style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
             <h2>Oops!</h2>
             <p>{message}</p>
 
             {onRetry && (
-                <Button type="button" onClick={onRetry} text="Try Again"/>
+                <Button type="button" onClick={onRetry} text="Try Again" />
             )}
-        </div>
+        </section>
     )
 }
 
@@ -26,9 +26,28 @@ export function LoadingState({
     message = "Your data is loading..."
 }: StateProps) {
     return (
-        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh"}}>
+        <span style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
             <p>{message}</p>
             <FaSpinner />
-        </div>
+        </span>
+    )
+}
+
+export function TableLoadingState({
+    message = "Your data is loading..."
+}: StateProps) {
+    return (
+        <tbody style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+            <tr>
+                <td>
+                    <div>
+                        <p>{message}</p>
+                        <FaSpinner />
+                    </div>
+
+                </td>
+            </tr>
+
+        </tbody>
     )
 }

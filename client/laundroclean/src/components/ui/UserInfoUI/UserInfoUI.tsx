@@ -8,14 +8,25 @@ import { LoadingState } from "../ErrorState/ErrorState";
 import { capitalilzeFirstLetter } from "src/utils/capitalize";
 import { UpdateUserStatusPayload } from "src/types/users/user";
 import { formatDateTime } from "src/utils/globalTimezone";
+import Pagination from "../Pagination/Pagination";
+import { useSearchParams } from "next/navigation";
 
 
-interface UserInfoUIProps {
+export interface UserInfoUIProps {
     usertype: "CLIENT" | "COMPANYUSER";
 }
 
 export default function UserInfoUI({ usertype }: UserInfoUIProps) {
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const page = Number(searchParams.get('page')) || 1;
+    const limit = Number(searchParams.get('limit')) || 5;
+    const search = searchParams.get('search') || '';
+    const queryParams = {
+        page,
+        limit,
+        search
+    }
     const updateUserStatusMutation = useAdminUpdateUserStatus();
 
     useEffect(() => {
@@ -36,7 +47,7 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
         updateUserStatusMutation.mutate({ id, payload });
     }
 
-    const { data, isLoading, isPending, isError, error } = useAdminGetUsers({ type: usertype });
+    const { data, isLoading, isPending, isError, error } = useAdminGetUsers({ type: usertype }, queryParams);
     /*console.log("COMPONENT:", {
         usertype,
         data,
@@ -46,6 +57,8 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
         error,
     });
     console.log(data)*/
+    const metaData = data?.meta
+    // console.log(metaData?.limit)
     const userInfoData = data?.data
     // console.log("type:", usertype);
     // console.log("Users: ", userInfoData)
@@ -79,7 +92,7 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
 
                                 <span className={styles.usericon}>
                                     <FaUserCircle
-                                        size={60}
+                                        size={35}
                                         className={styles.avataricon}
                                     />
                                 </span>
@@ -169,7 +182,7 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
 
                                     <span>
                                         <FaUserCircle
-                                            size={80}
+                                            size={60}
                                             className={styles.avataricon}
                                         />
                                     </span>
@@ -297,6 +310,9 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
                     )}
                 </span>
             ))}
+            <span className="pagination-global"><Pagination
+                totalPages={metaData?.totalPages ?? 1}
+            /></span>
         </section>
     );
 }

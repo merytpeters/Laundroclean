@@ -41,6 +41,4 @@ type UserRoleResponse = {
 
 export type UsersRoleResponse = UserRoleResponse
 
-export type RolesResponse = {
-    roles: RoleResponse[];
-}
+export type RolesResponse = RoleResponse[];

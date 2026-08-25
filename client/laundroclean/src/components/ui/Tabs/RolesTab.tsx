@@ -9,8 +9,10 @@ import { useCreateRole, useRole, useRoles } from "src/hooks/rolesNpermissions/us
 import { FilterSearch } from "../SearchBar/SearchBar";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
-import { LoadingState } from "../ErrorState/ErrorState";
+import { LoadingState, TableLoadingState } from "../ErrorState/ErrorState";
 import { formatDateTime } from "src/utils/globalTimezone";
+import Pagination from "../Pagination/Pagination";
+import { useSearchParams } from "next/navigation";
 
 interface CreateRoleFormProps {
     title: string;
@@ -125,7 +127,7 @@ export function CreateRoleForm({
 
 export function RoleUsers({ roleId }: { roleId: number }) {
     const { data, isLoading } = useRole(roleId);
-    if (isLoading) return <LoadingState />
+    if (isLoading) return <TableLoadingState />
 
     const userRoledata = data?.data?.role.users
     // console.log("Role data:", data?.data?.role)
@@ -149,7 +151,7 @@ export function RoleUsers({ roleId }: { roleId: number }) {
                     </td>
                     <td className={styles.fullnametd}> <FaUserCircle /> {user.firstName} {user.lastName}</td>
                     <td className={styles.emailtd}>{user.email}</td>
-                    <td>{user.isActive ? "Active": "Inactive"}</td>
+                    <td>{user.isActive ? "Active" : "Inactive"}</td>
                     <td className={styles.joineddatetd}>{formatDateTime(user.createdAt)}</td>
                     <td><FiEdit color="blue" /> <FiTrash2 color="red" /> </td>
                 </tr>
@@ -160,85 +162,222 @@ export function RoleUsers({ roleId }: { roleId: number }) {
     )
 }
 
+type RolesTabProps = {
+    toggleToPermissionTab: (
+        roleId: number
+    ) => void;
+};
 
-export function RoleList() {
+export function RoleList({
+    toggleToPermissionTab,
+}: RolesTabProps) {
+    const searchParams = useSearchParams();
 
-    const { data, isLoading } = useRoles()
+    const page =
+        Number(
+            searchParams.get("rolesPage")
+        ) || 1;
 
-    if (isLoading) return <LoadingState />
+    const limit =
+        Number(
+            searchParams.get("rolesLimit")
+        ) || 4;
 
-    const rolesObj = data?.data?.roles ?? [];
+    const search =
+        searchParams.get("search") || "";
 
+    const queryParams = {
+        page,
+        limit,
+        search,
+    };
+
+    const {
+        data,
+        isLoading,
+    } = useRoles(queryParams);
+
+    if (isLoading) {
+        return <LoadingState />;
+    }
+
+    const rolesObj = data?.data ?? [];
+    const metaData = data?.meta;
 
     return (
         <section className={styles.roleList}>
             <span className={styles.filterrole}>
                 <FilterSearch />
             </span>
-            <section className={styles.roleListmapsection}>
-                {rolesObj?.map((roleObj) => (
 
-                    <section className={styles.rolelistitem} key={roleObj.id}>
-                        <span className={styles.roleinfo}>
+            <section
+                className={
+                    styles.roleListmapsection
+                }
+            >
+                {rolesObj.map((roleObj) => (
+                    <section
+                        className={
+                            styles.rolelistitem
+                        }
+                        key={roleObj.id}
+                    >
+                        <span
+                            className={
+                                styles.roleinfo
+                            }
+                        >
                             <b>
-                                <span>{roleObj.title}</span>
-                                <span>Level: {roleObj.level}</span>
-                                <span className={styles.rolepermissionslist}>
-                                    {roleObj.permissions?.length !== undefined && (
+                                <span>
+                                    {roleObj.title}
+                                </span>
+
+                                <span>
+                                    Level:{" "}
+                                    {roleObj.level}
+                                </span>
+
+                                <span
+                                    className={
+                                        styles.rolepermissionslist
+                                    }
+                                >
+                                    {roleObj.permissions
+                                        ?.length !==
+                                        undefined && (
                                         <button
                                             type="button"
-                                            //onClick={}  go to permissions tab
-                                            style={{ backgroundColor: "#fff", cursor: "pointer", border: "none", fontSize: "small" }}
+                                            style={{
+                                                backgroundColor:
+                                                    "#fff",
+                                                cursor:
+                                                    "pointer",
+                                                border:
+                                                    "none",
+                                                fontSize:
+                                                    "small",
+                                            }}
+                                            onClick={() =>
+                                                toggleToPermissionTab(
+                                                    roleObj.id
+                                                )
+                                            }
                                         >
-                                            See all permissions for this role
+                                            See all
+                                            permissions
+                                            for this
+                                            role
                                         </button>
                                     )}
                                 </span>
                             </b>
                         </span>
+
                         <table>
                             <thead>
-                                <tr className={styles.tableheader}>
+                                <tr
+                                    className={
+                                        styles.tableheader
+                                    }
+                                >
                                     <th>
-                                        <input type="checkbox" />
+                                        <input
+                                            type="checkbox"
+                                        />
                                     </th>
-                                    <th> Full Name</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Joined Date</th>
-                                    <th>Actions</th>
+
+                                    <th>
+                                        Full Name
+                                    </th>
+
+                                    <th>
+                                        Email
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Joined Date
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
-                            <RoleUsers key={roleObj.id} roleId={roleObj.id} />
+
+                            <RoleUsers
+                                roleId={
+                                    roleObj.id
+                                }
+                            />
                         </table>
+
                         <hr />
                     </section>
                 ))}
 
+                <span className="pagination-global">
+                    <Pagination
+                        totalPages={
+                            metaData?.totalPages ??
+                            1
+                        }
+                        pageParam="rolesPage"
+                    />
+                </span>
             </section>
-
         </section>
-    )
+    );
 }
 
+export default function RolesTab({
+    toggleToPermissionTab,
+}: RolesTabProps) {
+    const [isCreateRole, setIsCreateRole] =
+        useState<boolean>(false);
 
-export default function RolesTab() {
-    const [isCreateRole, setIsCreateRole] = useState<boolean>(false);
-
-    const createRoleMutation = useCreateRole();
+    const createRoleMutation =
+        useCreateRole();
 
     return (
-        <section className={styles.roletabContainer}>
+        <section
+            className={
+                styles.roletabContainer
+            }
+        >
             {isCreateRole && (
                 <span>
+                    <span
+                        className={
+                            styles.createformOverlay
+                        }
+                    />
 
-                    <span className={styles.createformOverlay}></span>
-
-                    <span className={styles.createformsection}>
-
-
-                        <span className={styles.cancelbtnspan}>
-                            <Button text="Cancel" type="reset" onClick={() => setIsCreateRole(false)} className={styles.cancelbtn} />
+                    <span
+                        className={
+                            styles.createformsection
+                        }
+                    >
+                        <span
+                            className={
+                                styles.cancelbtnspan
+                            }
+                        >
+                            <Button
+                                text="Cancel"
+                                type="reset"
+                                onClick={() =>
+                                    setIsCreateRole(
+                                        false
+                                    )
+                                }
+                                className={
+                                    styles.cancelbtn
+                                }
+                            />
                         </span>
 
                         <CreateRoleForm
@@ -246,16 +385,27 @@ export default function RolesTab() {
                             subtitle="Create a role and assign its permissions."
                             onSubmit={(data) => {
                                 createRoleMutation.mutate(
-                                    { payload: data },
                                     {
-                                        onSuccess: () => {
-                                            setIsCreateRole(false);
-                                        }
+                                        payload:
+                                            data,
+                                    },
+                                    {
+                                        onSuccess:
+                                            () => {
+                                                setIsCreateRole(
+                                                    false
+                                                );
+                                            },
                                     }
                                 );
                             }}
                             actions={
-                                <button type="submit" className={styles.createrolebtn}>
+                                <button
+                                    type="submit"
+                                    className={
+                                        styles.createrolebtn
+                                    }
+                                >
                                     Create Role
                                 </button>
                             }
@@ -264,15 +414,35 @@ export default function RolesTab() {
                 </span>
             )}
 
-            <h3> All Roles
-                <span className={styles.actionbtn}>
-                    <Button text="Create new role" className={styles.newrolebtn} onClick={() => setIsCreateRole(true)} />
-                </span></h3>
+            <h3>
+                All Roles
+
+                <span
+                    className={
+                        styles.actionbtn
+                    }
+                >
+                    <Button
+                        text="Create new role"
+                        className={
+                            styles.newrolebtn
+                        }
+                        onClick={() =>
+                            setIsCreateRole(
+                                true
+                            )
+                        }
+                    />
+                </span>
+            </h3>
+
             <section>
-                <RoleList />
+                <RoleList
+                    toggleToPermissionTab={
+                        toggleToPermissionTab
+                    }
+                />
             </section>
-
-
         </section>
-    )
+    );
 }

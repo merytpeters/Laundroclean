@@ -101,12 +101,15 @@ export type UpdatedUserResponse = {
     roleId?: number;
 }
 
-export interface GetUsersParams {
+export interface PaginationParamQuery {
     page?: number;
     limit?: number;
+    search?: string;
+}
+
+export interface GetUsersParams extends PaginationParamQuery {
     status?: "active" | "inactive";
     type?: 'CLIENT' | 'COMPANYUSER';
-    search?: string;
 }
 
 export type UpdateUserStatusPayload = {

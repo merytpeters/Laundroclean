@@ -1,7 +1,7 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0 10px;
   width: 100%;
 }
 
@@ -14,16 +14,17 @@
 .dropdown {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  width: 100%;
 }
 
-.dropdown button {
+.dropdownButton {
   display: flex;
   width: 100%;
   padding: 0.3em 1em;
   justify-content: space-between;
   background-color: #f4f0f0;
   border: #ccc 1px solid;
+  left: 0;
 }
 
 .dropdownMenu {
@@ -68,70 +69,81 @@
 }
 
 .roleobjdisplay {
-    display: flex;
-    flex-direction: column;
-    padding: 0 2em;
-    gap: 1em;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2em;
+  gap: 1em;
 }
 
 .rolepermissionssection b {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .permissionsTabContainer hr {
-    margin-top: 3em;
-    width: 100%;
+  margin-top: 3em;
+  width: 100%;
 }
 
 .permissionitemsection {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
 .permissionitemsection button {
-    margin-top: 2em;
-    padding: 0.8em 1em;
-    border: 1px solid;
-    width: fit-content;
-    border-radius: 8px;
-    color: white;
-    background-color: #313131;
-    gap: 4em;
+  position: relative;
+  margin-top: 2em;
+  padding: 0.5em 0.8em;
+  border: none;
+  width: fit-content;
+  border-radius: 4px;
+  color: white;
+  background-color: blue;
+  gap: 4em;
+  cursor: pointer;
+  font-size: small;
+  margin-top: 10px;
 }
 
 .permissionitemsection button:hover {
-    background-color: white !important;
-    color: #333;
-    border: #333 1px solid !important;
-    border-radius: 8px;
+  background-color: white !important;
+  color: #333;
+  border: #333 1px solid !important;
+  border-radius: 8px;
 }
 
 .permissionsitem {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+.viewmoreperm {
+  left: 70%;
+  margin-bottom: 8px;
 }
 
 .addmoreperm {
-    width: 25% !important;
+  width: 60% !important;
 }
 
 .actionbtns {
-    display: flex;
-    gap: 2em;
+  display: flex;
+  gap: 1em;
+  position: relative;
+  left: 71%;
 }
 
 .actionbtns button {
-    padding: 0.7em 1.5em;
-    border: none;
-    border-radius: 8px;
-    font-size: smaller;
+  padding: 0.7em 1.5em;
+  border: none;
+  border-radius: 8px;
+  font-size: smaller;
 }
 
 .actionbtns button:hover {
-    background-color: #ccc !important;
-    color: #333;
+  background-color: #ccc !important;
+  color: #333;
 }

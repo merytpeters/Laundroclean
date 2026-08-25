@@ -20,8 +20,8 @@ export default function StaffTab() {
 
     const [roles, setData] = useState<SelectOption[]>([]);
     useEffect(() => {
-        if (data && data.data && data.data.roles) {
-            const formattedRoleData = data.data.roles.map((role) => ({
+        if (data && data.data && data.data) {
+            const formattedRoleData = data.data.map((role) => ({
                 label: capitalilzeFirstLetter(role.title),
                 value: role.title.toLowerCase()
             }))

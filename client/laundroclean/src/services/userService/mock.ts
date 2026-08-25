@@ -1,32 +1,37 @@
 export const clientInfoData = [
     {
-        id: "1",      
-        customerName: "Michael Doe",
+        id: "1",
+        firstName: "Michael",
+        lastName: "Doe",      
         email: "michael@test.com",
-        clientStatus: "active"
+        isActive: true
     },
     {
         id: "2",
-        customerName: "Maria Doe",
+        firstName: "Marie",
+        lastName: "Doe",
         email: "maria@test.com",
-        clientStatus: "inactive"
+        isActive: false
     },
     {
         id: "3",
-        customerName: "John Doe",
+        firstName: "John",
+        lastName: "Doe",
         email: "john@test.com",
-        clientStatus: "active"
+        isActive: true
     },
     {
         id: "4",
-        customerName: "Merlin Doe",
+        firstName: "Merlin",
+        lastName: "Doe",
         email: "merlin@test.com",
-        clientStatus: "active"
+        isActive: true
     },
     {
         id: "5",
-        customerName: "Merlin Doe",
+        firstName: "Merlin",
+        lastName: "Doe",
         email: "merlin@test.com",
-        clientStatus: "active"
+        isActive: true
     }
 ]

@@ -6,14 +6,14 @@ import {
     createRoleService,
     getRolesService,
     getUsersByRoleService,
-    updateRoleService,
     deleteRoleService
 } from "src/services/roleService/role.service";
-import { RolePayload, UsersRoleResponse } from "src/types/roles/role";
+import { RolePayload } from "src/types/roles/role";
 import { useAuth } from "src/context/AuthContext";
 import { toast } from "sonner";
 import { ApiResponse } from "src/lib/api/requests";
-import { RoleDto, RolesDto, UserRoleDto } from "src/types/roles/role.dto";
+import { RolesDto, UserRoleDto } from "src/types/roles/role.dto";
+import { PaginationParamQuery } from "src/types/users/user";
 
 
 type roleMutationVariables = {
@@ -61,18 +61,44 @@ export function useRole(id: number) {
     });
 }
 
-export function useRoles() {
+export function useRoles(params?: PaginationParamQuery) {
     const { authUser } = useAuth();
 
     return useQuery<ApiResponse<RolesDto> | null>({
-        queryKey: companyRolesKeys.list(),
+        queryKey: companyRolesKeys.list(params),
         queryFn: () => {
             if (authUser?.type === "COMPANYUSER") {
                 if (authUser.uiRole === "ADMIN") {
-                    return getRolesService()
+                    return getRolesService(params)
                 }
             }
             throw new Error("Unsupported user type");
         }
     });
+}
+
+export function useDeleteRole() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async(id: number) => {
+            if (authUser?.type === "COMPANYUSER") {
+                return deleteRoleService(id)
+            } 
+        },
+
+        onSuccess(data) {
+            queryClient.invalidateQueries({
+                queryKey: companyRolesKeys.lists(),
+            });
+            toast.success(data?.message)
+        },
+
+        onError(error) {
+            toast.error(error.message);
+        }
+    })
+
+    return mutation
 }
