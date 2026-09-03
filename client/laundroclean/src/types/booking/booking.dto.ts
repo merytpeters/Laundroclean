@@ -1,4 +1,4 @@
-import { Meta } from "../shared";
+import { TransactionDto } from "../financialtransactions/payment.dto";
 import { UserDto } from "../users/user.dto";
 
 export type BookingSettingsDto = {
@@ -36,9 +36,11 @@ export type BookingDto = {
     }
     profile?: {
         user?: {
-            firstname?: string;
-            lastname?: string;
+            firstName?: string;
+            lastName?: string;
+            email: string;
         }
+        phoneNumber: string;
     }
     currency: "NAIRA" | "DOLLAR" | "POUNDS";
     unitPrice?: number;
@@ -61,6 +63,7 @@ export type BookingDto = {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;
+    transactions?: TransactionDto[];
 }
 
-export type ListBookingsDto = BookingDto[] & Meta
+export type ListBookingsDto = BookingDto[]

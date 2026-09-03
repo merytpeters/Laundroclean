@@ -80,17 +80,23 @@ export const BookingStatMeta = {
     text: "",
     iconColor: "#d59056"
   },
+  confirmedBookings: {
+    icon: FaTshirt,
+    unit: "",
+    text: "",
+    iconColor: "#FFFF00"
+  },
   pendingBookings: {
     icon: FaTshirt,
     unit: "",
     text: "",
-    iconColor: ""
+    iconColor: "#f00"
   },
   dailyFulfilledOrders: {
     icon: FaShirtsinbulk,
     unit: "",
     text: "",
-    iconColor: "#0f233a"
+    iconColor: "#00FF00"
   }
 }
 

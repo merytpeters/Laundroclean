@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { PERMISSION_OPTIONS } from "src/types/roles/permissions";
 import styles from './PermissionsTab.module.css';
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import { useDeleteRole, useRoles } from "src/hooks/rolesNpermissions/useRoles";
+import { useDeleteRole, useRoles, useUpdateRole } from "src/hooks/rolesNpermissions/useRoles";
 import { LoadingState } from "../ErrorState/ErrorState";
 import { useSearchParams } from "next/navigation";
 import Pagination from "../Pagination/Pagination";
+import { RolePayload } from "src/types/roles/role";
+import { toast } from "sonner";
 
 
 interface PermissionsSelectProps {
@@ -391,9 +393,12 @@ export default function PermissionsTab({
     targetRoleId,
 }: PermissionsTabProps) {
     const [permissions, setPermissions] = useState<string[]>([]);
+    const [editingTitle, setEditingTitle] = useState("");
+    const [editingLevel, setEditingLevel] = useState("");
     const [expandedRoleId, setExpandedRoleId] = useState<number | null>(null);
     const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
     const deleteRoleMutation = useDeleteRole();
+    const updateRoleMutation = useUpdateRole();
 
     const searchParams = useSearchParams();
 
@@ -421,6 +426,59 @@ export default function PermissionsTab({
     const handleDeleteRole = (id: number) => {
         deleteRoleMutation.mutate(id);
     }
+
+    const resetEditingForm = () => {
+        setEditingRoleId(null);
+        setPermissions([]);
+        setEditingTitle("");
+        setEditingLevel("");
+    };
+
+    const handleUpdateRole = (id: number, payload: RolePayload) => {
+        updateRoleMutation.mutate(
+            { id, payload },
+            {
+                onSuccess: () => {
+                    resetEditingForm();
+                },
+            }
+        );
+    };
+
+    const handleSaveRole = (id: number) => {
+        const title = editingTitle.trim();
+
+        if (!title) {
+            toast.error("Role title is required.");
+            return;
+        }
+
+        const parsedLevel =
+            editingLevel.trim() === ""
+                ? undefined
+                : Number(editingLevel);
+
+        if (parsedLevel !== undefined && Number.isNaN(parsedLevel)) {
+            toast.error("Role level must be a valid number.");
+            return;
+        }
+
+        if (parsedLevel !== undefined && !Number.isInteger(parsedLevel)) {
+            toast.error("Role level must be a whole number.");
+            return;
+        }
+
+        const payload: RolePayload = {
+            title,
+            permissions,
+        };
+
+        if (parsedLevel !== undefined) {
+            payload.level = parsedLevel;
+        }
+
+        handleUpdateRole(id, payload);
+    };
 
     useEffect(() => {
         if (targetRoleId === null || isLoading) {
@@ -452,6 +510,7 @@ export default function PermissionsTab({
     return (
         <section className={styles.permissionsTabContainer}>
             <h3>Roles and Permissions</h3>
+            <span>Edit Roles & Permissions</span>
 
             {rolesObj.map((roleObj) => {
                 const isExpanded =
@@ -735,6 +794,17 @@ export default function PermissionsTab({
                                                 roleObj.id
                                             );
 
+                                            setEditingTitle(
+                                                roleObj.title ?? ""
+                                            );
+
+                                            setEditingLevel(
+                                                roleObj.level === null ||
+                                                    roleObj.level === undefined
+                                                    ? ""
+                                                    : String(roleObj.level)
+                                            );
+
                                             setPermissions(
                                                 roleObj.permissions ??
                                                 []
@@ -762,13 +832,38 @@ export default function PermissionsTab({
                                     styles.roleobjdisplay
                                 }
                             >
-                                {/* Role information */}
-                                <div>
-                                    <b>{roleObj.title}</b>
-                                </div>
+                                <div className={styles.editRoleFields}>
+                                    <div className={styles.field}>
+                                        <label htmlFor={`role-title-${roleObj.id}`}>
+                                            Role title
+                                        </label>
 
-                                <div>
-                                    Level: {roleObj.level}
+                                        <input
+                                            id={`role-title-${roleObj.id}`}
+                                            type="text"
+                                            value={editingTitle}
+                                            onChange={(event) =>
+                                                setEditingTitle(event.target.value)
+                                            }
+                                            className={styles.roleInput}
+                                        />
+                                    </div>
+
+                                    <div className={styles.field}>
+                                        <label htmlFor={`role-level-${roleObj.id}`}>
+                                            Role level
+                                        </label>
+
+                                        <input
+                                            id={`role-level-${roleObj.id}`}
+                                            type="number"
+                                            value={editingLevel}
+                                            onChange={(event) =>
+                                                setEditingLevel(event.target.value)
+                                            }
+                                            className={styles.roleInput}
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Existing permissions */}
@@ -984,14 +1079,7 @@ export default function PermissionsTab({
                                 >
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setEditingRoleId(
-                                                null
-                                            );
-                                            setPermissions(
-                                                []
-                                            );
-                                        }}
+                                        onClick={resetEditingForm}
                                         style={{
                                             backgroundColor:
                                                 "grey",
@@ -1004,6 +1092,14 @@ export default function PermissionsTab({
 
                                     <button
                                         type="button"
+                                        onClick={() =>
+                                            handleSaveRole(
+                                                roleObj.id
+                                            )
+                                        }
+                                        disabled={
+                                            updateRoleMutation.isPending
+                                        }
                                         style={{
                                             backgroundColor:
                                                 "green",
@@ -1012,7 +1108,9 @@ export default function PermissionsTab({
                                                 "pointer",
                                         }}
                                     >
-                                        Save
+                                        {updateRoleMutation.isPending
+                                            ? "Saving..."
+                                            : "Save"}
                                     </button>
 
                                     <FiTrash2

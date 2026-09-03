@@ -60,7 +60,8 @@ export const roleConfig: Record<Role, RoleConfig> = {
     ],
     BookingStatCards: [
       {title: "Today's Bookings", key: "dailyBookings"},
-      {title: "in Progress", key: "inprogressBookings"},
+      {title: "In Progress", key: "inprogressBookings"},
+      {title: "Confirmed Bookings", key: "confirmedBookings"},
       {title: "Pending Bookings", key: "pendingBookings"},
       {title: "Today's Fulfilled Orders", key: "dailyFulfilledOrders"}
     ],
@@ -90,11 +91,13 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
     ],
     clientInfoCardTitle : "Customers Assigned",
-    clientInfoCardMessage: "Assigned Customers",
+    clientInfoCardMessage: "Customers with future bookings assigned to you",
     BookingStatCards: [
-      {title: "Today's Bookings", key: "dailyBookings"},
-      {title: "in Progress", key: "inprogressBookings"},
-      {title: "Pending Bookings", key: "pendingBookings"},
+      {title: "Your Daily (Paid) Assigned Bookings", key: "dailyBookings"},
+      {title: "Confirmed Bookings Assigned to You", key: "confirmedBookings"},
+      {title: "Your In-Progress Orders", key: "inprogressBookings"},
+      {title: "Pending (Unpaid) Bookings Assigned to You", key: "pendingBookings"},
+      {title: "Your Daily Fulfilled Orders", key: "dailyFulfilledOrders"}
     ],
     DeliveryStatCards: [
       {title: "Assigned Deliveries", key: "pendingDeliveries"},

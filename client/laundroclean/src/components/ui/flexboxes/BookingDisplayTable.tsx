@@ -2,21 +2,27 @@
 import styles from "./BookingDisplayTable.module.css"
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
-import { mapBookingStatus } from "src/types/booking/bookingStatus";
+import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import { BookingDetail } from "src/types/booking/bookingOrder";
 import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
 import { useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
-import { useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
+import { useGetbookings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
 import { minimumPickupdaysPayload } from "src/types/booking/booking";
+import { LoadingState } from "../ErrorState/ErrorState";
+import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
+import { BookingDto } from "src/types/booking/booking.dto";
 
 
-const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
+// const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
+type BookingListProp = {
+    mappedBookingData: BookingDto[];
+};
 
-export default function BookingDisplayTable() {
+export default function BookingDisplayTable({ mappedBookingData }: BookingListProp) {
     const { user, setActiveMenu } = useCompanyUserMenu();
-    const [selectedBooking, setSelectedBooking] = useState<BookingDetail | null>(null);
+    const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
 
     const roleRoutes = {
         ADMIN: "/admin/controlpanel/bookings",
@@ -48,22 +54,29 @@ export default function BookingDisplayTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {mappedDetails.slice(0, 6).map((bookingDetail) => (
+                    {mappedBookingData.slice(0, 6).map((bookingDetail) => (
                         <tr key={bookingDetail.id}>
 
                             <td className={styles.moredetails}
                                 onClick={() => setSelectedBooking(bookingDetail)}
                             >{bookingDetail.customBookingId}</td>
-                            <td>{bookingDetail.firstname} {bookingDetail.lastname}</td>
-                            <td>{bookingDetail.serviceType}</td>
-                            <td>{bookingDetail.datepaid}</td>
-                            <td>{bookingDetail.scheduledDate}</td>
+                            <td>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</td>
+                            <td>{bookingDetail.service?.name}</td>
+                            <td>
+                                {bookingDetail.transactions?.[0]?.paidAt
+                                    ? formatDateTime(bookingDetail.transactions[0].paidAt)
+                                    : "Unpaid"}
+                            </td>
+                            <td>{formatDateTime(bookingDetail.scheduledDate)}</td>
                             <td>{bookingDetail.deliveryType}</td>
                             <td>{bookingDetail.status}</td>
                             <td>{bookingDetail.currency} {bookingDetail.finalAmount}</td>
                             <td>
                                 {user.uiRole === "ADMIN" || user.id === bookingDetail.assignedToId ? (
-                                    bookingDetail.assignedStaff ?? '—'
+                                    <>
+                                        {bookingDetail.assignedTo?.firstName ?? ""}{" "}
+                                        {bookingDetail.assignedTo?.lastName ?? ""}
+                                    </>
                                 ) : (
                                     "_"
                                 )}
@@ -134,8 +147,9 @@ export function BookingSettings() {
 }
 
 
-export function AdminAllBookings() {
-    const [selectedBooking, setSelectedBooking] = useState<BookingDetail | null>(null);
+export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
+    const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
+
     return (
         <section className={styles.bookingdetailsection}>
             <span className={styles.allbookingsheader}>
@@ -161,17 +175,25 @@ export function AdminAllBookings() {
                     <span>Assigned Staff</span>
                     <span>Actions</span>
                 </span>
-                {mappedDetails.map((bookingDetail) => (
+                {mappedBookingData.map((bookingDetail) => (
                     <span key={bookingDetail.id} className={styles.bookingInfodetails}>
                         <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
-                        <span>{bookingDetail.firstname} {bookingDetail.lastname}</span>
-                        <span>{bookingDetail.serviceType}</span>
-                        <span>{bookingDetail.datepaid}</span>
-                        <span>{bookingDetail.scheduledDate}</span>
+                        <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
+                        <span>{bookingDetail.service?.name}</span>
+                        <span>
+                            {bookingDetail.transactions?.[0]?.paidAt
+                                ? formatDateTime(bookingDetail.transactions[0].paidAt)
+                                : "Unpaid"}
+                        </span>
+                        <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
                         <span>{bookingDetail.deliveryType}</span>
                         <span>{bookingDetail.status}</span>
                         <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
-                        <span>{bookingDetail.assignedStaff ?? '—'}</span>
+                        <span>
+                            {bookingDetail.assignedTo
+                                ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
+                                : "—"}
+                        </span>
                         <span>
                             <button className={styles.editbtn}>
                                 <FiEdit color="blue" />
@@ -194,7 +216,7 @@ export function AdminAllBookings() {
 
 interface BookingDetailsOverlayProps {
     isOpen: boolean;
-    item: BookingDetail | null;
+    item: BookingDto | null;
     onClose: () => void;
 }
 
@@ -214,23 +236,27 @@ export function BookingDetailsOverlay({
                 <button onClick={onClose}>Close</button>
                 <span key={item.id} className={styles.bookingoverlayinfo}>
                     <span className={styles.itemspan}><strong>Booking ID: </strong>{item.customBookingId}</span>
-                    <span className={styles.itemspan}><strong>Customer: </strong> {item.firstname} {item.lastname}</span>
-                    <span>{item.email && (
-                        <span className={styles.itemspan}><strong>Email: </strong> {item.email}</span>
+                    <span className={styles.itemspan}><strong>Customer: </strong> {item.profile?.user?.firstName} {item.profile?.user?.lastName}</span>
+                    <span>{item.profile?.user?.email && (
+                        <span className={styles.itemspan}><strong>Email: </strong> {item.profile.user.email}</span>
                     )} </span>
-                    <span>{item.phoneNumber && (
-                        <span className={styles.itemspan}><strong>Mobile number: </strong> {item.phoneNumber}</span>
+                    <span>{item.profile?.phoneNumber && (
+                        <span className={styles.itemspan}><strong>Mobile number: </strong> {item.profile.phoneNumber}</span>
                     )}</span>
-                    <span className={styles.itemspan}><strong>Service: </strong> {item.serviceType}</span>
-                    <span className={styles.itemspan}><strong>Date Booked: </strong>{item.datepaid}</span>
-                    <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{item.scheduledDate}</span>
+                    <span className={styles.itemspan}><strong>Service: </strong> {item.service?.name}</span>
+                    <span className={styles.itemspan}><strong>Date Booked: </strong>
+                        {item.transactions?.[0]?.paidAt
+                            ? formatDateTime(item.transactions[0].paidAt)
+                            : "Unpaid"}
+                    </span>
+                    <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
                     <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
                     <span className={styles.itemspan}><strong>Status: </strong> {item.status}</span>
                     <span className={styles.itemspan}><strong>Amount: </strong>{item.currency} {item.finalAmount}</span>
                     <span>
                         {user.uiRole === "ADMIN" || user.id === item.assignedToId ? (
                             <span>
-                                <strong>Assigned Staff: </strong> {item.assignedStaff ?? '—'}
+                                <strong>Assigned Staff: </strong> {item.assignedTo.firstName} {item.assignedTo.lastName}
                             </span>
                         ) : (
                             ""

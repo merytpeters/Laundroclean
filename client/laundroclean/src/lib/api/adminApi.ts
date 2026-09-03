@@ -36,7 +36,7 @@ export const adminApi = {
     getUsersByRole: (id: number) =>
         apiRequest<UserRoleDto>(`/admin/company-roles/${id}`),
     
-    updateRole: (id: string, payload: RolePayload) =>
+    updateRole: (id: number, payload: RolePayload) =>
         apiRequest<RoleDto>(`/admin/company-roles/${id}`, {
             method: "PATCH",
             body: JSON.stringify(payload),

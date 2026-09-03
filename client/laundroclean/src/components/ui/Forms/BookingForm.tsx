@@ -6,7 +6,7 @@ import { CompanyUserMenuContext } from 'src/components/layouts/CompanyUser/conte
 import { useCreateBooking } from 'src/hooks/booking/useBooking';
 import { useCreateCalendarRow } from 'src/hooks/calendar/useCalendar';
 import { useForm } from 'react-hook-form';
-import { BookingFormValues, BookingPayload } from 'src/types/booking/booking';
+import { BookingFormValues } from 'src/types/booking/booking';
 import { ProfileResponse, User } from 'src/types/users/user';
 import { ServicesDto } from 'src/types/laundrocleanServices/laundrocleanservices.dto';
 import { mapCurrencySymbol } from 'src/types/laundrocleanServices/laundroservices';

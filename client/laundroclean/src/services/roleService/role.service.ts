@@ -33,7 +33,7 @@ export async function getUsersByRoleService(id: number): Promise<ApiResponse<Use
     return res
 }
 
-export async function updateRoleService(id: string, payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
+export async function updateRoleService(id: number, payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
     const res = await adminApi.updateRole(id, payload);
 
     if (!res.success || !res.data) {

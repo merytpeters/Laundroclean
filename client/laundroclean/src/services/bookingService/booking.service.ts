@@ -15,12 +15,12 @@ export async function setMinimumPickupDaysService (payload: minimumPickupdaysPay
     return res
 }
 
-export async function adminSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDto | null> {
+export async function adminSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ApiResponse<ListBookingsDto> | null> {
     const res = await adminApi.searchBookings(params);
 
     if (!res.success || !res.data || !res.meta) return null;
 
-    return res.data
+    return res
 }
 
 export async function adminCreateBookingService(
@@ -35,44 +35,44 @@ export async function adminCreateBookingService(
     return res;
 }
 
-export async function adminGetBookingById (bookingId: string): Promise<BookingDto | null> {
+export async function adminGetBookingById (bookingId: string): Promise<ApiResponse<BookingDto> | null> {
     const res = await adminApi.getBookingById(bookingId);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function adminUpdateBooking (bookingId: string, payload: UpdateBookingPayload): Promise<BookingDto | null> {
+export async function adminUpdateBooking (bookingId: string, payload: UpdateBookingPayload): Promise<ApiResponse<BookingDto> | null> {
     const res = await adminApi.updateBooking(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function adminCancelBookingService (bookingId: string): Promise<string | null> {
+export async function adminCancelBookingService (bookingId: string): Promise<ApiResponse<string> | null> {
     const res = await adminApi.cancelBooking(bookingId);
 
     if (!res.success || !res.message) return null;
 
-    return res.message
+    return res
 }
 
-export async function adminUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<BookingDto | null> {
+export async function adminUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<ApiResponse<BookingDto> | null> {
     const res = await adminApi.updateBookingStatus(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function adminRestoreBookingService (bookingId: string): Promise<BookingDto | null> {
+export async function adminRestoreBookingService (bookingId: string): Promise<ApiResponse<BookingDto> | null> {
     const res = await adminApi.restoreBooking(bookingId);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
 // client ApiServices
@@ -86,44 +86,44 @@ export async function clientCreateBookingService (payload: BookingPayload): Prom
     return res
 }
 
-export async function clientGetBookingsService (params?: ClientUserListBookingsQueryParam): Promise<ListBookingsDto | null> {
+export async function clientGetBookingsService (params?: ClientUserListBookingsQueryParam): Promise<ApiResponse<ListBookingsDto> | null> {
     const res = await clientApi.getBookings(params);
 
     if (!res.success || !res.data || !res.meta) return null;
 
-    return res.data
+    return res
 }
 
-export async function clientGetBookingByIdService (bookingId: string): Promise<BookingDto | null> {
+export async function clientGetBookingByIdService (bookingId: string): Promise<ApiResponse<BookingDto> | null> {
     const res = await clientApi.getBookingById(bookingId);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function clientUpdateBookingByIdService (bookingId: string, payload: UpdateBookingPayload): Promise<BookingDto | null> {
+export async function clientUpdateBookingByIdService (bookingId: string, payload: UpdateBookingPayload): Promise<ApiResponse<BookingDto> | null> {
     const res = await clientApi.updateBookingById(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function clientCancelBookingService (bookingId: string): Promise<string | null> {
+export async function clientCancelBookingService (bookingId: string): Promise<ApiResponse<string> | null> {
     const res = await clientApi.cancelBooking(bookingId);
 
     if (!res.success || !res.message) return null;
 
-    return res.message
+    return res
 }
 
-export async function clientUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<BookingDto | null> {
+export async function clientUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<ApiResponse<BookingDto> | null> {
     const res = await clientApi.updateBookingStatus(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
 
@@ -138,34 +138,34 @@ export async function staffCreateBookingService (payload: BookingPayload): Promi
     return res
 }
 
-export async function staffSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDto | null> {
+export async function staffSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ApiResponse<ListBookingsDto> | null> {
     const res = await staffApi.searchBookings(params);
 
     if (!res.success || !res.data || !res.meta) return null;
 
-    return res.data
+    return res
 }
 
-export async function staffUpdateBooking (bookingId: string, payload: UpdateBookingPayload): Promise<BookingDto | null> {
+export async function staffUpdateBooking (bookingId: string, payload: UpdateBookingPayload): Promise<ApiResponse<BookingDto> | null> {
     const res = await staffApi.updateBooking(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function staffGetBookingById (bookingId: string): Promise<BookingDto | null> {
+export async function staffGetBookingById (bookingId: string): Promise<ApiResponse<BookingDto> | null> {
     const res = await staffApi.getBookingById(bookingId);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
-export async function staffUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<BookingDto | null> {
+export async function staffUpdateBookingStatusService (bookingId: string, payload: BookingStatusPayload): Promise<ApiResponse<BookingDto> | null> {
     const res = await staffApi.updateBookingStatus(bookingId, payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }

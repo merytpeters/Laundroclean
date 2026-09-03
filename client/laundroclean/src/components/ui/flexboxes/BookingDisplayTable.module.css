@@ -121,7 +121,7 @@
   display: flex;
   flex-direction: column;
   gap: 2em;
-  padding: 1em 1em;
+  padding: 1em 0.5em;
 }
 
 .bookingInfoHeader {
@@ -146,7 +146,7 @@
   flex-wrap: wrap;
   border: #555 2px solid;
   border-radius: 10px;
-  padding: 1em;
+  padding: 1em 0;
   background: #fff;
 }
 

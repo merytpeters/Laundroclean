@@ -1,5 +1,3 @@
-import { Meta } from "../shared";
-
 export type DropOffPointPayload = {
     name: string;
     address: string;

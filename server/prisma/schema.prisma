@@ -302,7 +302,7 @@ model Booking {
   discountAmount       Decimal?               @map("discount_amount")
   finalAmount          Decimal?               @map("final_amount")
   bookingNotifications BookingNotifications[]
-  Transaction          Transaction[]
+  transactions         Transaction[]
 
   @@map("bookings")
 }
@@ -436,7 +436,7 @@ model Payment {
   transaction   Transaction @relation(fields: [transactionId], references: [id])
 
   provider    PaymentProvider
-  providerRef String?          @unique
+  providerRef String?         @unique
 
   status PaymentStatus @default(INITIATED)
 
@@ -496,15 +496,15 @@ model PosDevice {
 }
 
 model CompanyBankAccount {
-  id                  String              @id       @default(cuid())
-  bankName            String
-  accountName         String
-  accountNumber       String
+  id            String @id @default(cuid())
+  bankName      String
+  accountName   String
+  accountNumber String
 
-  createdAt           DateTime                      @default(now())
-  updatedAt           DateTime                      @updatedAt
-  isActive            Boolean                       @default(true)
-  isDefault           Boolean                       @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  isDefault Boolean  @default(false)
 
   payments Payment[]
 

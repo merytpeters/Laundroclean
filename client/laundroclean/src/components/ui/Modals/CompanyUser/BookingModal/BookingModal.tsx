@@ -12,13 +12,18 @@ import { useState } from 'react';
 import BookingForm from "src/components/ui/Forms/BookingForm";
 import { useServices } from "src/hooks/laundroCleanServices/useServices";
 import { useGetUsers } from "src/hooks/companyUser/useUser/useUser";
+import { useGetbookings } from "src/hooks/booking/useBooking";
+import { transformFieldInArray } from "src/utils/mapData";
+import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
+import { mapDeliveryType } from "src/types/booking/bookingStatus";
+import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
 
 export default function BookingModal() {
     const { user } = useCompanyUserMenu();
     const [showForm, setShowForm] = useState(false);
     const { data: servicesData } = useServices({
         params: {
-            includeDeleted: 'false'
+            includeDeleted: 'false',
         }
     })
 
@@ -31,6 +36,88 @@ export default function BookingModal() {
     const staffToAssign = staffData?.data
 
     const services = servicesData?.data;
+
+    const { data, isLoading: bookingLoadingState } = useGetbookings({
+        params: {
+            includeProfile: true,
+        }
+    });
+
+    const bookingData = Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+    const mappedCurrency = transformFieldInArray(
+        bookingData,
+        "currency",
+        mapCurrencySymbol
+    );
+
+    const mappedBookingData = transformFieldInArray(
+        mappedCurrency,
+        "deliveryType",
+        mapDeliveryType
+    );
+
+    // What staff can SEE in the table
+    const visibleBookingData =
+        user.uiRole === "ADMIN"
+            ? mappedBookingData
+            : mappedBookingData.filter((booking) => {
+                const isAssignedToMe =
+                    booking.assignedToId === user.id;
+
+                const isPending =
+                    booking.status === "PENDING";
+
+                return isAssignedToMe || isPending;
+            });
+
+    const statsBookingData =
+        user.uiRole === "ADMIN"
+            ? mappedBookingData
+            : mappedBookingData.filter(
+                (booking) => booking.assignedToId === user.id
+            );
+
+    const isToday = (date: string | Date | null | undefined) => {
+        if (!date) return false;
+
+        const bookingDate = new Date(date);
+        const today = new Date();
+
+        return (
+            bookingDate.getDate() === today.getDate() &&
+            bookingDate.getMonth() === today.getMonth() &&
+            bookingDate.getFullYear() === today.getFullYear()
+        );
+    };
+
+    const stats = {
+        dailyBookings: statsBookingData.filter(
+            (booking) => isToday(booking.transactions?.[0]?.paidAt)
+        ).length,
+
+        pendingBookings: statsBookingData.filter(
+            (booking) => booking.status === "PENDING"
+        ).length,
+
+        confirmedBookings: statsBookingData.filter(
+            (booking) => booking.status === "CONFIRMED"
+        ).length, // payment has been made
+
+        inprogressBookings: statsBookingData.filter(
+            (booking) => booking.status === "IN_PROGRESS"
+        ).length,
+
+        dailyFulfilledOrders: statsBookingData.filter(
+            (booking) =>
+                booking.status === "COMPLETED" &&
+                isToday(booking.transactions?.[0]?.paidAt)
+        ).length,
+    };
+
+    if (bookingLoadingState) return <LoadingState />;
 
     if (!user.uiRole) return null;
     const config = roleConfig[user.uiRole];
@@ -73,7 +160,7 @@ export default function BookingModal() {
                     <span>Add new</span>
                     <PlusIcon size={30} />
                 </button>
-                <BookingDisplayTable />
+                <BookingDisplayTable mappedBookingData={visibleBookingData} />
             </section>
 
             {/* sliding drawer for new booking */}

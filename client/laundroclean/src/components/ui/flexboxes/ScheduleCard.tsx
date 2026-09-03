@@ -23,7 +23,7 @@ export default function ScheduleCard ({items}: DailyScheduleProps) {
     return (
         <div className={styles.schedulecardcontainer}>
             <h4>Today&apos;s Schedule</h4>
-            <span>Current and upcoming bookings</span>
+            <span>Bookings assigned to you for today</span>
 
             <section aria-label="Daily Schedule Card" className={ `${styles.dailyschedule} ${expanded ? styles.expanded : ""}`}>
                 {items.map((item) => (

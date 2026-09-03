@@ -18,7 +18,7 @@ import { PaginationParamQuery } from "src/types/users/user";
 
 
 type roleMutationVariables = {
-    payload: RolePayload
+    payload: RolePayload;
 }
 
 export function useCreateRole() {
@@ -76,6 +76,38 @@ export function useRoles(params?: PaginationParamQuery) {
             throw new Error("Unsupported user type");
         }
     });
+}
+
+
+type updateRoleMutationVariables = {
+    id: number;
+    payload: RolePayload;
+}
+
+export function useUpdateRole() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async ({
+            id,
+            payload,
+        }: updateRoleMutationVariables) => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return updateRoleService(id, payload)
+                }
+            }
+        },
+        onSuccess(data) {
+            queryClient.invalidateQueries({
+                queryKey: companyRolesKeys.lists(),
+            });
+            toast.success(data?.message)
+        }
+    })
+    
+    return mutation
 }
 
 export function useDeleteRole() {

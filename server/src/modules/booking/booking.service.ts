@@ -19,6 +19,7 @@ type BookingWithOtherModels = Prisma.BookingGetPayload<{
         service: true,
         profile: true,
         assignedTo: true,
+        transactions: true,
     }
 }>
 
@@ -276,7 +277,7 @@ const createBooking = async (
                         assignedToId: input.assignedToId ?? null,
                         timeSlotId: input.timeSlotId ?? null,
                     },
-                    include: { assignedTo: true }
+                    include: { assignedTo: true },
                 });
             } catch (error: any) {
                 if (error instanceof ConflictError || NotFoundError) {
@@ -493,9 +494,20 @@ const getBooking = async (
     const booking = await prisma.booking.findUnique({
         where: whereObj,
         include: {
-            profile: true,
+            profile: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                        },
+                    },
+                }
+            },
             assignedTo: true,
             service: true,
+            transactions: true
         },
     });
 
@@ -571,6 +583,7 @@ const listBookings = async (
                 name: true,
             },
         },
+        transactions: true
     };
 
     if (params.includeProfile) {
@@ -580,6 +593,7 @@ const listBookings = async (
                     select: {
                         firstName: true,
                         lastName: true,
+                        email: true,
                     },
                 },
             },
@@ -593,7 +607,7 @@ const listBookings = async (
             skip,
             take: limit,
             orderBy: {
-                createdAt: 'desc',
+                createdAt: 'asc',
             },
             include,
         }),

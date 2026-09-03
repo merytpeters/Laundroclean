@@ -22,9 +22,11 @@ import {
     staffUpdateBookingStatusService
 } from "src/services/bookingService/booking.service";
 
-import { BookingPayload, minimumPickupdaysPayload } from "src/types/booking/booking";
+import { BookingPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload } from "src/types/booking/booking";
 import { bookingKeys } from "./keys";
 import { toast } from "sonner";
+import { ApiResponse } from "src/lib/api/requests";
+import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 
 type CreateBookingVariable = {
@@ -98,4 +100,47 @@ export function useSetMinimumPickupDays() {
 }
 
 
-// useGetbookings
+type GetBookingsVariables = {
+    id?: string;
+    params?: CompanyListBookingsQueryParam;
+}
+export function useGetbookings({
+    id,
+    params,
+}: GetBookingsVariables) {
+    const { authUser } = useAuth();
+
+    return useQuery<ApiResponse<BookingDto | ListBookingsDto> | null>({
+        queryKey: id
+            ? bookingKeys.detail(id)
+            : bookingKeys.list(params),
+        queryFn: () => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return id ? adminGetBookingById(id) : adminSearchBookingService(params)
+                }
+                return id ? staffGetBookingById(id) : staffSearchBookingService(params)
+            }
+            return null;
+        }
+    });
+}
+
+
+type GetClientBookingsVariables = {
+    id?: string;
+    params?: ClientUserListBookingsQueryParam;
+}
+export function useGetClientbookings({
+    id,
+    params
+}: GetClientBookingsVariables) {
+
+    return useQuery<ApiResponse<BookingDto | ListBookingsDto> | null>({
+        queryKey: id
+            ? bookingKeys.detail(id)
+            : bookingKeys.list(params),
+        queryFn: () =>
+            id ? clientGetBookingByIdService(id) : clientGetBookingsService(params)
+    });
+}
