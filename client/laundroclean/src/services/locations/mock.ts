@@ -1,7 +1,7 @@
 import type { DropoffPoint } from "src/hooks/locations/useDropoffPoints";
-import type { ServiceArea } from "src/hooks/locations/useServiceAreas";
+import type { ServiceAreasResponse } from "src/types/location/location";
 
-export const mockServiceAreas: ServiceArea[] = [
+export const mockServiceAreas: ServiceAreasResponse = [
   {
     id: "1",
     name: "Ikeja Axis",
