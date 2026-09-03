@@ -39,6 +39,23 @@
  *       type: array
  *       items:
  *         $ref: '#/components/schemas/ServiceResponse'
+ *     UsersListResponse:
+ *       type: array
+ *       items:
+ *         $ref: '#/components/schemas/UserProfileResponse'
+ *     SetActiveRequest:
+ *       type: object
+ *       required:
+ *         - isActive
+ *       properties:
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
  *
  * tags:
  *   - name: Staff
@@ -580,6 +597,50 @@
  *         description: Updated timeslot
  *       '403':
  *         description: Forbidden
+ * 
+ * /api/v1/staff/client-users:
+ *   get:
+ *     tags:
+ *       - Staff
+ *     summary: Get list of users for the company
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [active, inactive]
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [CLIENT, COMPANYUSER]
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UsersListResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 
 export {};

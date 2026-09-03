@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { adminGetUsersService, adminGetUserService, adminUpdateUserStatus } from "src/services/userService/user.service";
+import { adminGetUsersService, adminGetUserService, adminUpdateUserStatus, staffGetUsersService } from "src/services/userService/user.service";
 import { adminUseUserKeys } from "./keys";
 import { UserProfileDto } from "src/types/users/user.dto";
 import { ApiResponse } from "src/lib/api/requests";
@@ -15,21 +15,40 @@ export function useAdminGetUser(id: string) {
 }
 
 type GetUserTypeVariable = {
-    type: "CLIENT" | "COMPANYUSER"
+    type?: "CLIENT" | "COMPANYUSER"
 }
 
-export function useAdminGetUsers({ type }: GetUserTypeVariable, params?: GetUsersParams) {
+export function useGetUsers(
+    { type }: GetUserTypeVariable,
+    params?: GetUsersParams,
+    options?: {
+        enabled?: boolean;
+    }
+) {
+    const { authUser } = useAuth();
+
     return useQuery<ApiResponse<UserProfileDto[]> | null>({
         queryKey: adminUseUserKeys.list({ ...params, type }),
-        queryFn: () => adminGetUsersService(params),
+        queryFn: () => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return adminGetUsersService(params)
+                }
+                return staffGetUsersService(params)
+            }
+            return null;
+        },
+        enabled: options?.enabled ?? true,
         select: (result) => {
             if (!result) return null;
 
             return {
                 ...result,
-                data: result.data?.filter(
-                    (user) => user.user.type === type
-                ) ?? [],
+                data: type
+                    ? result.data?.filter(
+                          (user) => user.user.type === type
+                      ) ?? []
+                    : result.data ?? [],
             };
         }
     })

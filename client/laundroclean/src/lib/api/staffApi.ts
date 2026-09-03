@@ -5,6 +5,8 @@ import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, Up
 import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
+import { GetUsersParams } from "src/types/users/user";
+import { UserProfileDto } from "src/types/users/user.dto";
 
 export const staffApi = {
     createService: (payload: ServicePayload) =>
@@ -92,5 +94,11 @@ export const staffApi = {
         apiRequest<TimeSlotsDto>(`/admin/timeslots/${timeslotId}`, {
             method: "PATCH",
             body: JSON.stringify(payload)
+        }),
+
+    getUsers: (params?: GetUsersParams) =>
+        apiRequest<UserProfileDto[]>(`/staff/client-users`, {
+            method: "GET",
+            params: params,
         }),
 }

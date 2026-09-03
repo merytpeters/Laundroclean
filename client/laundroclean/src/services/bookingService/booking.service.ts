@@ -1,17 +1,18 @@
 import { adminApi } from "src/lib/api/adminApi";
 import { clientApi } from "src/lib/api/clientApi";
+import { ApiResponse } from "src/lib/api/requests";
 import { staffApi } from "src/lib/api/staffApi";
 import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload, UpdateBookingPayload } from "src/types/booking/booking";
 import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 
 // admin routes Services
-export async function setMinimumPickupDaysService (payload: minimumPickupdaysPayload): Promise<BookingSettingsDto | null> {
+export async function setMinimumPickupDaysService (payload: minimumPickupdaysPayload): Promise<ApiResponse<BookingSettingsDto> | null> {
     const res = await adminApi.setMinimumPickupDays(payload);
 
-    if (!res.success || !res.data) return null;
+    if (!res.success || !res.data || !res.message) return null;
 
-    return res.data
+    return res
 }
 
 export async function adminSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDto | null> {
@@ -22,12 +23,16 @@ export async function adminSearchBookingService (params? : CompanyListBookingsQu
     return res.data
 }
 
-export async function adminCreateBookingService (payload: BookingPayload): Promise<BookingDto | null> {
+export async function adminCreateBookingService(
+    payload: BookingPayload
+): Promise<ApiResponse<BookingDto>> {
     const res = await adminApi.createBooking(payload);
 
-    if (!res.success || !res.data) return null;
+    if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to create booking');
+    }
 
-    return res.data
+    return res;
 }
 
 export async function adminGetBookingById (bookingId: string): Promise<BookingDto | null> {
@@ -71,12 +76,14 @@ export async function adminRestoreBookingService (bookingId: string): Promise<Bo
 }
 
 // client ApiServices
-export async function clientCreateBookingService (payload: BookingPayload): Promise<BookingDto | null> {
+export async function clientCreateBookingService (payload: BookingPayload): Promise<ApiResponse<BookingDto>> {
     const res = await clientApi.createBooking(payload);
 
-    if (!res.success || !res.data) return null;
+    if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to create booking');
+    };
 
-    return res.data
+    return res
 }
 
 export async function clientGetBookingsService (params?: ClientUserListBookingsQueryParam): Promise<ListBookingsDto | null> {
@@ -121,12 +128,14 @@ export async function clientUpdateBookingStatusService (bookingId: string, paylo
 
 
 // Staff API Service
-export async function staffCreateBookingService (payload: BookingPayload): Promise<BookingDto | null> {
+export async function staffCreateBookingService (payload: BookingPayload): Promise<ApiResponse<BookingDto>> {
     const res = await staffApi.createBooking(payload);
 
-    if (!res.success || !res.data) return null;
+    if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to create booking');
+    };
 
-    return res.data
+    return res
 }
 
 export async function staffSearchBookingService (params? : CompanyListBookingsQueryParam): Promise<ListBookingsDto | null> {

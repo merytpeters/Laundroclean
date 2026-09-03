@@ -11,21 +11,19 @@ export default function ClientDashboard () {
     const { data } = useServices({
             params: {
                 page: 1,
-                limit: 10
+                limit: 10,
+                includeDeleted: 'false'
             }
         })
 
     const services = data?.data ?? [];
-    const filteredServices = services.filter(
-        (service) => service.isActive === true
-    );
 
     return (
         <div className={styles.clientdashboardcontainer}>
             <section aria-describedby="laundrocleanservices display" className={styles.servicesdisplaysection}>
                 <span className={styles.displaytext}><b> <i>Here&apos;s</i> our Laundry Services.</b></span>
                 <span className={styles.servicesdisplaybox}>
-                    { filteredServices?.slice(0, 8).map((service) => {
+                    { services?.slice(0, 8).map((service) => {
                         return (
                             <DashboardServices
                                key={service.id}

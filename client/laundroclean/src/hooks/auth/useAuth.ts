@@ -21,7 +21,7 @@ export function useLoginUser() {
     const router = useRouter();
     return useMutation({
         mutationFn: loginUserService,
-        
+
         onSuccess(data) {
             setAccessToken(data?.user.accessToken ?? null);
             toast.success(data?.message);
@@ -37,7 +37,28 @@ export function useLoginUser() {
             }
         },
         onError(error) {
-            toast.error(error.message);
+            const cause = error.cause as {
+                error?: string;
+                retryAfter?: number;
+            } | undefined;
+
+            if (cause?.error === "Too many requests") {
+                const minutes = cause.retryAfter
+                    ? Math.ceil(cause.retryAfter / 60)
+                    : null;
+
+                toast.error(
+                    minutes
+                        ? `Too many attempts. Please try again in ${minutes} minutes.`
+                        : "Too many attempts. Please try again later."
+                );
+
+                return;
+            }
+
+            toast.error(
+                error.message || "Login failed. Please try again."
+            );
         }
     })
 }

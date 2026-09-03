@@ -1,178 +1,202 @@
 .paymentbuttoncontainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 93%;
-    height: 70%;
-    padding: 1em 1.5em;
-    background: transparent;
-    border-radius: 8px;
-    background: #d59056;
-    box-shadow: 6px 20px 50px rgba(0, 0, 0, 0.22),
-                2px 6px 18px rgba(0, 0, 0, 0.12);
-    position: absolute;
+  display: flex;
+  flex-direction: row;
+  height: 70%;
+  background: transparent;
+  border-radius: 8px;
+  background: #d59056;
+  box-shadow:
+    6px 20px 50px rgba(0, 0, 0, 0.22),
+    2px 6px 18px rgba(0, 0, 0, 0.12);
+  position: relative;
+  width: 80%;
+  gap: 1em 2em;
+  justify-content: center;
+  align-items: center;
 }
 
 .paynowOrlater {
-    background-color: #d59056;
-    min-width: 4rem;
-    padding: 1em;
-    border-radius: 8px;
+  background-color: #d59056;
+  min-width: 4rem;
+  padding: 1em;
+  border-radius: 8px;
 }
 
 .form {
-    background: var(--background);
-    color: rgb(8, 7, 7);
-    height: fit-content;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 2rem;
+  background: var(--background);
+  color: rgb(8, 7, 7);
+  height: fit-content;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 2rem;
+  /*font-size: smaller;*/
 }
 
 .form input {
-    height: 2rem;
-    border-radius: 8px;
-    border: none;
-    width: 100%;
-    padding: 0 0.5rem;
-    box-sizing: border-box;
+  height: 2rem;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
 }
 
 .form select {
-    height: 2rem;
-    border-radius: 8px;
-    border: none;
-    width: 100%;
-    padding: 0 0.5rem;
-    box-sizing: border-box;
+  height: 2rem;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
 }
 
-.form textarea { padding: 0.5rem; width:100%; box-sizing: border-box; }
-
+.form textarea {
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 .form label {
-    display: block;
-    margin-bottom: 0.35rem;
-    font-size: 0.95rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
 
 .emailaddresssection {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    grid-column: 1 / -1;
-    align-items: start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  grid-column: 1 / -1;
+  align-items: start;
 }
 
 .servicepromosection,
 .iteminformationsection,
 .deliveryinfosection,
 .staffassignedslot {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    min-height: 40px;
-    align-items: start;
-    grid-column: 1 / -1;
-    box-sizing: border-box;
-    width: calc(100% + 2rem);
-    margin-left: -1rem;
-    margin-right: -1rem;
-    margin-top: 1rem;
-}
-
-.staffassignedslot {
-    margin-top: 6rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  min-height: 40px;
+  align-items: start;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
+  margin-right: -1rem;
 }
 
 .newaddress {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 2em;
 }
 
 .field {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .fullWidthField {
-    grid-column: 1 / -1;
+  grid-column: 1 / -1;
 }
 
 .emailaddresssection select,
 .emailaddresssection input {
-    width: 100%;
+  width: 100%;
 }
 
 .specialnotesection {
-    display: flex;
-    flex-direction: column;
-    grid-column: 1 / -1;
-    width: 100%;
-    margin-top: 8rem;
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 4rem;
 }
 
 .formactions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    height: 30px;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 30px;
 }
 
 .bookButtonContainer {
-    width: 80%;
-    margin: 0 auto;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5em;
 }
 
 .bookButton {
-    --btn-bg: #000;
-    --btn-color: var(--foreground);
-    --btn-height: 2.3em;
-    width: 70%;
-    border-radius: 8px;
+  --btn-bg: #000;
+  --btn-color: var(--foreground);
+  --btn-height: 2.3em;
+  width: 60%;
+  border-radius: 8px;
+}
+
+.paymentdetailsnaction {
+  align-items: center;
+  justify-items: center;
+  margin-bottom: 14em;
+  width: 100%;
+}
+
+.amountdisplay {
+  display: flex;
+  color: #fff;
+  width: fit-content;
+  background-color: #d59056;
+  padding: 1em 2em;
+  align-self: center;
 }
 
 .paymentbuttonoverlay {
-    position: absolute;
-    top: -20px;
-    left: -14px;
-    width: 100%;
-    height: 6rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.424);
-    border-radius: 4px;
-    z-index: 30;
-    pointer-events: auto; /* allow clicks on overlay buttons */
+  position: absolute;
+  left: -50px;
+  width: 40vw;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.424);
+  border-radius: 4px;
+  z-index: 30;
+  pointer-events: auto; /* allow clicks on overlay buttons */
 }
 
 /* Responsive grid for larger screens: show three columns for the main row sections */
 /* keep form stacked; each section manages its internal two-column layout */
 @media (min-width: 1200px) {
-    .form { grid-template-columns: 1fr; }
+  .form {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 899px) {
-    .servicepromosection,
-    .iteminformationsection,
-    .deliveryinfosection,
-    .staffassignedslot {
-        min-height: auto;
-    }
-    .newaddress { grid-template-columns: 1fr; }
-    .emailaddresssection { grid-template-columns: 1fr; }
+  .servicepromosection,
+  .iteminformationsection,
+  .deliveryinfosection,
+  .staffassignedslot {
+    min-height: auto;
+  }
+  .newaddress {
+    grid-template-columns: 1fr;
+  }
+  .emailaddresssection {
+    grid-template-columns: 1fr;
+  }
 }

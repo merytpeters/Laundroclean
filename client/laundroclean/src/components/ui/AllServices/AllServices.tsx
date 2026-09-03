@@ -987,7 +987,7 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                                     at:
                                                 </b>{" "}
                                                 {
-                                                   formatDateTime(service.createdAt)
+                                                    formatDateTime(service.createdAt)
                                                 }
                                             </span>
 
@@ -1081,14 +1081,18 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                             </>
                                         )}
 
-                                        <button
+                                        {canDeactivate &&<button
                                             type="button"
                                             className={
                                                 styles.trashbtn
                                             }
+                                            onClick={handleDeactivate}
+                                            disabled={
+                                                deactivateServiceMutation.isPending
+                                            }
                                         >
-                                            <FiTrash2 />
-                                        </button>
+                                             <FiTrash2/>
+                                        </button>}
                                     </span>
                                 </span>
                             )}

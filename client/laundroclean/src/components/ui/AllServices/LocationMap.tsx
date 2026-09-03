@@ -209,7 +209,7 @@ export default function LocationMap({
       center={[6.5244, 3.3792]}
 
       zoom={12}
-
+      minZoom={5}
       style={{
         height,
         width: "100%",

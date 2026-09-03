@@ -8,6 +8,8 @@ import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
 import { useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
+import { useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
+import { minimumPickupdaysPayload } from "src/types/booking/booking";
 
 
 const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -102,12 +104,33 @@ export default function BookingDisplayTable() {
 
 
 export function BookingSettings() {
+    const [minPickupDays, setMinPickupDays] = useState("");
+    const minimumPickupDaysMutation = useSetMinimumPickupDays();
+    const handleSetMinimumPickupDays = () => {
+        const days = Number(minPickupDays);
+        if (!Number.isInteger(days) || days < 0) { return; }
+        const payload: minimumPickupdaysPayload = { minPickupDays: days, };
+        minimumPickupDaysMutation.mutate({ payload, });
+    };
     return (
-        <section className={styles.bookingsettingssection}>
+        <section className={styles.bookingsettingssection} >
             <p>Configure Minimum Pickup Days</p>
-            <input type="number" />
+            <section>
+                <input
+                    type="number"
+                    min="1"
+                    value={minPickupDays}
+                    onChange={(e) => setMinPickupDays(e.target.value)}
+                />
+                <button
+                    type="button"
+                    onClick={handleSetMinimumPickupDays}
+                    disabled={minimumPickupDaysMutation.isPending}>
+                    {minimumPickupDaysMutation.isPending ? "Setting..." : "Set"}
+                </button>
+            </section>
         </section>
-    )
+    );
 }
 
 
@@ -128,15 +151,15 @@ export function AdminAllBookings() {
             <span className={styles.bookingInfo}>
                 <span className={styles.bookingInfoHeader}>
                     <span>Booking ID</span>
-                        <span>Customer</span>
-                        <span>Service</span>
-                        <span>Date Booked</span>
-                        <span>Pickup/Delivery Date</span>
-                        <span>Delivery Tag</span>
-                        <span>Status</span>
-                        <span>Amount</span>
-                        <span>Assigned Staff</span>
-                        <span>Actions</span>
+                    <span>Customer</span>
+                    <span>Service</span>
+                    <span>Date Booked</span>
+                    <span>Pickup/Delivery Date</span>
+                    <span>Delivery Tag</span>
+                    <span>Status</span>
+                    <span>Amount</span>
+                    <span>Assigned Staff</span>
+                    <span>Actions</span>
                 </span>
                 {mappedDetails.map((bookingDetail) => (
                     <span key={bookingDetail.id} className={styles.bookingInfodetails}>

@@ -10,7 +10,8 @@ type ButtonProps = {
   href?: string;
   tel?: string;
   type?: "button" | "submit" | "reset";
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -21,6 +22,7 @@ export default function Button({
   href,
   type = "button",
   icon,
+  disabled = false,
 }: ButtonProps) {
   const buttonClasses = clsx(styles.button, className);
 
@@ -45,7 +47,7 @@ export default function Button({
   }
 
   return (
-    <button type={type} className={buttonClasses} onClick={onClick}>
+    <button type={type} className={buttonClasses} onClick={onClick} disabled={disabled}>
       { icon && <span>{icon}</span>}
       <span>{text}</span>
     </button>

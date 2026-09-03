@@ -4,7 +4,8 @@ import { BookingStatus, DeliveryType } from '@prisma/client';
 
 const createBookingSchema = z.object({
     email: z.email().optional(),
-    profileId: z.uuid(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
     address: profileValidation.tempProfileSchema.optional(),
     deliveryType: z.enum(DeliveryType),
     serviceId: z.uuid(),
@@ -22,7 +23,7 @@ export type CreateBookingSchema = z.infer<typeof createBookingSchema>
 
 const updateSchema = createBookingSchema.partial();
 
-const updateBookingSchema = updateSchema.omit({ email: true, profileId:true, });
+const updateBookingSchema = updateSchema.omit({ email: true });
 
 export type UpdateBookingSchema = z.infer<typeof updateBookingSchema>
 

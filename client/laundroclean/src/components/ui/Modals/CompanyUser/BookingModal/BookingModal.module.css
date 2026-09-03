@@ -87,6 +87,7 @@
 }
 .drawer.open {
     width: 40%;
+    z-index: 3000;
 }
 .drawerHeader {
     display: flex;

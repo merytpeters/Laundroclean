@@ -1,15 +1,16 @@
 import { adminApi } from "src/lib/api/adminApi";
+import { ApiResponse } from "src/lib/api/requests";
 import { staffApi } from "src/lib/api/staffApi";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
 
 // admin API Services
-export async function adminCreateCalendarRowService (payload: CalendarRowPayload): Promise<CalendarRowWithTimeSlotsDto | null> {
+export async function adminCreateCalendarRowService (payload: CalendarRowPayload): Promise<ApiResponse<CalendarRowWithTimeSlotsDto>| null> {
     const res = await adminApi.createCalendarRow(payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
 export async function adminListUsersCalendarService (params?: CalendarRowParams): Promise<CalendarRowWithTimeSlotsDto[] | null> {
@@ -86,12 +87,12 @@ export async function adminDeleteTimeSlotById (timeslotId: string): Promise<stri
 
 
 // Staff API Services
-export async function staffCreateCalendarRowService (payload: CalendarRowPayload): Promise<CalendarRowWithTimeSlotsDto | null> {
+export async function staffCreateCalendarRowService (payload: CalendarRowPayload): Promise<ApiResponse<CalendarRowWithTimeSlotsDto> | null> {
     const res = await staffApi.createCalendarRow(payload);
 
     if (!res.success || !res.data) return null;
 
-    return res.data
+    return res
 }
 
 export async function staffListUsersCalendarService (params?: CalendarRowParams): Promise<CalendarRowWithTimeSlotsDto[] | null> {

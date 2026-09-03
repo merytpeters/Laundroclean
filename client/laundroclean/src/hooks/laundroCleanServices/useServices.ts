@@ -30,12 +30,12 @@ import { useAuth } from "src/context/AuthContext";
 /**
  * LaundrocleanServices Hook
  */
-type PublicServiceQueryPayload = {
+type PublicServiceQuery = {
     id?: string;
     params?: PublicServicesParams
 }
 
-export function useGetServicesForPublic({ id, params }: PublicServiceQueryPayload = {}) {
+export function useGetServicesForPublic({ id, params }: PublicServiceQuery = {}) {
     return useQuery<ApiResponse<ServiceDto | ServicesDto> | null>({
         queryKey: id
             ? laundrocleanServicesKeys.detail(id)
@@ -153,7 +153,7 @@ export function useUpdateService() {
     const { authUser } = useAuth();
 
     const mutation = useMutation({
-        mutationFn: async ({
+        mutationFn: async({
             id,
             payload,
             servicePricePayload

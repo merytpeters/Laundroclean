@@ -6,6 +6,7 @@ import {
     createRoleService,
     getRolesService,
     getUsersByRoleService,
+    updateRoleService,
     deleteRoleService
 } from "src/services/roleService/role.service";
 import { RolePayload } from "src/types/roles/role";

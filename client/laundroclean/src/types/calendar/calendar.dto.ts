@@ -5,7 +5,6 @@ export type CalendarRowDto = {
     notes?: string;
     createdAt?: string;
     updatedAt?: string;
-    deletedAt?: string;
 }
 
 
@@ -23,6 +22,6 @@ export type TimeSlotsDto = {
 
 type timeSlots = {
     timeSlots?: TimeSlotsDto[]
-} 
+}
 
 export type CalendarRowWithTimeSlotsDto = CalendarRowDto & timeSlots

@@ -3,6 +3,7 @@ import { mapUser } from "src/types/users/user.dto";
 import { ChangePasswordPayload, UpdatedUserResponse, UserProfilePayload, UserProfileResponse, ProfileResponse, GetUsersParams, UpdateUserStatusPayload, AdminViewUserProfileResponse } from "src/types/users/user";
 import { adminApi } from "src/lib/api/adminApi";
 import { ApiResponse } from "src/lib/api/requests";
+import { staffApi } from "src/lib/api/staffApi";
 
 export async function getCurrentUserProfileService(): Promise<UserProfileResponse | null> {
     const res = await profileApi.getCurrentUserProfile();
@@ -121,4 +122,24 @@ export async function adminUpdateUserStatus(userId: string, payload: UpdateUserS
     }
 
     return res
+}
+
+export async function staffGetUsersService(params?: GetUsersParams): Promise<ApiResponse<AdminViewUserProfileResponse[]> | null> {
+    const res = await staffApi.getUsers(params);
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    const users: AdminViewUserProfileResponse[] = res.data.map((singleuser) => {
+        const {user, ...profile} = singleuser;
+
+        return {
+            user: mapUser(user),
+            ...profile
+        }
+    })
+
+    res.data = users;
+    return res;
 }

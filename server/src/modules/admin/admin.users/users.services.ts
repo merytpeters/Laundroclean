@@ -50,23 +50,39 @@ const buildProfileWhere = (
 
     if (filter.type) {
         userFilter.type =
-            filter.type.toUpperCase() === 'CLIENT' ? UserType.CLIENT : UserType.COMPANYUSER;
-    }
-
-    const where: ProfileWhereInput = {};
-
-    if (Object.keys(userFilter).length > 0) {
-        where.user = userFilter;
+            filter.type.toUpperCase() === 'CLIENT'
+                ? UserType.CLIENT
+                : UserType.COMPANYUSER;
     }
 
     if (filter.search) {
-        where.OR = [
-            { user: { firstName: { contains: filter.search, mode: 'insensitive' } } },
-            { user: { lastName: { contains: filter.search, mode: 'insensitive' } } },
+        userFilter.OR = [
+            {
+                firstName: {
+                    contains: filter.search,
+                    mode: 'insensitive',
+                },
+            },
+            {
+                lastName: {
+                    contains: filter.search,
+                    mode: 'insensitive',
+                },
+            },
+            {
+                email: {
+                    contains: filter.search,
+                    mode: 'insensitive',
+                },
+            },
         ];
     }
 
-    return where;
+    return Object.keys(userFilter).length > 0
+        ? {
+              user: userFilter,
+          }
+        : {};
 };
 
 const getUsers = async (

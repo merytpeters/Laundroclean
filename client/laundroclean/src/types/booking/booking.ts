@@ -1,5 +1,6 @@
+import { CalendarRowPayload } from "../calendar/calendar";
 import { ProfilePayload } from "../users/user";
-import { DeliveryType } from "./bookingStatus";
+import { DeliveryTypeDto } from "./booking.dto";
 
 export type minimumPickupdaysPayload = {
     minPickupDays: number;
@@ -24,25 +25,35 @@ export type CompanyListBookingsQueryParam = {
 
 export type BookingPayload = {
     email: string;
-    profileId: string;
     address?: ProfilePayload;
-    deliveryType: DeliveryType;
+    deliveryType: DeliveryTypeDto;
     serviceId: string;
     promoCode?: string;
     scheduledDate: string;
-    pickupTime: string;
+    pickupTime?: string;
     weight?: number;
     itemCount?: number;
     additionalNotes?: string;
-    // assignedToId?: string;
-    // timeSlotId?: string;
+    assignedToId?: string;
+    timeSlotId?: string;
 }
+
+export type BookingFormValues =
+    Omit<BookingPayload, "scheduledDate" | "pickupTime"> &
+    Omit<CalendarRowPayload, "date"> & {
+        scheduledDate: string;
+        scheduledTime: string;
+        pickupDate: string;
+        pickupTime: string;
+        date: string;
+        time: string;
+    };
 
 export type UpdateBookingPayload = {
     serviceId?: string;
     promoCode?: string;
     address?: ProfilePayload;
-    deliveryType?: DeliveryType;
+    deliveryType?: DeliveryTypeDto;
     scheduledDate?: string;
     pickupTime?: string;
     weight?: number;

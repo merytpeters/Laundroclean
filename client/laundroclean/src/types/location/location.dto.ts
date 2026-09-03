@@ -1,5 +1,3 @@
-import { Meta } from "../shared";
-
 export type DropoffPointDto = {
     name: string;
     address: string;
@@ -9,7 +7,7 @@ export type DropoffPointDto = {
     isActive: boolean;
 }
 
-export type DropoffPointsDto = DropoffPointDto[] & Meta
+export type DropoffPointsDto = DropoffPointDto[]
 
 export type ServiceAreaDto = {
     name: string;
@@ -21,4 +19,4 @@ export type ServiceAreaDto = {
     lngMax?: number;
 }
 
-export type ServiceAreasDto = ServiceAreaDto[] & Meta
+export type ServiceAreasDto = ServiceAreaDto[]

@@ -111,11 +111,7 @@ export async function apiRequest<T>(
                 }
             }
 
-            return {
-                success: false,
-                data: null,
-                message: json.message || "Request failed",
-            };
+            throw new Error(json.message || "Request failed");
         }
 
         if (response.status === 204) {

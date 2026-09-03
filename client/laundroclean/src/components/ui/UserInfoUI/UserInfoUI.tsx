@@ -3,13 +3,14 @@ import styles from "./UserInfoUI.module.css";
 import Button from "../Button/Button";
 import { useEffect, useState } from "react";
 import PaymentHistory from "../PaymentUI/PaymentHistory";
-import { useAdminGetUsers, useAdminUpdateUserStatus } from "src/hooks/admin/useUser/useUser";
+import { useGetUsers, useAdminUpdateUserStatus } from "src/hooks/companyUser/useUser/useUser";
 import { LoadingState } from "../ErrorState/ErrorState";
 import { capitalilzeFirstLetter } from "src/utils/capitalize";
 import { UpdateUserStatusPayload } from "src/types/users/user";
 import { formatDateTime } from "src/utils/globalTimezone";
 import Pagination from "../Pagination/Pagination";
 import { useSearchParams } from "next/navigation";
+import { useDebounce } from "src/hooks/debounceHook";
 
 
 export interface UserInfoUIProps {
@@ -22,10 +23,11 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
     const page = Number(searchParams.get('page')) || 1;
     const limit = Number(searchParams.get('limit')) || 5;
     const search = searchParams.get('search') || '';
+    const debouncedSearch = useDebounce(search, 500);
     const queryParams = {
         page,
         limit,
-        search
+        debouncedSearch
     }
     const updateUserStatusMutation = useAdminUpdateUserStatus();
 
@@ -47,7 +49,7 @@ export default function UserInfoUI({ usertype }: UserInfoUIProps) {
         updateUserStatusMutation.mutate({ id, payload });
     }
 
-    const { data, isLoading, isPending, isError, error } = useAdminGetUsers({ type: usertype }, queryParams);
+    const { data, isLoading, isPending, isError, error } = useGetUsers({ type: usertype }, queryParams);
     /*console.log("COMPONENT:", {
         usertype,
         data,

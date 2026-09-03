@@ -10,13 +10,31 @@ import { LocalSearchBar, FilterSearch } from "src/components/ui/SearchBar/Search
 import { FiX, FiPlus as PlusIcon } from "react-icons/fi";
 import { useState } from 'react';
 import BookingForm from "src/components/ui/Forms/BookingForm";
+import { useServices } from "src/hooks/laundroCleanServices/useServices";
+import { useGetUsers } from "src/hooks/companyUser/useUser/useUser";
 
-export default function BookingModal () {
+export default function BookingModal() {
     const { user } = useCompanyUserMenu();
     const [showForm, setShowForm] = useState(false);
+    const { data: servicesData } = useServices({
+        params: {
+            includeDeleted: 'false'
+        }
+    })
+
+    const queryParams = {
+        status: "active",
+    } as const;
+
+    const { data: staffData } = useGetUsers({ type: "COMPANYUSER" }, queryParams)
+
+    const staffToAssign = staffData?.data
+
+    const services = servicesData?.data;
+
     if (!user.uiRole) return null;
     const config = roleConfig[user.uiRole];
-    
+
     return (
         <div className={styles.bookingmodalcontainer}>
             <section className={styles.bookingrowgrid}>
@@ -42,18 +60,18 @@ export default function BookingModal () {
                 <section aria-label="Search section" className={styles.searchsection}>
                     <span className={styles.searchicons}>
                         <LocalSearchBar placeHolder="Search bookings..." />
-                        <FilterSearch placeholder="Filter by Status"/>
+                        <FilterSearch placeholder="Filter by Status" />
                     </span>
-            
+
                 </section>
             </section>
 
-            
-               
+
+
             <section aria-label="Booking display Section" className={styles.tablesection}>
                 <button className={styles.addnewbtn} onClick={() => setShowForm(true)}>
                     <span>Add new</span>
-                        <PlusIcon size={30}/>
+                    <PlusIcon size={30} />
                 </button>
                 <BookingDisplayTable />
             </section>
@@ -61,19 +79,16 @@ export default function BookingModal () {
             {/* sliding drawer for new booking */}
             <div className={`${styles.drawer} ${showForm ? styles.open : ''}`} role="dialog" aria-hidden={!showForm}>
                 <div className={styles.drawerHeader}>
-                    <h3>New Booking</h3>
+                    <h4>New Booking</h4>
                     <button aria-label="Close" className={styles.drawerClose} onClick={() => setShowForm(false)}>
                         <FiX size={20} />
                     </button>
                 </div>
                 <div className={styles.drawerContent}>
                     <BookingForm
-                        user={user}
                         showStaffAssignedSlot={user.uiRole === 'ADMIN'}
-                        staffOptions={user.uiRole === 'ADMIN' ? [
-                            { id: 'staff-1', name: 'Alice' },
-                            { id: 'staff-2', name: 'Bob' },
-                        ] : undefined}
+                        staffOptions={user.uiRole === 'ADMIN' ? staffToAssign : undefined}
+                        services={services}
                     />
                 </div>
             </div>

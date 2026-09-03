@@ -65,10 +65,6 @@ const validateServiceArea = async (tx: Prisma.TransactionClient, lat: number, ln
         },
     });
 
-    if (!area) {
-        throw new UnauthorizedError('Service not available in this area');
-    }
-
     return area;
 };
 
@@ -93,8 +89,10 @@ const createBooking = async (
                     data: {
                         email,
                         password,
+                        firstName: input.firstName ?? null,
+                        lastName: input.lastName ?? null,
                         type: 'CLIENT',
-                    },
+                    }
                 });
             }
         } else {
@@ -107,8 +105,10 @@ const createBooking = async (
                 data: {
                     email: tempEmail,
                     password,
+                    firstName: input.firstName ?? null,
+                    lastName: input.lastName ?? null,
                     type: 'CLIENT',
-                },
+                }
             });
         }
 
@@ -154,12 +154,28 @@ const createBooking = async (
                     );
                 }
             }
-            const address = await tx.profile.create({
-                data: {
-                    ...Object.fromEntries(
-                        Object.entries(input.address).filter(([_, v]) => v !== undefined)
-                    ),
+
+            const address = await tx.profile.upsert({
+                where: {
                     userId: user.id,
+                },
+                update: {
+                    phoneNumber: input.address.phoneNumber ?? null,
+                    addressLine1: input.address.addressLine1 ?? null,
+                    addressLine2: input.address.addressLine2 ?? null,
+                    city: input.address.city ?? null,
+                    state: input.address.state ?? null,
+                    postalCode: input.address.postalCode ?? null,
+                    isTemp: input.address.isTemp ?? false,
+                },
+                create: {
+                    userId: user.id,
+                    phoneNumber: input.address.phoneNumber ?? null,
+                    addressLine1: input.address.addressLine1 ?? null,
+                    addressLine2: input.address.addressLine2 ?? null,
+                    city: input.address.city ?? null,
+                    state: input.address.state ?? null,
+                    postalCode: input.address.postalCode ?? null,
                     isTemp: input.address.isTemp ?? false,
                 },
             });
@@ -167,7 +183,15 @@ const createBooking = async (
             addressId = address.id;
         }
 
-        // 6. Apply promo (if any) and then retry booking creation
+        // 6. Get profileid
+        const userId = user.id;
+        const profile = await prisma.profile.findUnique({ where: { userId } });
+
+        if (!profile) {
+            throw new NotFoundError('Can\'t find user\'s profile');
+        }
+
+        // 7. Apply promo (if any) and then retry booking creation
         for (let i = 0; i < 3; i++) {
             try {
                 const customBookingId = await BookingUtils.generateCustomBookingId();
@@ -225,7 +249,7 @@ const createBooking = async (
 
                 return await tx.booking.create({
                     data: {
-                        profileId: input.profileId,
+                        profileId: profile.id,
                         serviceId: input.serviceId,
 
                         deliveryType: input.deliveryType,
@@ -432,8 +456,8 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             return updatedbooking;
         } catch (_error: any) {
             if (_error instanceof ConflictError || NotFoundError) {
-                    throw _error;
-                }
+                throw _error;
+            }
             if (
                 _error instanceof Prisma.PrismaClientKnownRequestError
             ) {
