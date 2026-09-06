@@ -3,6 +3,8 @@ import { mapDeliveryType } from "src/types/booking/bookingStatus";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { transformFieldInArray } from "src/utils/mapData";
 
+export const stats = {}
+
 export const bookingScheduleData = [
     {
         id: "1",
