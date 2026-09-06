@@ -12,7 +12,7 @@ import { useState } from 'react';
 import BookingForm from "src/components/ui/Forms/BookingForm";
 import { useServices } from "src/hooks/laundroCleanServices/useServices";
 import { useGetUsers } from "src/hooks/companyUser/useUser/useUser";
-import { useGetbookings } from "src/hooks/booking/useBooking";
+import { useGetbookings, useGetBookingSettings } from "src/hooks/booking/useBooking";
 import { transformFieldInArray } from "src/utils/mapData";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { mapDeliveryType } from "src/types/booking/bookingStatus";
@@ -117,6 +117,9 @@ export default function BookingModal() {
         ).length,
     };
 
+    const { data: bookingSettings } = useGetBookingSettings();
+    const bookingSettingsData = bookingSettings?.data;
+
     if (bookingLoadingState) return <LoadingState />;
 
     if (!user.uiRole) return null;
@@ -156,6 +159,7 @@ export default function BookingModal() {
 
 
             <section aria-label="Booking display Section" className={styles.tablesection}>
+                {bookingSettings && (<p>Minimum delivery delivery day set to: <strong>{bookingSettingsData?.minPickupDays} Days </strong></p>)}
                 <button className={styles.addnewbtn} onClick={() => setShowForm(true)}>
                     <span>Add new</span>
                     <PlusIcon size={30} />

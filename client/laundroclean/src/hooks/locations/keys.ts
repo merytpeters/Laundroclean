@@ -8,3 +8,13 @@ export const serviceAreaKeys =  {
     ) => ["serviceAreas", "list", params] as const,
     detail: (id: string) => ["serviceArea", id] as const,
 }
+
+
+export const dropOffLocationKeys = {
+    all: ["dropOffPoints"] as const,
+    lists: () => ["dropOffPoints", "list"] as const,
+    list: (
+        params?: GetLocationListParams | GetLocationParams
+    ) => ["dropOffPoints", "list", params] as const,
+    detail: (id: string) => ["dropOffPoint", id] as const,
+}

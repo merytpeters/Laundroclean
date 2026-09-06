@@ -2,7 +2,7 @@ import { GetActiveServicesParams, ServicePayload, UpdateServicePayload } from "s
 import { apiRequest } from "./requests";
 import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, UpdateBookingPayload } from "src/types/booking/booking";
-import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
+import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
 import { GetUsersParams } from "src/types/users/user";
@@ -91,7 +91,7 @@ export const staffApi = {
         apiRequest<TimeSlotsDto>(`/staff/timeslots/${timeslotId}`),
 
     updateTimeSlotById: (timeslotId: string, payload: UpdateTimeSlotPayload) =>
-        apiRequest<TimeSlotsDto>(`/admin/timeslots/${timeslotId}`, {
+        apiRequest<TimeSlotsDto>(`/staff/timeslots/${timeslotId}`, {
             method: "PATCH",
             body: JSON.stringify(payload)
         }),
@@ -101,4 +101,7 @@ export const staffApi = {
             method: "GET",
             params: params,
         }),
+
+    getBookingSettings: () =>
+        apiRequest<BookingSettingsDto>('/staff/booking-settings'),
 }

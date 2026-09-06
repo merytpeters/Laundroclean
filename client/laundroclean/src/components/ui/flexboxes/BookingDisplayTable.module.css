@@ -109,6 +109,10 @@
   border-radius: 4px;
 }
 
+.bookingsettingssection span {
+  margin-top: 1em;
+}
+
 .allbookingsheader {
   display: flex;
   flex-direction: row;

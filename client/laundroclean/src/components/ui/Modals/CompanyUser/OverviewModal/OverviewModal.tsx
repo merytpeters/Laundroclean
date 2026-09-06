@@ -7,16 +7,40 @@ import styles from "./OverviewModal.module.css"
 import ScheduleCard from "src/components/ui/flexboxes/ScheduleCard";
 import { mapDeliveryType, mapBookingStatus } from "src/types/booking/bookingStatus";
 import ClientInfoCard from "src/components/ui/flexboxes/ClientInfoCard";
-import { stats, bookingScheduleData } from "../../../../../services/bookingService/bookingMockData";
+import { bookingScheduleData } from "../../../../../services/bookingService/bookingMockData";
 import { clientInfoData } from "src/services/userService/mock";
 import Button from "src/components/ui/Button/Button";
 import { controlpanelbasepath } from "src/components/ui/Modals/CompanyUser/Admin/ControlPanel/ControlPanelSidebar";
+import { useGetUsers } from "src/hooks/companyUser/useUser/useUser";
+import { useGetbookings } from "src/hooks/booking/useBooking";
 
 export default function Overview() {
     const { user } = useCompanyUserMenu();
+    const userQueryParams = {
+        status: "active"
+    } as const
+    const {data: totalClientUsersData } = useGetUsers({type: "CLIENT"}, userQueryParams)
+    const totalClientUsers = totalClientUsersData?.data;
+
+    const { data: bookingData } = useGetbookings({});
+    const activeConfirmedBookings = Array.isArray(bookingData?.data)
+        ? bookingData.data
+        : [];;
+
     if (!user.uiRole) return null;
 
     const config = roleConfig[user.uiRole];
+
+    const stats = {
+        activeClient: totalClientUsers?.length,
+        activeBookings: activeConfirmedBookings?.filter(
+            (booking) => {
+                booking.status === "CONFIRMED",
+                booking.isActive
+            }
+            
+        ).length
+    }
 
     const mappedDelivery =bookingScheduleData.map((item) => ({
         ...item,

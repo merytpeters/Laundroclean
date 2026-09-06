@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import styles from './BookingForm.module.css';
 import Button from '../Button/Button';
 import { mapDeliveryType } from '../../../types/booking/bookingStatus';
 import { CompanyUserMenuContext } from 'src/components/layouts/CompanyUser/context/CompanyUserMenuContext';
-import { useCreateBooking } from 'src/hooks/booking/useBooking';
+import { useCreateBooking, useGetBookingSettings } from 'src/hooks/booking/useBooking';
 import { useCreateCalendarRow } from 'src/hooks/calendar/useCalendar';
 import { useForm } from 'react-hook-form';
 import { BookingFormValues } from 'src/types/booking/booking';
@@ -14,7 +14,7 @@ import { useGetUsers } from 'src/hooks/companyUser/useUser/useUser';
 import { useDebounce } from 'src/hooks/debounceHook';
 import { UserProfileDto } from 'src/types/users/user.dto';
 import { CalendarRowPayload } from 'src/types/calendar/calendar';
-import { toUTCISOString } from 'src/utils/globalTimezone';
+import { getMinPickupDate, toUTCISOString } from 'src/utils/globalTimezone';
 import { toast } from 'sonner';
 
 
@@ -423,6 +423,15 @@ export default function BookingForm({
         );
     };
 
+    const { data: bookingSettings } = useGetBookingSettings();
+
+    const minScheduledDeliveryDate = useMemo(() => {
+        if (!bookingSettings?.data) return "";
+
+        return getMinPickupDate(
+            bookingSettings.data.minPickupDays
+        );
+    }, [bookingSettings]);
 
 
     return (
@@ -940,9 +949,7 @@ export default function BookingForm({
                         <input
                             id="pickupDate"
                             type="date"
-                            {...formData.register(
-                                "pickupDate"
-                            )}
+                            {...formData.register("pickupDate")}
                         />
                         <label htmlFor="pickupTime">
                             pickup Time
@@ -968,9 +975,18 @@ export default function BookingForm({
                     <input
                         id="scheduledDate"
                         type="date"
-                        {...formData.register(
-                            "scheduledDate"
-                        )}
+                        min={minScheduledDeliveryDate}
+                            disabled={!bookingSettings?.data}
+                            {...formData.register("scheduledDate", {
+                                validate: (value) => {
+                                    if (!value || !bookingSettings?.data) return true;
+
+                                    return (
+                                        value >= minScheduledDeliveryDate ||
+                                        `Delivery date must be at least ${bookingSettings.data.minPickupDays} days from today`
+                                    );
+                                },
+                            })}
                     />
                     <label htmlFor="scheduledTime">
                         scheduled delivery Time

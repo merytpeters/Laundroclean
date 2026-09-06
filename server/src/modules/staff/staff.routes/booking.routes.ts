@@ -26,6 +26,12 @@ router.get(
     BookingController.listBookingsController
 );
 
+router.get(
+    '/booking-settings',
+    UserAuth.requirePermission(PERMISSIONS.BOOKING.VIEW),
+    BookingController.getBookingSettings
+);
+
 router.patch(
     '/bookings/:bookingId',
     validate(BookingValidation.updateBookingSchema),

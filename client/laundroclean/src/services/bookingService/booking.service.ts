@@ -6,7 +6,17 @@ import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam,
 import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 
-// admin routes Services
+
+// Uses staff api but work for both staff and admin
+export async function getBookingSettingsService (): Promise<ApiResponse<BookingSettingsDto> | null> {
+    const res = await staffApi.getBookingSettings();
+
+    if (!res.success || !res.data) return null;
+
+    return res
+}
+
+// admin only routes Services
 export async function setMinimumPickupDaysService (payload: minimumPickupdaysPayload): Promise<ApiResponse<BookingSettingsDto> | null> {
     const res = await adminApi.setMinimumPickupDays(payload);
 

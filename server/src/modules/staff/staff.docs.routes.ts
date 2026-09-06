@@ -56,6 +56,15 @@
  *       properties:
  *         message:
  *           type: string
+ *     BookingSettings:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         minPickupDays:
+ *           type: integer
+ *           example: 2
  *
  * tags:
  *   - name: Staff
@@ -311,6 +320,49 @@
  *               $ref: '#/components/schemas/BookingListResponse'
  *       '403':
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ * 
+ * /api/v1/staff/booking-settings:
+ *   get:
+ *     tags:
+ *       - Staff
+ *     summary: Get booking settings
+ *     description: Retrieves the current booking settings configured for the company, including the minimum number of days required before pickup.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Booking settings retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/BookingSettings'
+ *                 message:
+ *                   type: string
+ *                   example: Booking settings retrieved successfully
+ *       '403':
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Booking settings not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
  *         content:
  *           application/json:
  *             schema:

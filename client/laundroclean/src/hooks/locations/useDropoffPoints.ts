@@ -1,53 +1,55 @@
-import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from 'src/lib/api/requests';
-import { mockDropoffPoints } from 'src/services/locations/mock';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiRequest, ApiResponse } from 'src/lib/api/requests';
+import { createDropOffPointService, getDropOffPointByIdService, listDropOffPointsService } from 'src/services/locations/locations.service';
+import { dropOffLocationKeys } from './keys';
+import { DropOffPointPayload, GetLocationListParams, GetLocationParams } from 'src/types/location/location';
+import { DropoffPointDto, DropoffPointsDto } from 'src/types/location/location.dto';
+import { useAuth } from 'src/context/AuthContext';
+import { toast } from 'sonner';
 
-export interface DropoffPoint {
-    id: string;
-    name: string;
-    address: string;
-    lat: number | null;
-    lng: number | null;
-    isActive: boolean;
+
+type DropoffPointQuery = {
+  id?: string;
+  params?: GetLocationListParams | GetLocationParams;
 }
-
-export interface DropoffPointsResponse {
-    data: DropoffPoint[];
-    pagination: {
-        page: number;
-        limit: number;
-        total: number;
-    };
-}
-
-export const useDropoffPoints = () => {
-    return useQuery({
-        queryKey: ['dropoffPoints'],
-        queryFn: async () => {
-            const response = await apiRequest<DropoffPointsResponse>('dropoffPoints');
-            
-            if (!response.success) {
-                return mockDropoffPoints;
-            }
-            
-            return response.data?.data || mockDropoffPoints;
-        },
-        staleTime: 1000 * 60 * 5,
-        refetchOnWindowFocus: false,
+export const useDropoffPoints = ({id, params}: DropoffPointQuery) => {
+    return useQuery<ApiResponse<DropoffPointDto | DropoffPointsDto> | null>({
+        queryKey: id
+            ? dropOffLocationKeys.detail(id)
+            : dropOffLocationKeys.list(params),
+        queryFn: () => 
+            id
+                ? getDropOffPointByIdService(id, params)
+                : listDropOffPointsService(params)
     });
 };
 
-export type ValidDropoffPoint = DropoffPoint & {
-  lat: number;
-  lng: number;
-};
 
-export const isValidPoint = (
-  point: DropoffPoint | null
-): point is ValidDropoffPoint => {
-  return (
-    point != null &&
-    point.lat != null &&
-    point.lng != null
-  );
-};
+
+type CreateDropOffPointVariables = {
+    payload: DropOffPointPayload
+}
+
+export function useCreateDropOffPoint() {
+  const queryClient = useQueryClient();
+  const { authUser } = useAuth();
+
+  const mutation = useMutation({
+    mutationFn: async ({
+      payload,
+    }: CreateDropOffPointVariables) => {
+      if (authUser?.type === "COMPANYUSER") {
+        return createDropOffPointService(payload)
+      }
+    },
+    onSuccess(data) {
+      queryClient.invalidateQueries({
+        queryKey: dropOffLocationKeys.lists(),
+      });
+      toast.success(data?.message)
+    }
+  })
+
+  return mutation
+}
+

@@ -1,9 +1,9 @@
 import prisma from '../../config/prisma.js';;
-import type { Booking, User } from '@prisma/client';
+import type { Booking, BookingSettings, User } from '@prisma/client';
 import { PricingType, Prisma } from '@prisma/client';
 import { BookingUtils } from './index.js';
 import { AuthUtils } from '../auth/index.js';
-import { NotFoundError, ConflictError, UnauthorizedError, ForbiddenError } from '../../middlewares/errorHandler.js';
+import { NotFoundError, ConflictError, UnauthorizedError, ForbiddenError, ProcessingError } from '../../middlewares/errorHandler.js';
 import type { CreateBookingSchema, UpdateBookingSchema, UpdateBookingStatusSchema } from '../../validation/booking/booking.validation.js';
 import { ServicepriceService } from '../serviceprice/index.js';
 import { PromoService, PromoUsageService } from '../promocode/index.js';
@@ -792,11 +792,26 @@ const upsertBookingSettings = async (
         where: { id: 1 },
         update: { minPickupDays: input.minPickupDays },
         create: { id: 1, minPickupDays: input.minPickupDays },
+        // minimum pickupdays should have been minimum daystodeliver
     });
 
     return settings;
 };
 
+const getBookingSettings = async (): Promise<BookingSettings> => {
+    try {
+        const bookingSettings = await prisma.bookingSettings.findUnique({
+            where: {id: 1}
+        });
+
+        if (!bookingSettings) throw new NotFoundError('Minimum pickup days not found, go set minimum pickup days');
+        return bookingSettings;
+
+    } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
+        throw new ProcessingError(error?.message || 'Failed to fetch booking settings');
+    }
+};
 
 
 // payment triggers status to confirmed
@@ -810,5 +825,6 @@ export default {
     updateBookingStatus,
     softDeleteBooking,
     restoreBooking,
-    upsertBookingSettings
+    upsertBookingSettings,
+    getBookingSettings
 };

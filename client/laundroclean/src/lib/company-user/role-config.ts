@@ -51,7 +51,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
     ],
     clientInfoCardTitle : "Customers",
-    clientInfoCardMessage: "All Customers",
+    clientInfoCardMessage: "All Customers with bookings",
     AdminCPStatCards: [
       {title: "Total Revenue", key: "totalRevenue"},
       {title: "Total Staff", key: "totalStaff"},
@@ -91,7 +91,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
     ],
     clientInfoCardTitle : "Customers Assigned",
-    clientInfoCardMessage: "Customers with future bookings assigned to you",
+    clientInfoCardMessage: "Customers with bookings assigned to you",
     BookingStatCards: [
       {title: "Your Daily (Paid) Assigned Bookings", key: "dailyBookings"},
       {title: "Confirmed Bookings Assigned to You", key: "confirmedBookings"},

@@ -5,7 +5,7 @@ import { BookingService } from './index.js';
 import { NotFoundError } from '../../middlewares/errorHandler.js';
 
 
-const createBookingController = asyncHandler (async (req, res) => {
+const createBookingController = asyncHandler(async (req, res) => {
     let clientbookingData: CreateBookingSchema = req.body;
 
     const { email, ...bookingData } = clientbookingData;
@@ -74,7 +74,7 @@ const listBookingsController = asyncHandler(async (req, res) => {
     if (search !== undefined) params.search = search;
     if (profileId !== undefined) params.profileId = profileId;
     params.includeProfile = includeProfile;
-    
+
     const currentUser = req.user ? { id: req.user.id, type: req.user.type } : undefined;
     const isAdmin = req.user?.role?.title === 'ADMIN';
     const result = await BookingService.listBookings(params, currentUser, Boolean(isAdmin));
@@ -143,6 +143,16 @@ const updateBookingSettings = asyncHandler(async (req, res) => {
     }
 });
 
+const getBookingSettings = asyncHandler(async (req, res) => {
+    const bookingSettings = await BookingService.getBookingSettings();
+
+    return res.status(200).json({
+        success: true,
+        data: bookingSettings,
+        message: 'Booking settings retrieved successfully'
+    });
+});
+
 export default {
     createBookingController,
     updateBookingController,
@@ -151,5 +161,6 @@ export default {
     updateBookingStatusController,
     cancelBookingController,
     restoreBookingController,
-    updateBookingSettings
+    updateBookingSettings,
+    getBookingSettings
 };

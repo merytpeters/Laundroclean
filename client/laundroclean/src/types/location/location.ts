@@ -55,3 +55,8 @@ export type ValidServiceArea = ServiceAreaResponse & {
   lngMin: number;
   lngMax: number;
 };
+
+export type ValidDropoffPoint = DropOffPointResponse & {
+  lat: number;
+  lng: number;
+};

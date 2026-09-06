@@ -1,4 +1,4 @@
-import { ServiceAreaResponse, ValidServiceArea } from "src/types/location/location";
+import { DropOffPointResponse, ServiceAreaResponse, ValidServiceArea, ValidDropoffPoint } from "src/types/location/location";
 export const isValidArea = (area: ServiceAreaResponse): area is ValidServiceArea => {
   return (
     area.latMin != null &&
@@ -25,5 +25,15 @@ export const getRadius = (area: ServiceAreaResponse) => {
       Math.pow(area.latMax - area.latMin, 2) +
       Math.pow(area.lngMax - area.lngMin, 2)
     ) * 111000
+  );
+};
+
+export const isValidPoint = (
+  point: DropOffPointResponse | null
+): point is ValidDropoffPoint => {
+  return (
+    point != null &&
+    point.lat != null &&
+    point.lng != null
   );
 };

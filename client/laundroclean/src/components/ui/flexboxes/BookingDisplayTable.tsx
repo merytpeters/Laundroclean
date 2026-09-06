@@ -8,7 +8,7 @@ import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
 import { useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
-import { useGetbookings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
+import { useGetbookings, useGetBookingSettings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
 import { minimumPickupdaysPayload } from "src/types/booking/booking";
 import { LoadingState } from "../ErrorState/ErrorState";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
@@ -119,6 +119,9 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
 export function BookingSettings() {
     const [minPickupDays, setMinPickupDays] = useState("");
     const minimumPickupDaysMutation = useSetMinimumPickupDays();
+    const { data } = useGetBookingSettings();
+    const bookingSettingsData = data?.data;
+
     const handleSetMinimumPickupDays = () => {
         const days = Number(minPickupDays);
         if (!Number.isInteger(days) || days < 0) { return; }
@@ -142,6 +145,7 @@ export function BookingSettings() {
                     {minimumPickupDaysMutation.isPending ? "Setting..." : "Set"}
                 </button>
             </section>
+            {bookingSettingsData && (<span>Minimum delivery delivery day set: <strong>{bookingSettingsData?.minPickupDays} Days </strong></span>)}
         </section>
     );
 }

@@ -113,6 +113,11 @@
     z-index: 110;
 }
 
+.tablesection p {
+    color: #555;
+    padding-left: 2em;
+}
+
 /* Make drawer full width on small screens */
 @media (max-width: 768px) {
     .drawer.open { width: 100%; }

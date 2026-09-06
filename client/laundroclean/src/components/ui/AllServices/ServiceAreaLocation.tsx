@@ -13,6 +13,7 @@ import styles from "./AllServices.module.css";
 import { CloseProps } from "./DropOffLocation";
 import Button from "../Button/Button";
 import ErrorState, { LoadingState } from "../ErrorState/ErrorState";
+import { FiEdit } from "react-icons/fi";
 
 export default function ServiceAreaLocation({ onClose, usertype }: CloseProps) {
     const { data: serviceAreas = [], isLoading, error } = useServiceAreas({});
@@ -33,10 +34,10 @@ export default function ServiceAreaLocation({ onClose, usertype }: CloseProps) {
     if (error) return <ErrorState message={`Error loading service areas: ${error.message}`} />
 
     const areas = Array.isArray(serviceAreas)
-    ? serviceAreas
-    : Array.isArray(serviceAreas?.data)
-        ? serviceAreas.data
-        : [];
+        ? serviceAreas
+        : Array.isArray(serviceAreas?.data)
+            ? serviceAreas.data
+            : [];
 
     if (areas.length === 0) {
         return (
@@ -59,7 +60,7 @@ export default function ServiceAreaLocation({ onClose, usertype }: CloseProps) {
     const radius = activeArea ? getRadius(activeArea) : 0;
     const handleCreateServiceArea = (value: ServiceAreaPayload) => {
         createServiceAreaMutation.mutate(
-            {payload: value}
+            { payload: value }
         )
     }
 
@@ -211,6 +212,9 @@ export default function ServiceAreaLocation({ onClose, usertype }: CloseProps) {
                             style={{ cursor: "pointer" }}
                         >
                             <strong>{area.name}</strong>
+                            <div>
+                                <FiEdit />
+                            </div>
 
                             {area.isActive ? (
                                 <span className={styles.activeBadge}>

@@ -19,14 +19,15 @@ import {
     staffUpdateBooking,
     staffGetBookingById,
     staffSearchBookingService,
-    staffUpdateBookingStatusService
+    staffUpdateBookingStatusService,
+    getBookingSettingsService
 } from "src/services/bookingService/booking.service";
 
 import { BookingPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload } from "src/types/booking/booking";
-import { bookingKeys } from "./keys";
+import { bookingKeys, bookingSettingsKeys } from "./keys";
 import { toast } from "sonner";
 import { ApiResponse } from "src/lib/api/requests";
-import { BookingDto, ListBookingsDto } from "src/types/booking/booking.dto";
+import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 
 type CreateBookingVariable = {
@@ -90,13 +91,24 @@ export function useSetMinimumPickupDays() {
 
         onSuccess(data) {
             queryClient.invalidateQueries({
-                queryKey: bookingKeys.lists(),
+                queryKey: bookingSettingsKeys.current(),
             });
             toast.success(data?.message)
         }
     });
 
     return mutation
+}
+
+
+export function useGetBookingSettings() {
+    const { authUser } = useAuth();
+
+    return useQuery<ApiResponse<BookingSettingsDto> | null>({
+        queryKey: bookingSettingsKeys.current(),
+        queryFn: getBookingSettingsService,
+        enabled: authUser?.type === "COMPANYUSER",
+    })
 }
 
 
