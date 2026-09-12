@@ -45,7 +45,6 @@
  *           example: false
  *         message:
  *           type: string
- *           example: Invalid webhook signature.
  *
  * tags:
  *   - name: Webhook

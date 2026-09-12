@@ -74,6 +74,12 @@ export const PERMISSIONS = {
         UPDATE: "payment:update",
         DELETE: "payment:delete",
     },
+    COMPANYBANKACCOUNT: {
+        VIEW: 'bankaccount:view',
+        CREATE: 'bankaccount:create',
+        UPDATE: 'bankaccount:update',
+        DELETE: 'bankaccount:delete',
+    },
 } as const;
 
 export type Permission =

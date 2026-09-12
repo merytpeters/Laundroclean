@@ -63,7 +63,13 @@ export const PERMISSIONS = {
     CREATE: 'payment:create',
     UPDATE: 'payment:update',
     DELETE: 'payment:delete',
-  }
+  },
+  COMPANYBANKACCOUNT: {
+    VIEW: 'bankaccount:view',
+    CREATE: 'bankaccount:create',
+    UPDATE: 'bankaccount:update',
+    DELETE: 'bankaccount:delete',
+  },
 };
 
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS)
