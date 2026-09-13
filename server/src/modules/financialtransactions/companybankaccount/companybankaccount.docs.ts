@@ -9,9 +9,6 @@
  *         - accountName
  *         - accountNumber
  *       properties:
- *         id:
- *           type: string
- *           example: "cln_01H8Y2Z1A8993"
  *         bankName:
  *           type: string
  *           example: "Zenith Bank PLC"
@@ -22,6 +19,25 @@
  *           type: string
  *           example: "214398390209328"
  *         isDefault:
+ *           type: boolean
+ *           example: true
+ * 
+ *     UpdateCompanyBankAccountRequest:
+ *       type: object
+ *       properties:
+ *         bankName:
+ *           type: string
+ *           example: "Zenith Bank PLC"
+ *         accountName:
+ *           type: string
+ *           example: "LaundroClean Ltd"
+ *         accountNumber:
+ *           type: string
+ *           example: "214398390209328"
+ *         isDefault:
+ *           type: boolean
+ *           example: true
+ *         isActive:
  *           type: boolean
  *           example: true
  * 
@@ -161,7 +177,69 @@
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/ErrorResponse' 
+ *                 $ref: '#/components/schemas/ErrorResponse'
+ *
+ *   /api/v1/company-bank-account/{bankAccountId}:
+ *     get:
+ *       tags:
+ *         - Company Bank Accounts
+ *       summary: Get company bank account by id
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           schema:
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: Bank account details
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/CompanyBankAccount'
+ *         '400':
+ *           description: Invalid request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ErrorResponse'
+ *     patch:
+ *       tags:
+ *         - Company Bank Accounts
+ *       summary: update bank account
+ *       security:
+ *         - bearerAuth: []
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UpdateCompanyBankAccountRequest'
+ *       responses:
+ *         '200':
+ *           description: Bank account updated successfully
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/CompanyBankAccount'
+ *         '400':
+ *           description: Validation error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ErrorResponse'
+ *         '401':
+ *           description: Unauthorized
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ErrorResponse'
+ *         '403':
+ *           description: Forbidden
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ErrorResponse'
  */
 
 export {};

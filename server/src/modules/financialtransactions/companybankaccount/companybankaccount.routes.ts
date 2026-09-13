@@ -24,4 +24,17 @@ router.get(
     companyBankAccountController.listCompanyBankAccountsController
 );
 
+router.get(
+    '/:bankAccountId',
+    UserAuth.requirePermission(PERMISSIONS.COMPANYBANKACCOUNT.VIEW),
+    companyBankAccountController.getCompanyBankAccountController
+);
+
+router.patch(
+    '/:bankAccountId',
+    validate(CompanyBankAccountValidation.updateCompanyBankAccountSchema),
+    UserAuth.requirePermission(PERMISSIONS.COMPANYBANKACCOUNT.UPDATE),
+    companyBankAccountController.getCompanyBankAccountController
+);
+
 export default router;

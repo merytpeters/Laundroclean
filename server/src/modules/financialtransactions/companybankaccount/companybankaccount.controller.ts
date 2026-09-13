@@ -1,6 +1,6 @@
 import asyncHandler, { type CompanyBankAccountQuery } from '../../../utils/asyncHandler.js';
 import CompanybankaccountService from './companybankaccount.service.js';
-import type { CompanyBankAccountSchema } from '../../../validation/financialtransactions/companybankaccount.validation.js';
+import type { CompanyBankAccountSchema, UpdateCompanyBankAccountSchema } from '../../../validation/financialtransactions/companybankaccount.validation.js';
 
 const createCompanyBankAccountController = asyncHandler(async (req, res) => {
     const newBankAccountData: CompanyBankAccountSchema = req.body;
@@ -29,7 +29,38 @@ const listCompanyBankAccountsController = asyncHandler(async (req, res) => {
     });
 });
 
+
+const getCompanyBankAccountController = asyncHandler(async (req, res) => {
+    const bankAccountId = req.params.id;
+
+    const isAdmin = req.user?.role?.title === 'ADMIN';
+
+    const companyBankAccount = await CompanybankaccountService.getCompanyBankAccount(bankAccountId, isAdmin);
+
+    return res.status(200).json({
+        success: true,
+        message: 'Bank Account retrieved successfully',
+        data: companyBankAccount,
+    });
+});
+
+
+const updateCompanyBankAccountController = asyncHandler(async (req, res) => {
+    const bankAccountId = req.params.id;
+    const updatedBankAccountData: UpdateCompanyBankAccountSchema = req.body;
+
+    const companyBankAccount = await CompanybankaccountService.updateCompanyBankAccount(updatedBankAccountData, bankAccountId);
+
+    return res.status(200).json({
+        success: true,
+        message: 'Bank Account details updated successfully',
+        data: companyBankAccount,
+    });
+});
+
 export default {
     createCompanyBankAccountController,
-    listCompanyBankAccountsController
+    listCompanyBankAccountsController,
+    getCompanyBankAccountController,
+    updateCompanyBankAccountController,
 };

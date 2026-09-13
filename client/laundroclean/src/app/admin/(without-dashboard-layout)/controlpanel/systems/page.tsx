@@ -1,4 +1,6 @@
+import { AllBankAccounts, NewBankAccount } from "src/components/ui/PaymentNBillingUI/bankAccountUI"
 import styles from "./systems.module.css"
+import { AllPOSDevices, NewPOSDevice } from "src/components/ui/PaymentNBillingUI/posDeviceUI"
 
 export default function Systems() {
     return (
@@ -6,6 +8,19 @@ export default function Systems() {
 
             <section>
                 payment and billings
+                <section>
+                    Bank Accounts
+
+                    <NewBankAccount />
+                    <AllBankAccounts />
+                </section>
+
+                <section>
+                    POS devices
+
+                    <NewPOSDevice />
+                    <AllPOSDevices />
+                </section>
             </section>
             <hr />
             <section>

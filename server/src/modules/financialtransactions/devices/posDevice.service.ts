@@ -65,6 +65,7 @@ const listPOSDevices = async (
             ...(search && {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },
+                    { serialNumber: { contains: search}},
                 ]
             })
         };

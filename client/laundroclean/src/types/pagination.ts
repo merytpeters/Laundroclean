@@ -3,3 +3,7 @@ export interface PaginationParamQuery {
     limit?: number;
     search?: string;
 }
+
+export interface ByActiveParam extends PaginationParamQuery {
+  isActive?: 'true' | 'false';
+}

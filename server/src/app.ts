@@ -12,7 +12,7 @@ import { EmailRoutes } from './modules/emailService/index.js';
 import { ProfileRoutes } from './modules/common/index.js';
 import { LaundrocleanservicesRoutes } from './modules/laundrocleanservices/index.js';
 import { StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes, UsersRouteForStaff } from './modules/staff/index.js';
-import { ClientServiceRoutes, ClientBookingRoutes } from './modules/clientuser/index.js';
+import { ClientServiceRoutes, ClientBookingRoutes, GetCompanyBankAccount } from './modules/clientuser/index.js';
 import { ServicepriceRoutes } from './modules/serviceprice/index.js';
 import { DropOffPointRoutes } from './modules/locations/index.js';
 import { ServiceAreaRoutes } from './modules/locations/index.js';
@@ -73,7 +73,7 @@ app.use('/api/v1/servicearea', ServiceAreaRoutes);
 app.use('/api/v1/posdevices', POSDeviceRoutes);
 app.use('/api/payments', PaymentRoutes);
 app.use('/api/webhooks', WebhookRoutes);
-app.use('/api/v1/company-bank-account', CompanyBankAccountRoutes);
+app.use('/api/v1/company-bank-account', CompanyBankAccountRoutes, GetCompanyBankAccount);
 
 app.use(errorHandler);
 
