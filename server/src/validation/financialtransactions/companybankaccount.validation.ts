@@ -18,7 +18,8 @@ const updateCompanyBankAccountSchema = z.object({
         .string()
         .min(6, 'Account number is too short')
         .max(34, 'Account number cannot exceed 34 characters')
-        .regex(/^[a-zA-Z0-9]+$/, 'Invalid characters in account number'),
+        .regex(/^[a-zA-Z0-9]+$/, 'Invalid characters in account number')
+        .optional(),
     isDefault: z.boolean().optional(),
     isActive: z.boolean().optional()
 });

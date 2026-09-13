@@ -1,4 +1,4 @@
-import { PaginationParamQuery } from "src/types/users/user";
+import { PaginationParamQuery } from "src/types/pagination"
 
 export const companyRolesKeys = {
     all: ["roles"] as const,

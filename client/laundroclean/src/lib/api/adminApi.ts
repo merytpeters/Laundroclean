@@ -11,8 +11,9 @@ import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundroclean
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { RolePayload } from "src/types/roles/role";
 import { RoleDto, RolesDto, UserRoleDto } from "src/types/roles/role.dto";
-import { GetUsersParams, PaginationParamQuery, UpdateUserStatusPayload } from "src/types/users/user";
+import { GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
 import { UserDto, UserProfileDto } from "src/types/users/user.dto";
+import { PaginationParamQuery } from "src/types/pagination";
 
 export const adminApi = {
     registerUser: (payload: RegisterPayload) =>

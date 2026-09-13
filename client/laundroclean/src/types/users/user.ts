@@ -1,4 +1,5 @@
 import { Role } from "../roles/role";
+import { PaginationParamQuery } from "../pagination";
 
 export interface BaseUser {
     id: string;
@@ -99,12 +100,6 @@ export type UpdatedUserResponse = {
         title: string;
     };
     roleId?: number;
-}
-
-export interface PaginationParamQuery {
-    page?: number;
-    limit?: number;
-    search?: string;
 }
 
 export interface GetUsersParams extends PaginationParamQuery {

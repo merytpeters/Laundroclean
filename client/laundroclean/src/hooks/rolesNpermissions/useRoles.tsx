@@ -14,7 +14,7 @@ import { useAuth } from "src/context/AuthContext";
 import { toast } from "sonner";
 import { ApiResponse } from "src/lib/api/requests";
 import { RolesDto, UserRoleDto } from "src/types/roles/role.dto";
-import { PaginationParamQuery } from "src/types/users/user";
+import { PaginationParamQuery } from "src/types/pagination";
 
 
 type roleMutationVariables = {

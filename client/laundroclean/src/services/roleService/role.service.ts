@@ -1,7 +1,7 @@
 import { adminApi } from "src/lib/api/adminApi";
 import { RolePayload, UsersRoleResponse, RoleResponse, RolesResponse } from "src/types/roles/role";
 import { ApiResponse } from "src/lib/api/requests";
-import { PaginationParamQuery } from "src/types/users/user";
+import { PaginationParamQuery } from "src/types/pagination";
 
 
 export async function createRoleService(payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
