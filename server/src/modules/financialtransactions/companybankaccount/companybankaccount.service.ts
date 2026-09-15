@@ -19,6 +19,19 @@ const createCompanyBankAccount = async (payload: CompanyBankAccountCreateInput):
             accountNumber: payload.accountNumber,
             isDefault: payload.isDefault
         };
+        if (payload.isDefault === true) {
+            createData.isDefault = payload.isDefault;
+            const [_, newDefaultBankAccount] = await prisma.$transaction([
+                prisma.companyBankAccount.updateMany({
+                    where: { isDefault: true },
+                    data: { isDefault: false }
+                }),
+                prisma.companyBankAccount.create({
+                    data: createData
+                })
+            ]);
+            return newDefaultBankAccount;
+        }
         const companyBankAccount = await prisma.companyBankAccount.create({
             data: createData
         });
@@ -49,6 +62,21 @@ const updateCompanyBankAccount = async (
         const data: CompanyBankAccountUpdateInput = Object.fromEntries(
             Object.entries(payload).filter(([, value]) => value !== undefined)
         );
+
+        if (payload.isDefault === true) {
+            data.isDefault = payload.isDefault;
+            const [_, newDefaultBankAccount] = await prisma.$transaction([
+                prisma.companyBankAccount.updateMany({
+                    where: { isDefault: true },
+                    data: { isDefault: false }
+                }),
+                prisma.companyBankAccount.update({
+                    where,
+                    data
+                })
+            ]);
+            return newDefaultBankAccount;
+        }
 
         const updatedCompanyBankAccount = await prisma.companyBankAccount.update({
             where,
