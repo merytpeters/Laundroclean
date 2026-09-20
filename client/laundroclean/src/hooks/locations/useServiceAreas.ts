@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiRequest, ApiResponse } from 'src/lib/api/requests';
+import { ApiResponse } from 'src/lib/api/requests';
 // import { mockServiceAreas } from 'src/services/locations/mock';
 import {
   createServiceAreaService,

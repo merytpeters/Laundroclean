@@ -1,5 +1,5 @@
 import { apiRequest } from "../../requests";
-import { BankAccountPayload, BankAccountQuery, UpdateBankAccountPayload } from "src/types/paymentChannels/bankAccount";
+import { BankAccountPayload, BankAccountParams, UpdateBankAccountPayload } from "src/types/paymentChannels/bankAccount";
 import { BankAccountDto, BankAccountsDto } from "src/types/paymentChannels/bankAccount.dto";
 
 
@@ -10,14 +10,17 @@ export const bankAccountApi = {
             body: JSON.stringify(payload),
         }),
 
-    listBankAccounts: (params?: BankAccountQuery) =>
+    listBankAccounts: (params?: BankAccountParams) =>
         apiRequest<BankAccountsDto>("/company-bank-account", {
             method: "GET",
             params: params,
         }),
 
-    getBankAccountById: (id: string) =>
-        apiRequest<BankAccountDto>(`/company-bank-account/${id}`),
+    getBankAccountById: (id: string, params?: BankAccountParams) =>
+        apiRequest<BankAccountDto>(`/company-bank-account/${id}`, {
+            method: "GET",
+            params: params,
+        }),
 
     updateBankAccount: (id: string, payload: UpdateBankAccountPayload) =>
         apiRequest<BankAccountDto>(`/company-bank-account/${id}`, {

@@ -8,9 +8,25 @@
     height: 100%;
 }
 
-
 .systemContainer hr {
     display: flex;
     align-self: center;
     width: 100%;
+}
+
+.paymentnbillingContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.bankaccounts {
+    display: flex;
+    flex-direction: column;
+    gap: 0 0 0 2em;
+}
+
+.bankaccounts h4 {
+    display: flex;
+    margin-bottom: 1em;
 }

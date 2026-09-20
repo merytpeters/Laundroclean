@@ -6,12 +6,13 @@ import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam,
 import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 
 
-
 // Uses staff api but work for both staff and admin
 export async function getBookingSettingsService (): Promise<ApiResponse<BookingSettingsDto> | null> {
     const res = await staffApi.getBookingSettings();
 
-    if (!res.success || !res.data) return null;
+    if (!res.success) {
+        throw new Error(res.message);
+    }
 
     return res
 }

@@ -5,5 +5,5 @@ export interface PaginationParamQuery {
 }
 
 export interface ByActiveParam extends PaginationParamQuery {
-  isActive?: 'true' | 'false';
+  isActive?: true | false;
 }

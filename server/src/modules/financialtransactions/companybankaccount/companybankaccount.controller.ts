@@ -34,8 +34,18 @@ const getCompanyBankAccountController = asyncHandler(async (req, res) => {
     const bankAccountId = req.params.id;
 
     const isAdmin = req.user?.role?.title === 'ADMIN';
+    const q = (req.query ?? {}) as any;
+    const params: { isActive?: boolean; search?: string } = {};
 
-    const companyBankAccount = await CompanybankaccountService.getCompanyBankAccount(bankAccountId, isAdmin);
+    if (q.isActive !== undefined) {
+        const isActive =
+            q.isActive === 'false' ? false : q.isActive === 'true' ? true : undefined;
+        if (isActive !== undefined) params.isActive = isActive;
+    }
+    
+    if (q.search !== undefined) params.search = String(q.search);
+
+    const companyBankAccount = await CompanybankaccountService.getCompanyBankAccount(bankAccountId, params, isAdmin);
 
     return res.status(200).json({
         success: true,

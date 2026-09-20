@@ -1,0 +1,243 @@
+/*NewBankAccount or NewPOSDevice styles*/
+.newContainer {
+    display: flex;
+}
+
+.addnewbtn {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    gap: 0 1em;
+    justify-items: flex-end;
+    align-items: center;
+    width: fit-content;
+    color: #555;
+    font-size: small;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    padding: 0.5em 1em;
+    margin: 0 4em;
+    right: 0;
+    cursor: pointer;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 0;
+    max-width: 45%;
+    background: var(--background);
+    box-shadow: -8px 0 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    transition: width 260ms ease, transform 260ms ease;
+    color: black;
+}
+
+.drawer.open {
+    width: 40%;
+    z-index: 3000;
+}
+
+.drawerHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    background-color: var(--background);
+}
+
+.drawerHeader fieldset, .drawerHeader legend {
+    border: none;
+    padding: 0.5em 1em;
+    font-size: medium;
+}
+
+.drawerClose {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.drawerContent {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1 1 auto;
+}
+.drawerOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 110;
+}
+
+.form {
+  background: var(--background);
+  color: rgb(8, 7, 7);
+  height: fit-content;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  padding: 2rem;
+  font-size: xx-small;
+}
+
+.requiredsection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6em 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  min-height: 40px;
+  align-items: start;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.form input {
+  height: 2rem;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.form select {
+  height: 2rem;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.form textarea {
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.fullWidthField {
+  grid-column: 1 / -1;
+}
+
+.defaulttogglebtn {
+    display: flex;
+    width: fit-content;
+    padding: 0.1em 1em;
+    background: transparent;
+    border: none;
+}
+
+.togglesection {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.btncontainer {
+    display: flex;
+    justify-self: center;
+}
+.submitbtn {
+    --btn-bg: #fff;
+    --btn-padding: 0.7em 1em;
+    --btn-width: 8em;
+    --btn-border-radius: 8px;
+    box-shadow: none;
+}
+
+.submitbtn:hover {
+    --btn-bg: green;
+    --btn-color: #fff;
+}
+
+/* AllBankAccounts or AllPOSDevice styles*/
+.allpaymentChannelsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.allpaymentChannelsContainer ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    list-style: none;
+    margin: 2em;
+}
+
+.paymentChannelItem {
+    display: flex;
+    flex-direction: column;
+    border: #ccc solid 1px;
+    padding: 1em 1.5em;
+    border-radius: 8px;
+    width: calc(300px + 10%);
+    gap: 1em 2em;
+}
+
+.paymentChannelItem span {
+    display: flex;
+    gap: 1em 1em;
+}
+
+.paymentitemfirstline {
+    display: flex;
+    justify-content: space-between;
+}
+
+.default {
+    display: flex;
+    padding: 0.3em 1em;
+    border: solid 1px;
+    background-color: var(--background);
+    color: white;
+    border-radius: 8px;
+}
+
+.active {
+    display: flex;
+    padding: 0.3em 1em;
+    border: solid 1px;
+    background-color: green;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.inactive {
+    display: flex;
+    padding: 0.3em 1em;
+    border: solid 1px;
+    background-color: red;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.timestamp {
+    display: flex;
+    flex-direction: column;
+}

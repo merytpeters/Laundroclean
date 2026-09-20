@@ -96,10 +96,15 @@ const updateCompanyBankAccount = async (
 // view
 const getCompanyBankAccount = async (
     where: CompanyBankAccountWhereUniqueInput,
+    params: { search?: string; isActive?: boolean } = {},
     isAdmin: boolean = false
 ): Promise<CompanyBankAccount> => {
+    const isActiveFilter = isAdmin ? params.isActive : true;
+
+    const findWhereInput: any = typeof where === 'string' ? { id: where } : { ...where };
+    if (typeof isActiveFilter === 'boolean') findWhereInput.isActive = isActiveFilter;
     const companyBankAccount = await prisma.companyBankAccount.findUnique({
-        where
+        where: findWhereInput
     });
 
     if (!companyBankAccount) throw new NotFoundError('Bank Account not found');

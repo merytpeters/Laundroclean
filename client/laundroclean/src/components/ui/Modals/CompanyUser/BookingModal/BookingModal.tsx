@@ -1,7 +1,7 @@
 "use client";
 import StatCard from "src/components/ui/flexboxes/StatCard";
 import BookingDisplayTable from "src/components/ui/flexboxes/BookingDisplayTable";
-import { stats } from "../../../../../services/bookingService/bookingMockData";
+// import { stats } from "../../../../../services/bookingService/bookingMockData";
 import { roleConfig } from "src/lib/company-user/role-config";
 import styles from "./BookingModal.module.css"
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";

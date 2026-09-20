@@ -5,8 +5,8 @@ export type BankAccountDto = {
     accountNumber: string;
     isDefault: boolean;
     isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type BankAccountsDto = BankAccountDto[]

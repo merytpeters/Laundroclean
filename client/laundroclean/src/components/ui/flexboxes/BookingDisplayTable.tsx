@@ -6,13 +6,14 @@ import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStat
 import { BookingDetail } from "src/types/booking/bookingOrder";
 import { mappedDelivery } from "src/services/bookingService/bookingMockData";
 import { transformFieldInArray } from "src/utils/mapData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
 import { useGetbookings, useGetBookingSettings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
 import { minimumPickupdaysPayload } from "src/types/booking/booking";
 import { LoadingState } from "../ErrorState/ErrorState";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { BookingDto } from "src/types/booking/booking.dto";
+import { toast } from "sonner";
 
 
 // const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -119,8 +120,15 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
 export function BookingSettings() {
     const [minPickupDays, setMinPickupDays] = useState("");
     const minimumPickupDaysMutation = useSetMinimumPickupDays();
-    const { data } = useGetBookingSettings();
+    const { data, isError, error } = useGetBookingSettings();
     const bookingSettingsData = data?.data;
+
+    useEffect(() => {
+        if (isError && error) {
+            toast(error.message);
+            console.log(error.message)
+        }
+    }, [isError, error]);
 
     const handleSetMinimumPickupDays = () => {
         const days = Number(minPickupDays);

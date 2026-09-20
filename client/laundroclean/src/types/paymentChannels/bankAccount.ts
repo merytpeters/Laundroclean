@@ -15,6 +15,6 @@ export type UpdateBankAccountPayload = {
     isActive?: boolean;
 }
 
-export interface BankAccountQuery extends ByActiveParam {
-  isDefault: 'true' | 'false';
+export interface BankAccountParams extends ByActiveParam {
+  isDefault?: true | false;
 }
