@@ -15,6 +15,15 @@ export const posDeviceKeys = {
     lists: () => ["posDevices", "list"] as const,
     list: (
         params?: ByActiveParam
-    ) => ["posDevices", "list"] as const,
+    ) => ["posDevices", "list", params] as const,
     detail: (id: string) => ["posDevice", id] as const
+}
+
+export const paymentKeys = {
+    all: ["payments"] as const,
+    lists: () => ["payments", "list"] as const,
+    list: (
+        params?: ""
+    ) => ["payments", "list", params] as const,
+    detail: (id: string) => ["payment", id] as const
 }

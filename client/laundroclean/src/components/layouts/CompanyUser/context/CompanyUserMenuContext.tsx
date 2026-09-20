@@ -10,6 +10,11 @@ interface MenuContextType {
   setActiveMenu: (key: string) => void;
   menuItems: MenuItem[];
   setMenuItems: (items: MenuItem[]) => void;
+  bookingInfo?: {
+    bookingId?: string | number;
+    bookingUserId?: string | number;
+  };
+  setBookingInfo?: (info: { bookingId?: string | number; bookingUserId?: string | number }) => void;
 }
 
 export const CompanyUserMenuContext =
@@ -31,6 +36,7 @@ interface ProviderProps {
 
 export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user }: ProviderProps) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
+  const [bookingInfo, setBookingInfoState] = useState<{ bookingId?: string | number; bookingUserId?: string | number } | undefined>(undefined);
 
   const [activeMenu, setActiveMenuState] = useState<string>("overview");
 
@@ -82,8 +88,16 @@ export const CompanyUserMenuProvider = ({ children, initialMenuItems = [], user 
     }
   }, [setActiveMenu]);
 
+  const setBookingInfo = (info: { bookingId?: string | number; bookingUserId?: string | number }) => {
+    try {
+      setBookingInfoState(info);
+    } catch {
+      // ignore
+    }
+  };
+
   return (
-    <CompanyUserMenuContext.Provider value={{ user, activeMenu, setActiveMenu, menuItems, setMenuItems }}>
+    <CompanyUserMenuContext.Provider value={{ user, activeMenu, setActiveMenu, menuItems, setMenuItems, bookingInfo, setBookingInfo }}>
       {children}
     </CompanyUserMenuContext.Provider>
   );

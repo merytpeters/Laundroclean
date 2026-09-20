@@ -277,7 +277,18 @@ const createBooking = async (
                         assignedToId: input.assignedToId ?? null,
                         timeSlotId: input.timeSlotId ?? null,
                     },
-                    include: { assignedTo: true },
+                    include: {
+                        assignedTo: true,
+                        profile: {
+                            include: {
+                                user: {
+                                    select: {
+                                        id: true
+                                    }
+                                }
+                            }
+                        }
+                    },
                 });
             } catch (error: any) {
                 if (error instanceof ConflictError || NotFoundError) {
@@ -452,7 +463,18 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             const updatedbooking = await tx.booking.update({
                 where: whereObj,
                 data: updateData,
-                include: { assignedTo: true }
+                include: {
+                    assignedTo: true,
+                    profile: {
+                        include: {
+                            user: {
+                                select: {
+                                    id: true
+                                }
+                            }
+                        }
+                    }
+                },
             });
             return updatedbooking;
         } catch (_error: any) {
@@ -801,7 +823,7 @@ const upsertBookingSettings = async (
 const getBookingSettings = async (): Promise<BookingSettings> => {
     try {
         const bookingSettings = await prisma.bookingSettings.findUnique({
-            where: {id: 1}
+            where: { id: 1 }
         });
 
         if (!bookingSettings) throw new NotFoundError('Minimum pickup days not found, go set minimum pickup days');

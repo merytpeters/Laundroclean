@@ -2,6 +2,7 @@ import { FaSpinner } from "react-icons/fa";
 import Button from "../Button/Button";
 
 type StateProps = {
+    header?: string;
     message?: string;
     onRetry?: () => void;
 }
@@ -49,5 +50,24 @@ export function TableLoadingState({
             </tr>
 
         </tbody>
+    )
+}
+
+export function PaymentMethodOrChannelState({
+    header = "Coming Soon!",
+    message = "This payment method or channel is not currently available"
+}: StateProps) {
+    return (
+        <section style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10em 2em",
+            flexDirection: "column"
+        }}>
+                <strong><p>{header}</p></strong>
+                <p>{message}</p>
+        </section>
     )
 }

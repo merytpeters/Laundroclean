@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import styles from "./PaymentModal.module.css";
 import DebitCardUI from "src/components/ui/PaymentUI/DebitCardUI";
 import { CompanyUser, Client } from "src/types/users/user";
 import PaymentHistory from "src/components/ui/PaymentUI/PaymentHistory";
 import CashUI from "src/components/ui/PaymentUI/CashUI";
 import BankTransferUI from "src/components/ui/PaymentUI/BankTransferUI";
+import { PaymentMethodOrChannelState } from "src/components/ui/ErrorState/ErrorState";
+import { CompanyUserMenuContext } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
 
 type PaymentTab = {
     key: "card" | "transfer" | "pos" | "wallet" | "cash";
@@ -38,7 +40,7 @@ const paymentTabs: PaymentTab[] = [
         key: "wallet",
         label: "OPay Wallet",
         img: "/img/payment.png",
-        component: "",
+        component: <PaymentMethodOrChannelState />,
     },
     {
         key: "pos",
@@ -50,11 +52,24 @@ const paymentTabs: PaymentTab[] = [
 
 type PaymentProps = {
     user: CompanyUser | Client;
+    bookingId?: string | number | null;
+    bookingUserId?: string | number | null;
 };
 
-export default function PaymentModal({ user }: PaymentProps) {
+type PaymentTabProps = {
+    bookingId?: string | number | null;
+    bookingUserId?: string | number | null;
+    user?: CompanyUser | Client;
+};
+
+export default function PaymentModal({ user, bookingId: propBookingId, bookingUserId: propBookingUserId }: PaymentProps) {
+    const companyContext = useContext(CompanyUserMenuContext) as React.ContextType<typeof CompanyUserMenuContext> | undefined;
     const isCompany = user?.type === "COMPANYUSER";
     // console.log(user);
+    // Remove later
+    // const bookingId = propBookingId ?? companyContext?.bookingInfo?.bookingId;
+    // const bookingUserId = propBookingUserId ?? companyContext?.bookingInfo?.bookingUserId;
+    // console.log(bookingId, bookingUserId)
 
     const tabs = paymentTabs.filter((tab) => {
         return isCompany
@@ -103,7 +118,25 @@ export default function PaymentModal({ user }: PaymentProps) {
                 </section>
 
                 <section className={styles.activetabcontainer}>
-                    {tabs.find((tab) => tab.key === activeTab)?.component}
+                    {(() => {
+                        const active = tabs.find((tab) => tab.key === activeTab);
+                        if (!active) return null;
+
+                        const comp = active.component;
+
+                        if (React.isValidElement(comp)) {
+                            const bookingId = propBookingId ?? companyContext?.bookingInfo?.bookingId;
+                            const bookingUserId = propBookingUserId ?? companyContext?.bookingInfo?.bookingUserId;
+
+                            return React.cloneElement(comp as React.ReactElement<PaymentTabProps>, {
+                                bookingId,
+                                bookingUserId,
+                                user,
+                            });
+                        }
+
+                        return comp;
+                    })()}
                 </section>
             </section>
             <section className={styles.paymenthistorysection}>

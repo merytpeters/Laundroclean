@@ -22,6 +22,7 @@ interface PaymentButtonProps {
     onClose?: () => void;
     onPayLater?: () => void;
     className?: string;
+    href?: string;
 }
 function PaymentButton(props: PaymentButtonProps) {
     const context = useContext(CompanyUserMenuContext) as React.ContextType<typeof CompanyUserMenuContext> | undefined;
@@ -34,7 +35,7 @@ function PaymentButton(props: PaymentButtonProps) {
     };
 
     const userType = contextUser?.type ?? 'CLIENT';
-    const href = typeRoutes[userType] || "/user/payment";
+    const href = props.href ?? (typeRoutes[userType] || "/user/payment");
 
     return (
         <div className={`${props.className ?? ''}`}>
@@ -77,6 +78,7 @@ export default function BookingForm({
     staffOptions,
     deliveryOptions,
 }: BookingFormProps) {
+    const companyContext = useContext(CompanyUserMenuContext) as React.ContextType<typeof CompanyUserMenuContext> | undefined;
     const [open, setOpen] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<
         "line1" | "line2" | "new" | ""
@@ -85,6 +87,8 @@ export default function BookingForm({
     const [bookingAmount, setBookingAmount] = useState<
         number | string | null
     >(null);
+    const [bookingIdState, setBookingIdState] = useState<string | number | undefined>(undefined);
+    const [bookingUserIdState, setBookingUserIdState] = useState<string | number | undefined>(undefined);
 
     const deliveryOpts =
         deliveryOptions ??
@@ -185,22 +189,22 @@ export default function BookingForm({
 
         formData.setValue(
             "address.firstName",
-            user?.authUser?.firstName ??
             searchedUser?.user?.firstName ??
+            user?.authUser?.firstName ??
             ""
         );
 
         formData.setValue(
             "address.lastName",
-            user?.authUser?.lastName ??
             searchedUser?.user?.lastName ??
+            user?.authUser?.lastName ??
             ""
         );
 
         formData.setValue(
             "address.phoneNumber",
-            user?.authProfile?.phoneNumber ??
             searchedUser?.phoneNumber ??
+            user?.authProfile?.phoneNumber ??
             ""
         );
     }, [
@@ -355,7 +359,7 @@ export default function BookingForm({
         values: BookingFormValues
     ) => {
 
-        let assignedToId = values.assignedToId;
+        let assignedToId = values.assignedToId || undefined;
         if (values.assignedToId) {
             const calendarPayload: CalendarRowPayload = {
                 userId: values.assignedToId,
@@ -382,6 +386,7 @@ export default function BookingForm({
 
         const payload = {
             ...values,
+            assignedToId,
 
             scheduledDate: toUTCISOString(
                 values.scheduledDate,
@@ -404,6 +409,23 @@ export default function BookingForm({
                 onSuccess: (response) => {
                     const finalAmount =
                         response?.data?.finalAmount;
+                    const bookingId = response.data?.id
+                    const userwithBookingId = response?.data?.profile?.user?.id
+
+                    // store booking info in company menu context so PaymentModal can pick it up
+                    try {
+                        companyContext?.setBookingInfo?.({ bookingId, bookingUserId: userwithBookingId });
+                    } catch {
+                        // ignore
+                    }
+
+                    // store locally so client flow can navigate with booking info
+                    try {
+                        setBookingIdState(bookingId);
+                        setBookingUserIdState(userwithBookingId);
+                    } catch {
+                        // ignore
+                    }
 
                     if (
                         finalAmount !== undefined &&
@@ -1150,16 +1172,15 @@ export default function BookingForm({
                                         "Amount unavailable"}
                                 </span>
 
-                                <PaymentButton
-                                    onClose={() =>
-                                        setOpen(
-                                            false
-                                        )
-                                    }
-                                    className={
-                                        styles.paymentbuttonoverlay
-                                    }
-                                />
+                                    <PaymentButton
+                                        onClose={() => setOpen(false)}
+                                        className={styles.paymentbuttonoverlay}
+                                        href={
+                                            bookingIdState
+                                                ? `/user/payment?bookingId=${bookingIdState}&bookingUserId=${bookingUserIdState ?? ""}`
+                                                : undefined
+                                        }
+                                    />
                             </span>
                         )}
                     </div>
