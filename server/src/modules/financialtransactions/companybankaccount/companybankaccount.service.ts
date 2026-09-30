@@ -165,6 +165,19 @@ const listCompanyBankAccounts = async (
     }
 };
 
+const deleteCompanyBankAccounts = async (
+    ids: string[]
+): Promise<string> => {
+    const deletedBankAccounts = await prisma.companyBankAccount.deleteMany({
+        where: {
+            id: {
+                in: ids
+            }
+        }
+    });
+    return `${deletedBankAccounts.count} bank accounts deleted`;
+};
+
 
 export default {
     createCompanyBankAccount,

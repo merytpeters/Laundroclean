@@ -8,6 +8,7 @@ import styles from "./signup.module.css"
 import React, { useState } from "react";
 import { useRegisterUser } from "src/hooks/auth/useAuth";
 import { validatePassword } from "src/utils/validatePassword";
+import { authApi } from "src/lib/api/authApi";
 
 export default function Signup() {
   const registerMutation = useRegisterUser();
@@ -129,7 +130,14 @@ export default function Signup() {
           <>
             <Button text={registerMutation.status === 'pending' ? "Signing Up..." : "Sign Up"} type="submit" className={styles.signupbutton}/>
             <span>or</span>
-            <Button type="button" text="Sign up with Google" className={styles.googlebutton} onClick={() => alert("Google signup")} />
+            <Button
+              type="button"
+              text="Sign up with Google"
+              className={styles.googlebutton}
+              onClick={() => {
+                window.location.assign(authApi.googleAuthUrl());
+              }}
+            />
           </>
         }
       />

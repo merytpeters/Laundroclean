@@ -78,11 +78,11 @@ export function NewBankAccount() {
                                     {defaultOn ? (
                                         <FiToggleRight size={40} color='green' fill='#fff' {...formData.register("isDefault", {
                                             setValueAs: (v) => v === true || v === "true"
-                                        })}/>
+                                        })} />
                                     ) : (
                                         <FiToggleLeft size={40} color='red' fill='#fff' {...formData.register("isDefault", {
                                             setValueAs: (v) => v === false || v === "false"
-                                        })}/>
+                                        })} />
                                     )}
                                 </button>
                                 <p>{defaultOn ? "default bank" : "make default"}</p>
@@ -116,7 +116,7 @@ interface AllBankAccountsProps {
     userUIRole?: Role
 }
 
-export function AllBankAccounts({data, userUIRole} : AllBankAccountsProps) {
+export function AllBankAccounts({ data, userUIRole }: AllBankAccountsProps) {
     return (
         <section className={styles.allpaymentChannelsContainer}>
             <ul>
@@ -130,14 +130,14 @@ export function AllBankAccounts({data, userUIRole} : AllBankAccountsProps) {
                         ) : (
                             ""
                         )}
-                        {bankAccount.isActive ? (
-                            <span className={styles.active}>Active</span>
-                        ) : (
-                            <span className={styles.inactive}>Inactive</span>
-                        )}</span></span>
+                            {bankAccount.isActive ? (
+                                <span className={styles.active}>Active</span>
+                            ) : (
+                                <span className={styles.inactive}>Inactive</span>
+                            )}</span></span>
                         <span><strong>Account Name: </strong>  {bankAccount.accountName}</span>
                         <span><strong>Account Number: </strong>  {bankAccount.accountNumber}</span>
-                        
+
                         {userUIRole === "ADMIN" && (
                             <span className={styles.timestamp}>
                                 <span>
@@ -154,11 +154,39 @@ export function AllBankAccounts({data, userUIRole} : AllBankAccountsProps) {
     )
 }
 
-export function ActiveBankAccountSelector(data: AllBankAccountsProps[], userUIRole: Role, isActive: true) {
+interface ActiveBankAccountsSelectorProps {
+    data: BankAccountDto[],
+    selectedBank: BankAccountDto | null;
+    setSelectedBank: (bank: BankAccountDto | null) => void;
+    userUIRole?: Role
+}
+
+export function ActiveBankAccountSelector({
+    data,
+    selectedBank,
+    setSelectedBank
+}: ActiveBankAccountsSelectorProps) {
+    const handleBankChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const bank = data.find(
+            (bankAccount) => bankAccount.id === e.target.value
+        );
+
+        setSelectedBank(bank ?? null);
+    }
+    // console.log(data);
     return (
-        <section>
-            Selector for all active bank accounts for bank transfer
-            payment channel
+        <section className={styles.activeselectorContainer}>
+            <span> <b>Select bank for payment</b></span>
+            <select
+                value={selectedBank?.id}
+                onChange={handleBankChange}
+                >
+                {data.map((bankAccount) => (
+                    <option key={bankAccount.id} value={bankAccount.id}>
+                        {bankAccount.bankName}
+                    </option>
+                ))}
+            </select>
         </section>
     )
 }

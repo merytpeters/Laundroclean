@@ -5,7 +5,9 @@ import {
     createBankAccountService,
     updateBankAccountService,
     listBankAccountsService,
-    getBankAccountByIdService
+    getBankAccountByIdService,
+    clientGetBankAccountByIdService,
+    clientListBankAccountsService
 } from "src/services/paymentChannels/bankAccount.service";
 import { BankAccountParams, BankAccountPayload } from "src/types/paymentChannels/bankAccount";
 import { bankAccountKeys } from "./keys";
@@ -39,18 +41,45 @@ export function useCreateBankAccount() {
 }
 
 type BankAccountQuery = {
-    id?: string;
     params?: BankAccountParams
 }
 
-export function useBankAccounts({ id, params }: BankAccountQuery) {
-    return useQuery<ApiResponse<BankAccountDto | BankAccountsDto> | null>({
-        queryKey: id
-            ? bankAccountKeys.detail(id)
-            : bankAccountKeys.list(params),
-        queryFn: () =>
-            id
-                ? getBankAccountByIdService(id, params)
-                : listBankAccountsService(params)
+export function useBankAccounts({params }: BankAccountQuery) {
+    const { authUser } = useAuth()
+    return useQuery<ApiResponse<BankAccountsDto> | null>({
+        queryKey: bankAccountKeys.list(params),
+        queryFn: async () => {
+            switch (authUser?.type) {
+                case "COMPANYUSER":
+                    return listBankAccountsService(params)
+                case "CLIENT":
+                    return clientListBankAccountsService(params)
+            }
+
+            throw new Error(
+                "Unsupported user type"
+            );
+        },
+
+    })
+}
+
+export function useBankAccount(id: string) {
+    const { authUser } = useAuth()
+    return useQuery<ApiResponse<BankAccountDto> | null>({
+        queryKey: bankAccountKeys.detail(id),
+        queryFn: async () => {
+            switch (authUser?.type) {
+                case "COMPANYUSER":
+                    return getBankAccountByIdService(id)
+                case "CLIENT":
+                    return clientGetBankAccountByIdService(id)
+            }
+
+            throw new Error(
+                "Unsupported user type"
+            );
+        },
+
     })
 }

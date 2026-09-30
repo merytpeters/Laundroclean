@@ -59,6 +59,10 @@ const env = (variable: string, defaultValue?: string): any => {
   return value;
 };
 
+const optionalEnv = (variable: string, defaultValue?: string): string | undefined => {
+  return process.env[variable] ?? defaultValue;
+};
+
 const config = {
   NODE_ENV: env('NODE_ENV', 'development'),
   PORT: env('PORT'),
@@ -95,7 +99,13 @@ const config = {
   PAYMENT_REDIRECT_URL: env('PAYMENT_REDIRECT_URL'),
   OPAY_MERCHANT_ID: env('OPAY_MERCHANT_ID'),
   OPAY_PRIVATE_KEY: env('OPAY_PRIVATE_KEY'),
-  OPAY_URL: env('OPAY_URL')
+  OPAY_URL: env('OPAY_URL'),
+  GOOGLE_AUTH_ENDPOINT: 'https://accounts.google.com/o/oauth2/v2/auth',
+  GOOGLE_TOKEN_ENDPOINT: 'https://oauth2.googleapis.com/token',
+  GOOGLE_USERINFO_ENDPOINT: 'https://www.googleapis.com/oauth2/v2/userinfo',
+  GOOGLE_CLIENT_ID: optionalEnv('GOOGLE_CLIENT_ID'),
+  GOOGLE_CLIENT_SECRET: optionalEnv('GOOGLE_CLIENT_SECRET'),
+  GOOGLE_REDIRECT_URI: optionalEnv('GOOGLE_REDIRECT_URI')
 };
 
 export default config;

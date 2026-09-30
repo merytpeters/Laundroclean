@@ -16,6 +16,11 @@ interface CustomRequestInit extends RequestInit {
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
+export const buildApiUrl = (endpoint: string) => {
+    const cleanEndpoint = endpoint.replace(/^\/+/, "");
+    return `${BASE_URL}/${cleanEndpoint}`;
+};
+
 const refreshAccessToken = async (): Promise<boolean> => {
     try {
         const response = await fetch(`${BASE_URL}/auth/refresh`, {
@@ -53,7 +58,7 @@ export async function apiRequest<T>(
         delete fetchOptions.params;
 
         const cleanEndpoint = endpoint.replace(/^\/+/, "");
-        let url = `${BASE_URL}/${cleanEndpoint}`;
+        let url = buildApiUrl(cleanEndpoint);
         const token = getAccessToken();
 
         if (params) {

@@ -71,7 +71,7 @@ export function ClientAllOnGoingBookings({ mappedBookingData }: BookingListProp)
                             
                             <span className={styles.moredetails}
                                 onClick={() => setSelectedBooking(bookingDetail)}
-                            >{bookingDetail.customBookingId}</span>
+                            ><strong>{bookingDetail.customBookingId} </strong></span>
                             <span>{bookingDetail.service?.name}</span>
                             <span>
                                 {bookingDetail.transactions?.[0]?.paidAt

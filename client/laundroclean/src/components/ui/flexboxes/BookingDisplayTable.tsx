@@ -2,16 +2,10 @@
 import styles from "./BookingDisplayTable.module.css"
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
-import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
-import { BookingDetail } from "src/types/booking/bookingOrder";
-import { mappedDelivery } from "src/services/bookingService/bookingMockData";
-import { transformFieldInArray } from "src/utils/mapData";
 import { useEffect, useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
-import { useGetbookings, useGetBookingSettings, useHardDeleteBookings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
+import { useGetBookingSettings, useHardDeleteBookings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
 import { minimumPickupdaysPayload } from "src/types/booking/booking";
-import { LoadingState } from "../ErrorState/ErrorState";
-import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { BookingDto } from "src/types/booking/booking.dto";
 import { toast } from "sonner";
 import Button from "../Button/Button";

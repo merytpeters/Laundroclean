@@ -7,6 +7,7 @@ import { TokenType } from '@prisma/client';
 import config from '../../config/config.js';
 import ms from 'ms';
 import { UnauthenticatedError } from '../../middlewares/errorHandler.js';
+import googleAuthService from './googleAuth/googleAuth.service.js';
 
 
 const refreshTokenCookieOptions = {
@@ -22,6 +23,14 @@ const refreshTokenCookieClearingOptions = {
     sameSite: 'lax' as const,
     secure: config.NODE_ENV === 'production',
     path: '/',
+};
+
+const accessTokenCookieOptions = {
+    httpOnly: false,
+    sameSite: 'lax' as const,
+    secure: config.NODE_ENV === 'production',
+    path: '/',
+    maxAge: Number(ms(config.ACCESS_TOKEN_EXPIRES || '30m')),
 };
 
 const getCookieValue = (cookieHeader: string | undefined, key: string): string | null => {
@@ -75,6 +84,40 @@ const login = asyncHandler(async (req, res) => {
             accessToken,
         },
     });
+});
+
+const googleLogin = asyncHandler(async (_req, res) => {
+    try {
+        const authorizationUrl = googleAuthService.getAuthorizationUrl();
+        return res.redirect(authorizationUrl);
+    } catch (_error) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_unavailable`);
+    }
+});
+
+const googleCallback = asyncHandler(async (req, res) => {
+    const query = req.query as { code?: string; error?: string };
+    const code = typeof query.code === 'string' ? query.code : null;
+    const error = typeof query.error === 'string' ? query.error : null;
+
+    if (error) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_error`);
+    }
+
+    if (!code) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_error`);
+    }
+
+    try {
+        const session = await googleAuthService.handleGoogleCallback(code);
+
+        res.cookie('refreshToken', session.refreshToken, refreshTokenCookieOptions);
+        res.cookie('accessToken', session.accessToken, accessTokenCookieOptions);
+
+        return res.redirect(session.redirectUrl);
+    } catch (_error) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_error`);
+    }
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
@@ -143,6 +186,8 @@ const refresh = asyncHandler(async (req, res) => {
 export default {
     clientRegister,
     login,
+    googleLogin,
+    googleCallback,
     resetPassword,
     logout,
     refresh

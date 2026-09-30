@@ -22,6 +22,18 @@ export const bankAccountApi = {
             params: params,
         }),
 
+    clientListBankAccounts: (params?: BankAccountParams) =>
+        apiRequest<BankAccountsDto>("/client/company-bank-account/", {
+            method: "GET",
+            params: params,
+        }),
+
+    clientGetBankAccountById: (id: string, params?: BankAccountParams) =>
+        apiRequest<BankAccountDto>(`/client/company-bank-account/${id}`, {
+            method: "GET",
+            params: params,
+        }),
+
     updateBankAccount: (id: string, payload: UpdateBankAccountPayload) =>
         apiRequest<BankAccountDto>(`/company-bank-account/${id}`, {
             method: "PATCH",

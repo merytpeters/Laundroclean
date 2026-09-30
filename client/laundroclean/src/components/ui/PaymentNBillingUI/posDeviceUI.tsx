@@ -121,11 +121,39 @@ export function AllPOSDevices({data, userUIRole}: AllPOSDevicesProps) {
     )
 }
 
-export function ActivePOSDeviceSelector() {
+interface ActivePOSDevicesSelectorProps {
+    data: POSDeviceDto[],
+    selectedPOSDevice: POSDeviceDto | null;
+    setSelectedPOSDevice: (bank: POSDeviceDto | null) => void;
+    userUIRole?: Role
+}
+
+export function ActivePOSDeviceSelector({
+    data,
+    selectedPOSDevice,
+    setSelectedPOSDevice
+}: ActivePOSDevicesSelectorProps) {
+    const handleBankChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const posDevice = data.find(
+            (posDevice) => posDevice.id === e.target.value
+        );
+
+        setSelectedPOSDevice(posDevice ?? null);
+    }
+    // console.log(data);
     return (
-        <section>
-            Selector for all active pos devices for pos
-            payment channel
+        <section className={styles.activeselectorContainer}>
+            <span> <b>Select POS device for payment</b></span>
+            <select
+                value={selectedPOSDevice?.id}
+                onChange={handleBankChange}
+                >
+                {data.map((posDevice) => (
+                    <option key={posDevice.id} value={posDevice.id}>
+                        {posDevice.name}
+                    </option>
+                ))}
+            </select>
         </section>
     )
 }

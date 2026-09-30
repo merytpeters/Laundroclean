@@ -34,3 +34,20 @@ export async function updateBankAccountService (id: string, payload: UpdateBankA
 
     return res
 }
+
+
+export async function clientListBankAccountsService (params?: BankAccountParams): Promise<ApiResponse<BankAccountsDto> | null> {
+    const res = await bankAccountApi.clientListBankAccounts(params);
+
+    if (!res.success || !res.data ||!res.meta) return null;
+
+    return res
+}
+
+export async function clientGetBankAccountByIdService (id: string, params?: BankAccountParams): Promise<ApiResponse<BankAccountDto> | null> {
+    const res = await bankAccountApi.clientGetBankAccountById(id, params);
+
+    if (!res.success || !res.data) return null;
+
+    return res
+}

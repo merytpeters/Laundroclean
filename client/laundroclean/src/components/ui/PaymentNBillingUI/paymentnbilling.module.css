@@ -241,3 +241,15 @@
     display: flex;
     flex-direction: column;
 }
+
+/* Selector styling*/
+.activeselectorContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.activeselectorContainer select {
+    padding: 0.3em 1em;
+    border-radius: 4px;
+}

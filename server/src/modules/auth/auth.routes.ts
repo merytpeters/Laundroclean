@@ -9,6 +9,18 @@ import UserAuth from '../../middlewares/auth.js';
 const router = express.Router();
 const emailController = new EmailController();
 
+router.get(
+    '/google',
+    authLimiter,
+    authController.googleLogin
+);
+
+router.get(
+    '/google/callback',
+    authLimiter,
+    authController.googleCallback
+);
+
 router.post(
     '/client/register',
     authLimiter,
