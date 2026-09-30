@@ -10,13 +10,6 @@
   text-align: center;
 }
 
-.profilepic {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
 /* Ensure left:0 on all screen sizes explicitly */
 @media (max-width: 1300px) {
   .welcomeMessage {

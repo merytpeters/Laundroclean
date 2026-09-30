@@ -132,3 +132,127 @@
     flex-basis: 55%;
     padding-top: 4em;
 }
+
+@media (max-width: 1024px) {
+    .debitformcontainer {
+        width: 400px;
+        font-size: smaller;
+        padding: 1em;
+    }
+
+    .debitformcontainer legend {
+        font-size: small;
+    }
+
+    .debitformrow {
+        width: 90%;
+    }
+
+    .debitformrow input {
+        width: 90%;
+        font-size: smaller;
+    }
+
+    .debitformrowcvvdetails input {
+        width: 90%;
+        font-size: smaller;
+    }
+
+    .paybtn {
+        font-size: smaller;
+        width: 120px;
+    }
+
+    .paybtn span{
+        font-size: smaller;
+        padding: 0.5em 0.9em;
+        
+    }
+
+    .cancelbtn {
+        font-size: smaller;
+        width: 80px;
+    }
+
+    .cancelbtn span{
+        font-size: smaller;
+        padding: 0.5em 0.9em;
+        
+    }
+
+    .wallet {
+        padding: 1em;
+    }
+
+    .walletcardcontainer {
+        margin-top: 2em;
+    }
+    .debitcardcontainer {
+        width: 100%;
+    }
+
+    .wallet img{
+        width: 200px;
+        height: 200px;
+        margin-top: 2em;
+    }
+
+    .walletopen img{
+        width: 450px;
+        height: 200px;
+    }
+
+    .formopencontainer {
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 855px) {
+    .debitformcontainer {
+        width: 250px;
+    }
+
+    .paybtn {
+        font-size: smaller;
+        width: 80px;
+    }
+
+    .paybtn span{
+        font-size: smaller;
+        padding: 0.2em 0.4em;
+        
+    }
+
+    .cancelbtn {
+        font-size: smaller;
+        width: 50px;
+    }
+
+    .cancelbtn span{
+        font-size: smaller;
+        padding: 0.2em 0.4em;
+        
+    }
+
+    .wallet img{
+        width: 180px;
+    }
+
+    .walletopen img{
+        width: 400px;
+    }
+}
+
+@media (max-width: 765px) {
+    .debitformcontainer {
+        width: 180px;
+    }
+
+    .wallet img{
+        width: 45px;
+    }
+
+    .walletopen img{
+        width: 80px;
+    }
+}

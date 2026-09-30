@@ -478,7 +478,7 @@
 
   .pagedisplay {
     display: flex;
-    max-width: 55vw;
+    max-width: 50vw;
     padding: 0.2em;
   }
 
@@ -487,19 +487,30 @@
     gap: 1em;
   }
 
+  .profilesettings form {
+    padding: 0;
+  }
+
   .profilepic {
     flex-direction: column;
     width: 100%;
   }
 
   .profileavatar {
-    width: 100px;
-    height: 100px;
+    width: 60px;
+    height: 60px;
   }
 
   .camerabadge {
     width: 20px;
     height: 20px;
+    bottom: 3px;
+    right: 3px;
+  }
+
+  .profilepicbtns {
+    margin-top: 0;
+    padding: 1em;
   }
 
   .uploadnewbtn {
@@ -512,11 +523,17 @@
 
   .formrowgroup {
     flex-direction: column;
+    padding: 0.1em;
+  }
+
+  .formitem {
+    padding: 0.8em 0.5em;
   }
 
   .formitem input {
     width: 10em;
     height: 2em;
+    padding: 0.2em;
   }
 
   .addressformgroup {

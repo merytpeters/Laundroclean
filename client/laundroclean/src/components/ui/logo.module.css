@@ -1,0 +1,22 @@
+.logoContainer {
+    background: linear-gradient(135deg, #0F233A, #163A5F);
+    padding: 8px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 10px 10px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 765px) {
+    .logoContainer {
+        width: 12px;
+        padding: 2px 0px;
+    }
+    .logoContent {
+        width: 10px;
+    }
+
+    .logoimg {
+        width: 8px;
+    }
+}

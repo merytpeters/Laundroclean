@@ -87,6 +87,7 @@
 
   .dashboardButton {
     width: 100px;
+    padding: 4px 6px;
   }
 
   .welcomeWrapper {
@@ -103,6 +104,17 @@
   .contentWrapper {
     padding: 0 0.75rem;
     max-width: 100%;
+  }
+
+  .whatsAppIcon {
+    height: 40px;
+    width: 40px;
+    justify-content: center;
+    border: none;
+  }
+
+  .whatsAppIcon p {
+    display: none;
   }
 }
 

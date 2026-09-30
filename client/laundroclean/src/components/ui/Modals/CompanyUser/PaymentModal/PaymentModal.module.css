@@ -143,10 +143,25 @@
         -moz-appearance: auto;
         margin-top: 0.5rem;
         align-self: stretch;
+        z-index: 50;
+        position: relative;
     }
 
     .active {
         border-radius: 8px;
+    }
+
+    .paymentmodalcontainer {
+        width: 100%;
+        margin: 0;
+    }
+
+    .paymentmethodcontainer {
+        width: 100%;
+    }
+
+    .activetabcontainer {
+        width: 100%;
     }
 }
 

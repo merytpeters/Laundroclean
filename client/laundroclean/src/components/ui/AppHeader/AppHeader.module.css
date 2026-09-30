@@ -15,6 +15,25 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 400px;
+}
+
+.profilepic {
+  display: flex;
+  align-items: left;
+  width: 30%;
+  position: relative;
+}
+
+.penicon {
+  stroke: #ffffff;
+  fill: #ffffff;
+  height: 17px;
+  cursor: pointer;
+  margin-top: 20px;
+  left: 28px;
+  width: fit-content;
+  position: absolute;
 }
 
 .rightProps {
@@ -32,9 +51,13 @@
     border: none;
   }
 
-  .leftProps { gap: 12px; }
+  .leftProps {
+    gap: 12px;
+  }
 
-  .rightProps { gap: 8px; }
+  .rightProps {
+    gap: 8px;
+  }
 
   /* hide common label/text nodes inside the right controls while keeping icons */
   .rightProps .label,
@@ -54,7 +77,28 @@
 }
 
 @media (max-width: 800px) {
-  .header { height: 58px; }
-  .leftProps { gap: 8px; }
-  .rightProps { gap: 6px; }
+  .header {
+    height: 58px;
+  }
+  .leftProps {
+    gap: 8px;
+  }
+  .rightProps {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 765px) {
+  .leftProps {
+    max-width: 100px;
+    min-width: 150px;
+  }
+
+  .profilepic {
+    width: 50%;
+  }
+  .penicon {
+    height: 10px;
+    left: 22px;
+  }
 }
