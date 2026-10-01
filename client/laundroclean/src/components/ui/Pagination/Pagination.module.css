@@ -5,6 +5,8 @@
     justify-content: center;
     margin: 32px 0;
     width: 100%;
+    bottom: 1em;
+    position: absolute;
 }
 
 .previous {

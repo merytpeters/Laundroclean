@@ -9,12 +9,14 @@
     display: flex;
     align-self: center;
     width: 100%;
+    background-color: var(--foreground);
+    border-radius: 8px;
 }
 
 .infomain {
     display: flex;
     flex-direction: column;
-    width: 95%;
+    width: 100%;
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     padding: 1.5em 2em 1.5em 2em;
     border-radius: 8px;

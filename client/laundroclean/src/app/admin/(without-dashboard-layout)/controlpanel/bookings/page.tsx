@@ -48,7 +48,7 @@ export default function AllBookingsInfo() {
     if (bookingDataLoadingState) return <LoadingState />;
 
     return (
-        <div style={{ color: "#000", width: "100%", background: "#eeecec57" }}>
+        <div style={{ color: "#000", width: "100%", background: "#ffffff" }}>
             <AdminAllBookings mappedBookingData={mappedBookingData} />
             <span className="pagination-global">
                 <Pagination

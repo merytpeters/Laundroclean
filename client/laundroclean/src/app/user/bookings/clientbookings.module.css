@@ -5,6 +5,7 @@
     font-size: small;
     padding: 1em;
     width: 100%;
+    background-color: var(--foreground);
 }
 
 .bookingsection {

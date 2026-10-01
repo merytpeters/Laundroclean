@@ -92,7 +92,7 @@
 
 .cplpagechildren {
   display: flex;
-  background: var(--foreground);
+  background: transparent;
   min-height: 85vh;
   border-radius: 8px;
   font-size: small;

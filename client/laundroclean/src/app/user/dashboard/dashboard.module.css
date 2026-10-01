@@ -5,6 +5,7 @@
     padding: 1rem;
     width: 100%;
     gap: 2.5em;
+    background-color: var(--foreground);
 }
 
 .displaytext {
