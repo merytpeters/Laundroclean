@@ -1,5 +1,4 @@
 import styles from './WelcomeMessage.module.css'
-import { FaUserCircle } from 'react-icons/fa';
 import { useAuth } from 'src/context/AuthContext';
 
 interface WelcomeMessageProps {

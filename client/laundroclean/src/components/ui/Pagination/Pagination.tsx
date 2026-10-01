@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { generatePaginationPages } from "src/lib/pagination";
+import styles from "./Pagination.module.css";
 
 interface PaginationProps {
     totalPages: number;
@@ -44,14 +45,7 @@ export default function Pagination({
 
     return (
         <nav
-            style={{
-                display: "flex",
-                gap: "8px",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "32px 0",
-                width: "100%",
-            }}
+            className={styles.paginationNav}
             aria-label="Pagination"
         >
             {/* Previous */}
@@ -71,12 +65,8 @@ export default function Pagination({
                         event.preventDefault();
                     }
                 }}
+                className={styles.previous}
                 style={{
-                    padding: "4px 6px",
-                    borderRadius: "6px",
-                    border: "1px solid #d1d5db",
-                    fontSize: "14px",
-                    fontWeight: 500,
                     backgroundColor:
                         currentPage <= 1
                             ? "#f3f4f6"
@@ -89,7 +79,6 @@ export default function Pagination({
                         currentPage <= 1
                             ? 0.5
                             : 1,
-                    textDecoration: "none",
                     cursor:
                         currentPage <= 1
                             ? "not-allowed"
@@ -101,11 +90,7 @@ export default function Pagination({
 
             {/* Page numbers */}
             <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                }}
+                className={styles.pageNumber}
             >
                 {allPages.map(
                     (page, index) => {
@@ -119,16 +104,7 @@ export default function Pagination({
                             return (
                                 <span
                                     key={`ellipsis-${index}`}
-                                    style={{
-                                        padding:
-                                            "8px 12px",
-                                        fontSize:
-                                            "14px",
-                                        color:
-                                            "#6b7280",
-                                        fontWeight:
-                                            500,
-                                    }}
+                                    className={styles.ellipsis}
                                 >
                                     ...
                                 </span>
@@ -146,17 +122,8 @@ export default function Pagination({
                                         ? "page"
                                         : undefined
                                 }
+                                className={styles.currentpage}
                                 style={{
-                                    padding:
-                                        "4px 6px",
-                                    fontSize:
-                                        "14px",
-                                    fontWeight:
-                                        500,
-                                    borderRadius:
-                                        "6px",
-                                    border:
-                                        "1px solid",
                                     borderColor:
                                         isCurrent
                                             ? "#2563eb"
@@ -169,8 +136,6 @@ export default function Pagination({
                                         isCurrent
                                             ? "#ffffff"
                                             : "#374151",
-                                    textDecoration:
-                                        "none",
                                     cursor:
                                         isCurrent
                                             ? "default"
@@ -204,12 +169,8 @@ export default function Pagination({
                         event.preventDefault();
                     }
                 }}
+                className={styles.next}
                 style={{
-                    padding: "4px 6px",
-                    borderRadius: "6px",
-                    border: "1px solid #d1d5db",
-                    fontSize: "14px",
-                    fontWeight: 500,
                     backgroundColor:
                         currentPage >=
                             totalPages
@@ -225,7 +186,6 @@ export default function Pagination({
                             totalPages
                             ? 0.5
                             : 1,
-                    textDecoration: "none",
                     cursor:
                         currentPage >=
                             totalPages

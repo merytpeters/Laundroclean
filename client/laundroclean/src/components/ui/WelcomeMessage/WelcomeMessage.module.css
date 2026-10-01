@@ -18,16 +18,9 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 850px) {
   .welcomeMessage {
-    left: 0;
-    margin-left: 0;
+    font-size: smaller;
   }
 }
 
-@media (max-width: 480px) {
-  .welcomeMessage {
-    left: 0;
-    margin-left: 0;
-  }
-}

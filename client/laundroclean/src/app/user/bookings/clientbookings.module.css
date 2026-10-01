@@ -45,3 +45,20 @@
     width: 100%;
     padding: 1.5em;
 }
+
+@media (max-width: 550px) {
+    .clientbookingcontainer {
+        padding: 0em;
+    }
+
+    .addnewbtn {
+        font-size: smaller;
+        margin: 0.5em 2em;
+        padding: 0.3em;
+    }
+
+    .allongoingbookings {
+        padding: 1em;
+        margin-top: 2em;
+    }
+}
