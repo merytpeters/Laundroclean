@@ -1,3 +1,7 @@
+.permissionsListContainer {
+  display: flex;
+  flex-direction: column;
+}
 .field {
   display: flex;
   flex-direction: column;

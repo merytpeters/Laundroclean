@@ -37,7 +37,7 @@ export default function ClientPayment() {
     }
 
     return (
-        <div style={{ color: "black", flexShrink: 1, width: "100%", }}>
+        <div style={{ color: "black", flexShrink: 1, width: "100%", background: "#fffff"}}>
             <PaymentModal user={authUser} bookingId={bookingId} bookingUserId={bookingUserId} />
         </div>
     )

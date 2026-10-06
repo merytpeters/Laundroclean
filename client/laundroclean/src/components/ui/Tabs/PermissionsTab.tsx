@@ -511,626 +511,626 @@ export default function PermissionsTab({
         <section className={styles.permissionsTabContainer}>
             <h3>Roles and Permissions</h3>
             <span>Edit Roles & Permissions</span>
+            <section className={styles.permissionsListContainer}>
+                {rolesObj.map((roleObj) => {
+                    const isExpanded =
+                        expandedRoleId === roleObj.id;
 
-            {rolesObj.map((roleObj) => {
-                const isExpanded =
-                    expandedRoleId === roleObj.id;
+                    const isEditing =
+                        editingRoleId === roleObj.id;
 
-                const isEditing =
-                    editingRoleId === roleObj.id;
+                    /*
+                     * "*" means that this role has
+                     * every available permission.
+                     */
+                    const hasAllPermissions =
+                        roleObj.permissions?.includes("*") ?? false;
 
-                /*
-                 * "*" means that this role has
-                 * every available permission.
-                 */
-                const hasAllPermissions =
-                    roleObj.permissions?.includes("*") ?? false;
-
-                /*
-                 * Convert "*" into the actual list of
-                 * permissions for display purposes.
-                 */
-                const selectedRolePermissions = new Set(
-                    hasAllPermissions
-                        ? PERMISSION_OPTIONS.flatMap(
-                            (group) => group.permissions
-                        )
-                        : roleObj.permissions ?? []
-                );
-
-                /*
-                 * Only show feature groups that have
-                 * at least one permission assigned
-                 * to this role.
-                 */
-                const permissionGroups =
-                    PERMISSION_OPTIONS.filter((group) =>
-                        group.permissions.some((permission) =>
-                            selectedRolePermissions.has(
-                                permission
+                    /*
+                     * Convert "*" into the actual list of
+                     * permissions for display purposes.
+                     */
+                    const selectedRolePermissions = new Set(
+                        hasAllPermissions
+                            ? PERMISSION_OPTIONS.flatMap(
+                                (group) => group.permissions
                             )
-                        )
+                            : roleObj.permissions ?? []
                     );
 
-                /*
-                 * Initially show 5 feature groups.
-                 * "View all" expands only this role.
-                 */
-                const visiblePermissionGroups =
-                    isExpanded
-                        ? permissionGroups
-                        : permissionGroups.slice(0, 5);
+                    /*
+                     * Only show feature groups that have
+                     * at least one permission assigned
+                     * to this role.
+                     */
+                    const permissionGroups =
+                        PERMISSION_OPTIONS.filter((group) =>
+                            group.permissions.some((permission) =>
+                                selectedRolePermissions.has(
+                                    permission
+                                )
+                            )
+                        );
 
-                return (
-                    <section
-                        className={
-                            styles.rolepermissionssection
-                        }
-                        key={roleObj.id}
-                    >
-                        {!isEditing ? (
-                            /*
-                             * DISPLAY MODE
-                             */
-                            <div
-                                className={
-                                    styles.roleobjdisplay
-                                }
-                                id={`permission-role-${roleObj.id}`}
-                            >
-                                {/* Role information */}
-                                <div>
-                                    <b>{roleObj.title}</b>
-                                </div>
+                    /*
+                     * Initially show 5 feature groups.
+                     * "View all" expands only this role.
+                     */
+                    const visiblePermissionGroups =
+                        isExpanded
+                            ? permissionGroups
+                            : permissionGroups.slice(0, 5);
 
-                                <div>
-                                    Level: {roleObj.level}
-                                </div>
-
-                                {/* Permissions table */}
-                                <section
-                                    className={
-                                        styles.permissionitemsection
-                                    }
-                                >
-                                    <table
-                                        style={{
-                                            width: "100%",
-                                            borderCollapse:
-                                                "collapse",
-                                            marginTop: "10px",
-                                        }}
-                                    >
-                                        <thead>
-                                            <tr>
-                                                <th
-                                                    style={{
-                                                        textAlign:
-                                                            "left",
-                                                        padding:
-                                                            "10px",
-                                                        borderBottom:
-                                                            "1px solid #ddd",
-                                                        fontSize: "14px"
-                                                    }}
-                                                >
-                                                    Features
-                                                </th>
-
-                                                <th
-                                                    style={{
-                                                        textAlign:
-                                                            "left",
-                                                        padding:
-                                                            "10px",
-                                                        borderBottom:
-                                                            "1px solid #ddd",
-                                                        fontSize: "14px"
-                                                    }}
-                                                >
-                                                    Permissions
-                                                </th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {visiblePermissionGroups.map(
-                                                (group) => {
-                                                    const selectedPermissions =
-                                                        group.permissions.filter(
-                                                            (
-                                                                permission
-                                                            ) =>
-                                                                selectedRolePermissions.has(
-                                                                    permission
-                                                                )
-                                                        );
-
-                                                    const isFeatureFullySelected =
-                                                        selectedPermissions.length ===
-                                                        group
-                                                            .permissions
-                                                            .length;
-
-                                                    return (
-                                                        <tr
-                                                            key={
-                                                                group.feature
-                                                            }
-                                                        >
-                                                            <td
-                                                                style={{
-                                                                    padding:
-                                                                        "10px",
-                                                                    verticalAlign:
-                                                                        "top",
-                                                                    borderBottom:
-                                                                        "1px solid #eee",
-                                                                    fontWeight: 400,
-                                                                }}
-                                                            >
-                                                                {isFeatureFullySelected
-                                                                    ? `* All ${group.feature}`
-                                                                    : group.feature}
-                                                            </td>
-
-                                                            <td
-                                                                style={{
-                                                                    padding:
-                                                                        "10px",
-                                                                    borderBottom:
-                                                                        "1px solid #eee",
-                                                                }}
-                                                            >
-                                                                <div
-                                                                    style={{
-                                                                        display:
-                                                                            "flex",
-                                                                        flexWrap:
-                                                                            "wrap",
-                                                                        gap: "6px",
-                                                                    }}
-                                                                >
-                                                                    {selectedPermissions.map(
-                                                                        (
-                                                                            permission
-                                                                        ) => (
-                                                                            <span
-                                                                                key={
-                                                                                    permission
-                                                                                }
-                                                                                style={{
-                                                                                    padding:
-                                                                                        "4px 8px",
-                                                                                    backgroundColor:
-                                                                                        "#f3f4f6",
-                                                                                    borderRadius:
-                                                                                        "4px",
-                                                                                    fontSize:
-                                                                                        "13px",
-                                                                                }}
-                                                                            >
-                                                                                {
-                                                                                    permission
-                                                                                }
-                                                                            </span>
-                                                                        )
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                }
-                                            )}
-                                        </tbody>
-                                    </table>
-
-                                    {/* View all */}
-                                    {!isExpanded &&
-                                        permissionGroups.length >
-                                        5 && (
-                                            <button
-                                                type="button"
-
-                                                onClick={() =>
-                                                    setExpandedRoleId(
-                                                        roleObj.id
-                                                    )
-                                                }
-                                                className={styles.viewmoreperm}
-                                            >
-                                                view all
-                                                permissions for
-                                                this role
-                                            </button>
-                                        )}
-
-                                    {/* Close */}
-                                    {isExpanded && (
-                                        <button
-                                            type="button"
-                                            style={{
-                                                backgroundColor:
-                                                    "red",
-                                                color: "white",
-                                                cursor:
-                                                    "pointer",
-                                                border: "none",
-                                                fontSize:
-                                                    "small",
-                                                padding:
-                                                    "4px 8px",
-                                                borderRadius:
-                                                    "4px",
-                                                marginTop:
-                                                    "10px",
-                                            }}
-                                            onClick={() =>
-                                                setExpandedRoleId(
-                                                    null
-                                                )
-                                            }
-                                        >
-                                            close
-                                        </button>
-                                    )}
-                                </section>
-
-                                {/* Actions */}
-                                <div className={
-                                    styles.actionbtns
-                                }>
-                                    <FiEdit
-                                        color="blue"
-                                        size={15}
-                                        style={{
-                                            cursor:
-                                                "pointer",
-                                            marginRight:
-                                                "10px",
-                                        }}
-                                        onClick={() => {
-                                            setEditingRoleId(
-                                                roleObj.id
-                                            );
-
-                                            setEditingTitle(
-                                                roleObj.title ?? ""
-                                            );
-
-                                            setEditingLevel(
-                                                roleObj.level === null ||
-                                                    roleObj.level === undefined
-                                                    ? ""
-                                                    : String(roleObj.level)
-                                            );
-
-                                            setPermissions(
-                                                roleObj.permissions ??
-                                                []
-                                            );
-                                        }}
-                                    />
-
-                                    <FiTrash2
-                                        color="red"
-                                        size={15}
-                                        style={{
-                                            cursor:
-                                                "pointer",
-                                        }}
-                                        onClick={() => handleDeleteRole(roleObj.id)}
-                                    />
-                                </div>
-                            </div>
-                        ) : (
-                            /*
-                             * EDIT MODE
-                             */
-                            <div
-                                className={
-                                    styles.roleobjdisplay
-                                }
-                            >
-                                <div className={styles.editRoleFields}>
-                                    <div className={styles.field}>
-                                        <label htmlFor={`role-title-${roleObj.id}`}>
-                                            Role title
-                                        </label>
-
-                                        <input
-                                            id={`role-title-${roleObj.id}`}
-                                            type="text"
-                                            value={editingTitle}
-                                            onChange={(event) =>
-                                                setEditingTitle(event.target.value)
-                                            }
-                                            className={styles.roleInput}
-                                        />
-                                    </div>
-
-                                    <div className={styles.field}>
-                                        <label htmlFor={`role-level-${roleObj.id}`}>
-                                            Role level
-                                        </label>
-
-                                        <input
-                                            id={`role-level-${roleObj.id}`}
-                                            type="number"
-                                            value={editingLevel}
-                                            onChange={(event) =>
-                                                setEditingLevel(event.target.value)
-                                            }
-                                            className={styles.roleInput}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Existing permissions */}
-                                <section
-                                    className={
-                                        styles.permissionitemsection
-                                    }
-                                >
-                                    <table
-                                        style={{
-                                            width: "100%",
-                                            borderCollapse:
-                                                "collapse",
-                                            marginTop: "10px",
-                                        }}
-                                    >
-                                        <thead>
-                                            <tr>
-                                                <th
-                                                    style={{
-                                                        textAlign:
-                                                            "left",
-                                                        padding:
-                                                            "10px",
-                                                        borderBottom:
-                                                            "1px solid #ddd",
-                                                        fontSize: "14px"
-                                                    }}
-                                                >
-                                                    Features
-                                                </th>
-
-                                                <th
-                                                    style={{
-                                                        textAlign:
-                                                            "left",
-                                                        padding:
-                                                            "10px",
-                                                        borderBottom:
-                                                            "1px solid #ddd",
-                                                        fontSize: "14px"
-                                                    }}
-                                                >
-                                                    Permissions
-                                                </th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {visiblePermissionGroups.map(
-                                                (group) => {
-                                                    const selectedPermissions =
-                                                        group.permissions.filter(
-                                                            (
-                                                                permission
-                                                            ) =>
-                                                                selectedRolePermissions.has(
-                                                                    permission
-                                                                )
-                                                        );
-
-                                                    const isFeatureFullySelected =
-                                                        selectedPermissions.length ===
-                                                        group
-                                                            .permissions
-                                                            .length;
-
-                                                    return (
-                                                        <tr
-                                                            key={
-                                                                group.feature
-                                                            }
-                                                        >
-                                                            <td
-                                                                style={{
-                                                                    padding:
-                                                                        "10px",
-                                                                    verticalAlign:
-                                                                        "top",
-                                                                    borderBottom:
-                                                                        "1px solid #eee",
-                                                                    fontWeight: 400,
-                                                                }}
-                                                            >
-                                                                {isFeatureFullySelected
-                                                                    ? `* All ${group.feature}`
-                                                                    : group.feature}
-                                                            </td>
-
-                                                            <td
-                                                                style={{
-                                                                    padding:
-                                                                        "10px",
-                                                                    borderBottom:
-                                                                        "1px solid #eee",
-                                                                }}
-                                                            >
-                                                                <div
-                                                                    style={{
-                                                                        display:
-                                                                            "flex",
-                                                                        flexWrap:
-                                                                            "wrap",
-                                                                        gap: "6px",
-                                                                    }}
-                                                                >
-                                                                    {selectedPermissions.map(
-                                                                        (
-                                                                            permission
-                                                                        ) => (
-                                                                            <span
-                                                                                key={
-                                                                                    permission
-                                                                                }
-                                                                                style={{
-                                                                                    padding:
-                                                                                        "4px 8px",
-                                                                                    backgroundColor:
-                                                                                        "#f3f4f6",
-                                                                                    borderRadius:
-                                                                                        "4px",
-                                                                                    fontSize:
-                                                                                        "13px",
-                                                                                }}
-                                                                            >
-                                                                                {
-                                                                                    permission
-                                                                                }
-                                                                            </span>
-                                                                        )
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                }
-                                            )}
-                                        </tbody>
-                                    </table>
-
-                                    {/* View all while editing */}
-                                    {!isExpanded &&
-                                        permissionGroups.length >
-                                        5 && (
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setExpandedRoleId(
-                                                        roleObj.id
-                                                    )
-                                                }
-                                                className={styles.viewmoreperm}
-                                            >
-                                                view all
-                                                permissions for
-                                                this role
-                                            </button>
-                                        )}
-
-                                    {/* Close */}
-                                    {isExpanded && (
-                                        <button
-                                            type="button"
-                                            style={{
-                                                backgroundColor:
-                                                    "red",
-                                                color: "white",
-                                                cursor:
-                                                    "pointer",
-                                                border: "none",
-                                                fontSize:
-                                                    "small",
-                                                padding:
-                                                    "4px 8px",
-                                                borderRadius:
-                                                    "4px",
-                                                marginTop:
-                                                    "10px",
-                                            }}
-                                            onClick={() =>
-                                                setExpandedRoleId(
-                                                    null
-                                                )
-                                            }
-                                        >
-                                            close
-                                        </button>
-                                    )}
-
-                                    {/* Add/Edit permissions */}
-                                    <div
-                                        className={
-                                            styles.addmoreperm
-                                        }
-                                    >
-                                        <PermissionsSelect
-                                            label="Add or remove permissions"
-                                            value={
-                                                permissions
-                                            }
-                                            onChange={
-                                                setPermissions
-                                            }
-                                        />
-                                    </div>
-                                </section>
-
-                                {/* Edit actions */}
+                    return (
+                        <section
+                            className={
+                                styles.rolepermissionssection
+                            }
+                            key={roleObj.id}
+                        >
+                            {!isEditing ? (
+                                /*
+                                 * DISPLAY MODE
+                                 */
                                 <div
                                     className={
+                                        styles.roleobjdisplay
+                                    }
+                                    id={`permission-role-${roleObj.id}`}
+                                >
+                                    {/* Role information */}
+                                    <div>
+                                        <b>{roleObj.title}</b>
+                                    </div>
+
+                                    <div>
+                                        Level: {roleObj.level}
+                                    </div>
+
+                                    {/* Permissions table */}
+                                    <section
+                                        className={
+                                            styles.permissionitemsection
+                                        }
+                                    >
+                                        <table
+                                            style={{
+                                                width: "100%",
+                                                borderCollapse:
+                                                    "collapse",
+                                                marginTop: "10px",
+                                            }}
+                                        >
+                                            <thead>
+                                                <tr>
+                                                    <th
+                                                        style={{
+                                                            textAlign:
+                                                                "left",
+                                                            padding:
+                                                                "10px",
+                                                            borderBottom:
+                                                                "1px solid #ddd",
+                                                            fontSize: "14px"
+                                                        }}
+                                                    >
+                                                        Features
+                                                    </th>
+
+                                                    <th
+                                                        style={{
+                                                            textAlign:
+                                                                "left",
+                                                            padding:
+                                                                "10px",
+                                                            borderBottom:
+                                                                "1px solid #ddd",
+                                                            fontSize: "14px"
+                                                        }}
+                                                    >
+                                                        Permissions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {visiblePermissionGroups.map(
+                                                    (group) => {
+                                                        const selectedPermissions =
+                                                            group.permissions.filter(
+                                                                (
+                                                                    permission
+                                                                ) =>
+                                                                    selectedRolePermissions.has(
+                                                                        permission
+                                                                    )
+                                                            );
+
+                                                        const isFeatureFullySelected =
+                                                            selectedPermissions.length ===
+                                                            group
+                                                                .permissions
+                                                                .length;
+
+                                                        return (
+                                                            <tr
+                                                                key={
+                                                                    group.feature
+                                                                }
+                                                            >
+                                                                <td
+                                                                    style={{
+                                                                        padding:
+                                                                            "10px",
+                                                                        verticalAlign:
+                                                                            "top",
+                                                                        borderBottom:
+                                                                            "1px solid #eee",
+                                                                        fontWeight: 400,
+                                                                    }}
+                                                                >
+                                                                    {isFeatureFullySelected
+                                                                        ? `* All ${group.feature}`
+                                                                        : group.feature}
+                                                                </td>
+
+                                                                <td
+                                                                    style={{
+                                                                        padding:
+                                                                            "10px",
+                                                                        borderBottom:
+                                                                            "1px solid #eee",
+                                                                    }}
+                                                                >
+                                                                    <div
+                                                                        style={{
+                                                                            display:
+                                                                                "flex",
+                                                                            flexWrap:
+                                                                                "wrap",
+                                                                            gap: "6px",
+                                                                        }}
+                                                                    >
+                                                                        {selectedPermissions.map(
+                                                                            (
+                                                                                permission
+                                                                            ) => (
+                                                                                <span
+                                                                                    key={
+                                                                                        permission
+                                                                                    }
+                                                                                    style={{
+                                                                                        padding:
+                                                                                            "4px 8px",
+                                                                                        backgroundColor:
+                                                                                            "#f3f4f6",
+                                                                                        borderRadius:
+                                                                                            "4px",
+                                                                                        fontSize:
+                                                                                            "13px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        permission
+                                                                                    }
+                                                                                </span>
+                                                                            )
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    }
+                                                )}
+                                            </tbody>
+                                        </table>
+
+                                        {/* View all */}
+                                        {!isExpanded &&
+                                            permissionGroups.length >
+                                            5 && (
+                                                <button
+                                                    type="button"
+
+                                                    onClick={() =>
+                                                        setExpandedRoleId(
+                                                            roleObj.id
+                                                        )
+                                                    }
+                                                    className={styles.viewmoreperm}
+                                                >
+                                                    view all
+                                                    permissions for
+                                                    this role
+                                                </button>
+                                            )}
+
+                                        {/* Close */}
+                                        {isExpanded && (
+                                            <button
+                                                type="button"
+                                                style={{
+                                                    backgroundColor:
+                                                        "red",
+                                                    color: "white",
+                                                    cursor:
+                                                        "pointer",
+                                                    border: "none",
+                                                    fontSize:
+                                                        "small",
+                                                    padding:
+                                                        "4px 8px",
+                                                    borderRadius:
+                                                        "4px",
+                                                    marginTop:
+                                                        "10px",
+                                                }}
+                                                onClick={() =>
+                                                    setExpandedRoleId(
+                                                        null
+                                                    )
+                                                }
+                                            >
+                                                close
+                                            </button>
+                                        )}
+                                    </section>
+
+                                    {/* Actions */}
+                                    <div className={
                                         styles.actionbtns
+                                    }>
+                                        <FiEdit
+                                            color="blue"
+                                            size={15}
+                                            style={{
+                                                cursor:
+                                                    "pointer",
+                                                marginRight:
+                                                    "10px",
+                                            }}
+                                            onClick={() => {
+                                                setEditingRoleId(
+                                                    roleObj.id
+                                                );
+
+                                                setEditingTitle(
+                                                    roleObj.title ?? ""
+                                                );
+
+                                                setEditingLevel(
+                                                    roleObj.level === null ||
+                                                        roleObj.level === undefined
+                                                        ? ""
+                                                        : String(roleObj.level)
+                                                );
+
+                                                setPermissions(
+                                                    roleObj.permissions ??
+                                                    []
+                                                );
+                                            }}
+                                        />
+
+                                        <FiTrash2
+                                            color="red"
+                                            size={15}
+                                            style={{
+                                                cursor:
+                                                    "pointer",
+                                            }}
+                                            onClick={() => handleDeleteRole(roleObj.id)}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                /*
+                                 * EDIT MODE
+                                 */
+                                <div
+                                    className={
+                                        styles.roleobjdisplay
                                     }
                                 >
-                                    <button
-                                        type="button"
-                                        onClick={resetEditingForm}
-                                        style={{
-                                            backgroundColor:
-                                                "grey",
-                                            cursor:
-                                                "pointer",
-                                        }}
-                                    >
-                                        Cancel
-                                    </button>
+                                    <div className={styles.editRoleFields}>
+                                        <div className={styles.field}>
+                                            <label htmlFor={`role-title-${roleObj.id}`}>
+                                                Role title
+                                            </label>
 
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleSaveRole(
-                                                roleObj.id
-                                            )
-                                        }
-                                        disabled={
-                                            updateRoleMutation.isPending
-                                        }
-                                        style={{
-                                            backgroundColor:
-                                                "green",
-                                            color: "white",
-                                            cursor:
-                                                "pointer",
-                                        }}
-                                    >
-                                        {updateRoleMutation.isPending
-                                            ? "Saving..."
-                                            : "Save"}
-                                    </button>
+                                            <input
+                                                id={`role-title-${roleObj.id}`}
+                                                type="text"
+                                                value={editingTitle}
+                                                onChange={(event) =>
+                                                    setEditingTitle(event.target.value)
+                                                }
+                                                className={styles.roleInput}
+                                            />
+                                        </div>
 
-                                    <FiTrash2
-                                        color="red"
-                                        size={23}
-                                        style={{
-                                            cursor:
-                                                "pointer",
-                                        }}
-                                        onClick={() => handleDeleteRole(roleObj.id)}
-                                    />
+                                        <div className={styles.field}>
+                                            <label htmlFor={`role-level-${roleObj.id}`}>
+                                                Role level
+                                            </label>
+
+                                            <input
+                                                id={`role-level-${roleObj.id}`}
+                                                type="number"
+                                                value={editingLevel}
+                                                onChange={(event) =>
+                                                    setEditingLevel(event.target.value)
+                                                }
+                                                className={styles.roleInput}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Existing permissions */}
+                                    <section
+                                        className={
+                                            styles.permissionitemsection
+                                        }
+                                    >
+                                        <table
+                                            style={{
+                                                width: "100%",
+                                                borderCollapse:
+                                                    "collapse",
+                                                marginTop: "10px",
+                                            }}
+                                        >
+                                            <thead>
+                                                <tr>
+                                                    <th
+                                                        style={{
+                                                            textAlign:
+                                                                "left",
+                                                            padding:
+                                                                "10px",
+                                                            borderBottom:
+                                                                "1px solid #ddd",
+                                                            fontSize: "14px"
+                                                        }}
+                                                    >
+                                                        Features
+                                                    </th>
+
+                                                    <th
+                                                        style={{
+                                                            textAlign:
+                                                                "left",
+                                                            padding:
+                                                                "10px",
+                                                            borderBottom:
+                                                                "1px solid #ddd",
+                                                            fontSize: "14px"
+                                                        }}
+                                                    >
+                                                        Permissions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {visiblePermissionGroups.map(
+                                                    (group) => {
+                                                        const selectedPermissions =
+                                                            group.permissions.filter(
+                                                                (
+                                                                    permission
+                                                                ) =>
+                                                                    selectedRolePermissions.has(
+                                                                        permission
+                                                                    )
+                                                            );
+
+                                                        const isFeatureFullySelected =
+                                                            selectedPermissions.length ===
+                                                            group
+                                                                .permissions
+                                                                .length;
+
+                                                        return (
+                                                            <tr
+                                                                key={
+                                                                    group.feature
+                                                                }
+                                                            >
+                                                                <td
+                                                                    style={{
+                                                                        padding:
+                                                                            "10px",
+                                                                        verticalAlign:
+                                                                            "top",
+                                                                        borderBottom:
+                                                                            "1px solid #eee",
+                                                                        fontWeight: 400,
+                                                                    }}
+                                                                >
+                                                                    {isFeatureFullySelected
+                                                                        ? `* All ${group.feature}`
+                                                                        : group.feature}
+                                                                </td>
+
+                                                                <td
+                                                                    style={{
+                                                                        padding:
+                                                                            "10px",
+                                                                        borderBottom:
+                                                                            "1px solid #eee",
+                                                                    }}
+                                                                >
+                                                                    <div
+                                                                        style={{
+                                                                            display:
+                                                                                "flex",
+                                                                            flexWrap:
+                                                                                "wrap",
+                                                                            gap: "6px",
+                                                                        }}
+                                                                    >
+                                                                        {selectedPermissions.map(
+                                                                            (
+                                                                                permission
+                                                                            ) => (
+                                                                                <span
+                                                                                    key={
+                                                                                        permission
+                                                                                    }
+                                                                                    style={{
+                                                                                        padding:
+                                                                                            "4px 8px",
+                                                                                        backgroundColor:
+                                                                                            "#f3f4f6",
+                                                                                        borderRadius:
+                                                                                            "4px",
+                                                                                        fontSize:
+                                                                                            "13px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        permission
+                                                                                    }
+                                                                                </span>
+                                                                            )
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    }
+                                                )}
+                                            </tbody>
+                                        </table>
+
+                                        {/* View all while editing */}
+                                        {!isExpanded &&
+                                            permissionGroups.length >
+                                            5 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setExpandedRoleId(
+                                                            roleObj.id
+                                                        )
+                                                    }
+                                                    className={styles.viewmoreperm}
+                                                >
+                                                    view all
+                                                    permissions for
+                                                    this role
+                                                </button>
+                                            )}
+
+                                        {/* Close */}
+                                        {isExpanded && (
+                                            <button
+                                                type="button"
+                                                style={{
+                                                    backgroundColor:
+                                                        "red",
+                                                    color: "white",
+                                                    cursor:
+                                                        "pointer",
+                                                    border: "none",
+                                                    fontSize:
+                                                        "small",
+                                                    padding:
+                                                        "4px 8px",
+                                                    borderRadius:
+                                                        "4px",
+                                                    marginTop:
+                                                        "10px",
+                                                }}
+                                                onClick={() =>
+                                                    setExpandedRoleId(
+                                                        null
+                                                    )
+                                                }
+                                            >
+                                                close
+                                            </button>
+                                        )}
+
+                                        {/* Add/Edit permissions */}
+                                        <div
+                                            className={
+                                                styles.addmoreperm
+                                            }
+                                        >
+                                            <PermissionsSelect
+                                                label="Add or remove permissions"
+                                                value={
+                                                    permissions
+                                                }
+                                                onChange={
+                                                    setPermissions
+                                                }
+                                            />
+                                        </div>
+                                    </section>
+
+                                    {/* Edit actions */}
+                                    <div
+                                        className={
+                                            styles.actionbtns
+                                        }
+                                    >
+                                        <button
+                                            type="button"
+                                            onClick={resetEditingForm}
+                                            style={{
+                                                backgroundColor:
+                                                    "grey",
+                                                cursor:
+                                                    "pointer",
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleSaveRole(
+                                                    roleObj.id
+                                                )
+                                            }
+                                            disabled={
+                                                updateRoleMutation.isPending
+                                            }
+                                            style={{
+                                                backgroundColor:
+                                                    "green",
+                                                color: "white",
+                                                cursor:
+                                                    "pointer",
+                                            }}
+                                        >
+                                            {updateRoleMutation.isPending
+                                                ? "Saving..."
+                                                : "Save"}
+                                        </button>
+
+                                        <FiTrash2
+                                            color="red"
+                                            size={23}
+                                            style={{
+                                                cursor:
+                                                    "pointer",
+                                            }}
+                                            onClick={() => handleDeleteRole(roleObj.id)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        <hr />
-                    </section>
-                );
-            })}
-
+                            <hr />
+                        </section>
+                    );
+                })}
+            </section>
             <span className="pagination-global">
                 <Pagination
                     totalPages={
