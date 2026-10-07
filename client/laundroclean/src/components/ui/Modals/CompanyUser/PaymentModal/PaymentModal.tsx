@@ -8,12 +8,14 @@ import PaymentHistory from "src/components/ui/PaymentUI/PaymentHistory";
 import CashUI from "src/components/ui/PaymentUI/CashUI";
 import BankTransferUI from "src/components/ui/PaymentUI/BankTransferUI";
 import { PaymentMethodOrChannelState } from "src/components/ui/ErrorState/ErrorState";
+import { CurrencyTypeValue } from "src/types/laundrocleanServices/laundroservices";
 
 type PaymentTab = {
     key: "card" | "transfer" | "pos" | "wallet" | "cash";
     label: string;
     img: string;
-    component: React.ReactNode;
+    component?: React.ComponentType<PaymentTabProps>;
+    state?: boolean;
 };
 
 const paymentTabs: PaymentTab[] = [
@@ -21,31 +23,31 @@ const paymentTabs: PaymentTab[] = [
         key: "card",
         label: "Credit / Debit Card",
         img: "/img/creditcardicon.png",
-        component: <DebitCardUI />,
+        component: DebitCardUI,
     },
     {
         key: "cash",
         label: "Cash",
         img: "/img/cash-on-delivery.png",
-        component: <CashUI />,
+        component: CashUI,
     },
     {
         key: "transfer",
         label: "Bank Transfer",
         img: "/img/bankbuildingicon.png",
-        component: <BankTransferUI />,
+        component: BankTransferUI,
     },
     {
         key: "wallet",
         label: "OPay Wallet",
         img: "/img/payment.png",
-        component: <PaymentMethodOrChannelState />,
+        state: true,
     },
     {
         key: "pos",
         label: "POS Machine",
         img: "/img/pos-terminal.png",
-        component: "",
+        state: true,
     },
 ];
 
@@ -53,15 +55,19 @@ type PaymentProps = {
     user: CompanyUser | Client;
     bookingId?: string;
     bookingUserId?: string | number | null;
+    amount?: number | null;
+    currency?: CurrencyTypeValue | null;
 };
 
 type PaymentTabProps = {
-    bookingId?: string | number | null;
-    bookingUserId?: string | number | null;
+    bookingId: string;
+    bookingUserId: string;
     user?: CompanyUser | Client;
+    amount: number;
+    currency: CurrencyTypeValue;
 };
 
-export default function PaymentModal({ user, bookingId: propBookingId, bookingUserId: propBookingUserId }: PaymentProps) {
+export default function PaymentModal({ user, bookingId: propBookingId, bookingUserId: propBookingUserId, amount: propAmount, currency: propCurrency }: PaymentProps) {
     const isCompany = user?.type === "COMPANYUSER";
     // console.log(user);
     // Remove later
@@ -117,23 +123,37 @@ export default function PaymentModal({ user, bookingId: propBookingId, bookingUs
 
                 <section className={styles.activetabcontainer}>
                     {(() => {
-                        const active = tabs.find((tab) => tab.key === activeTab);
+                        const active = tabs.find(
+                            (tab) => tab.key === activeTab
+                        );
+
                         if (!active) return null;
 
-                        const comp = active.component;
-
-                        if (React.isValidElement(comp)) {
-                            const bookingId = propBookingId;
-                            const bookingUserId = propBookingUserId;
-
-                            return React.cloneElement(comp as React.ReactElement<PaymentTabProps>, {
-                                bookingId,
-                                bookingUserId,
-                                user,
-                            });
+                        if (active.state) {
+                            return <PaymentMethodOrChannelState />;
                         }
 
-                        return comp;
+                        if (
+                            !active.component ||
+                            !propBookingId ||
+                            !propBookingUserId ||
+                            propAmount == null ||
+                            !propCurrency
+                        ) {
+                            return null;
+                        }
+
+                        const Component = active.component;
+
+                        return (
+                            <Component
+                                bookingId={propBookingId}
+                                bookingUserId={String(propBookingUserId)}
+                                user={user}
+                                amount={propAmount}
+                                currency={propCurrency}
+                            />
+                        );
                     })()}
                 </section>
             </section>

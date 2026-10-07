@@ -1,5 +1,6 @@
 import { TransactionDto } from "../financialtransactions/payment.dto";
 import { UserDto } from "../users/user.dto";
+import { BookingStatus } from "./bookingStatus";
 
 export type BookingSettingsDto = {
     id: number;
@@ -27,7 +28,7 @@ type assignedTo = UserDto
 
 export type BookingDto = {
     id: string;
-    status?: BookingStatusDto;
+    status: BookingStatusDto;
     profileId?: string;
     customBookingId: string;
     serviceId?: string;
@@ -64,6 +65,11 @@ export type BookingDto = {
     updatedAt?: string;
     deletedAt?: string;
     transactions?: TransactionDto[];
+    mappedStatus?: BookingStatus;
 }
 
 export type ListBookingsDto = BookingDto[]
+
+export type ClientBookingStatusDto =
+  | "CUSTOMER_DROPPED_OFF_AT_POINT"
+  | "CUSTOMER_PICKED_UP_FROM_POINT"

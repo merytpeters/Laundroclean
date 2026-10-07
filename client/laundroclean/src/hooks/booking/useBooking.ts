@@ -25,7 +25,7 @@ import {
     clientGetBookingSettingsService
 } from "src/services/bookingService/booking.service";
 
-import { BookingPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload } from "src/types/booking/booking";
+import { BookingPayload, BookingStatusPayload, ClientUserListBookingsQueryParam, CompanyListBookingsQueryParam, minimumPickupdaysPayload } from "src/types/booking/booking";
 import { bookingKeys, bookingSettingsKeys } from "./keys";
 import { toast } from "sonner";
 import { ApiResponse } from "src/lib/api/requests";
@@ -244,5 +244,53 @@ export function useHardDeleteBookings() {
             );
         }
     });
+    return mutation
+}
+
+type BookingStatusUpdateVariable = {
+    bookingId: string;
+    payload: BookingStatusPayload
+}
+
+export function useUpdateBookingStatus() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async ({
+            bookingId,
+            payload
+        }: BookingStatusUpdateVariable) => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return adminUpdateBookingStatusService(bookingId, payload);
+                }
+                return staffUpdateBookingStatusService(bookingId, payload);
+            }
+            return clientUpdateBookingStatusService(bookingId, payload);
+        },
+
+        onSuccess(data) {
+            queryClient.invalidateQueries({
+                queryKey: bookingKeys.lists(),
+            });
+            const messageToast = toast.success(data?.message);
+            if (data?.warning) {
+                toast.dismiss(messageToast);
+                setTimeout(() => {
+                    toast.warning(data?.warning);
+                }, 3000)
+            }
+        },
+
+        onError(error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : 'Something went wrong'
+            );
+        }
+    });
+
     return mutation
 }

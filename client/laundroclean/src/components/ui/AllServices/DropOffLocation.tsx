@@ -257,6 +257,7 @@ export default function DropOffLocation({ onClose, usertype }: CloseProps) {
                                 }`}
                             style={{ cursor: "pointer" }}
                         >
+                            {/*<input type="checkbox" name="" id="" onClick={() => setSelectedPoint(point)}/>*/}
                             <strong>{point.name}</strong>
 
                             <div className={styles.pointDetails}>
@@ -264,7 +265,9 @@ export default function DropOffLocation({ onClose, usertype }: CloseProps) {
                             </div>
 
                             <div>
-                                <FiEdit />
+                                {usertype?.type === "COMPANYUSER" && (
+                                    <FiEdit />
+                                )}  
                             </div>
 
                             {point.isActive ? (

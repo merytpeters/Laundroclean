@@ -1,3 +1,4 @@
+import { Currency } from 'src/types/laundrocleanServices/laundroservices';
 import styles from './CurrencySelector.module.css';
 
 const CURRENCIES = [
@@ -7,8 +8,8 @@ const CURRENCIES = [
 ]
 
 interface CurrencySelectProps {
-    currentCurrency: string;
-    onCurrencyChange: (newCurrency: string) => void;
+    currentCurrency: Currency;
+    onCurrencyChange: (newCurrency: Currency) => void;
     className?: string;
     id?: string;
 }
@@ -29,7 +30,7 @@ export default function CurrencySelect({
                 name=""
                 id={id}
                 value={currentCurrency}
-                onChange={(e) => onCurrencyChange(e.target.value)}
+                onChange={(e) => onCurrencyChange(e.target.value as Currency)}
                 className={styles.currencyDropdown}
                 >
                     {CURRENCIES.map((currency) => (

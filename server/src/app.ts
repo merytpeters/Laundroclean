@@ -71,8 +71,8 @@ app.use('/api/v1/client', ClientServiceRoutes, ClientBookingRoutes);
 app.use('/api/v1/dropoffpoint', DropOffPointRoutes);
 app.use('/api/v1/servicearea', ServiceAreaRoutes);
 app.use('/api/v1/posdevices', POSDeviceRoutes);
-app.use('/api/payments', PaymentRoutes);
-app.use('/api/webhooks', WebhookRoutes);
+app.use('/api/v1/payments', PaymentRoutes);
+app.use('/api/v1/webhooks', WebhookRoutes);
 app.use('/api/v1/company-bank-account', CompanyBankAccountRoutes);
 app.use('/api/v1/client/company-bank-account', GetCompanyBankAccount,);
 

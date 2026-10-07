@@ -6,6 +6,7 @@ import ProtectedRoute from "src/components/ui/ProtectedRoutes";
 import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
 import ErrorState from "src/components/ui/ErrorState/ErrorState";
 import { useAuth } from "src/context/AuthContext";
+import { DropOffReminder } from "src/components/ui/BookingReminders/DropOffReminder";
 
 
 export default function ClientDashboardLayout({
@@ -42,6 +43,7 @@ export default function ClientDashboardLayout({
                 welcomeMessage={{ name: authUser?.firstName || authUser?.lastName || "Client" }}
             >
                 {children}
+                <DropOffReminder />
             </ClientLayout>
         </ProtectedRoute>
     )

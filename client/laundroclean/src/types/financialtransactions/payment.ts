@@ -54,3 +54,10 @@ export type OpayBankTransferFormValues =
 
 export type BankTransferFormValues =
     Omit<InitiatePaymentPayload, "sn" | "card" | "userInfo">
+
+export interface PaymentMethodProps {
+    bookingId: string;
+    bookingUserId: string;
+    amount: number;
+    currency: CurrencyTypeValue;
+}

@@ -14,6 +14,7 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { ServiceDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import CurrencySelect from "../PaymentUI/CurrencySelect";
 import { formatDateTime } from "src/utils/globalTimezone";
+import { useSearchParams } from "next/navigation";
 // import Pagination from "../Pagination";
 
 
@@ -1081,7 +1082,7 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                             </>
                                         )}
 
-                                        {canDeactivate &&<button
+                                        {canDeactivate && <button
                                             type="button"
                                             className={
                                                 styles.trashbtn
@@ -1091,7 +1092,7 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
                                                 deactivateServiceMutation.isPending
                                             }
                                         >
-                                             <FiTrash2/>
+                                            <FiTrash2 />
                                         </button>}
                                     </span>
                                 </span>
@@ -1105,10 +1106,25 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
 }
 
 export default function AllServices(props: AllServicesProps) {
-    const [activeLocationView, setActiveLocationView] = useState<LocationViewType>("serviceAreas");
+    const [activeLocationView, setActiveLocationView] = useState<LocationViewType| null>(null);
 
     const [activeMapView, setActiveMapView] = useState<MapView | null>(null);
     // const totalPages = 1;
+    const searchParams = useSearchParams();
+    const openDropoff = searchParams.get('dropOff') === 'true';
+    const [showDropOff, setShowDropOff] = useState(false);
+
+    const handleRequireDropOff = () => {
+        setActiveMapView("dropoffPoints");
+        setActiveLocationView("dropoffPoints");
+        setShowDropOff(true);
+    }
+
+    useEffect(() => {
+        if (openDropoff) {
+            handleRequireDropOff();
+        }
+    }, [openDropoff])
 
     return (
         <div className={styles.allservicescontainer}>

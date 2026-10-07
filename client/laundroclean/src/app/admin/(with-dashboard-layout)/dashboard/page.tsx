@@ -25,6 +25,18 @@ export default function AdminDashboard() {
         ? data.data.profile?.userId
         : undefined
 
+    const amount = data?.data && !Array.isArray(data.data)
+        ? data.data.finalAmount
+        : undefined
+
+    const currency = data?.data && !Array.isArray(data.data)
+        ? data.data.currency
+        : undefined
+    
+    console.log(data?.data)
+    console.log("Currency:", currency)
+    console.log("amount:", amount)
+
     const { authUser, isLoading, refetch, isError } = useAuth();
 
     if (isLoading) {
@@ -52,8 +64,8 @@ export default function AdminDashboard() {
             {activeMenu === "overview" && <Overview />}
             {activeMenu === "bookings" && <BookingModal />}
             {activeMenu === "delivery" && <DeliveryModal />}
-            {activeMenu === "calendar" && <CalendarModal />}
-            {activeMenu === "payment" && <PaymentModal user={authUser} bookingId={bookingId} bookingUserId={bookingUserId} />}
+            {activeMenu === "calendar" && <CalendarModal id="" title="" start="" end="" allDay/>}
+            {activeMenu === "payment" && <PaymentModal user={authUser} bookingId={bookingId} bookingUserId={bookingUserId} amount={amount} currency={currency}/>}
         </div>
     )
 }

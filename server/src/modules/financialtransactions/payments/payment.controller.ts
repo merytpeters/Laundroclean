@@ -19,7 +19,7 @@ const initiatePaymentController = asyncHandler(async (req, res) => {
         );
     }
 
-    const newPayment = paymentService.initiatePayment(payment);
+    const newPayment = await paymentService.initiatePayment(payment);
 
     res.status(201).json({
         success: true,

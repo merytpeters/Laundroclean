@@ -28,6 +28,14 @@ export default function StaffDashboard() {
     const bookingUserId = data?.data && !Array.isArray(data.data)
         ? data.data.profile?.userId
         : undefined
+    
+    const amount = data?.data && !Array.isArray(data.data)
+        ? data.data.finalAmount
+        : undefined
+    
+    const currency = data?.data && !Array.isArray(data.data)
+        ? data.data.currency
+        : undefined
 
     const { authUser, authProfile, isLoading, isError, refetch } = useAuth();
 
@@ -51,8 +59,8 @@ export default function StaffDashboard() {
             {activeMenu === "bookings" && <BookingModal />}
             {activeMenu === "delivery" && <DeliveryModal />}
             {activeMenu === "services" && <StaffServicesModal />}
-            {activeMenu === "calendar" && <CalendarModal />}
-            {activeMenu === "payment" && <PaymentModal user={authUser} bookingId={bookingId} bookingUserId={bookingUserId}/>}
+            {activeMenu === "calendar" && <CalendarModal id="" title="" start="" end="" allDay/>}
+            {activeMenu === "payment" && <PaymentModal user={authUser} bookingId={bookingId} bookingUserId={bookingUserId} amount={amount} currency={currency}/>}
             {activeMenu === "promotions" && <CompanyUserPromotionsUI />}
             {
                 activeMenu === "settings" &&

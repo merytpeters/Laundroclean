@@ -1,14 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './CashUI.module.css';
-import CurrencySelect from './CurrencySelect';
 import Button from '../Button/Button';
+import { useInitiatePayment } from 'src/hooks/paymentChannels/usePayment';
+import { useForm } from 'react-hook-form';
+import { CashMethodFormValues, PaymentMethodProps } from 'src/types/financialtransactions/payment';
+import { mapCurrency } from 'src/types/laundrocleanServices/laundroservices';
 
-export default function CashUI() {
-    const [currency, setCurrency] = useState<string>('NGN')
-    // userid and bookingid will be passed from booking form or response
+
+export default function CashUI(props: PaymentMethodProps) {
+    const initiatePaymentMutation = useInitiatePayment()
+    const formData = useForm<CashMethodFormValues>({
+        defaultValues: {
+            bookingId: props.bookingId,
+            userId: props.bookingUserId,
+            channel: "CASH",
+            provider: "INTERNAL",
+            status: "INITIATED",
+            amount: Number(props.amount),
+            currency: props.currency,
+        }
+    })
+
+    const handleCashPayment = (values: CashMethodFormValues) => {
+        initiatePaymentMutation.mutate({
+            payload: values
+        })
+    }
+
+    console.log("bookingId:", props.bookingId)
+    console.log("bookingUserId", props.bookingUserId)
+    console.log("Currency:", formData.getValues("currency"))
+    console.log("amount:", formData.getValues("amount"))
+
+    const currencyDisplay = mapCurrency(formData.getValues("currency"));
+    const amountDisplay = formData.getValues("amount");
+
+    console.log("Currency Display:", currencyDisplay)
     return (
         <section className={styles.cashUIContainer}>
-            <form action="">
+            <form onSubmit={formData.handleSubmit(handleCashPayment)}>
                 <legend><strong>Record all cash payments here</strong></legend>
                 <span className={styles.cashformrow}>
                     <span className={styles.cashformitem}>
@@ -25,26 +55,18 @@ export default function CashUI() {
                 </span>
                 <span className={styles.cashformrow}>
                     <span className={styles.cashformitem}>
-
-                        <CurrencySelect currentCurrency={currency} onCurrencyChange={setCurrency} className={styles.currencyselectitem}/>
+                        <label htmlFor="">Currency</label>
+                        <input type="text" placeholder={`${currencyDisplay}`} readOnly/>
                     </span>
                     <span className={styles.cashformitem}>
                         <label htmlFor="">Amount </label>
-                        <input type="text" placeholder='Amount' />
+                        <input type="number" placeholder={`${amountDisplay}`} readOnly/>
                     </span>
                 </span>
                 <span>
-                    <Button text='Make payment' className={styles.cashpaymentbtn}/>
+                    <Button type='submit' text='Make payment' className={styles.cashpaymentbtn} />
                 </span>
             </form>
         </section>
     )
 }
-
-/**
- * provider: "PAYSTACK" | "OPAY" | "INTERNAL";
-    status: "INITIATED" | "PENDING" | "SUCCESS" | "FAILED" | "REVERSED" | "EXPIRED" | "ABANDONED" | "REFUNDED" | "PARTIALLY_REFUNDED" | "PENDING_VERIFICATION" | "REJECTED";
-    amount: number;
-    channel: string;
-    currency: "DOLLAR" | "NAIRA" | "POUNDS";
- */

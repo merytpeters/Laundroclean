@@ -50,7 +50,7 @@ export default function ClientDashboard () {
                 </section>
                 
                 {/* Active Orders/Order status: Orders that are not yet delivered but confirmed (paid) */}
-                <a href="" className={styles.seeallbutton}>See all</a>
+                <a href="/user/bookings" className={styles.seeallbutton}>See all</a>
             </section>
             <section className={styles.specialofferssection}>
                 <span className={styles.sectionheader}> <b> Special Offer </b></span>

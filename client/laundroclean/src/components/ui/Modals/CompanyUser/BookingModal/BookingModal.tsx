@@ -15,7 +15,7 @@ import { useGetUsers } from "src/hooks/companyUser/useUser/useUser";
 import { useGetbookings, useGetBookingSettings } from "src/hooks/booking/useBooking";
 import { transformFieldInArray } from "src/utils/mapData";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
-import { mapDeliveryType } from "src/types/booking/bookingStatus";
+import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
 
 export default function BookingModal() {
@@ -72,6 +72,12 @@ export default function BookingModal() {
 
                 return isAssignedToMe || isPending;
             });
+
+    // for ui color coding of status display
+    const mappedVisibleBookingDataStatus = visibleBookingData.map((item) => ({
+        ...item,
+        mappedStatus: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+    }))
 
     const statsBookingData =
         user.uiRole === "ADMIN"
@@ -164,7 +170,7 @@ export default function BookingModal() {
                     <span>Add new</span>
                     <PlusIcon size={30} />
                 </button>
-                <BookingDisplayTable mappedBookingData={visibleBookingData} />
+                <BookingDisplayTable mappedBookingData={mappedVisibleBookingDataStatus} />
             </section>
 
             {/* sliding drawer for new booking */}

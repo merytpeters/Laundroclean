@@ -13,7 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { useDebounce } from "src/hooks/debounceHook";
 import { transformFieldInArray } from "src/utils/mapData";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
-import { mapDeliveryType } from "src/types/booking/bookingStatus";
+import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import Pagination from "src/components/ui/Pagination/Pagination";
 
 export default function ClientBookings() {
@@ -21,7 +21,7 @@ export default function ClientBookings() {
     const { authUser, authProfile } = useAuth();
     const searchParams = useSearchParams();
     const page = Number(searchParams.get('page')) || 1;
-    const limit = Number(searchParams.get('limit')) || 10;
+    const limit = Number(searchParams.get('limit')) || 6; // ensure pagination and slice are the same value
     const search = searchParams.get('search') || '';
     const debouncedSearch = useDebounce(search, 500);
     const queryParams = {
@@ -75,6 +75,11 @@ export default function ClientBookings() {
         );
     });
 
+    const mappedVisibleOngoingBookingDataStatus = allOtherBookingData.map((item) => ({
+        ...item,
+        mappedStatus: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+    }))
+
     if (!authUser) {
         throw new Error("User not authenticated")
     }
@@ -96,7 +101,7 @@ export default function ClientBookings() {
             </button>
             <section className={styles.bookingsection}>
                 <section className={styles.allongoingbookings}>
-                    <ClientAllOnGoingBookings mappedBookingData={allOtherBookingData} />
+                    <ClientAllOnGoingBookings mappedBookingData={mappedVisibleOngoingBookingDataStatus} />
                 </section>
 
                 <section aria-label="Client Booking display Section" className={styles.pastbookingsection}>

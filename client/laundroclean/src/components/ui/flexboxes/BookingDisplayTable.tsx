@@ -10,6 +10,8 @@ import { BookingDto } from "src/types/booking/booking.dto";
 import { toast } from "sonner";
 import Button from "../Button/Button";
 import { capitalilzeFirstLetter } from "src/utils/capitalize";
+import { statusClassMap } from "src/types/booking/bookingStatus";
+import statusMapStyle from '../flexboxes/ScheduleCard.module.css';
 
 
 // const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -66,7 +68,10 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
                             </td>
                             <td>{formatDateTime(bookingDetail.scheduledDate)}</td>
                             <td>{bookingDetail.deliveryType}</td>
-                            <td>{bookingDetail.status}</td>
+                            {bookingDetail.mappedStatus && (<td>
+                                <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[bookingDetail.mappedStatus]]}`}>
+                                    {bookingDetail.mappedStatus}
+                                    </span></td>)}
                             <td>{bookingDetail.currency} {bookingDetail.finalAmount}</td>
                             <td>
                                 {user.uiRole === "ADMIN" || user.id === bookingDetail.assignedToId ? (

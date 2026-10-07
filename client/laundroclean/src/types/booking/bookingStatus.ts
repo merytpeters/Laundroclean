@@ -11,7 +11,7 @@ export function mapDeliveryType(deliveryType: string) : DeliveryType {
     }
 }
 
-type BookingStatus = 
+export type BookingStatus = 
    | "pending"
    | "in-progress"
    | "awaiting drop off"
@@ -27,11 +27,12 @@ type BookingStatus =
    | "needs rider"
    | "payment made"
    | "awaiting rider"
-   | "picked"
    | "washing"
    | "out for delivery"
    | "available for pick up"
    | "completed"
+   | "picked up from customer"
+   | "picked up from drop off point"
 
 // css class map for color coding
 export const statusClassMap: Record<string, string> = {
@@ -42,12 +43,13 @@ export const statusClassMap: Record<string, string> = {
     "delivered to doorstep": "delivered",
     "delivered": "delivered",
     "in-transit": "in_transit",
+    "picked up from drop off point": "in_transit",
+    "picked up from customer": "in_transit",
     "needs rider": "needs_rider",
     "awaiting rider": "needs_rider",
     "at dropoff-point": "at_dropoff_point",
     "collected from dropoff location": "in_transit",
     "picked from doorstep": "in_transit",
-    "picked": "in_transit",
     "customer picked up": "delivered",
     "cancelled": "cancelled",
     "completed": "delivered",
@@ -104,9 +106,9 @@ export function mapClientBookingStatus(status: string, meta?: {deliveryType?: st
         case "CUSTOMER_DROPPED_OFF_AT_POINT":
             return "at dropoff-point";
         case "COMPANY_PICKED_UP_FROM_POINT":
-            return "picked";
+            return "picked up from drop off point";
         case "COMPANY_PICKED_UP_FROM_CUSTOMER":
-            return "picked";
+            return "picked up from customer";
         case "IN_PROGRESS":
             return "washing";
         case "IN_TRANSIT":
@@ -193,4 +195,10 @@ export const BookingStatusDropDownOptions = [
     { value:  "COMPANY_PICKED_UP_FROM_CUSTOMER", label: "delivered to doorstep"},
     { value:  "COMPANY_PICKED_UP_FROM_POINT", label: "collected from dropoff location"},
     { value:  "COMPANY_DROPPED_OFF_AT_POINT", label: "returned to dropoff location"},
+]
+
+export const ClientBookingStatusDropDownOptions = [
+    {value: "", label: "select new status"},
+    { value:  "CUSTOMER_DROPPED_OFF_AT_POINT", label: "customer dropped off"},
+    { value:  "CUSTOMER_PICKED_UP_FROM_POINT", label: "customer picked up"},
 ]
