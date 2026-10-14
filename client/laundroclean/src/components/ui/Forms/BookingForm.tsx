@@ -16,6 +16,7 @@ import { UserProfileDto } from 'src/types/users/user.dto';
 import { CalendarRowPayload } from 'src/types/calendar/calendar';
 import { getMinPickupDate, toUTCISOString } from 'src/utils/globalTimezone';
 import { toast } from 'sonner';
+import { DropoffPointsDto } from 'src/types/location/location.dto';
 
 
 interface PaymentButtonProps {
@@ -56,6 +57,7 @@ export interface BookingFormProps {
     actions?: React.ReactNode;
     showStaffAssignedSlot?: boolean;
     services?: ServicesDto | null;
+    dropOffPoints?: DropoffPointsDto | null;
     user?: {
         authUser: User | null;
         authProfile: ProfileResponse | null;
@@ -69,6 +71,7 @@ export default function BookingForm({
     actions,
     showStaffAssignedSlot = false,
     services,
+    dropOffPoints,
     user,
     staffOptions,
     deliveryOptions,
@@ -136,6 +139,7 @@ export default function BookingForm({
             pickupTime: "12:00",
             date: "",
             time: "12:00",
+            dropOffPointId: "",
         },
     });
 
@@ -452,6 +456,11 @@ export default function BookingForm({
             bookingSettings.data.minPickupDays
         );
     }, [bookingSettings]);
+
+    // this need to be debugged.
+    const handleFormDataReset = async () => {
+        return formData.resetDefaultValues
+    }
 
 
     return (
@@ -1020,6 +1029,38 @@ export default function BookingForm({
                         )}
                     />
                 </div>
+
+                {selectedDeliveryType === "DROP_OFF" && (
+                    <div
+                    className={styles.field}
+                >
+                    <label htmlFor="dropOffPointId">
+                        drop off locations
+                    </label>
+
+                    <select
+                        id="dropOffPointId"
+                        {...formData.register(
+                            "dropOffPointId"
+                        )}
+                    >
+                        <option value="">
+                            select drop off location
+                        </option>
+
+                        {dropOffPoints?.map(
+                            (dropOffPoint) => (
+                                <option
+                                    key={dropOffPoint.id}
+                                    value={dropOffPoint.id}
+                                >
+                                    {dropOffPoint.name}
+                                </option>
+                            )
+                        )}
+                    </select>
+                </div>
+                )}
             </section>
 
             {/* -----------------------------------------
@@ -1172,6 +1213,7 @@ export default function BookingForm({
 
                                 <PaymentButton
                                     onClose={() => setOpen(false)}
+                                    onPayLater={handleFormDataReset}
                                     className={styles.paymentbuttonoverlay}
                                     href={
                                         bookingIdState

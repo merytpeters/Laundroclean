@@ -17,6 +17,7 @@ const createBookingSchema = z.object({
     additionalNotes: z.string().optional(),
     assignedToId: z.uuid().nullable().optional(),
     timeSlotId: z.uuid().nullable().optional(),
+    dropOffPointId: z.uuid().optional(),
 });
 
 export type CreateBookingSchema = z.infer<typeof createBookingSchema>

@@ -17,6 +17,7 @@ import { transformFieldInArray } from "src/utils/mapData";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
+import { useDropoffPoints } from "src/hooks/locations/useDropoffPoints";
 
 export default function BookingModal() {
     const { user } = useCompanyUserMenu();
@@ -136,6 +137,16 @@ export default function BookingModal() {
     const { data: bookingSettings } = useGetBookingSettings();
     const bookingSettingsData = bookingSettings?.data;
 
+    const { data: dropOffPointData } = useDropoffPoints({
+            params: {
+                isActive: true
+            }
+        })
+    
+        const dropOffPoints = Array.isArray(dropOffPointData?.data)
+            ? dropOffPointData.data
+            : [];
+
     if (bookingLoadingState) return <LoadingState />;
 
     if (!user.uiRole) return null;
@@ -196,6 +207,7 @@ export default function BookingModal() {
                         showStaffAssignedSlot={user.uiRole === 'ADMIN'}
                         staffOptions={user.uiRole === 'ADMIN' ? staffToAssign : undefined}
                         services={services}
+                        dropOffPoints={dropOffPoints}
                     />
                 </div>
             </div>

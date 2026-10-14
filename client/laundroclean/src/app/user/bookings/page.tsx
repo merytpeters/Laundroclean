@@ -15,7 +15,8 @@ import { transformFieldInArray } from "src/utils/mapData";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { mapClientBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import Pagination from "src/components/ui/Pagination/Pagination";
-import { spawn } from "child_process";
+import { useDropoffPoints } from "src/hooks/locations/useDropoffPoints";
+
 
 export default function ClientBookings() {
     const [showForm, setShowForm] = useState(false);
@@ -81,6 +82,16 @@ export default function ClientBookings() {
         mappedStatus: mapClientBookingStatus(item.status, { deliveryType: item?.deliveryType }),
     }))
 
+    const { data: dropOffPointData } = useDropoffPoints({
+        params: {
+            isActive: true
+        }
+    })
+
+    const dropOffPoints = Array.isArray(dropOffPointData?.data)
+        ? dropOffPointData.data
+        : [];
+
     if (!authUser) {
         throw new Error("User not authenticated")
     }
@@ -104,16 +115,16 @@ export default function ClientBookings() {
                 <section className={styles.allongoingbookings}>
                     {mappedVisibleOngoingBookingDataStatus.length !== 0 ? (
                         <ClientAllOnGoingBookings mappedBookingData={mappedVisibleOngoingBookingDataStatus} />
-                    ): (
+                    ) : (
                         <h4>All active bookings will show here</h4>
                     )}
-                    
+
                 </section>
 
                 <section aria-label="Client Booking display Section" className={styles.pastbookingsection}>
                     {pastBookingData.length !== 0 ? (
                         <ClientBookingHistory mappedBookingData={pastBookingData} />
-                    ): (
+                    ) : (
                         <h5>Past bookings receipts will show here for download</h5>
                     )}
                 </section>
@@ -136,6 +147,7 @@ export default function ClientBookings() {
                     <BookingForm
                         user={user}
                         services={services}
+                        dropOffPoints={dropOffPoints}
                     />
                 </div>
             </div>

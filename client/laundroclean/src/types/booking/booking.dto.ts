@@ -67,6 +67,10 @@ export type BookingDto = {
     deletedAt?: string;
     transactions?: TransactionDto[];
     mappedStatus?: BookingStatus;
+    dropOffPointId?: string;
+    dropOffPoint?: {
+        name?: string;
+    }
 }
 
 export type ListBookingsDto = BookingDto[]

@@ -440,6 +440,9 @@ export function BookingDetailsOverlay({
                     </span>
                     <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
                     <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
+                    {item.dropOffPoint?.name && (
+                        <span className={styles.itemspan}><strong>Dropped Off At: </strong> {item.dropOffPoint.name}</span>
+                    )}
                     {item.mappedStatus && (<span className={styles.itemspan}><strong>Status: </strong> <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[item.mappedStatus]]}`}>
                         {capitalilzeFirstLetter(item.mappedStatus)}
                     </span></span>)}
@@ -547,7 +550,10 @@ export function ClientBookingDetailsOverlay({
                     </span>
                     <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
                     <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
-                    <span className={styles.itemspan}><strong>Status: </strong> {item.mappedStatus && (<span className={styles.itemspan}><strong>Status: </strong> <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[item.mappedStatus]]}`}>
+                    {item.dropOffPoint?.name && (
+                        <span className={styles.itemspan}><strong>Dropped Off At: </strong> {item.dropOffPoint.name}</span>
+                    )}
+                    <span className={styles.itemspan}>{item.mappedStatus && (<span className={styles.itemspan}><strong>Status: </strong> <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[item.mappedStatus]]}`}>
                         {capitalilzeFirstLetter(item.mappedStatus)}
                     </span></span>)}</span>
                     <span className={styles.itemspan}><strong>Amount: </strong>{item.currency} {item.finalAmount}</span>

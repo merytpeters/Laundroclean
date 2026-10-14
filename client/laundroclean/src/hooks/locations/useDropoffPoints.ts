@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest, ApiResponse } from 'src/lib/api/requests';
+import { ApiResponse } from 'src/lib/api/requests';
 import { createDropOffPointService, getDropOffPointByIdService, listDropOffPointsService } from 'src/services/locations/locations.service';
 import { dropOffLocationKeys } from './keys';
 import { DropOffPointPayload, GetLocationListParams, GetLocationParams } from 'src/types/location/location';

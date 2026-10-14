@@ -256,6 +256,8 @@ model DropOffPoint {
   lng      Float?
   isActive Boolean @default(true)
 
+  bookings Booking[]
+
   @@map("dropoff points")
 }
 
@@ -304,6 +306,8 @@ model Booking {
   finalAmount          Decimal?               @map("final_amount")
   bookingNotifications BookingNotifications[]
   transactions         Transaction[]
+  dropOffPointId       String?                @map("drop_off_point_id") 
+  dropOffPoint         DropOffPoint?          @relation(fields: [dropOffPointId], references: [id])
 
   @@map("bookings")
 }

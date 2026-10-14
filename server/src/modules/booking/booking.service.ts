@@ -161,7 +161,7 @@ const createBooking = async (
             } catch (error: any) {
                 if (input.deliveryType === 'PICK_UP') {
                     bookingWarning = 'Location geocoding failed, check service areas to see if your location is serviced if not choose the nearest drop off to you:';
-                } else if (input.deliveryType === 'DROP_OFF') {
+                } else if (input.deliveryType === 'DROP_OFF' && input.dropOffPointId === undefined) {
                     bookingWarning = 'Check drop off locations for the nearest place to drop off your clothes:';
                 }
                 console.warn(bookingWarning, error.message);
@@ -287,6 +287,7 @@ const createBooking = async (
                         customBookingId,
                         assignedToId: input.assignedToId ?? null,
                         timeSlotId: input.timeSlotId ?? null,
+                        dropOffPointId: input.dropOffPointId ?? null,
                     },
                     include: {
                         assignedTo: true,
@@ -326,7 +327,7 @@ const createBooking = async (
 };
 
 // for client and companyuser same approach as create
-const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<{ booking: Booking, warning?: string }>=> {
+const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<{ booking: Booking, warning?: string }> => {
     let bookingWarning: string | undefined;
     const booking = await prisma.$transaction(async (tx) => {
         try {
@@ -409,7 +410,7 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                 } catch (error: any) {
                     if (input.deliveryType === 'PICK_UP') {
                         bookingWarning = 'Location geocoding failed, check service areas to see if your location is serviced if not choose the nearest drop off to you:';
-                    } else if (input.deliveryType === 'DROP_OFF') {
+                    } else if (input.deliveryType === 'DROP_OFF' && input.dropOffPointId === undefined) {
                         bookingWarning = 'Check drop off locations for the nearest place to drop off your clothes:';
                     }
                 }
@@ -444,6 +445,13 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                     updateData.timeSlot = { disconnect: true };
                 } else {
                     updateData.timeSlot = { connect: { id: input.timeSlotId } };
+                }
+            }
+            if (input.dropOffPointId !== undefined) {
+                if (input.dropOffPointId === null) {
+                    updateData.dropOffPoint = { disconnect: true };
+                } else {
+                    updateData.dropOffPoint = { connect: { id: input.dropOffPointId } };
                 }
             }
 
@@ -553,7 +561,8 @@ const getBooking = async (
                 include: {
                     payment: true
                 }
-            }
+            },
+            dropOffPoint: true,
         },
     });
 
@@ -633,10 +642,15 @@ const listBookings = async (
             },
         },
         transactions: {
-                include: {
-                    payment: true
-                }
+            include: {
+                payment: true
             }
+        },
+        dropOffPoint: {
+            select: {
+                name: true,
+            }
+        }
     };
 
     if (params.includeProfile) {
@@ -874,7 +888,7 @@ const adminHardDeleteBookings = async (isAdmin: boolean = false): Promise<string
         throw new ForbiddenError('Forbidden action, hard delete bookings reserved for admin only');
     }
 
-    const deletedBookings = await prisma.booking.deleteMany({ 
+    const deletedBookings = await prisma.booking.deleteMany({
         where: {
             status: 'CANCELLED',
             isActive: false

@@ -36,6 +36,7 @@ export type BookingPayload = {
     additionalNotes?: string;
     assignedToId?: string;
     timeSlotId?: string;
+    dropOffPointId?: string;
 }
 
 export type BookingFormValues =
@@ -59,6 +60,7 @@ export type UpdateBookingPayload = {
     weight?: number;
     itemCount?: number;
     additionalNotes?: string;
+    dropOffPointId?: string;
 }
 
 export type BookingStatusPayload = {
