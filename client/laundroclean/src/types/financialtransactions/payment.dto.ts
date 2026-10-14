@@ -23,7 +23,7 @@ export type TransactionDto = {
     merchantAmount: number;
     paidAt: string | null;
     transactionRef: string;
-    payment: PaymentDto;
+    payment: PaymentDto[];
 }
 
 export type PaymentChannelAndMethodDto =

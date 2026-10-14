@@ -16,6 +16,7 @@ export type BookingStatusDto =
   | "IN_PROGRESS"                             
   | "COMPLETED"
   | "CANCELLED"
+  | "WASHED"
   | "IN_TRANSIT"                              
   | "DELIVERED"
   | "CUSTOMER_DROPPED_OFF_AT_POINT"

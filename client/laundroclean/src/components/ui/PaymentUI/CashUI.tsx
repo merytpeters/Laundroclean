@@ -27,10 +27,10 @@ export default function CashUI(props: PaymentMethodProps) {
         })
     }
 
-    console.log("bookingId:", props.bookingId)
-    console.log("bookingUserId", props.bookingUserId)
-    console.log("Currency:", formData.getValues("currency"))
-    console.log("amount:", formData.getValues("amount"))
+    //console.log("bookingId:", props.bookingId)
+    //console.log("bookingUserId", props.bookingUserId)
+    //console.log("Currency:", formData.getValues("currency"))
+    //console.log("amount:", formData.getValues("amount"))
 
     const currencyDisplay = mapCurrency(formData.getValues("currency"));
     const amountDisplay = formData.getValues("amount");

@@ -4,14 +4,15 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
 import { useEffect, useState } from "react";
 import { formatDateTime } from "src/utils/globalTimezone";
-import { useGetBookingSettings, useHardDeleteBookings, useSetMinimumPickupDays } from "src/hooks/booking/useBooking";
-import { minimumPickupdaysPayload } from "src/types/booking/booking";
-import { BookingDto } from "src/types/booking/booking.dto";
+import { useGetBookingSettings, useHardDeleteBookings, useSetMinimumPickupDays, useUpdateBookingStatus } from "src/hooks/booking/useBooking";
+import { BookingStatusPayload, minimumPickupdaysPayload } from "src/types/booking/booking";
+import { BookingDto, BookingStatusDto } from "src/types/booking/booking.dto";
 import { toast } from "sonner";
 import Button from "../Button/Button";
 import { capitalilzeFirstLetter } from "src/utils/capitalize";
 import { statusClassMap } from "src/types/booking/bookingStatus";
 import statusMapStyle from '../flexboxes/ScheduleCard.module.css';
+import { CompanyBookingStatusSelect } from "../Modals/CompanyUser/BookingStatusSelect/BookingStatusSelect";
 
 
 // const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -22,6 +23,25 @@ export type BookingListProp = {
 export default function BookingDisplayTable({ mappedBookingData }: BookingListProp) {
     const { user, setActiveMenu } = useCompanyUserMenu();
     const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
+    const [isEditBookingStatusId, setIsEditBookingStatusId] = useState<string | null>(null);
+    const [newBookingStatus, setNewBookingStatus] = useState<Record<string, BookingStatusDto>>({});
+
+    const updateBookingStatusMutation = useUpdateBookingStatus();
+
+    const resetBookingStatusEditing = () => {
+        setIsEditBookingStatusId(null);
+    }
+    const handleUpdateBookingStatus = (bookingId: string, payload: BookingStatusPayload) => {
+        updateBookingStatusMutation.mutate(
+            { bookingId, payload },
+            {
+                onSuccess: () => {
+                    resetBookingStatusEditing();
+                }
+            }
+        )
+    }
+
 
     const roleRoutes = {
         ADMIN: "/admin/controlpanel/bookings",
@@ -68,10 +88,41 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
                             </td>
                             <td>{formatDateTime(bookingDetail.scheduledDate)}</td>
                             <td>{bookingDetail.deliveryType}</td>
-                            {bookingDetail.mappedStatus && (<td>
-                                <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[bookingDetail.mappedStatus]]}`}>
-                                    {bookingDetail.mappedStatus}
-                                    </span></td>)}
+                            {bookingDetail.mappedStatus && (
+                                <td>
+                                    {isEditBookingStatusId === bookingDetail.id ? (
+                                        <CompanyBookingStatusSelect
+                                            id={`booking-status-${bookingDetail.id}`}
+                                            currentStatus={
+                                                newBookingStatus[
+                                                bookingDetail.id
+                                                ] ?? (
+                                                    bookingDetail.status
+                                                )
+                                            }
+                                            onStatusChange={(
+                                                newStatus
+                                            ) => {
+                                                const selectedStatus = newStatus as BookingStatusDto;
+                                                setNewBookingStatus(
+                                                    (
+                                                        prev
+                                                    ) => ({
+                                                        ...prev,
+                                                        [bookingDetail.id]:
+                                                            selectedStatus
+                                                    })
+                                                )
+                                                setIsEditBookingStatusId(null)
+                                                handleUpdateBookingStatus(bookingDetail.id, { status: selectedStatus } as BookingStatusPayload)
+                                            }}
+                                        />
+                                    ) : (
+                                        <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[bookingDetail.mappedStatus]]}`} style={{ cursor: "pointer" }} onClick={() => (setIsEditBookingStatusId(bookingDetail.id))}>
+                                            {capitalilzeFirstLetter(bookingDetail.mappedStatus)}
+                                        </span>
+                                    )}
+                                </td>)}
                             <td>{bookingDetail.currency} {bookingDetail.finalAmount}</td>
                             <td>
                                 {user.uiRole === "ADMIN" || user.id === bookingDetail.assignedToId ? (
@@ -162,6 +213,10 @@ export function BookingSettings() {
 
 export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
     const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
+    const [isEditBookingStatusId, setIsEditBookingStatusId] = useState<string | null>(null);
+    const [newBookingStatus, setNewBookingStatus] = useState<Record<string, BookingStatusDto>>({});
+
+    const updateBookingStatusMutation = useUpdateBookingStatus();
 
     const cancelledBookings = mappedBookingData.filter((booking) => {
         return booking.status === "CANCELLED"
@@ -175,6 +230,20 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
 
     const handleDeleteCancelledBookings = () => {
         hardDeleteMutation.mutate()
+    }
+
+    const resetBookingStatusEditing = () => {
+        setIsEditBookingStatusId(null);
+    }
+    const handleUpdateBookingStatus = (bookingId: string, payload: BookingStatusPayload) => {
+        updateBookingStatusMutation.mutate(
+            { bookingId, payload },
+            {
+                onSuccess: () => {
+                    resetBookingStatusEditing();
+                }
+            }
+        )
     }
 
     return (
@@ -215,7 +284,44 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
                             </span>
                             <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
                             <span>{bookingDetail.deliveryType}</span>
-                            <span>{bookingDetail.status}</span>
+                            <span>
+                                {bookingDetail.mappedStatus && (
+                                    <span>
+                                        {isEditBookingStatusId === bookingDetail.id ? (
+                                            <CompanyBookingStatusSelect
+                                                id={`booking-status-${bookingDetail.id}`}
+                                                currentStatus={
+                                                    newBookingStatus[
+                                                    bookingDetail.id
+                                                    ] ?? (
+                                                        bookingDetail.status
+                                                    )
+                                                }
+                                                onStatusChange={(
+                                                    newStatus
+                                                ) => {
+                                                    const selectedStatus = newStatus as BookingStatusDto;
+                                                    setNewBookingStatus(
+                                                        (
+                                                            prev
+                                                        ) => ({
+                                                            ...prev,
+                                                            [bookingDetail.id]:
+                                                                selectedStatus
+                                                        })
+                                                    )
+                                                    setIsEditBookingStatusId(null)
+                                                    handleUpdateBookingStatus(bookingDetail.id, { status: selectedStatus } as BookingStatusPayload)
+                                                }}
+                                            />
+                                        ) : (
+                                            <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[bookingDetail.mappedStatus]]}`} style={{ cursor: "pointer" }} onClick={() => (setIsEditBookingStatusId(bookingDetail.id))}>
+                                                {capitalilzeFirstLetter(bookingDetail.mappedStatus)}
+                                            </span>
+                                        )}
+                                    </span>
+                                )}
+                            </span>
                             <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
                             <span>
                                 {bookingDetail.assignedTo
@@ -287,9 +393,13 @@ export function BookingDetailsOverlay({
 }: BookingDetailsOverlayProps) {
     const { user, setActiveMenu, setBookingInfo } = useCompanyUserMenu();
     const bookingId = item?.id ?? "";
-    const bookingRef = user.uiRole === "ADMIN" || user.uiRole === "STAFF"
-        ? `/admin/dashboard#payment?bookingId=${bookingId}`
-        : `/user/payment?bookingId=${bookingId}`;
+    const bookingRef = (
+        user.type === "COMPANYUSER"
+            ? user.uiRole === "ADMIN" || user.uiRole === "STAFF"
+                ? `/admin/dashboard#payment?bookingId=${bookingId}`
+                : `/staff/dashboard#payment?bookingId=${bookingId}`
+            : `/user/payment?bookingId=${bookingId}`
+    )
 
     const handleMakePayment = () => {
         if (!item) return;
@@ -330,7 +440,9 @@ export function BookingDetailsOverlay({
                     </span>
                     <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
                     <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
-                    <span className={styles.itemspan}><strong>Status: </strong> {item.status}</span>
+                    {item.mappedStatus && (<span className={styles.itemspan}><strong>Status: </strong> <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[item.mappedStatus]]}`}>
+                        {capitalilzeFirstLetter(item.mappedStatus)}
+                    </span></span>)}
                     <span className={styles.itemspan}><strong>Amount: </strong>{item.currency} {item.finalAmount}</span>
                     <span>
                         {user.uiRole === "ADMIN" || user.id === item.assignedToId ? (
@@ -435,7 +547,9 @@ export function ClientBookingDetailsOverlay({
                     </span>
                     <span className={styles.itemspan}><strong>Pickup/Delivery Date: </strong>{formatDateTime(item.scheduledDate)}</span>
                     <span className={styles.itemspan}><strong>Delivery Tag: </strong> {item.deliveryType}</span>
-                    <span className={styles.itemspan}><strong>Status: </strong> {capitalilzeFirstLetter(item.status)}</span>
+                    <span className={styles.itemspan}><strong>Status: </strong> {item.mappedStatus && (<span className={styles.itemspan}><strong>Status: </strong> <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[item.mappedStatus]]}`}>
+                        {capitalilzeFirstLetter(item.mappedStatus)}
+                    </span></span>)}</span>
                     <span className={styles.itemspan}><strong>Amount: </strong>{item.currency} {item.finalAmount}</span>
                     <span>{item.discountAmount && (
                         <span className={styles.itemspan}><strong>Discount: </strong>{item.discountAmount}</span>

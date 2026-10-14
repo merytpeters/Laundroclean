@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 
 export default async function globalSetup() {
   try {
+    await prisma.payment.deleteMany();
+    await prisma.transaction.deleteMany();
     // ensure previous test data that can cause FK constraints is cleaned
     // delete child tables first, then parents to avoid FK constraint errors
     await prisma.bookingNotifications.deleteMany();

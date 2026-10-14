@@ -13,8 +13,9 @@ import { useSearchParams } from "next/navigation";
 import { useDebounce } from "src/hooks/debounceHook";
 import { transformFieldInArray } from "src/utils/mapData";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
-import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
+import { mapClientBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import Pagination from "src/components/ui/Pagination/Pagination";
+import { spawn } from "child_process";
 
 export default function ClientBookings() {
     const [showForm, setShowForm] = useState(false);
@@ -77,7 +78,7 @@ export default function ClientBookings() {
 
     const mappedVisibleOngoingBookingDataStatus = allOtherBookingData.map((item) => ({
         ...item,
-        mappedStatus: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+        mappedStatus: mapClientBookingStatus(item.status, { deliveryType: item?.deliveryType }),
     }))
 
     if (!authUser) {
@@ -101,11 +102,20 @@ export default function ClientBookings() {
             </button>
             <section className={styles.bookingsection}>
                 <section className={styles.allongoingbookings}>
-                    <ClientAllOnGoingBookings mappedBookingData={mappedVisibleOngoingBookingDataStatus} />
+                    {mappedVisibleOngoingBookingDataStatus.length !== 0 ? (
+                        <ClientAllOnGoingBookings mappedBookingData={mappedVisibleOngoingBookingDataStatus} />
+                    ): (
+                        <h4>All active bookings will show here</h4>
+                    )}
+                    
                 </section>
 
                 <section aria-label="Client Booking display Section" className={styles.pastbookingsection}>
-                    <ClientBookingHistory mappedBookingData={pastBookingData} />
+                    {pastBookingData.length !== 0 ? (
+                        <ClientBookingHistory mappedBookingData={pastBookingData} />
+                    ): (
+                        <h5>Past bookings receipts will show here for download</h5>
+                    )}
                 </section>
                 <Pagination
                     totalPages={bookingMetaData?.totalPages ?? 1}

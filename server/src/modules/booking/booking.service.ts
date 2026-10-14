@@ -712,6 +712,7 @@ const updateBookingStatus = async (
     const clientAllowedStatuses = [
         'CUSTOMER_DROPPED_OFF_AT_POINT',
         'CUSTOMER_PICKED_UP_FROM_POINT',
+        'CANCELLED',
     ];
 
     if (currentUser?.type === 'CLIENT') {

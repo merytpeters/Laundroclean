@@ -84,60 +84,117 @@
     padding: 0.1em 1.3em;
     align-items: center;
     height: 30px;
+    flex-wrap: wrap;
+    min-width: 16em;
+    max-width: 16em;
 }
 
 .in_progress {
-    background-color: #e3e0e0;
-    color: rgb(15, 15, 15) !important;
-    width: fit-content;
+    background-color: #0f233a;
+    color: #ffffff !important;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .payment_made {
     color: #e3e0e0;
     background-color: rgb(15, 15, 15) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .delivered {
     color: #ffffff !important;
     background-color: rgb(42, 124, 51) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .in_transit {
-    color: #0f0f0f !important;
+    color: #fffefe !important;
     background-color: rgb(200, 187, 68) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .needs_rider {
-    color: #0f0f0f !important;
-    background-color: rgb(199, 96, 36) !important;
-    width: fit-content;
+    color: #fffefe !important;
+    background-color: #d59056 !important;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .awaiting_drop_off {
-    color: #0f0f0f !important;
+    color: #fffefe !important;
     background-color: rgb(36, 177, 199) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .at_dropoff_point {
-    color: #0f0f0f !important;
+    color: #fffefe !important;
     background-color: rgb(152, 111, 154) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .pending {
     color: #fffefe !important;
     background-color: rgb(82, 65, 82) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .cancelled {
     color: #fffefe !important;
     background-color: rgb(211, 45, 45) !important;
-    width: fit-content;
+    padding: 0.2em 0.5em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    height: fit-content;
 }
 
 .secondrow {

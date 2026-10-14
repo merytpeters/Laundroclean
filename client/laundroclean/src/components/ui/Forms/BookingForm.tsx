@@ -29,13 +29,8 @@ function PaymentButton(props: PaymentButtonProps) {
     const contextUser = context?.user;
     const setActiveMenu = context?.setActiveMenu;
 
-    const typeRoutes: Record<string, string> = {
-        CLIENT: "/user/payment",
-        COMPANYUSER: "/dashboard"
-    };
-
     const userType = contextUser?.type ?? 'CLIENT';
-    const href = props.href ?? (typeRoutes[userType] || "/user/payment");
+    const href = props.href
 
     return (
         <div className={`${props.className ?? ''}`}>
@@ -89,10 +84,11 @@ export default function BookingForm({
         number | string | null
     >(null);
     const [bookingIdState, setBookingIdState] = useState<string | number | undefined>(undefined);
-    const bookingref =
-        `/user/payment?bookingId=${bookingIdState} ?? 
-        /admin#payment?bookingId=${bookingIdState} ?? 
-        /staff#payment?bookingId=${bookingIdState} }`
+    const bookingref = (
+        user?.authUser?.type === "CLIENT"
+            ? `/user/payment?bookingId=${bookingIdState}`
+            : `?bookingId=${bookingIdState}`
+    )
 
     const deliveryOpts =
         deliveryOptions ??

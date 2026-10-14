@@ -91,15 +91,19 @@ const listBookingsController = asyncHandler(async (req, res) => {
 const updateBookingStatusController = asyncHandler(async (req, res) => {
     const { bookingId } = req.params;
     const statusBody: UpdateBookingStatusSchema = req.body;
+    
+    let updated;
 
     const isAdmin = req.user?.role?.title === 'ADMIN';
     const currentUser = req.user ? { id: req.user.id, type: req.user.type } : undefined;
-    const updated = await BookingService.updateBookingStatus(statusBody, bookingId, Boolean(isAdmin), currentUser);
-
+    if (statusBody.status === 'CANCELLED') {
+        updated = await BookingService.softDeleteBooking(bookingId, Boolean(isAdmin));
+    }
+    updated = await BookingService.updateBookingStatus(statusBody, bookingId, Boolean(isAdmin), currentUser);
     return res.status(200).json({
         success: true,
         data: updated,
-        message: `${updated.customBookingId} booking has been updated`
+        message: `${updated?.customBookingId} booking has been updated` || 'Booking successfully cancelled'
     });
 });
 

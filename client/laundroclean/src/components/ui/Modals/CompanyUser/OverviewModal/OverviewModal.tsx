@@ -19,39 +19,52 @@ export default function Overview() {
     const userQueryParams = {
         status: "active"
     } as const
-    const {data: totalClientUsersData } = useGetUsers({type: "CLIENT"}, userQueryParams)
-    const totalClientUsers = totalClientUsersData?.data;
+    const { data: totalClientUsersData } = useGetUsers({ type: "CLIENT" }, userQueryParams)
+    const clientUsers = Array.isArray(totalClientUsersData?.data)
+        ? totalClientUsersData.data
+        : [];
+    
 
     const { data: bookingData } = useGetbookings({});
     const activeConfirmedBookings = Array.isArray(bookingData?.data)
         ? bookingData.data
-        : [];;
+        : [];
 
     if (!user.uiRole) return null;
 
     const config = roleConfig[user.uiRole];
 
+    const activeBookings = activeConfirmedBookings.filter(
+        (booking) => {
+            return booking.status !== "PENDING"
+                && booking.status !== "CANCELLED"
+                && booking.status !== "DELIVERED"
+                && booking.status !== "COMPLETED"
+                && booking.isActive
+        }
+    )
+
+    const totalClientUsers = clientUsers.filter(
+        (user) => {
+            return user.user.isActive
+        }
+    )
+
     const stats = {
-        activeClient: totalClientUsers?.length,
-        activeBookings: activeConfirmedBookings?.filter(
-            (booking) => {
-                booking.status === "CONFIRMED",
-                booking.isActive
-            }
-            
-        ).length
+        activeClient: totalClientUsers.length,
+        activeBookings: activeBookings.length
     }
 
-    const mappedDelivery =bookingScheduleData.map((item) => ({
+    const mappedDelivery = bookingScheduleData.map((item) => ({
         ...item,
         deliveryType: mapDeliveryType(item.deliveryType)
     }))
 
     const mappedSchedule = mappedDelivery.map((item) => ({
         ...item,
-        status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType}),
+        status: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
     }))
-    
+
 
     const clientInfoHeaderData = {
         header: config.clientInfoCardTitle,
@@ -60,7 +73,7 @@ export default function Overview() {
 
     // clientinfodetails will come from calendar
 
-    
+
     return (
         <div className={styles.overviewmodalcontainer}>
             <section aria-label="Analysis Card" className={styles.statcardbox}>
@@ -80,13 +93,13 @@ export default function Overview() {
                     );
                 })}
             </section>
-            {user?.uiRole === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`}/>}
-               
+            {user?.uiRole === "ADMIN" && <Button text="View Reports" className={styles.viewreportbtn} href={`${controlpanelbasepath}/reports-analysis`} />}
+
             <section aria-label="Information Section" className={styles.infosection}>
-                <ScheduleCard items={mappedSchedule}/>
+                <ScheduleCard items={mappedSchedule} />
                 <ClientInfoCard
-                  title={clientInfoHeaderData}
-                  items={clientInfoData}
+                    title={clientInfoHeaderData}
+                    items={clientInfoData}
                 />
             </section>
         </div>

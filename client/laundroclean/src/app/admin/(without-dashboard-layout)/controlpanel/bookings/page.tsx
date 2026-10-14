@@ -2,7 +2,7 @@
 import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
 import { AdminAllBookings } from "src/components/ui/flexboxes/BookingDisplayTable";
 import { useGetbookings } from "src/hooks/booking/useBooking";
-import { mapDeliveryType } from "src/types/booking/bookingStatus";
+import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { transformFieldInArray } from "src/utils/mapData";
 import Pagination from "src/components/ui/Pagination/Pagination";
@@ -43,13 +43,19 @@ export default function AllBookingsInfo() {
         mapDeliveryType
     );
 
+    // for ui color coding of status display
+        const mappedVisibleBookingDataStatus = mappedBookingData.map((item) => ({
+            ...item,
+            mappedStatus: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+        }))
+
     const metaData = data?.meta;
 
     if (bookingDataLoadingState) return <LoadingState />;
 
     return (
         <div style={{ color: "#000", width: "100%", background: "#ffffff" }}>
-            <AdminAllBookings mappedBookingData={mappedBookingData} />
+            <AdminAllBookings mappedBookingData={mappedVisibleBookingDataStatus} />
             <span className="pagination-global">
                 <Pagination
                     totalPages={

@@ -66,8 +66,10 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Today's Fulfilled Orders", key: "dailyFulfilledOrders"}
     ],
     DeliveryStatCards: [
-      {title: "Today's Pending Deliveries", key: "pendingDeliveries"},
-      {title: "Today's Pending Pickups", key: "pendingPickups"},
+      {title: "Pending DoorStep Deliveries", key: "pendingDoorStepDeliveries"},
+      {title: "Pending Bulk Deliveries", key: "pendingBulkDeliveries"},
+      {title: "Pending DoorStep Pickups", key: "pendingDoorStepPickups"},
+      {title: "Pending Bulk Pickups", key: "pendingBulkPickups"},
     ]
   },
   [Role.STAFF]: {
@@ -100,8 +102,10 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Your Daily Fulfilled Orders", key: "dailyFulfilledOrders"}
     ],
     DeliveryStatCards: [
-      {title: "Assigned Deliveries", key: "pendingDeliveries"},
-      {title: "Assigned Pickups", key: "pendingPickups"},
+      {title: "Pending DoorStep Deliveries", key: "pendingDoorStepDeliveries"},
+      {title: "Pending Bulk Deliveries", key: "pendingBulkDeliveries"},
+      {title: "Pending DoorStep Pickups", key: "pendingDoorStepPickups"},
+      {title: "Pending Bulk Pickups", key: "pendingBulkPickups"},
     ]
   },
 };

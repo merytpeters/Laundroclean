@@ -73,8 +73,14 @@ export default function BookingModal() {
                 return isAssignedToMe || isPending;
             });
 
+    const excludeCancelledBookings = visibleBookingData.filter(
+        (booking) => {
+            return booking.status !== "CANCELLED"
+        }
+    )
+
     // for ui color coding of status display
-    const mappedVisibleBookingDataStatus = visibleBookingData.map((item) => ({
+    const mappedVisibleBookingDataStatus = excludeCancelledBookings.map((item) => ({
         ...item,
         mappedStatus: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
     }))
@@ -109,7 +115,11 @@ export default function BookingModal() {
         ).length,
 
         confirmedBookings: statsBookingData.filter(
-            (booking) => booking.status === "CONFIRMED"
+            (booking) => {
+                return booking.status === "CONFIRMED"
+                    && booking.isActive
+
+            }
         ).length, // payment has been made
 
         inprogressBookings: statsBookingData.filter(

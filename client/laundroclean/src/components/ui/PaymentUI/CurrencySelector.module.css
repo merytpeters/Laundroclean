@@ -1,6 +1,8 @@
 .currencySelectWrapper {
     position: relative;
     font-family: inherit;
+    display: flex;
+    flex-direction: column;
 }
 
 .currencyDropdown {

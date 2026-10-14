@@ -23,6 +23,11 @@
   padding: 1.5em;
 }
 
+.laundrocleanlogo {
+  display: flex;
+  width: 2em;
+}
+
 .moredetails {
   cursor: pointer;
 }

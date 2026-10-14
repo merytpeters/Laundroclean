@@ -33,9 +33,9 @@ export default function AdminDashboard() {
         ? data.data.currency
         : undefined
     
-    console.log(data?.data)
-    console.log("Currency:", currency)
-    console.log("amount:", amount)
+    // console.log(data?.data)
+    // console.log("Currency:", currency)
+    // console.log("amount:", amount)
 
     const { authUser, isLoading, refetch, isError } = useAuth();
 
