@@ -1,6 +1,7 @@
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { PromoDetail } from "./promoCode";
 import { Meta } from "../shared";
+import { PromoCodeDto } from "./promoCode.dto";
 
 
 export type PricingTypeValue =
@@ -130,7 +131,7 @@ export type ServiceResponse = {
     updatedAt: string;
     deletedAt: string;
     prices?: ServicePriceResponse[],
-    promoCodes?: PromoDetail[]
+    promoCodes?: PromoCodeDto[]
 }
 
 export interface GetActiveServicesParams {
