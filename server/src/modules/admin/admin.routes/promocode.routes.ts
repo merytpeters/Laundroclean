@@ -13,5 +13,6 @@ router.get('/promocodes', PromoController.getPromos);
 router.get('/promocodes/:id', PromoController.getPromo);
 router.patch('/promocodes/:id', validate(PromoValidation.promoUpdate), PromoController.updatePromo);
 router.patch('/promocodes/deactivate/:id', PromoController.softDeletePromo);
+router.patch('/promocodes/reactivate/:id', PromoController.restorePromo);
 
 export default router;

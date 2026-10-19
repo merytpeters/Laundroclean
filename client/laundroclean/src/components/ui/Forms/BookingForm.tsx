@@ -826,20 +826,21 @@ export default function BookingForm({
                             select promo code
                         </option>
 
-                        {selectedService?.promoCodes?.map(
-                            (promoCode) => (
-                                <option
-                                    key={
-                                        promoCode.id
-                                    }
-                                    value={
-                                        promoCode.code
-                                    }
-                                >
-                                    {promoCode.code}
-                                </option>
-                            )
-                        )}
+                        {selectedService?.promoCodes?.filter(
+                            (promoCode) => promoCode.isActive)?.map(
+                                (promoCode) => (
+                                    <option
+                                        key={
+                                            promoCode.id
+                                        }
+                                        value={
+                                            promoCode.code
+                                        }
+                                    >
+                                        {promoCode.code}
+                                    </option>
+                                )
+                            )}
                     </select>
                 </div>
             </section>
@@ -1032,34 +1033,34 @@ export default function BookingForm({
 
                 {selectedDeliveryType === "DROP_OFF" && (
                     <div
-                    className={styles.field}
-                >
-                    <label htmlFor="dropOffPointId">
-                        drop off locations
-                    </label>
-
-                    <select
-                        id="dropOffPointId"
-                        {...formData.register(
-                            "dropOffPointId"
-                        )}
+                        className={styles.field}
                     >
-                        <option value="">
-                            select drop off location
-                        </option>
+                        <label htmlFor="dropOffPointId">
+                            drop off locations
+                        </label>
 
-                        {dropOffPoints?.map(
-                            (dropOffPoint) => (
-                                <option
-                                    key={dropOffPoint.id}
-                                    value={dropOffPoint.id}
-                                >
-                                    {dropOffPoint.name}
-                                </option>
-                            )
-                        )}
-                    </select>
-                </div>
+                        <select
+                            id="dropOffPointId"
+                            {...formData.register(
+                                "dropOffPointId"
+                            )}
+                        >
+                            <option value="">
+                                select drop off location
+                            </option>
+
+                            {dropOffPoints?.map(
+                                (dropOffPoint) => (
+                                    <option
+                                        key={dropOffPoint.id}
+                                        value={dropOffPoint.id}
+                                    >
+                                        {dropOffPoint.name}
+                                    </option>
+                                )
+                            )}
+                        </select>
+                    </div>
                 )}
             </section>
 

@@ -228,4 +228,9 @@ export const adminApi = {
         apiRequest<string>(`/admin/promocodes/deactivate/${id}`, {
             method: "PATCH"
         }),
+
+    reactivatePromoCodeById: (id: string) =>
+        apiRequest<PromoCodeDto>(`/admin/promocodes/reactivate/${id}`, {
+            method: "PATCH"
+        }),
 }

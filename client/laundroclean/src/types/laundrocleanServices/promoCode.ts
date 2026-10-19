@@ -1,3 +1,5 @@
+import { CurrencyTypeValue } from "./laundroservices";
+
 export type PromoType = "PERCENTAGE" | "FIXED_AMOUNT"
 
 export type PromoDetail = {
@@ -8,7 +10,7 @@ export type PromoDetail = {
     expiresAt: string;
     type: PromoType;
     value: number;
-    currency?: string;
+    currency?: CurrencyTypeValue;
     serviceId?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -26,7 +28,7 @@ export type PromoCodePayload = {
     expiresAt: string;
     type: PromoType;
     value: number;
-    currency?: string;
+    currency?: CurrencyTypeValue;
     startsAt?: string;
     usageLimit?: number;
     perUserLimit?: number;
@@ -39,7 +41,7 @@ export type UpdatePromoCodePayload = {
     expiresAt?: string;
     type?: PromoType;
     value: number;
-    currency?: string;
+    currency?: CurrencyTypeValue;
     startsAt?: string;
     usageLimit?: number;
     perUserLimit?: number;
@@ -54,3 +56,9 @@ export type UpdatePromoCodePayload = {
        total: number;
     }
 }*/}
+
+export const PromoTypeDropDownOptions = [
+    {value: "", label: "select promo type"},
+    {value: "PERCENTAGE", label: "%"},
+    {value: "FIXED_AMOUNT", label: "fixed amount"}
+]

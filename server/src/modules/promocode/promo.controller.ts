@@ -13,7 +13,7 @@ const validatePromo = asyncHandler(async (req, res) => {
     calc = PromoService.calculateDiscount(Number(totalAmount), promo);
   }
 
-  res.json({ success: true, data: { promo, valid, calculation: calc } });
+  res.status(200).json({ success: true, data: { promo, valid, calculation: calc } });
 });
 
 const createPromo = asyncHandler(async (req, res) => {
@@ -23,23 +23,29 @@ const createPromo = asyncHandler(async (req, res) => {
 
 const getPromos = asyncHandler(async (req, res) => {
   const promos = await PromoService.getPromos();
-  res.json({ success: true, data: { promos } });
+  if (!promos) return res.status(404).json({ success: false, message: 'Promos not found' });
+  res.status(200).json({ success: true, data: { promos }, message: 'Promo codes retrieved successfully' });
 });
 
 const getPromo = asyncHandler(async (req, res) => {
   const promo = await PromoService.getPromoById(req.params.id);
   if (!promo) return res.status(404).json({ success: false, message: 'Promo not found' });
-  res.json({ success: true, data: { promo } });
+  res.status(200).json({ success: true, data: { promo }, message: 'Promo code retrieved successfully' });
 });
 
 const updatePromo = asyncHandler(async (req, res) => {
   const promo = await PromoService.updatePromo(req.params.id, req.body);
-  res.json({ success: true, data: { promo }, message: 'Promo updated' });
+  res.status(200).json({ success: true, data: { promo }, message: 'Promo updated' });
 });
 
 const softDeletePromo = asyncHandler(async (req, res) => {
   await PromoService.softDeletePromo(req.params.id);
-  res.json({ success: true, message: 'Promo deleted' });
+  res.status(200).json({ success: true, message: 'Promo deleted' });
+});
+
+const restorePromo = asyncHandler(async (req, res) => {
+  const restoredPromo = await PromoService.restorePromo(req.params.id);
+  res.status(200).json({ success: true, data: restoredPromo, message: 'Promo code reactivated'});
 });
 
 export default {
@@ -49,4 +55,5 @@ export default {
   updatePromo,
   softDeletePromo,
   validatePromo,
+  restorePromo
 };

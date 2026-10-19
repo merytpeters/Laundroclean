@@ -1779,6 +1779,23 @@
  *       '200':
  *         description: Deleted
  *
+ * /api/v1/admin/promocodes/reactivate/{id}:
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Restore (reactivate) a promo code (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Restored
+ *
 
  *
  * /api/v1/admin/analysis/promousages:
