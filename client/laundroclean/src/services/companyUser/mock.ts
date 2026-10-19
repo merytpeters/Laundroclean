@@ -8,6 +8,7 @@ export const mockCompanyAdmin: CompanyUser = {
   lastName: "User",
   type: "COMPANYUSER",
   uiRole: Role.ADMIN,
+  isActive: true,
 };
 
 
@@ -18,6 +19,7 @@ export const mockCompanyStaff: CompanyUser = {
   lastName: "User",
   type: "COMPANYUSER",
   uiRole: Role.STAFF,
+  isActive: true
 };
 
 export const mockStaffOptions = [

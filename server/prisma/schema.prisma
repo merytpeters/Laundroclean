@@ -59,6 +59,7 @@ enum BookingStatus {
   CANCELLED
   IN_TRANSIT  @map("IN TRANSIT")
   DELIVERED
+  WASHED
 
   CUSTOMER_DROPPED_OFF_AT_POINT @map("CUSTOMER DROPPED OFF AT POINT")
   CUSTOMER_PICKED_UP_FROM_POINT @map("CUSTOMER PICKED UP FROM POINT")
@@ -255,6 +256,8 @@ model DropOffPoint {
   lng      Float?
   isActive Boolean @default(true)
 
+  bookings Booking[]
+
   @@map("dropoff points")
 }
 
@@ -302,7 +305,9 @@ model Booking {
   discountAmount       Decimal?               @map("discount_amount")
   finalAmount          Decimal?               @map("final_amount")
   bookingNotifications BookingNotifications[]
-  Transaction          Transaction[]
+  transactions         Transaction[]
+  dropOffPointId       String?                @map("drop_off_point_id") 
+  dropOffPoint         DropOffPoint?          @relation(fields: [dropOffPointId], references: [id])
 
   @@map("bookings")
 }
@@ -436,7 +441,7 @@ model Payment {
   transaction   Transaction @relation(fields: [transactionId], references: [id])
 
   provider    PaymentProvider
-  providerRef String?          @unique
+  providerRef String?         @unique
 
   status PaymentStatus @default(INITIATED)
 
@@ -487,24 +492,26 @@ model PaymentEvent {
 }
 
 model PosDevice {
-  id           String  @id @default(uuid())
-  serialNumber String  @unique
+  id           String     @id @default(uuid())
+  serialNumber String     @unique
   name         String?
-  isActive     Boolean @default(true)
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@map("pos devices")
 }
 
 model CompanyBankAccount {
-  id                  String              @id       @default(cuid())
-  bankName            String
-  accountName         String
-  accountNumber       String
+  id            String @id @default(cuid())
+  bankName      String
+  accountName   String
+  accountNumber String
 
-  createdAt           DateTime                      @default(now())
-  updatedAt           DateTime                      @updatedAt
-  isActive            Boolean                       @default(true)
-  isDefault           Boolean                       @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  isDefault Boolean  @default(false)
 
   payments Payment[]
 

@@ -18,7 +18,7 @@ const signupSchema = z.object({
     .refine((val) => /^[A-Z]/.test(val), { message: 'First letter must be uppercase' })
     .refine((val) => /[!@#$%^&*]/.test(val), { message: 'Must contain at least one special character' }),
   type: z.enum(Object.values(UserType)),
-  role: z.union([companyRoleTitle, z.number()]).nullable().optional(),
+  role: companyRoleTitle.nullable().optional(),
 }).transform((data) => {
   if (!data.name) return { ...data };
 

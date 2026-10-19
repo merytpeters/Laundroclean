@@ -76,7 +76,6 @@
 
 .locationButton {
   --btn-width: 11em;
-  --btn-bg: rgba(245, 245, 245, 0);
   transition: all 0.3s ease;
   --btn-bg: transparent;
   --btn-color: #469bd3;

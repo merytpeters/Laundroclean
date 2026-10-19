@@ -1,15 +1,17 @@
 .clientbookingcontainer {
     display: flex;
+    flex-direction: column;
     color: black;
     font-size: small;
     padding: 1em;
     width: 100%;
+    background-color: var(--foreground);
 }
 
-.pastbookingsection {
-    display: block;
-    width: 90%;
-    padding: 1.5em;
+.bookingsection {
+    display: flex;
+    flex-direction: column;
+    gap: 4em 0em;
 }
 
 .addnewbtn {
@@ -29,4 +31,35 @@
     margin: 1em 4em;
     right: 0;
     cursor: pointer;
+}
+
+
+.allongoingbookings {
+    display: block;
+    width: 100%;
+    padding: 1.5em;
+    margin-top: 3em;
+}
+
+.pastbookingsection {
+    display: block;
+    width: 100%;
+    padding: 1.5em;
+}
+
+@media (max-width: 550px) {
+    .clientbookingcontainer {
+        padding: 0em;
+    }
+
+    .addnewbtn {
+        font-size: smaller;
+        margin: 0.5em 2em;
+        padding: 0.3em;
+    }
+
+    .allongoingbookings {
+        padding: 1em;
+        margin-top: 2em;
+    }
 }

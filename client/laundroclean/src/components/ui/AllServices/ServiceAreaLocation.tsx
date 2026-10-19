@@ -2,26 +2,22 @@
 
 import { useState } from "react";
 import {
+    useCreateServiceArea,
     useServiceAreas,
-    isValidArea,
-    getCenter,
-    getRadius,
-    type ServiceArea,
 } from "src/hooks/locations/useServiceAreas";
+import { isValidArea, getCenter, getRadius } from "src/utils/locationUtils";
+import { ServiceAreaPayload, ServiceAreaResponse } from "src/types/location/location";
 
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
 import { CloseProps } from "./DropOffLocation";
-import { CompanyUser, Client } from "src/types/users/user";
 import Button from "../Button/Button";
+import ErrorState, { LoadingState } from "../ErrorState/ErrorState";
+import { FiEdit } from "react-icons/fi";
 
-type ServiceAreaLocationProps = CloseProps & {
-    usertype?: CompanyUser | Client;
-};
-
-export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLocationProps) {
-    const { data: serviceAreas = [], isLoading, error } = useServiceAreas();
-    const [selectedArea, setSelectedArea] = useState<ServiceArea | null>(null);
+export default function ServiceAreaLocation({ onClose, usertype }: CloseProps) {
+    const { data: serviceAreas = [], isLoading, error } = useServiceAreas({});
+    const [selectedArea, setSelectedArea] = useState<ServiceAreaResponse | null>(null);
     const [isCreating, setIsCreating] = useState(false);
 
     const [newArea, setNewArea] = useState({
@@ -31,24 +27,19 @@ export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLo
         lngMin: 0,
         lngMax: 0,
     });
+    const createServiceAreaMutation = useCreateServiceArea();
 
-    if (isLoading) {
-        return (
-            <div className={styles.loadingContainer}>
-                Loading service areas...
-            </div>
-        );
-    }
+    if (isLoading) return <LoadingState message="Loading service areas..." />
 
-    if (error) {
-        return (
-            <div className={styles.errorContainer}>
-                Error loading service areas: {error.message}
-            </div>
-        );
-    }
+    if (error) return <ErrorState message={`Error loading service areas: ${error.message}`} />
 
-    if (serviceAreas.length === 0) {
+    const areas = Array.isArray(serviceAreas)
+        ? serviceAreas
+        : Array.isArray(serviceAreas?.data)
+            ? serviceAreas.data
+            : [];
+
+    if (areas.length === 0) {
         return (
             <div className={styles.emptyContainer}>
                 No service areas found
@@ -57,19 +48,28 @@ export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLo
     }
 
     const fallbackArea =
-        serviceAreas.find(isValidArea) ?? null;
+        Array.isArray(serviceAreas)
+            ? serviceAreas.find(isValidArea) ?? null
+            : Array.isArray(serviceAreas?.data)
+                ? serviceAreas.data.find(isValidArea) ?? null
+                : null;
 
     const activeArea = selectedArea ?? fallbackArea;
 
     const center = activeArea ? getCenter(activeArea) : null;
     const radius = activeArea ? getRadius(activeArea) : 0;
+    const handleCreateServiceArea = (value: ServiceAreaPayload) => {
+        createServiceAreaMutation.mutate(
+            { payload: value }
+        )
+    }
 
     return (
         <div className={styles.locationContainer}>
             <div className={styles.mapHeader}>
                 <h4>Service Area Locations</h4>
 
-                {usertype && (<Button
+                {usertype?.type === "COMPANYUSER" && (<Button
                     onClick={() => {
                         console.log("creating");
                         setIsCreating(true);
@@ -175,7 +175,7 @@ export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLo
                             console.log(newArea);
 
                             // call mutation here
-                            // createServiceArea(newArea)
+                            handleCreateServiceArea(newArea)
 
                             setNewArea({
                                 name: "",
@@ -198,10 +198,10 @@ export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLo
 
 
             <div className={styles.serviceAreasList}>
-                <h4>Service Areas ({serviceAreas.length})</h4>
+                <h4>Service Areas ({areas.length})</h4>
 
                 <ul>
-                    {serviceAreas.map((area: ServiceArea) => (
+                    {areas.map((area: ServiceAreaResponse) => (
                         <li
                             key={area.id}
                             onClick={() => setSelectedArea(area)}
@@ -212,6 +212,9 @@ export default function ServiceAreaLocation({ onClose, usertype }: ServiceAreaLo
                             style={{ cursor: "pointer" }}
                         >
                             <strong>{area.name}</strong>
+                            <div>
+                                <FiEdit />
+                            </div>
 
                             {area.isActive ? (
                                 <span className={styles.activeBadge}>

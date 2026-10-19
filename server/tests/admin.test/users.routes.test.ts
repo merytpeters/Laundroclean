@@ -101,7 +101,7 @@ describe('Admin Users Routes', () => {
   });
 
   it('filters users by type (client)', async () => {
-    const res = await request(app).get('/api/v1/admin/users').query({ type: 'client' }).set('Authorization', `Bearer ${adminToken}`);
+    const res = await request(app).get('/api/v1/admin/users').query({ type: 'CLIENT' }).set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(res.body.data.every((p: any) => p.user.type === 'CLIENT')).toBe(true);
   });
@@ -109,7 +109,7 @@ describe('Admin Users Routes', () => {
   it('filters by combination (inactive company)', async () => {
     const res = await request(app)
       .get('/api/v1/admin/users')
-      .query({ status: 'inactive', type: 'company' })
+      .query({ status: 'inactive', type: 'COMPANYUSER' })
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(res.body.data.every((p: any) => p.user.isActive === false && p.user.type === 'COMPANYUSER')).toBe(true);

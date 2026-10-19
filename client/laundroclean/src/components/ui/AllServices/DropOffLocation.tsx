@@ -2,23 +2,176 @@
 
 import { useState } from "react";
 import {
+    useCreateDropOffPoint,
     useDropoffPoints,
-    isValidPoint,
-    type DropoffPoint,
 } from "src/hooks/locations/useDropoffPoints";
+import { isValidPoint } from "src/utils/locationUtils";
+import type { DropoffPointDto, DropoffPointsDto } from "src/types/location/location.dto";
 
 import LocationMap from "./LocationMap";
 import styles from "./AllServices.module.css";
+import Button from "../Button/Button";
+import { Client, CompanyUser } from "src/types/users/user";
+import { DropOffPointPayload, DropOffPointResponse } from "src/types/location/location";
+import { FiEdit } from "react-icons/fi";
 
 export type CloseProps = {
     onClose: () => void;
+    usertype?: CompanyUser | Client;
 };
 
-export default function DropOffLocation({ onClose }: CloseProps) {
-    const { data: dropoffPoints = [], isLoading, error } = useDropoffPoints();
+type DropOffPoinstLengthProp = {
+    dropOffPointsLength: number;
+}
 
+function DropOffPoints({dropOffPointsLength} : DropOffPoinstLengthProp) {
+    const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+
+    const [formData, setFormData] = useState<DropOffPointPayload>({
+        name: "",
+        address: "",
+    });
+
+    const headerText = "Add Your First Drop off location";
+
+    const createDropOffPointsMutation = useCreateDropOffPoint();
+
+    const handleCreateDropOffPoint = (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+
+        createDropOffPointsMutation.mutate(
+            {
+                payload: formData,
+            },
+            {
+                onSuccess: () => {
+                    setFormData({
+                        name: "",
+                        address: "",
+                    });
+
+                    setIsFormOpen(false);
+                },
+            }
+        );
+    };
+
+    return (
+        <div className={styles.servicemanager}>
+            {!isFormOpen && (
+                <Button
+                    text={
+                        dropOffPointsLength === 0
+                            ? "Create First Drop off point"
+                            : "Create Drop off point"
+                    }
+                    onClick={() => setIsFormOpen(true)}
+                    className={styles.addservicebtn}
+                />
+            )}
+
+            {isFormOpen && (
+                <div>
+                    <span className={styles.overlay}></span>
+
+                    <form onSubmit={handleCreateDropOffPoint}>
+                        <p className={styles.newdropoffHeader}>
+                            {dropOffPointsLength === 0
+                                ? headerText
+                                : "Add a New Drop off Location"}
+                        </p>
+
+                        <legend>
+                            <b>
+                                Create a new drop off point, an address where
+                                clients can drop their laundry for collective
+                                pick up
+                            </b>
+                        </legend>
+
+                        <span className={styles.formgroup}>
+                            <span className={styles.formitem}>
+                                <label htmlFor="name">
+                                    Drop off location name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="name"
+                                    value={formData.name}
+                                    onChange={(e) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            name: e.target.value,
+                                        }))
+                                    }
+                                    required
+                                />
+                            </span>
+
+                            <span className={styles.formitem}>
+                                <label htmlFor="address">
+                                    Address
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="address"
+                                    value={formData.address}
+                                    onChange={(e) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            address: e.target.value,
+                                        }))
+                                    }
+                                    required
+                                />
+                            </span>
+                        </span>
+
+                        <span className={styles.actionbuttons}>
+                            <Button
+                                type="button"
+                                text="cancel"
+                                onClick={() => setIsFormOpen(false)}
+                                className={styles.cancelbutton}
+                            />
+
+                            <Button
+                                text="save"
+                                type="submit"
+                                className={styles.savebtn}
+                            />
+                        </span>
+                    </form>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default function DropOffLocation({ onClose, usertype }: CloseProps) {
     const [selectedPoint, setSelectedPoint] =
-        useState<DropoffPoint | null>(null);
+        useState<DropOffPointResponse | null>(null);
+    const { data: dropoffPointsData = [], isLoading, error } = useDropoffPoints({});
+
+    const dropoffPoints = Array.isArray(dropoffPointsData)
+        ? dropoffPointsData
+        : Array.isArray(dropoffPointsData?.data)
+            ? dropoffPointsData.data
+            : [];
+    
+    if (dropoffPoints.length === 0) {
+        return (
+            <div className={styles.emptyContainer}>
+                No drop off points found
+            </div>
+        );
+    }
+
+    
 
     if (isLoading) {
         return (
@@ -57,7 +210,14 @@ export default function DropOffLocation({ onClose }: CloseProps) {
 
     return (
         <div className={styles.locationContainer}>
-            <h4>Drop-Off Locations</h4>
+            <span className={styles.dropoffPointsHeader}>
+
+                <h4>Drop-Off Locations</h4>
+
+                {usertype?.type === "COMPANYUSER" && (<DropOffPoints dropOffPointsLength={dropoffPoints.length}/> )}
+
+            </span>
+
 
             <div className={styles.mapWrapper}>
                 {validPoint ? (
@@ -87,20 +247,27 @@ export default function DropOffLocation({ onClose }: CloseProps) {
                 <h4>Drop-Off Points ({dropoffPoints.length})</h4>
 
                 <ul>
-                    {dropoffPoints.map((point: DropoffPoint) => (
+                    {dropoffPoints.map((point: DropoffPointDto) => (
                         <li
                             key={point.id}
                             onClick={() => setSelectedPoint(point)}
                             className={`${styles.listItem} ${selectedPoint?.id === point.id
-                                    ? styles.selectedItem
-                                    : ""
+                                ? styles.selectedItem
+                                : ""
                                 }`}
                             style={{ cursor: "pointer" }}
                         >
+                            {/*<input type="checkbox" name="" id="" onClick={() => setSelectedPoint(point)}/>*/}
                             <strong>{point.name}</strong>
 
                             <div className={styles.pointDetails}>
                                 {point.address}
+                            </div>
+
+                            <div>
+                                {usertype?.type === "COMPANYUSER" && (
+                                    <FiEdit />
+                                )}  
                             </div>
 
                             {point.isActive ? (

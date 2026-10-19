@@ -22,15 +22,16 @@ export interface FormProps {
     fields: FieldConfig[];
     actions: React.ReactNode;
     onSubmit?: React.ComponentPropsWithoutRef<"form">["onSubmit"];
+    className?: string;
 }
 
 
-export default function AuthForm({ title, subtitle, fields, actions, onSubmit }: FormProps) {
+export default function AuthForm({ title, subtitle, fields, actions, onSubmit, className }: FormProps) {
     const pathname = usePathname();
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <form className={styles.form} onSubmit={onSubmit}>
+        <form className={className ?? styles.form} onSubmit={onSubmit}>
             <legend>
                 <h4>{title}</h4>
                 <p>{subtitle}</p>

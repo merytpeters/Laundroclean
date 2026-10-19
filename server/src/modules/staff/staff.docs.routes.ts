@@ -39,6 +39,32 @@
  *       type: array
  *       items:
  *         $ref: '#/components/schemas/ServiceResponse'
+ *     UsersListResponse:
+ *       type: array
+ *       items:
+ *         $ref: '#/components/schemas/UserProfileResponse'
+ *     SetActiveRequest:
+ *       type: object
+ *       required:
+ *         - isActive
+ *       properties:
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *     BookingSettings:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         minPickupDays:
+ *           type: integer
+ *           example: 2
  *
  * tags:
  *   - name: Staff
@@ -294,6 +320,49 @@
  *               $ref: '#/components/schemas/BookingListResponse'
  *       '403':
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ * 
+ * /api/v1/staff/booking-settings:
+ *   get:
+ *     tags:
+ *       - Staff
+ *     summary: Get booking settings
+ *     description: Retrieves the current booking settings configured for the company, including the minimum number of days required before pickup.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Booking settings retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/BookingSettings'
+ *                 message:
+ *                   type: string
+ *                   example: Booking settings retrieved successfully
+ *       '403':
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Booking settings not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
  *         content:
  *           application/json:
  *             schema:
@@ -580,6 +649,50 @@
  *         description: Updated timeslot
  *       '403':
  *         description: Forbidden
+ * 
+ * /api/v1/staff/client-users:
+ *   get:
+ *     tags:
+ *       - Staff
+ *     summary: Get list of users for the company
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [active, inactive]
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [CLIENT, COMPANYUSER]
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UsersListResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 
 export {};

@@ -82,7 +82,6 @@ export default function ClientLayout({ user, children, welcomeMessage }: ClientL
                                 <WelcomeMessage
                                     name={welcomeMessage.name}
                                     message={welcomeMessage.message}
-                                    showProfilePic={false}
                                 />
                             </div>
                         )}

@@ -51,7 +51,7 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
     ],
     clientInfoCardTitle : "Customers",
-    clientInfoCardMessage: "All Customers",
+    clientInfoCardMessage: "All Customers with bookings",
     AdminCPStatCards: [
       {title: "Total Revenue", key: "totalRevenue"},
       {title: "Total Staff", key: "totalStaff"},
@@ -60,13 +60,16 @@ export const roleConfig: Record<Role, RoleConfig> = {
     ],
     BookingStatCards: [
       {title: "Today's Bookings", key: "dailyBookings"},
-      {title: "in Progress", key: "inprogressBookings"},
+      {title: "In Progress", key: "inprogressBookings"},
+      {title: "Confirmed Bookings", key: "confirmedBookings"},
       {title: "Pending Bookings", key: "pendingBookings"},
       {title: "Today's Fulfilled Orders", key: "dailyFulfilledOrders"}
     ],
     DeliveryStatCards: [
-      {title: "Today's Pending Deliveries", key: "pendingDeliveries"},
-      {title: "Today's Pending Pickups", key: "pendingPickups"},
+      {title: "Pending DoorStep Deliveries", key: "pendingDoorStepDeliveries"},
+      {title: "Pending Bulk Deliveries", key: "pendingBulkDeliveries"},
+      {title: "Pending DoorStep Pickups", key: "pendingDoorStepPickups"},
+      {title: "Pending Bulk Pickups", key: "pendingBulkPickups"},
     ]
   },
   [Role.STAFF]: {
@@ -90,15 +93,19 @@ export const roleConfig: Record<Role, RoleConfig> = {
       {title: "Customer Satisfaction", key: "customerSatisfaction"}
     ],
     clientInfoCardTitle : "Customers Assigned",
-    clientInfoCardMessage: "Assigned Customers",
+    clientInfoCardMessage: "Customers with bookings assigned to you",
     BookingStatCards: [
-      {title: "Today's Bookings", key: "dailyBookings"},
-      {title: "in Progress", key: "inprogressBookings"},
-      {title: "Pending Bookings", key: "pendingBookings"},
+      {title: "Your Daily (Paid) Assigned Bookings", key: "dailyBookings"},
+      {title: "Confirmed Bookings Assigned to You", key: "confirmedBookings"},
+      {title: "Your In-Progress Orders", key: "inprogressBookings"},
+      {title: "Pending (Unpaid) Bookings Assigned to You", key: "pendingBookings"},
+      {title: "Your Daily Fulfilled Orders", key: "dailyFulfilledOrders"}
     ],
     DeliveryStatCards: [
-      {title: "Assigned Deliveries", key: "pendingDeliveries"},
-      {title: "Assigned Pickups", key: "pendingPickups"},
+      {title: "Pending DoorStep Deliveries", key: "pendingDoorStepDeliveries"},
+      {title: "Pending Bulk Deliveries", key: "pendingBulkDeliveries"},
+      {title: "Pending DoorStep Pickups", key: "pendingDoorStepPickups"},
+      {title: "Pending Bulk Pickups", key: "pendingBulkPickups"},
     ]
   },
 };

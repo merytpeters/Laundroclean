@@ -1,7 +1,7 @@
 "use client";
 import StatCard from "src/components/ui/flexboxes/StatCard";
 import BookingDisplayTable from "src/components/ui/flexboxes/BookingDisplayTable";
-import { stats } from "../../../../../services/bookingService/bookingMockData";
+// import { stats } from "../../../../../services/bookingService/bookingMockData";
 import { roleConfig } from "src/lib/company-user/role-config";
 import styles from "./BookingModal.module.css"
 import { useCompanyUserMenu } from "src/components/layouts/CompanyUser/context/CompanyUserMenuContext";
@@ -10,12 +10,148 @@ import { LocalSearchBar, FilterSearch } from "src/components/ui/SearchBar/Search
 import { FiX, FiPlus as PlusIcon } from "react-icons/fi";
 import { useState } from 'react';
 import BookingForm from "src/components/ui/Forms/BookingForm";
+import { useServices } from "src/hooks/laundroCleanServices/useServices";
+import { useGetUsers } from "src/hooks/companyUser/useUser/useUser";
+import { useGetbookings, useGetBookingSettings } from "src/hooks/booking/useBooking";
+import { transformFieldInArray } from "src/utils/mapData";
+import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
+import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
+import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
+import { useDropoffPoints } from "src/hooks/locations/useDropoffPoints";
 
-export default function BookingModal () {
+export default function BookingModal() {
     const { user } = useCompanyUserMenu();
-    
-    const config = roleConfig[user.uiRole];
     const [showForm, setShowForm] = useState(false);
+    const { data: servicesData } = useServices({
+        params: {
+            includeDeleted: 'false',
+        }
+    })
+
+    const queryParams = {
+        status: "active",
+    } as const;
+
+    const { data: staffData } = useGetUsers({ type: "COMPANYUSER" }, queryParams)
+
+    const staffToAssign = staffData?.data
+
+    const services = servicesData?.data;
+
+    const { data, isLoading: bookingLoadingState } = useGetbookings({
+        params: {
+            includeProfile: true,
+        }
+    });
+
+    const bookingData = Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+    const mappedCurrency = transformFieldInArray(
+        bookingData,
+        "currency",
+        mapCurrencySymbol
+    );
+
+    const mappedBookingData = transformFieldInArray(
+        mappedCurrency,
+        "deliveryType",
+        mapDeliveryType
+    );
+
+    // What staff can SEE in the table
+    const visibleBookingData =
+        user.uiRole === "ADMIN"
+            ? mappedBookingData
+            : mappedBookingData.filter((booking) => {
+                const isAssignedToMe =
+                    booking.assignedToId === user.id;
+
+                const isPending =
+                    booking.status === "PENDING";
+
+                return isAssignedToMe || isPending;
+            });
+
+    const excludeCancelledBookings = visibleBookingData.filter(
+        (booking) => {
+            return booking.status !== "CANCELLED"
+        }
+    )
+
+    // for ui color coding of status display
+    const mappedVisibleBookingDataStatus = excludeCancelledBookings.map((item) => ({
+        ...item,
+        mappedStatus: mapBookingStatus(item.status, { deliveryType: item?.deliveryType }),
+    }))
+
+    const statsBookingData =
+        user.uiRole === "ADMIN"
+            ? mappedBookingData
+            : mappedBookingData.filter(
+                (booking) => booking.assignedToId === user.id
+            );
+
+    const isToday = (date: string | Date | null | undefined) => {
+        if (!date) return false;
+
+        const bookingDate = new Date(date);
+        const today = new Date();
+
+        return (
+            bookingDate.getDate() === today.getDate() &&
+            bookingDate.getMonth() === today.getMonth() &&
+            bookingDate.getFullYear() === today.getFullYear()
+        );
+    };
+
+    const stats = {
+        dailyBookings: statsBookingData.filter(
+            (booking) => isToday(booking.transactions?.[0]?.paidAt)
+        ).length,
+
+        pendingBookings: statsBookingData.filter(
+            (booking) => booking.status === "PENDING"
+        ).length,
+
+        confirmedBookings: statsBookingData.filter(
+            (booking) => {
+                return booking.status === "CONFIRMED"
+                    && booking.isActive
+
+            }
+        ).length, // payment has been made
+
+        inprogressBookings: statsBookingData.filter(
+            (booking) => booking.status === "IN_PROGRESS"
+        ).length,
+
+        dailyFulfilledOrders: statsBookingData.filter(
+            (booking) =>
+                booking.status === "COMPLETED" &&
+                isToday(booking.transactions?.[0]?.paidAt)
+        ).length,
+    };
+
+    const { data: bookingSettings } = useGetBookingSettings();
+    const bookingSettingsData = bookingSettings?.data;
+
+    const { data: dropOffPointData } = useDropoffPoints({
+            params: {
+                isActive: true
+            }
+        })
+    
+        const dropOffPoints = Array.isArray(dropOffPointData?.data)
+            ? dropOffPointData.data
+            : [];
+
+    if (bookingLoadingState) return <LoadingState />;
+
+    if (!user.uiRole) return null;
+    const config = roleConfig[user.uiRole];
+
     return (
         <div className={styles.bookingmodalcontainer}>
             <section className={styles.bookingrowgrid}>
@@ -41,38 +177,37 @@ export default function BookingModal () {
                 <section aria-label="Search section" className={styles.searchsection}>
                     <span className={styles.searchicons}>
                         <LocalSearchBar placeHolder="Search bookings..." />
-                        <FilterSearch placeholder="Filter by Status"/>
+                        <FilterSearch placeholder="Filter by Status" />
                     </span>
-            
+
                 </section>
             </section>
 
-            
-               
+
+
             <section aria-label="Booking display Section" className={styles.tablesection}>
+                {bookingSettings && (<p>Minimum delivery delivery day set to: <strong>{bookingSettingsData?.minPickupDays} Days </strong></p>)}
                 <button className={styles.addnewbtn} onClick={() => setShowForm(true)}>
                     <span>Add new</span>
-                        <PlusIcon size={30}/>
+                    <PlusIcon size={30} />
                 </button>
-                <BookingDisplayTable />
+                <BookingDisplayTable mappedBookingData={mappedVisibleBookingDataStatus} />
             </section>
 
             {/* sliding drawer for new booking */}
             <div className={`${styles.drawer} ${showForm ? styles.open : ''}`} role="dialog" aria-hidden={!showForm}>
                 <div className={styles.drawerHeader}>
-                    <h3>New Booking</h3>
+                    <h4>New Booking</h4>
                     <button aria-label="Close" className={styles.drawerClose} onClick={() => setShowForm(false)}>
                         <FiX size={20} />
                     </button>
                 </div>
                 <div className={styles.drawerContent}>
                     <BookingForm
-                        user={user}
                         showStaffAssignedSlot={user.uiRole === 'ADMIN'}
-                        staffOptions={user.uiRole === 'ADMIN' ? [
-                            { id: 'staff-1', name: 'Alice' },
-                            { id: 'staff-2', name: 'Bob' },
-                        ] : undefined}
+                        staffOptions={user.uiRole === 'ADMIN' ? staffToAssign : undefined}
+                        services={services}
+                        dropOffPoints={dropOffPoints}
                     />
                 </div>
             </div>

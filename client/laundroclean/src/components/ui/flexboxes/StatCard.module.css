@@ -30,6 +30,10 @@
     font-size: small;
 }
 
+.statsbox span {
+    font-size: small;
+}
+
 .icon {
     display: inline-flex;
     align-items: center;

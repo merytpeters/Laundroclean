@@ -1,6 +1,8 @@
+import { FaSpinner } from "react-icons/fa";
 import Button from "../Button/Button";
 
-type ErrorStateProps = {
+type StateProps = {
+    header?: string;
     message?: string;
     onRetry?: () => void;
 }
@@ -8,15 +10,64 @@ type ErrorStateProps = {
 export default function ErrorState({
     message = "Something went wrong",
     onRetry,
-}: ErrorStateProps) {
+}: StateProps) {
     return (
-        <div>
+        <section style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
             <h2>Oops!</h2>
             <p>{message}</p>
 
             {onRetry && (
-                <Button type="button" onClick={onRetry} text="Try Again"/>
+                <Button type="button" onClick={onRetry} text="Try Again" />
             )}
-        </div>
+        </section>
+    )
+}
+
+export function LoadingState({
+    message = "Your data is loading..."
+}: StateProps) {
+    return (
+        <span style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+            <p>{message}</p>
+            <FaSpinner />
+        </span>
+    )
+}
+
+export function TableLoadingState({
+    message = "Your data is loading..."
+}: StateProps) {
+    return (
+        <tbody style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+            <tr>
+                <td>
+                    <div>
+                        <p>{message}</p>
+                        <FaSpinner />
+                    </div>
+
+                </td>
+            </tr>
+
+        </tbody>
+    )
+}
+
+export function PaymentMethodOrChannelState({
+    header = "Coming Soon!",
+    message = "This payment method or channel is not currently available"
+}: StateProps) {
+    return (
+        <section style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10em 2em",
+            flexDirection: "column"
+        }}>
+                <strong><p>{header}</p></strong>
+                <p>{message}</p>
+        </section>
     )
 }

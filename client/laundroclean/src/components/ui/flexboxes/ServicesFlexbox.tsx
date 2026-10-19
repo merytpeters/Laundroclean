@@ -34,10 +34,13 @@ export function Services({name, icon, description, orderedlist}: ServicesProps) 
 }
 
 export function DashboardServices({ name, description, pricingType, amount, currency}: ServiceDisplayProp) {
+    const serviceRoute = `laundroclean-services#${name.toLowerCase().replace(/\s+/g, "-")}`
     return (
         <div className={styles.dashboardservices}>
             <span className={styles.cornerrightarrow}>
-                <CornerRightArrow />
+                <a href={serviceRoute}>
+                    <CornerRightArrow />
+                </a>  
             </span>
             
             <span>{currency} {amount} {pricingType}</span>

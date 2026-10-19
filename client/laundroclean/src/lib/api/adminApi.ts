@@ -5,14 +5,15 @@ import { BookingPayload, BookingStatusPayload, CompanyListBookingsQueryParam, mi
 import { BookingDto, BookingSettingsDto, ListBookingsDto } from "src/types/booking/booking.dto";
 import { CalendarRowParams, CalendarRowPayload, TimeSlotPayload, TimeSlotsParam, UpdateCalendarRowPayload, UpdateTimeSlotPayload } from "src/types/calendar/calendar";
 import { CalendarRowWithTimeSlotsDto, TimeSlotsDto } from "src/types/calendar/calendar.dto";
-import { ServiceWithServicePriceAndPromoCodesDto, ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
-import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServiceWithPromoCodesAndPriceResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
+import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ActivateOrDeactivateServicesPayload, AllServicesParams, ActivatedOrDeactivatedServicesResponse, GetActiveServicesParams, ServicePayload, ServicesResponse, UpdateServicePayload } from "src/types/laundrocleanServices/laundroservices";
 import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { RolePayload } from "src/types/roles/role";
-import { RoleDto, UserRoleDto } from "src/types/roles/role.dto";
+import { RoleDto, RolesDto, UserRoleDto } from "src/types/roles/role.dto";
 import { GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
 import { UserDto, UserProfileDto } from "src/types/users/user.dto";
+import { PaginationParamQuery } from "src/types/pagination";
 
 export const adminApi = {
     registerUser: (payload: RegisterPayload) =>
@@ -27,19 +28,22 @@ export const adminApi = {
             body: JSON.stringify(payload),
         }),
 
-    getRoles: () =>
-        apiRequest<RoleDto[]>("/admin/company-roles"),
+    getRoles: (params?: PaginationParamQuery) =>
+        apiRequest<RolesDto>("/admin/company-roles", {
+            method: "GET",
+            params: params,
+        }),
 
-    getUsersByRole: (id: string) =>
+    getUsersByRole: (id: number) =>
         apiRequest<UserRoleDto>(`/admin/company-roles/${id}`),
     
-    updateRole: (id: string, payload: RolePayload) =>
+    updateRole: (id: number, payload: RolePayload) =>
         apiRequest<RoleDto>(`/admin/company-roles/${id}`, {
             method: "PATCH",
             body: JSON.stringify(payload),
         }),
 
-    deleteRole: (id: string) =>
+    deleteRole: (id: number) =>
         apiRequest<string>(`/admin/company-roles/${id}`, {
             method: "DELETE",
         }),
@@ -71,7 +75,7 @@ export const adminApi = {
         }),
     
     getActiveServiceById: (serviceId: string) =>
-        apiRequest<ServiceWithServicePriceAndPromoCodesDto>(`/admin/services/${serviceId}`),
+        apiRequest<ServiceDto>(`/admin/services/${serviceId}`),
 
     // also deactivates and activates a service
     updateServiceById: (serviceId: string, payload: UpdateServicePayload) =>
@@ -92,7 +96,7 @@ export const adminApi = {
         }),
 
     getInactiveOrActiveServiceById: (serviceId: string) =>
-        apiRequest<ServiceWithPromoCodesAndPriceResponse>(`/admin/services/all-services/${serviceId}`),
+        apiRequest<ServicesResponse>(`/admin/services/all-services/${serviceId}`),
 
     restoreServiceById: (serviceId: string) =>
         apiRequest<ServiceDto>(`/admin/services/all-services/${serviceId}/restore`, {
@@ -114,6 +118,11 @@ export const adminApi = {
     searchBookings: (params?: CompanyListBookingsQueryParam) =>
         apiRequest<ListBookingsDto>('/admin/bookings', {
             params: params
+        }),
+
+    hardDeletePendingInactiveBookings: () =>
+        apiRequest<string>('/admin/bookings', {
+            method: "DELETE",
         }),
 
     createBooking: (payload: BookingPayload) =>
@@ -217,6 +226,11 @@ export const adminApi = {
 
     deactivatePromoCodeById: (id: string) =>
         apiRequest<string>(`/admin/promocodes/deactivate/${id}`, {
+            method: "PATCH"
+        }),
+
+    reactivatePromoCodeById: (id: string) =>
+        apiRequest<PromoCodeDto>(`/admin/promocodes/reactivate/${id}`, {
             method: "PATCH"
         }),
 }

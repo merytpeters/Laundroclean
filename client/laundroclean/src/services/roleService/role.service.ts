@@ -1,64 +1,52 @@
 import { adminApi } from "src/lib/api/adminApi";
-import { RolePayload, mapRole, UsersRoleResponse, RoleResponse } from "src/types/roles/role";
+import { RolePayload, UsersRoleResponse, RoleResponse, RolesResponse } from "src/types/roles/role";
+import { ApiResponse } from "src/lib/api/requests";
+import { PaginationParamQuery } from "src/types/pagination";
 
-export async function createRoleService(payload: RolePayload): Promise<RoleResponse| null> {
+
+export async function createRoleService(payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
     const res = await adminApi.createRole(payload);
 
     if (!res.success || !res.data) return null;
 
-    const {title, ...rest} = res.data;
-
-    return {
-        role: mapRole(title),
-        title,
-        ...rest
-    }
+    // role mapping is not needed here as uiRole has been separated from server role
+    return res;
 }
 
-export async function getRolesService(): Promise<RoleResponse[] | []> {
-    const res = await adminApi.getRoles();
+export async function getRolesService(params?: PaginationParamQuery): Promise<ApiResponse<RolesResponse> | null> {
+    const res = await adminApi.getRoles(params);
 
     if (!res.success || !res.data) {
-        return [];
+        return null;
     }
 
-    const roles =  res.data.map((role) => {
-        const { title, ...rest} = role;
-
-        return  {
-            role: mapRole(title),
-            title,
-            ...rest
-        }
-    })
-
-    return roles;
+    return res;
 }
 
-export async function getUsersByRoleService(id: string): Promise<UsersRoleResponse | null> {
+export async function getUsersByRoleService(id: number): Promise<ApiResponse<UsersRoleResponse> | null> {
     const res = await adminApi.getUsersByRole(id);
 
     if (!res.success || !res.data) {
         return null;
     }
 
-    return res.data
+    return res
 }
 
-export async function updateRoleService(id: string, payload: RolePayload): Promise<RoleResponse | null> {
+export async function updateRoleService(id: number, payload: RolePayload): Promise<ApiResponse<RoleResponse> | null> {
     const res = await adminApi.updateRole(id, payload);
 
     if (!res.success || !res.data) {
         return null;
     }
 
-    return res.data
+    return res
 }
 
-export async function deleteRoleService(id: string): Promise<string | null> {
+export async function deleteRoleService(id: number): Promise<ApiResponse<string> | null> {
     const res = await adminApi.deleteRole(id);
 
    if  (!res.success) return null;
 
-   return res.message || "Role successfully deleted";
+   return res || "Role successfully deleted";
 }

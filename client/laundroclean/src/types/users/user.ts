@@ -1,4 +1,5 @@
 import { Role } from "../roles/role";
+import { PaginationParamQuery } from "../pagination";
 
 export interface BaseUser {
     id: string;
@@ -8,7 +9,7 @@ export interface BaseUser {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;
-    isActive?: boolean;
+    isActive: boolean;
 }
 
 export interface Client extends BaseUser {
@@ -17,8 +18,9 @@ export interface Client extends BaseUser {
 
 export interface CompanyUser extends BaseUser {
     type: "COMPANYUSER";
-    uiRole: Role // this represents ui role for component display
+    uiRole?: Role // this represents ui role for component display
     role?: {
+        id: number;
         title: string;
         level?: number;
         permissions?: string[];
@@ -51,6 +53,12 @@ export type UserProfileResponse = {
     profile: ProfileResponse;
 }
 
+export type adminViewUserResponse = {
+    user: User;
+}
+
+export type AdminViewUserProfileResponse = adminViewUserResponse & ProfileResponse
+
 export type UserPayload = {
     email?: string;
     firstName?: string;
@@ -59,8 +67,8 @@ export type UserPayload = {
 }
 
 export type ProfilePayload = {
-    firstName?: string,
-    lastName?: string,
+    firstName?: string;
+    lastName?: string;
     phoneNumber?: string;
     addressLine1?: string;
     addressLine2?: string;
@@ -94,12 +102,9 @@ export type UpdatedUserResponse = {
     roleId?: number;
 }
 
-export interface GetUsersParams {
-    page?: number;
-    limit?: number;
+export interface GetUsersParams extends PaginationParamQuery {
     status?: "active" | "inactive";
-    type?: "client" | "company";
-    search?: string;
+    type?: 'CLIENT' | 'COMPANYUSER';
 }
 
 export type UpdateUserStatusPayload = {

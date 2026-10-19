@@ -7,4 +7,5 @@ export const mockClient: Client = {
   firstName: "ClientTest",
   lastName: "User",
   type: "CLIENT",
+  isActive: true
 };

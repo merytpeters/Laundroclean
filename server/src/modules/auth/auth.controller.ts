@@ -6,6 +6,8 @@ import authUtils from './auth.utils.js';
 import { TokenType } from '@prisma/client';
 import config from '../../config/config.js';
 import ms from 'ms';
+import { UnauthenticatedError } from '../../middlewares/errorHandler.js';
+import googleAuthService from './googleAuth/googleAuth.service.js';
 
 
 const refreshTokenCookieOptions = {
@@ -21,6 +23,24 @@ const refreshTokenCookieClearingOptions = {
     sameSite: 'lax' as const,
     secure: config.NODE_ENV === 'production',
     path: '/',
+};
+
+const accessTokenCookieOptions = {
+    httpOnly: false,
+    sameSite: 'lax' as const,
+    secure: config.NODE_ENV === 'production',
+    path: '/',
+    maxAge: Number(ms(config.ACCESS_TOKEN_EXPIRES || '30m')),
+};
+
+const getCookieValue = (cookieHeader: string | undefined, key: string): string | null => {
+    if (!cookieHeader) return null;
+
+    const entries = cookieHeader.split(';').map((item) => item.trim());
+    const match = entries.find((item) => item.startsWith(`${key}=`));
+    if (!match) return null;
+
+    return decodeURIComponent(match.slice(key.length + 1));
 };
 
 const clientRegister = asyncHandler(async (req, res) => {
@@ -66,6 +86,40 @@ const login = asyncHandler(async (req, res) => {
     });
 });
 
+const googleLogin = asyncHandler(async (_req, res) => {
+    try {
+        const authorizationUrl = googleAuthService.getAuthorizationUrl();
+        return res.redirect(authorizationUrl);
+    } catch (_error) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_unavailable`);
+    }
+});
+
+const googleCallback = asyncHandler(async (req, res) => {
+    const query = req.query as { code?: string; error?: string };
+    const code = typeof query.code === 'string' ? query.code : null;
+    const error = typeof query.error === 'string' ? query.error : null;
+
+    if (error) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_error`);
+    }
+
+    if (!code) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_error`);
+    }
+
+    try {
+        const session = await googleAuthService.handleGoogleCallback(code);
+
+        res.cookie('refreshToken', session.refreshToken, refreshTokenCookieOptions);
+        res.cookie('accessToken', session.accessToken, accessTokenCookieOptions);
+
+        return res.redirect(session.redirectUrl);
+    } catch (_error) {
+        return res.redirect(`${config.CLIENT_URL}/login?auth=google_error`);
+    }
+});
+
 const resetPassword = asyncHandler(async (req, res) => {
     const { token, password }: ResetPasswordSchema = req.body;
 
@@ -109,9 +163,32 @@ const logout = asyncHandler(async (req, res) => {
     });
 });
 
+const refresh = asyncHandler(async (req, res) => {
+    const refreshToken = getCookieValue(req.headers.cookie, 'refreshToken');
+
+    if (!refreshToken) {
+        throw new UnauthenticatedError('Refresh token is required');
+    }
+
+    const session = await authService.refreshSession(refreshToken);
+
+    res.cookie('refreshToken', session.refreshToken, refreshTokenCookieOptions);
+
+    return res.status(200).json({
+        success: true,
+        data: {
+            accessToken: session.accessToken,
+        },
+        message: 'Token refreshed successfully',
+    });
+});
+
 export default {
     clientRegister,
     login,
+    googleLogin,
+    googleCallback,
     resetPassword,
-    logout
+    logout,
+    refresh
 };

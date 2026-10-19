@@ -7,7 +7,9 @@ import {
   FaCalendar,
   FaClock,
   FaTshirt,
-  FaTruck
+  FaTruck,
+  FaDoorClosed,
+  FaDoorOpen
 } from "react-icons/fa";
 
 export const statMeta = {
@@ -80,32 +82,50 @@ export const BookingStatMeta = {
     text: "",
     iconColor: "#d59056"
   },
+  confirmedBookings: {
+    icon: FaTshirt,
+    unit: "",
+    text: "",
+    iconColor: "#FFFF00"
+  },
   pendingBookings: {
     icon: FaTshirt,
     unit: "",
     text: "",
-    iconColor: ""
+    iconColor: "#f00"
   },
   dailyFulfilledOrders: {
     icon: FaShirtsinbulk,
     unit: "",
     text: "",
-    iconColor: "#0f233a"
+    iconColor: "#00FF00"
   }
 }
 
 
 export const DeliveryStatMeta = {
-  pendingDeliveries: {
-    icon: FaTruck,
+  pendingDoorStepPickups: {
+    icon: FaDoorOpen,
     unit: "",
     text: "",
-    iconColor: "#0f233a"
+    iconColor: "#FFD700"
   },
-  pendingPickups: {
+  pendingBulkPickups: {
     icon: FaTruck,
     unit: "",
     text: "",
-    iconColor: "#0f233a"
-  }
+    iconColor: "#FFD700"
+  },
+  pendingDoorStepDeliveries: {
+    icon: FaDoorClosed,
+    unit: "",
+    text: "",
+    iconColor: "#22C55E"
+  },
+  pendingBulkDeliveries: {
+    icon: FaTruck,
+    unit: "",
+    text: "",
+    iconColor: "#2E7D32"
+  },
 }

@@ -1,5 +1,6 @@
-import { Meta } from "../shared";
+import { TransactionDto } from "../financialtransactions/payment.dto";
 import { UserDto } from "../users/user.dto";
+import { BookingStatus } from "./bookingStatus";
 
 export type BookingSettingsDto = {
     id: number;
@@ -15,6 +16,7 @@ export type BookingStatusDto =
   | "IN_PROGRESS"                             
   | "COMPLETED"
   | "CANCELLED"
+  | "WASHED"
   | "IN_TRANSIT"                              
   | "DELIVERED"
   | "CUSTOMER_DROPPED_OFF_AT_POINT"
@@ -27,7 +29,7 @@ type assignedTo = UserDto
 
 export type BookingDto = {
     id: string;
-    status?: BookingStatusDto;
+    status: BookingStatusDto;
     profileId?: string;
     customBookingId: string;
     serviceId?: string;
@@ -36,9 +38,12 @@ export type BookingDto = {
     }
     profile?: {
         user?: {
-            firstname?: string;
-            lastname?: string;
+            firstName?: string;
+            lastName?: string;
+            email: string;
         }
+        phoneNumber: string;
+        userId?: string;
     }
     currency: "NAIRA" | "DOLLAR" | "POUNDS";
     unitPrice?: number;
@@ -46,7 +51,6 @@ export type BookingDto = {
     promoCodeId?: string;
     discountAmount?: number;
     finalAmount?: number;
-
     itemCount?: number;
     weight?: string;
     addressId?: string;
@@ -61,6 +65,16 @@ export type BookingDto = {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;
+    transactions?: TransactionDto[];
+    mappedStatus?: BookingStatus;
+    dropOffPointId?: string;
+    dropOffPoint?: {
+        name?: string;
+    }
 }
 
-export type ListBookingsDto = BookingDto[] & Meta
+export type ListBookingsDto = BookingDto[]
+
+export type ClientBookingStatusDto =
+  | "CUSTOMER_DROPPED_OFF_AT_POINT"
+  | "CUSTOMER_PICKED_UP_FROM_POINT"

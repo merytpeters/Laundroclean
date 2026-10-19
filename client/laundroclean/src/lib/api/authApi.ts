@@ -1,8 +1,11 @@
 import { apiRequest } from "./requests";
+import { buildApiUrl } from "./requests";
 import { LoginPayload, RegisterPayload, ForgotPasswordPayload, ResetPasswordPayload } from "src/types/auth/auth";
-import { LoginResponseDto, AuthResponseDto } from "src/types/auth/auth.dto";
+import { LoginResponseDto, AuthResponseDto, RefreshTokenResponseDto } from "src/types/auth/auth.dto";
 
 export const authApi = {
+    googleAuthUrl: () => buildApiUrl("/auth/google"),
+
     registerUser: (payload: RegisterPayload) =>
         apiRequest<AuthResponseDto>("/auth/client/register", {
             method: "POST",
@@ -30,5 +33,10 @@ export const authApi = {
     logout: () =>
         apiRequest<string>("auth/logout", {
             method: "POST"
+        }),
+
+    refreshToken: () =>
+        apiRequest<RefreshTokenResponseDto>("/auth/refresh", {
+            method: "POST",
         })
 };

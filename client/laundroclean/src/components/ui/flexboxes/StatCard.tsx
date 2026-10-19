@@ -26,7 +26,7 @@ export default function StatCard({icon: Icon, header, text, value, unit, iconCol
                 {Icon ? <span className={styles.icon} style={iconStyle}><Icon size={16} /></span> : null}
             </div>
             <span>{unit}{text}</span>
-            <span>{value}</span>
+            <span><strong>{value}</strong></span>
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import { Jacques_Francois } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
+import styles from "./logo.module.css";
 
 const jacques = Jacques_Francois({
   subsets: ["latin"],
@@ -15,19 +16,11 @@ interface LogoProps {
 export default function Logo({ size = 24, logoSrc = "/img/applogo.png" }: LogoProps) {
   return (
     <div
-      style={{
-        background: "linear-gradient(135deg, #0F233A, #163A5F)",
-        padding: "8px 24px",
-        borderRadius: 8,
-        display: "flex",
-        alignItems: "center",
-        boxShadow: "0 10px 10px rgba(0,0,0,0.15)",
-      }}
+      className={styles.logoContainer}
     >
     <Link href="/">
       {/* L mark */}
       <div
-        className={jacques.className}
         style={{
           width: size + 4,
           height: size + 4,
@@ -40,6 +33,7 @@ export default function Logo({ size = 24, logoSrc = "/img/applogo.png" }: LogoPr
           justifyContent: "center",
           lineHeight: 1,
         }}
+        className={`${jacques.className} ${styles.logoContent}`}
       >
         L
 
@@ -50,6 +44,7 @@ export default function Logo({ size = 24, logoSrc = "/img/applogo.png" }: LogoPr
         height={size}
         width={size + 100}
         style={{ display: "block" }}
+        className={styles.logoimg}
       />
       
       </div>

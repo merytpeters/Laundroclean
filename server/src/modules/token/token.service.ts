@@ -105,8 +105,8 @@ const createRefreshToken = async (userId: string) => {
 const verifyToken = (token: string): JWTPayload => {
   try {
     return jwt.verify(token, config.JWT_SECRET) as JWTPayload;
-  } catch (_err) {
-    throw new Error('Invalid token');
+  } catch (err) {
+    throw err;
   }
 };
 

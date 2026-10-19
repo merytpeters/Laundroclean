@@ -12,6 +12,8 @@ router.use(UserAuth.requireCompanyAdmin());
 
 router.get('/bookings', BookingController.listBookingsController);
 
+router.delete('/bookings', BookingController.adminHardDeleteBookingController);
+
 router.post(
     '/booking',
     bookingLimiter,

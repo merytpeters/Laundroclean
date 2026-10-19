@@ -498,7 +498,7 @@
  *         name: type
  *         schema:
  *           type: string
- *           enum: [client, company]
+ *           enum: [CLIENT, COMPANYUSER]
  *       - in: query
  *         name: search
  *         schema:
@@ -706,8 +706,6 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
-
- 
  */
 
 /**
@@ -967,6 +965,26 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/BookingListResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ * 
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Delete all pending inactive bookings
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Delete all pending inactive bookings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/'
  *       '401':
  *         description: Unauthorized
  *         content:
@@ -1760,6 +1778,23 @@
  *     responses:
  *       '200':
  *         description: Deleted
+ *
+ * /api/v1/admin/promocodes/reactivate/{id}:
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Restore (reactivate) a promo code (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Restored
  *
 
  *

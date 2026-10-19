@@ -44,7 +44,7 @@ describe('Promo Controller', () => {
     const created = await prisma.promoCode.create({ data: { code: 'TEMP', serviceId: service.id, type: 'FIXED_AMOUNT', value: 500 } });
 
     // getPromos
-    const resList: any = { json: jest.fn() };
+    const resList: any = { json: jest.fn(), status: jest.fn().mockReturnThis()};
     await PromoController.getPromos({} as any, resList as any, next as any);
     expect(resList.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.objectContaining({ promos: expect.any(Array) }) }));
 
@@ -56,13 +56,13 @@ describe('Promo Controller', () => {
 
     // updatePromo
     const reqPatch: any = { params: { id: created.id }, body: { description: 'updated' } };
-    const resPatch: any = { json: jest.fn() };
+    const resPatch: any = { json: jest.fn(), status: jest.fn().mockReturnThis()};
     await PromoController.updatePromo(reqPatch, resPatch, next as any);
     expect(resPatch.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.objectContaining({ promo: expect.objectContaining({ description: 'updated' }) }) }));
 
     // softdeletePromo
     const reqDel: any = { params: { id: created.id } };
-    const resDel: any = { json: jest.fn() };
+    const resDel: any = { json: jest.fn(), status: jest.fn().mockReturnThis()};
     await PromoController.softDeletePromo(reqDel, resDel, next as any);
     expect(resDel.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });

@@ -10,6 +10,7 @@ export const promoDetails: PromoDetail[]  = [
         expiresAt: "2026-12-31T23:59:59Z",
         type: "PERCENTAGE",
         value: 50,
+        isActive: true,
     },
     {
         id: "2",
@@ -20,6 +21,7 @@ export const promoDetails: PromoDetail[]  = [
         expiresAt: "2026-12-31T23:59:59Z",
         type: "FIXED_AMOUNT",
         value: 2000,
-        currency: "NAIRA"
+        currency: "NAIRA",
+        isActive: true,
     }
 ]

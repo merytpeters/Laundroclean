@@ -6,11 +6,13 @@ type InputTarget = 'body' | 'params' | 'query';
 
 const validate = (schema: z.ZodTypeAny, target: InputTarget = 'body') => {
     return (req: Request, res: Response, next: NextFunction) => {
-       const result = schema.safeParse(req[target]);
+        const result = schema.safeParse(req[target]);
 
         if (!result.success) {
             return next(
-                new ValidationError(result.error.issues.map(err => err.message).join(', '))
+                new ValidationError(result.error.issues
+                    .map(err => `${err.path.join('.')}: ${err.message}`)
+                    .join(', '))
             );
         }
 

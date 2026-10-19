@@ -1,9 +1,9 @@
-import prisma from '../../config/prisma.js';
-import type { Prisma, Booking, User } from '@prisma/client';
-import { PricingType } from '@prisma/client';
+import prisma from '../../config/prisma.js';;
+import type { Booking, BookingSettings, User } from '@prisma/client';
+import { PricingType, Prisma } from '@prisma/client';
 import { BookingUtils } from './index.js';
 import { AuthUtils } from '../auth/index.js';
-import { NotFoundError, ConflictError, UnauthorizedError, ForbiddenError } from '../../middlewares/errorHandler.js';
+import { NotFoundError, ConflictError, UnauthorizedError, ForbiddenError, ProcessingError } from '../../middlewares/errorHandler.js';
 import type { CreateBookingSchema, UpdateBookingSchema, UpdateBookingStatusSchema } from '../../validation/booking/booking.validation.js';
 import { ServicepriceService } from '../serviceprice/index.js';
 import { PromoService, PromoUsageService } from '../promocode/index.js';
@@ -19,6 +19,7 @@ type BookingWithOtherModels = Prisma.BookingGetPayload<{
         service: true,
         profile: true,
         assignedTo: true,
+        transactions: true,
     }
 }>
 
@@ -65,10 +66,6 @@ const validateServiceArea = async (tx: Prisma.TransactionClient, lat: number, ln
         },
     });
 
-    if (!area) {
-        throw new UnauthorizedError('Service not available in this area');
-    }
-
     return area;
 };
 
@@ -76,8 +73,10 @@ const validateServiceArea = async (tx: Prisma.TransactionClient, lat: number, ln
 const createBooking = async (
     input: CreateBookingInput,
     email?: string
-): Promise<Booking> => {
-    return await prisma.$transaction(async (tx) => {
+): Promise<{ booking: Booking, warning?: string }> => {
+    let bookingWarning: string | undefined;
+
+    const booking = await prisma.$transaction(async (tx) => {
         let user: User | null = null;
 
         // 1. Resolve user
@@ -93,8 +92,10 @@ const createBooking = async (
                     data: {
                         email,
                         password,
+                        firstName: input.firstName ?? null,
+                        lastName: input.lastName ?? null,
                         type: 'CLIENT',
-                    },
+                    }
                 });
             }
         } else {
@@ -107,8 +108,10 @@ const createBooking = async (
                 data: {
                     email: tempEmail,
                     password,
+                    firstName: input.firstName ?? null,
+                    lastName: input.lastName ?? null,
                     type: 'CLIENT',
-                },
+                }
             });
         }
 
@@ -140,26 +143,51 @@ const createBooking = async (
         let addressId: string | null = null;
 
         if (input.address) {
-            const addressLine = input.address.addressLine1 || input.address.addressLine2;
-            if (!addressLine) {
-                throw new Error('At least one address line is required');
-            }
-            const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-            if (input.deliveryType === 'PICK_UP') {
-                const serviceArea = await validateServiceArea(tx, lat, lng);
-                if (!serviceArea) {
-                    const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
-                    throw new NotFoundError(
-                        `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
-                    );
+            try {
+                const addressLine = input.address.addressLine1 || input.address.addressLine2;
+                if (!addressLine) {
+                    throw new Error('At least one address line is required');
                 }
+                const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+                if (input.deliveryType === 'PICK_UP') {
+                    const serviceArea = await validateServiceArea(tx, lat, lng);
+                    if (!serviceArea) {
+                        const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
+                        throw new NotFoundError(
+                            `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                        );
+                    }
+                }
+            } catch (error: any) {
+                if (input.deliveryType === 'PICK_UP') {
+                    bookingWarning = 'Location geocoding failed, check service areas to see if your location is serviced if not choose the nearest drop off to you:';
+                } else if (input.deliveryType === 'DROP_OFF' && input.dropOffPointId === undefined) {
+                    bookingWarning = 'Check drop off locations for the nearest place to drop off your clothes:';
+                }
+                console.warn(bookingWarning, error.message);
             }
-            const address = await tx.profile.create({
-                data: {
-                    ...Object.fromEntries(
-                        Object.entries(input.address).filter(([_, v]) => v !== undefined)
-                    ),
+
+            const address = await tx.profile.upsert({
+                where: {
                     userId: user.id,
+                },
+                update: {
+                    phoneNumber: input.address.phoneNumber ?? null,
+                    addressLine1: input.address.addressLine1 ?? null,
+                    addressLine2: input.address.addressLine2 ?? null,
+                    city: input.address.city ?? null,
+                    state: input.address.state ?? null,
+                    postalCode: input.address.postalCode ?? null,
+                    isTemp: input.address.isTemp ?? false,
+                },
+                create: {
+                    userId: user.id,
+                    phoneNumber: input.address.phoneNumber ?? null,
+                    addressLine1: input.address.addressLine1 ?? null,
+                    addressLine2: input.address.addressLine2 ?? null,
+                    city: input.address.city ?? null,
+                    state: input.address.state ?? null,
+                    postalCode: input.address.postalCode ?? null,
                     isTemp: input.address.isTemp ?? false,
                 },
             });
@@ -167,7 +195,15 @@ const createBooking = async (
             addressId = address.id;
         }
 
-        // 6. Apply promo (if any) and then retry booking creation
+        // 6. Get profileid
+        const userId = user.id;
+        const profile = await prisma.profile.findUnique({ where: { userId } });
+
+        if (!profile) {
+            throw new NotFoundError('Can\'t find user\'s profile');
+        }
+
+        // 7. Apply promo (if any) and then retry booking creation
         for (let i = 0; i < 3; i++) {
             try {
                 const customBookingId = await BookingUtils.generateCustomBookingId();
@@ -176,15 +212,15 @@ const createBooking = async (
                 // Enforce per-service daily booking limit (if set)
                 const svc = await tx.service.findUnique({ where: { id: input.serviceId } });
                 if (svc && svc.maxDailyBookings !== null && svc.maxDailyBookings !== undefined) {
-                    const scheduled = scheduledPickupDay ?? new Date();
-                    const dayStart = new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate(), 0, 0, 0));
+                    const today = new Date(); // max booking count against the day it was created not scheduled pick up day
+                    const dayStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0));
                     const dayEnd = new Date(dayStart);
                     dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
 
                     const existingCount = await tx.booking.count({
                         where: {
                             serviceId: input.serviceId,
-                            scheduledDate: { gte: dayStart, lt: dayEnd },
+                            createdAt: { gte: dayStart, lt: dayEnd },
                             status: { not: 'CANCELLED' }
                         }
                     });
@@ -225,7 +261,7 @@ const createBooking = async (
 
                 return await tx.booking.create({
                     data: {
-                        profileId: input.profileId,
+                        profileId: profile.id,
                         serviceId: input.serviceId,
 
                         deliveryType: input.deliveryType,
@@ -251,21 +287,49 @@ const createBooking = async (
                         customBookingId,
                         assignedToId: input.assignedToId ?? null,
                         timeSlotId: input.timeSlotId ?? null,
+                        dropOffPointId: input.dropOffPointId ?? null,
                     },
-                    include: { assignedTo: true }
+                    include: {
+                        assignedTo: true,
+                        profile: {
+                            include: {
+                                user: true
+                            }
+                        }
+                    },
                 });
             } catch (error: any) {
-                if (error.code !== 'P2002') throw error;
+                if (error instanceof ConflictError || NotFoundError) {
+                    throw error;
+                }
+                if (
+                    error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code === 'P2034'
+                ) {
+                    if (i < 2) continue;
+                    throw new ConflictError('Please try again.');
+                }
+                if (error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code !== 'P2002'
+                ) {
+                    throw error;
+                }
             }
         }
 
         throw new ConflictError('Failed to generate unique booking ID');
+    }, {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
     });
+    return bookingWarning
+        ? { booking, warning: bookingWarning }
+        : { booking };
 };
 
 // for client and companyuser same approach as create
-const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<Booking> => {
-    return await prisma.$transaction(async (tx) => {
+const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqueInput | string): Promise<{ booking: Booking, warning?: string }> => {
+    let bookingWarning: string | undefined;
+    const booking = await prisma.$transaction(async (tx) => {
         try {
             const whereObj = normalizeWhere(where);
             const booking = await tx.booking.findUnique({
@@ -326,20 +390,31 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             }
 
             if (input.address) {
-                const addressLine = input.address.addressLine1 || input.address.addressLine2;
-                if (!addressLine) {
-                    throw new Error('At least one address line is required');
-                }
-                const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
-                if (input.deliveryType === 'PICK_UP') {
-                    const serviceArea = await validateServiceArea(tx, lat, lng);
-                    if (!serviceArea) {
-                        const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
-                        throw new NotFoundError(
-                            `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
-                        );
+                try {
+
+                    const addressLine = input.address.addressLine1 || input.address.addressLine2;
+                    if (!addressLine) {
+                        throw new Error('At least one address line is required');
+                    }
+                    const { lat, lng } = await BookingUtils.geocodeAddress(addressLine);
+                    if (input.deliveryType === 'PICK_UP') {
+                        const serviceArea = await validateServiceArea(tx, lat, lng);
+                        if (!serviceArea) {
+                            const nearest = await BookingUtils.nearestDropOffPoint(lat, lng, tx);
+                            throw new NotFoundError(
+                                `Pickup not available in your area. Nearest drop-off point: ${nearest?.name || 'Not found'}. Change deliveryType to Drop off`
+                            );
+                        }
+                    }
+
+                } catch (error: any) {
+                    if (input.deliveryType === 'PICK_UP') {
+                        bookingWarning = 'Location geocoding failed, check service areas to see if your location is serviced if not choose the nearest drop off to you:';
+                    } else if (input.deliveryType === 'DROP_OFF' && input.dropOffPointId === undefined) {
+                        bookingWarning = 'Check drop off locations for the nearest place to drop off your clothes:';
                     }
                 }
+
                 updateData.address = {
                     update: {
                         ...Object.fromEntries(
@@ -372,6 +447,13 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
                     updateData.timeSlot = { connect: { id: input.timeSlotId } };
                 }
             }
+            if (input.dropOffPointId !== undefined) {
+                if (input.dropOffPointId === null) {
+                    updateData.dropOffPoint = { disconnect: true };
+                } else {
+                    updateData.dropOffPoint = { connect: { id: input.dropOffPointId } };
+                }
+            }
 
             updateData.unitPrice = unitPrice;
             updateData.currency = price.currency;
@@ -387,15 +469,15 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             if (targetServiceId && targetScheduled) {
                 const svc = await tx.service.findUnique({ where: { id: targetServiceId } });
                 if (svc && svc.maxDailyBookings !== null && svc.maxDailyBookings !== undefined) {
-                    const scheduled = targetScheduled as Date;
-                    const dayStart = new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate(), 0, 0, 0));
+                    const today = new Date();
+                    const dayStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0));
                     const dayEnd = new Date(dayStart);
                     dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
 
                     const existingCount = await tx.booking.count({
                         where: {
                             serviceId: targetServiceId,
-                            scheduledDate: { gte: dayStart, lt: dayEnd },
+                            createdAt: { gte: dayStart, lt: dayEnd },
                             status: { not: 'CANCELLED' },
                             id: { not: booking.id }
                         }
@@ -410,13 +492,40 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
             const updatedbooking = await tx.booking.update({
                 where: whereObj,
                 data: updateData,
-                include: { assignedTo: true }
+                include: {
+                    assignedTo: true,
+                    profile: {
+                        include: {
+                            user: true
+                        }
+                    }
+                },
             });
             return updatedbooking;
         } catch (_error: any) {
-            throw new NotFoundError('Booking not found');
+            if (_error instanceof ConflictError || NotFoundError) {
+                throw _error;
+            }
+            if (
+                _error instanceof Prisma.PrismaClientKnownRequestError
+            ) {
+                if (_error.code === 'P2034') {
+                    throw new ConflictError('Your request conflicted with another operation. Please try again.');
+                }
+                if (_error.code !== 'P2002') {
+                    throw _error;
+                }
+            }
+            throw new _error;
         }
-    });
+    },
+        {
+            isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        }
+    );
+    return bookingWarning
+        ? { booking, warning: bookingWarning }
+        : { booking };
 };
 
 const normalizeWhere = (where: any): BookingWhereUniqueInput => {
@@ -435,9 +544,25 @@ const getBooking = async (
     const booking = await prisma.booking.findUnique({
         where: whereObj,
         include: {
-            profile: true,
+            profile: {
+                include: {
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                        },
+                    },
+                }
+            },
             assignedTo: true,
             service: true,
+            transactions: {
+                include: {
+                    payment: true
+                }
+            },
+            dropOffPoint: true,
         },
     });
 
@@ -469,7 +594,10 @@ const listBookings = async (
     } = {},
     currentUser?: { id?: string; type?: string },
     isAdmin: boolean = false,
-) => {
+): Promise<{
+    data: BookingWithOtherModels[]
+    meta: { total: number; page: number; limit: number; totalPages: number }
+}> => {
     const paginationInput: Record<string, any> = {};
 
     if (params.page !== undefined) paginationInput.page = params.page;
@@ -513,6 +641,16 @@ const listBookings = async (
                 name: true,
             },
         },
+        transactions: {
+            include: {
+                payment: true
+            }
+        },
+        dropOffPoint: {
+            select: {
+                name: true,
+            }
+        }
     };
 
     if (params.includeProfile) {
@@ -522,6 +660,7 @@ const listBookings = async (
                     select: {
                         firstName: true,
                         lastName: true,
+                        email: true,
                     },
                 },
             },
@@ -535,7 +674,7 @@ const listBookings = async (
             skip,
             take: limit,
             orderBy: {
-                createdAt: 'desc',
+                createdAt: 'asc',
             },
             include,
         }),
@@ -587,6 +726,7 @@ const updateBookingStatus = async (
     const clientAllowedStatuses = [
         'CUSTOMER_DROPPED_OFF_AT_POINT',
         'CUSTOMER_PICKED_UP_FROM_POINT',
+        'CANCELLED',
     ];
 
     if (currentUser?.type === 'CLIENT') {
@@ -678,7 +818,7 @@ const softDeleteBooking = async (where: BookingWhereUniqueInput | string, isAdmi
     }
 
     // mark as cancelled and set deletedAt
-    await prisma.booking.update({ where: whereObj, data: { status: 'CANCELLED', deletedAt: new Date() } as any });
+    await prisma.booking.update({ where: whereObj, data: { isActive: false, status: 'CANCELLED', deletedAt: new Date() } as any });
 };
 
 const restoreBooking = async (where: BookingWhereUniqueInput | string, isAdmin: boolean = false): Promise<Booking> => {
@@ -720,11 +860,45 @@ const upsertBookingSettings = async (
         where: { id: 1 },
         update: { minPickupDays: input.minPickupDays },
         create: { id: 1, minPickupDays: input.minPickupDays },
+        // minimum pickupdays should have been minimum daystodeliver
     });
 
     return settings;
 };
 
+const getBookingSettings = async (): Promise<BookingSettings> => {
+    try {
+        const bookingSettings = await prisma.bookingSettings.findUnique({
+            where: { id: 1 }
+        });
+
+        if (!bookingSettings) throw new NotFoundError('Minimum pickup days not found, go set minimum pickup days');
+        return bookingSettings;
+
+    } catch (error: any) {
+        if (error instanceof NotFoundError) throw error;
+        throw new ProcessingError(error?.message || 'Failed to fetch booking settings');
+    }
+};
+
+
+const adminHardDeleteBookings = async (isAdmin: boolean = false): Promise<string> => {
+    // Hard delete for inactive and pending bookings only to clean db
+    if (!isAdmin) {
+        throw new ForbiddenError('Forbidden action, hard delete bookings reserved for admin only');
+    }
+
+    const deletedBookings = await prisma.booking.deleteMany({
+        where: {
+            status: 'CANCELLED',
+            isActive: false
+        }
+    });
+
+    const message = `${deletedBookings.count} cancelled, inactive bookings were deleted`;
+
+    return message;
+};
 
 
 // payment triggers status to confirmed
@@ -738,5 +912,7 @@ export default {
     updateBookingStatus,
     softDeleteBooking,
     restoreBooking,
-    upsertBookingSettings
+    upsertBookingSettings,
+    getBookingSettings,
+    adminHardDeleteBookings
 };

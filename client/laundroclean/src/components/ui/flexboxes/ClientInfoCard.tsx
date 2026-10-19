@@ -5,10 +5,11 @@ import { useState } from "react";
 
 type ClientInfoItem = {
     id: string;
-    customerName: string;
+    firstName: string;
+    lastName: string;
     profilepic?: string;
     email: string;
-    clientStatus: string;
+    isActive: boolean;
 }
 
 interface ClientInfoHeaderProps {
@@ -36,10 +37,10 @@ export default function ClientInfoCard ({title, items}: ClientInfoProps) {
                         <div className={styles.infofirstrow}>
                             <span className={styles.infofirstinlinerow}>
                                 <span className={styles.customername}>
-                                    {item.customerName}
+                                    {item.firstName} {item.lastName}
                                 </span>
-                                <span className={`${styles.status} ${styles[item.clientStatus]}`}>
-                                    {item.clientStatus}
+                                <span className={`${styles.status} ${styles[item.isActive ? "active": "inactive"]}`}>
+                                    {item.isActive ? "active" : "inactive"}
                                 </span>
                             </span>
                         

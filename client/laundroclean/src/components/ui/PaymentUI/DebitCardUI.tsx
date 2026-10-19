@@ -38,7 +38,7 @@ export function DebitCardForm({setIsOpenDebitForm}: DebitFormProps) {
                 </span>
                 <span className={styles.actionbtns}>
                     <Button text='CONFIRM AND PAY' type='submit' className={styles.paybtn} />
-                    <Button type='button' text='CANCEL' className={styles.cancelbtn} onClick={() => setIsOpenDebitForm(false)}/>
+                    <Button type='button' text='Cancel' className={styles.cancelbtn} onClick={() => setIsOpenDebitForm(false)}/>
                 </span>
             </span>
         </form>
@@ -59,7 +59,7 @@ export default function DebitCardUI() {
 
 
                     <span className={styles.wallet}>
-                        <img src="/img/cardwallet.png" alt="" onClick={() => setIsOpenDebitForm(true)} width={400} height={400}/>
+                        <img src="/img/cardwallet.png" alt="" onClick={() => setIsOpenDebitForm(true)} width={350} height={350}/>
 
                     </span>
                 ) : (
@@ -67,7 +67,7 @@ export default function DebitCardUI() {
 
                     <span className={styles.formopencontainer}>
                         <span className={styles.walletopen}>
-                            <img src="/img/cardwalletopen.png" alt="" width={700} height={400}/>
+                            <img src="/img/cardwalletopen.png" alt="" width={600} height={350}/>
                         </span>
                         
 

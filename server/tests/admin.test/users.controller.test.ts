@@ -77,13 +77,28 @@ describe('Admin Users Controller', () => {
   });
 
   it('getUsersController returns filtered users', async () => {
-    const req = { query: { status: 'inactive', type: 'company' } } as unknown as Request;
+    const req = { query: { status: 'inactive', type: 'COMPANYUSER', page: 1, limit: 10 } } as unknown as Request;
     const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
     await AdminUsersController.getUsersController(req, res, next);
     expect(res.status).toHaveBeenCalledWith(200);
-    const called = (res.json as jest.Mock).mock.calls[0][0] as { data: any[] };
+    const called = (res.json as jest.Mock).mock.calls[0][0] as {
+      data: any[], meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
+    };
     expect(Array.isArray(called.data)).toBe(true);
     expect(called.data.every((p: any) => p.user.isActive === false && p.user.type === 'COMPANYUSER')).toBe(true);
+    expect(called.meta).toEqual(
+        expect.objectContaining({
+            total: expect.any(Number),
+            page: 1,
+            limit: 10,
+            totalPages: expect.any(Number)
+        })
+    );
   });
 
   it('setUserActiveStatusController validates boolean and updates', async () => {

@@ -87,7 +87,7 @@ describe('Roles Routes', () => {
       .set('Authorization', `Bearer ${adminToken}`);
 
     expect(listRes.status).toBe(200);
-    expect(Array.isArray(listRes.body?.data?.roles)).toBeTruthy();
+    expect(Array.isArray(listRes.body?.data)).toBeTruthy();
 
     // get by id
     const getRes = await request(app)

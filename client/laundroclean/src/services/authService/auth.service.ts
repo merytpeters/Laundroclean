@@ -81,3 +81,15 @@ export async function logoutService(): Promise<string | null> {
 
     return res.message ?? "Logged out Successfully"
 }
+
+export async function refreshSessionService(): Promise<{ accessToken: string } | null> {
+    const res = await authApi.refreshToken();
+
+    if (!res.success || !res.data?.accessToken) {
+        throw new Error(res.message || "Session refresh failed");
+    }
+
+    return {
+        accessToken: res.data.accessToken,
+    };
+}

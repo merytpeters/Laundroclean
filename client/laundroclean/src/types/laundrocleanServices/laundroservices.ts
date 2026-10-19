@@ -1,6 +1,13 @@
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { PromoDetail } from "./promoCode";
 import { Meta } from "../shared";
+import { PromoCodeDto } from "./promoCode.dto";
+
+
+export type PricingTypeValue =
+    | "PER_KG"
+    | "PER_ITEM"
+    | "FLAT_RATE";
 
 export type PricingType = "per kg" | "per item" | "flat rate"
 
@@ -17,6 +24,11 @@ export function mapPricingType(pricingType: string): PricingType {
     }
 }
 
+export type CurrencyTypeValue =
+    | "NAIRA"
+    | "POUNDS"
+    | "DOLLAR";
+
 export type Currency = "USD" | "NGN" | "GBP"
 
 export function mapCurrency(currency: string): Currency {
@@ -31,6 +43,24 @@ export function mapCurrency(currency: string): Currency {
             throw new Error(`Unknown currency: ${currency}`)
     }
    
+}
+
+export function mapCurrencyType(
+    currency: Currency
+): CurrencyTypeValue {
+    switch (currency) {
+        case "NGN":
+            return "NAIRA";
+
+        case "GBP":
+            return "POUNDS";
+
+        case "USD":
+            return "DOLLAR";
+
+        default:
+            throw new Error(`Unknown currency: ${currency}`);
+    }
 }
 
 export type CurrencySymbol = "$" | "₦" | "£"
@@ -69,9 +99,9 @@ export interface ServiceDisplayProp {
 
 export type ServicePricePayload = {
     serviceId?: string;
-    amount: number;
-    currency: "DOLLAR" | "NAIRA" | "POUNDS";
-    pricingType: "PER_KG" | "PER_ITEM" | "FLAT_RATE";
+    amount?: number;
+    currency?: "DOLLAR" | "NAIRA" | "POUNDS";
+    pricingType?: "PER_KG" | "PER_ITEM" | "FLAT_RATE";
 }
 
 export type ServicePriceResponse = {
@@ -94,17 +124,14 @@ export type ServicePayload = {
 export type ServiceResponse = {
     name: string;
     description: string;
-    maxDailyBookings?: number;
+    maxDailyBookings: number;
     id: string;
     isActive: boolean;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
-}
-
-export type CombinedServiceandPriceResponse = {
-    service: ServiceResponse,
-    price?: ServicePriceResponse
+    prices?: ServicePriceResponse[],
+    promoCodes?: PromoCodeDto[]
 }
 
 export interface GetActiveServicesParams {
@@ -113,10 +140,8 @@ export interface GetActiveServicesParams {
     search?: string;
 }
 
-export type ServicesResponse = {
-    services: ServiceResponse[];
-    meta: Meta;
-}
+export type ServicesResponse = ServiceResponse[] & Meta;
+
 
 {/*export interface ServicesPromoResponse {
   data: ServiceDisplayProp[];
@@ -127,11 +152,6 @@ export type ServicesResponse = {
   };
 }*/}
 
-export type ServiceWithPromoCodesAndPriceResponse = {
-    service: ServiceResponse
-    prices: ServicePriceResponse[],
-    promoCodes?: PromoDetail[],
-}
 
 export type UpdateServicePayload = {
     name?: string;
@@ -152,7 +172,7 @@ export type ServiceIdPayload = {
 }
 
 export type ActivateOrDeactivateServicesPayload = {
-    ids: ServiceIdPayload[];
+    ids: string[];
 }
 
 export type ActivatedOrDeactivatedServicesResponse = {

@@ -1,5 +1,3 @@
-import { Meta } from "../shared";
-
 export type DropOffPointPayload = {
     name: string;
     address: string;
@@ -10,11 +8,14 @@ export type UpdateDropOffPointPayload = {
     address?: string;
 }
 
-export type GetLocationListParams = {
+export interface GetLocationParams {
+    search?: string;
+    isActive?: boolean
+}
+
+export interface GetLocationListParams extends GetLocationParams {
     page?: number;
     limit?: number;
-    isActive?: boolean;
-    search?: string;
 }
 
 export type DropOffPointResponse = {
@@ -26,10 +27,7 @@ export type DropOffPointResponse = {
     isActive: boolean;
 }
 
-export type DropOffPointsResponse = {
-    dropoffpoints: DropOffPointResponse[];
-    meta: Meta;
-}
+export type DropOffPointsResponse = DropOffPointResponse[];
 
 export type ServiceAreaPayload = {
     name: string;
@@ -39,14 +37,9 @@ export type ServiceAreaPayload = {
     lngMax?: number;
 }
 
-export type GetLocationParams = {
-    search?: string;
-    isActive?: boolean
-}
-
 export type ServiceAreaResponse = {
-    name: string;
     id: string;
+    name: string;
     isActive: boolean;
     latMin?: number;
     latMax?: number;
@@ -54,7 +47,16 @@ export type ServiceAreaResponse = {
     lngMax?: number;
 }
 
-export type ServiceAreasResponse = {
-    serviceareas: ServiceAreaResponse[];
-    meta: Meta;
-}
+export type ServiceAreasResponse = ServiceAreaResponse[];
+
+export type ValidServiceArea = ServiceAreaResponse & {
+  latMin: number;
+  latMax: number;
+  lngMin: number;
+  lngMax: number;
+};
+
+export type ValidDropoffPoint = DropOffPointResponse & {
+  lat: number;
+  lng: number;
+};

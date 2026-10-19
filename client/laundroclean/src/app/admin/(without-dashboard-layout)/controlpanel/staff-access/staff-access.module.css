@@ -7,6 +7,8 @@
     margin-bottom: 2rem;
     color: #000;
     width: 100%;
+    background-color: var(--foreground);
+    border-radius: 8px;
 }
 
 .headertab {
@@ -14,10 +16,11 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    width: 98%;
+    align-self: center;
+    width: 95%;
     border-radius: 12px;
     background-color: #f3f3f3;
-    height: fit-content;
+    height: 3em;
     padding: 0.2em 0.2em;
 }
 
@@ -31,7 +34,7 @@
     align-items: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    height: fit-content;
+    height: 2.5em;
     padding: 0.3rem 3rem;
     border-radius: 12px;
     background: transparent;
@@ -45,6 +48,10 @@
 
 .active {
     background: var(--foreground);
+}
+
+.activetabsection {
+    padding: 0 1em;
 }
 
 /* Responsive styles for staff-access page (down to ~300px) */

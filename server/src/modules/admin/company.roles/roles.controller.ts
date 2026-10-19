@@ -1,4 +1,4 @@
-import asyncHandler from '../../../utils/asyncHandler.js';
+import asyncHandler, { type PaginationQuery } from '../../../utils/asyncHandler.js';
 import { RolesService } from '../index.js';
 
 const createRole = asyncHandler(async (req, res) => {
@@ -11,8 +11,9 @@ const createRole = asyncHandler(async (req, res) => {
 });
 
 const getRoles = asyncHandler(async (req, res) => {
-  const roles = await RolesService.getAllRoles();
-  res.json({ success: true, data: { roles } });
+  const pageQuery = req?.query as PaginationQuery;
+  const result = await RolesService.getAllRoles(pageQuery);
+  res.json({ success: true, data: result.roles, meta: result.meta });
 });
 
 const getRole = asyncHandler(async (req, res) => {

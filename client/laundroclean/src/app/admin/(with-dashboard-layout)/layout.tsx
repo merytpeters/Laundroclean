@@ -1,27 +1,38 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { FaSpinner } from "react-icons/fa";
 import CompanyUserLayout from "src/components/layouts/CompanyUser/CompanyUserLayout";
-import { useCurrentUser } from "src/hooks/profile/useProfile";
-import { mockCompanyAdmin } from "src/services/companyUser/mock";
+import ErrorState from "src/components/ui/ErrorState/ErrorState";
+import { useAuth } from "src/context/AuthContext";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const userProfile = useCurrentUser();
-  console.log(userProfile);
-  const user = userProfile.data?.user || mockCompanyAdmin;
+  const { authUser, isLoading, refetch, isError } = useAuth();
 
-  if (!user || user.type !== "COMPANYUSER") {
-    redirect("/login");
+  if (isLoading) {
+    return <FaSpinner />;
+  }
+
+  if (isError) {
+    return (
+      <ErrorState
+        message="Failed to load your profile."
+        onRetry={refetch}
+      />
+    );
+  }
+
+  if (!authUser || authUser.type !== "COMPANYUSER" || authUser.uiRole !== "ADMIN") {
+    return null
   }
 
   return (
-    <CompanyUserLayout 
-      user={user}
-      welcomeMessage={{ name: user?.firstName || user?.lastName || "Admin", message: "Manage operations. Monitor performance" }}
+    <CompanyUserLayout
+      user={authUser}
+      welcomeMessage={{ name: authUser?.firstName || authUser?.lastName || "Admin", message: "Manage operations. Monitor performance" }}
       showMenu={true}
     >
       {children}

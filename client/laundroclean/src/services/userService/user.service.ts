@@ -1,7 +1,9 @@
 import { profileApi } from "src/lib/api/profileApi";
 import { mapUser } from "src/types/users/user.dto";
-import { ChangePasswordPayload, UpdatedUserResponse, UserProfilePayload, UserProfileResponse, ProfileResponse, GetUsersParams, UpdateUserStatusPayload } from "src/types/users/user";
+import { ChangePasswordPayload, UpdatedUserResponse, UserProfilePayload, UserProfileResponse, ProfileResponse, GetUsersParams, UpdateUserStatusPayload, AdminViewUserProfileResponse } from "src/types/users/user";
 import { adminApi } from "src/lib/api/adminApi";
+import { ApiResponse } from "src/lib/api/requests";
+import { staffApi } from "src/lib/api/staffApi";
 
 export async function getCurrentUserProfileService(): Promise<UserProfileResponse | null> {
     const res = await profileApi.getCurrentUserProfile();
@@ -75,7 +77,7 @@ export async function deleteProfilePicService(): Promise<ProfileResponse | null>
     return res.data
 }
 
-export async function adminGetUserService(userId: string): Promise<UserProfileResponse | null> {
+export async function adminGetUserService(userId: string): Promise<ApiResponse<AdminViewUserProfileResponse> | null> {
     const res = await adminApi.getUser(userId);
 
     if (!res.success || !res.data) {
@@ -84,37 +86,60 @@ export async function adminGetUserService(userId: string): Promise<UserProfileRe
 
     const {user, ...profile} = res.data;
 
-    return {
+    res.data =  {
         user: mapUser(user),
-        profile: profile
-    }
+        ...profile,
+    };
+
+    return res
 }
 
-export async function adminGetUsersService(params?: GetUsersParams): Promise<UserProfileResponse[] | null> {
+export async function adminGetUsersService(params?: GetUsersParams): Promise<ApiResponse<AdminViewUserProfileResponse[]> | null> {
     const res = await adminApi.getUsers(params);
 
     if (!res.success || !res.data) {
         return null
     }
 
-    const users = res.data.map((singleuser) => {
+    const users: AdminViewUserProfileResponse[] = res.data.map((singleuser) => {
         const {user, ...profile} = singleuser;
 
         return {
             user: mapUser(user),
-            profile: profile
+            ...profile
         }
     })
 
-    return users;
+    res.data = users;
+    return res;
 }
 
-export async function adminUpdateUserStatus(userId: string, payload: UpdateUserStatusPayload): Promise<UpdatedUserResponse | null> {
+export async function adminUpdateUserStatus(userId: string, payload: UpdateUserStatusPayload): Promise<ApiResponse<UpdatedUserResponse> | null> {
     const res = await adminApi.updateUserStatus(userId, payload);
 
     if (!res.success || !res.data) {
         return null
     }
 
-    return res.data
+    return res
+}
+
+export async function staffGetUsersService(params?: GetUsersParams): Promise<ApiResponse<AdminViewUserProfileResponse[]> | null> {
+    const res = await staffApi.getUsers(params);
+
+    if (!res.success || !res.data) {
+        return null
+    }
+
+    const users: AdminViewUserProfileResponse[] = res.data.map((singleuser) => {
+        const {user, ...profile} = singleuser;
+
+        return {
+            user: mapUser(user),
+            ...profile
+        }
+    })
+
+    res.data = users;
+    return res;
 }

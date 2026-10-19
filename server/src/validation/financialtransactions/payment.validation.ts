@@ -60,6 +60,7 @@ const createPaymentSchema = z.object({
   userInfo: z.union([z.undefined(), userInfoSchema]) as z.ZodType<z.infer<typeof userInfoSchema> | undefined, z.ZodType, any>,
   sn: z.union([z.undefined(), posDeviceSchema]) as z.ZodType<z.infer<typeof posDeviceSchema> | undefined, z.ZodType, any>,
   bankDetails: z.union([z.undefined(), otherBankTransferSchema]) as z.ZodType<z.infer<typeof otherBankTransferSchema> | undefined, z.ZodType, any>,
+  companyBankAccountId: z.cuid().optional(),
 }).superRefine((data, ctx) => {
   if (data.channel === 'BANKCARD' && !data.card) {
     ctx.addIssue({
@@ -73,6 +74,13 @@ const createPaymentSchema = z.object({
       code: ZodIssueCode.custom,
       message: 'Bank details are required for bank transfer payments that are not OPAY',
       path: ['bankDetails'],
+    });
+  }
+  if (data.provider === 'INTERNAL' && data.channel === 'BANK TRANSFER' && !data.companyBankAccountId) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: 'Id of Selected bank paid to missing',
+      path: ['companyBankAccountId'],
     });
   }
 });

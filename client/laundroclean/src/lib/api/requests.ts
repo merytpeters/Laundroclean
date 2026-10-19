@@ -1,17 +1,50 @@
-import { getAccessToken } from "./auth-store";
+import { Meta } from "src/types/shared";
+import { clearAccessToken, getAccessToken, setAccessToken } from "./auth-store";
 
 export interface ApiResponse<T> {
     success: boolean;
     data: T | null;
     message?: string;
-    meta?: T | null;
+    warning?: string | undefined;
+    meta?: Meta | null;
 }
 
 interface CustomRequestInit extends RequestInit {
     params?: Record<string, unknown> | object;
+    skipAuthRetry?: boolean;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+
+export const buildApiUrl = (endpoint: string) => {
+    const cleanEndpoint = endpoint.replace(/^\/+/, "");
+    return `${BASE_URL}/${cleanEndpoint}`;
+};
+
+const refreshAccessToken = async (): Promise<boolean> => {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const json = await response.json() as ApiResponse<{ accessToken: string }>;
+
+        if (!response.ok || !json.success || !json.data?.accessToken) {
+            clearAccessToken();
+            return false;
+        }
+
+        setAccessToken(json.data.accessToken);
+        return true;
+    } catch (_err) {
+        clearAccessToken();
+        return false;
+    }
+};
 
 export async function apiRequest<T>(
     endpoint: string,
@@ -25,7 +58,7 @@ export async function apiRequest<T>(
         delete fetchOptions.params;
 
         const cleanEndpoint = endpoint.replace(/^\/+/, "");
-        let url = `${BASE_URL}/${cleanEndpoint}`;
+        let url = buildApiUrl(cleanEndpoint);
         const token = getAccessToken();
 
         if (params) {
@@ -68,11 +101,23 @@ export async function apiRequest<T>(
         }
 
         if (!response.ok) {
-            return {
-                success: false,
-                data: null,
-                message: json.message || "Request failed",
-            };
+            const shouldRetryWithRefresh =
+                response.status === 401 &&
+                !!token &&
+                !fetchOptions.skipAuthRetry &&
+                cleanEndpoint !== 'auth/refresh';
+
+            if (shouldRetryWithRefresh) {
+                const refreshed = await refreshAccessToken();
+                if (refreshed) {
+                    return apiRequest<T>(endpoint, {
+                        ...options,
+                        skipAuthRetry: true,
+                    });
+                }
+            }
+
+            throw new Error(json.message || "Request failed");
         }
 
         if (response.status === 204) {

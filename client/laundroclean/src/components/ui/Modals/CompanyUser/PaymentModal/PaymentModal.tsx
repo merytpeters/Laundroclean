@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "./PaymentModal.module.css";
 import DebitCardUI from "src/components/ui/PaymentUI/DebitCardUI";
 import { CompanyUser, Client } from "src/types/users/user";
+import PaymentHistory from "src/components/ui/PaymentUI/PaymentHistory";
+import CashUI from "src/components/ui/PaymentUI/CashUI";
+import BankTransferUI from "src/components/ui/PaymentUI/BankTransferUI";
+import { PaymentMethodOrChannelState } from "src/components/ui/ErrorState/ErrorState";
+import { CurrencyTypeValue } from "src/types/laundrocleanServices/laundroservices";
 
 type PaymentTab = {
     key: "card" | "transfer" | "pos" | "wallet" | "cash";
     label: string;
     img: string;
-    component: React.ReactNode;
+    component?: React.ComponentType<PaymentTabProps>;
+    state?: boolean;
 };
 
 const paymentTabs: PaymentTab[] = [
@@ -17,41 +23,57 @@ const paymentTabs: PaymentTab[] = [
         key: "card",
         label: "Credit / Debit Card",
         img: "/img/creditcardicon.png",
-        component: <DebitCardUI />,
+        component: DebitCardUI,
     },
     {
         key: "cash",
         label: "Cash",
         img: "/img/cash-on-delivery.png",
-        component: "",
+        component: CashUI,
     },
     {
         key: "transfer",
         label: "Bank Transfer",
         img: "/img/bankbuildingicon.png",
-        component: "",
+        component: BankTransferUI,
     },
     {
         key: "wallet",
         label: "OPay Wallet",
         img: "/img/payment.png",
-        component: "",
+        state: true,
     },
     {
         key: "pos",
         label: "POS Machine",
         img: "/img/pos-terminal.png",
-        component: "",
+        state: true,
     },
 ];
 
 type PaymentProps = {
     user: CompanyUser | Client;
+    bookingId?: string;
+    bookingUserId?: string | number | null;
+    amount?: number | null;
+    currency?: CurrencyTypeValue | null;
 };
 
-export default function PaymentModal({ user }: PaymentProps) {
+type PaymentTabProps = {
+    bookingId: string;
+    bookingUserId: string;
+    user?: CompanyUser | Client;
+    amount: number;
+    currency: CurrencyTypeValue;
+};
+
+export default function PaymentModal({ user, bookingId: propBookingId, bookingUserId: propBookingUserId, amount: propAmount, currency: propCurrency }: PaymentProps) {
     const isCompany = user?.type === "COMPANYUSER";
-    console.log(user);
+    // console.log(user);
+    // Remove later
+    // const bookingId = propBookingId ?? companyContext?.bookingInfo?.bookingId;
+    // const bookingUserId = propBookingUserId ?? companyContext?.bookingInfo?.bookingUserId;
+    // console.log(bookingId, bookingUserId)
 
     const tabs = paymentTabs.filter((tab) => {
         return isCompany
@@ -62,45 +84,82 @@ export default function PaymentModal({ user }: PaymentProps) {
     const [activeTab, setActiveTab] = useState<PaymentTab["key"]>(tabs[0].key);
 
     return (
-        <div className={styles.paymentmodalcontainer}>
-            <strong className={styles.headertext}>Payment Methods</strong>
+        <section className={styles.paymentmodalcontainer}>
+            <section className={styles.paymentmethodcontainer}>
+                <strong className={styles.headertext}>Payment Methods</strong>
 
-            <section className={styles.headertab}>
-                <select
-                    className={styles.tabSelect}
-                    value={activeTab}
-                    onChange={(e) => setActiveTab(e.target.value as PaymentTab["key"])}
-                >
-                    {tabs.map((tab) => (
-                        <option key={tab.key} value={tab.key}>
-                            {tab.label}
-                        </option>
-                    ))}
-                </select>
-
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.key}
-                        onClick={() => setActiveTab(tab.key)}
-                        className={`${styles.tabbtn} ${activeTab === tab.key ? styles.active : ""
-                            }`}
+                <section className={styles.headertab}>
+                    <select
+                        className={styles.tabSelect}
+                        value={activeTab}
+                        onChange={(e) => setActiveTab(e.target.value as PaymentTab["key"])}
                     >
-                        <span className={styles.iconnlabel}>
-                            <img src={tab.img} width={25} height={25} alt="" />
-                            {tab.label}
-                        </span>
+                        {tabs.map((tab) => (
+                            <option key={tab.key} value={tab.key}>
+                                {tab.label}
+                            </option>
+                        ))}
+                    </select>
 
-                        <hr
-                            className={`${styles.simpleline} ${activeTab === tab.key ? styles.simplelineactive : ""
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                            className={`${styles.tabbtn} ${activeTab === tab.key ? styles.active : ""
                                 }`}
-                        />
-                    </button>
-                ))}
-            </section>
+                        >
+                            <span className={styles.iconnlabel}>
+                                <img src={tab.img} width={25} height={25} alt="" />
+                                {tab.label}
+                            </span>
 
-            <section className={styles.activetabcontainer}>
-                {tabs.find((tab) => tab.key === activeTab)?.component}
+                            <hr
+                                className={`${styles.simpleline} ${activeTab === tab.key ? styles.simplelineactive : ""
+                                    }`}
+                            />
+                        </button>
+                    ))}
+                </section>
+
+                <section className={styles.activetabcontainer}>
+                    {(() => {
+                        const active = tabs.find(
+                            (tab) => tab.key === activeTab
+                        );
+
+                        if (!active) return null;
+
+                        if (active.state) {
+                            return <PaymentMethodOrChannelState />;
+                        }
+
+                        if (
+                            !active.component ||
+                            !propBookingId ||
+                            !propBookingUserId ||
+                            propAmount == null ||
+                            !propCurrency
+                        ) {
+                            return null;
+                        }
+
+                        const Component = active.component;
+
+                        return (
+                            <Component
+                                bookingId={propBookingId}
+                                bookingUserId={String(propBookingUserId)}
+                                user={user}
+                                amount={propAmount}
+                                currency={propCurrency}
+                            />
+                        );
+                    })()}
+                </section>
             </section>
-        </div>
+            <section className={styles.paymenthistorysection}>
+                <PaymentHistory />
+            </section>
+        </section>
     );
 }

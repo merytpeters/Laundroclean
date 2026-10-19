@@ -11,8 +11,8 @@ import PromoPublicRoutes from './modules/promocode/promocode.routes.js';
 import { EmailRoutes } from './modules/emailService/index.js';
 import { ProfileRoutes } from './modules/common/index.js';
 import { LaundrocleanservicesRoutes } from './modules/laundrocleanservices/index.js';
-import { StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes } from './modules/staff/index.js';
-import { ClientServiceRoutes, ClientBookingRoutes } from './modules/clientuser/index.js';
+import { StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes, UsersRouteForStaff } from './modules/staff/index.js';
+import { ClientServiceRoutes, ClientBookingRoutes, GetCompanyBankAccount } from './modules/clientuser/index.js';
 import { ServicepriceRoutes } from './modules/serviceprice/index.js';
 import { DropOffPointRoutes } from './modules/locations/index.js';
 import { ServiceAreaRoutes } from './modules/locations/index.js';
@@ -20,7 +20,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 import { globalLimiter } from './middlewares/rateLimiter.js';
 import { POSDeviceRoutes } from './modules/financialtransactions/devices/index.js';
-import { PaymentRoutes, WebhookRoutes } from './modules/financialtransactions/index.js';
+import { CompanyBankAccountRoutes, PaymentRoutes, WebhookRoutes } from './modules/financialtransactions/index.js';
 
 
 const app = express();
@@ -66,13 +66,15 @@ app.use('/api/v1/promocode', PromoPublicRoutes);
 app.use('/api/v1/profile', ProfileRoutes);
 app.use('/api/v1/services', LaundrocleanservicesRoutes);
 app.use('/api/v1/service-price', ServicepriceRoutes);
-app.use('/api/v1/staff', StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes);
+app.use('/api/v1/staff', StaffServiceRoutes, StaffBookingRoutes, StaffCalendarRoutes, UsersRouteForStaff);
 app.use('/api/v1/client', ClientServiceRoutes, ClientBookingRoutes);
 app.use('/api/v1/dropoffpoint', DropOffPointRoutes);
 app.use('/api/v1/servicearea', ServiceAreaRoutes);
 app.use('/api/v1/posdevices', POSDeviceRoutes);
-app.use('/api/payments', PaymentRoutes);
-app.use('/api/webhooks', WebhookRoutes);
+app.use('/api/v1/payments', PaymentRoutes);
+app.use('/api/v1/webhooks', WebhookRoutes);
+app.use('/api/v1/company-bank-account', CompanyBankAccountRoutes);
+app.use('/api/v1/client/company-bank-account', GetCompanyBankAccount,);
 
 app.use(errorHandler);
 

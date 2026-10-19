@@ -15,15 +15,21 @@ export const BookingTransitions: Record<BookingStatus, BookingStatus[]> = {
   [BookingStatus.COMPANY_PICKED_UP_FROM_POINT]: [BookingStatus.IN_PROGRESS],
 
   [BookingStatus.IN_PROGRESS]: [
+    BookingStatus.WASHED,
     BookingStatus.COMPANY_DROPPED_OFF_AT_POINT,
     BookingStatus.IN_TRANSIT,
   ],
 
-  [BookingStatus.IN_TRANSIT]: [BookingStatus.DELIVERED],
+  [BookingStatus.WASHED]: [
+    BookingStatus.IN_TRANSIT,
+    BookingStatus.COMPANY_DROPPED_OFF_AT_POINT
+  ],
+
+  [BookingStatus.IN_TRANSIT]: [BookingStatus.COMPANY_DROPPED_OFF_AT_POINT, BookingStatus.DELIVERED],
 
   [BookingStatus.COMPANY_DROPPED_OFF_AT_POINT]: [BookingStatus.CUSTOMER_PICKED_UP_FROM_POINT],
 
-  [BookingStatus.CUSTOMER_PICKED_UP_FROM_POINT]: [BookingStatus.DELIVERED],
+  [BookingStatus.CUSTOMER_PICKED_UP_FROM_POINT]: [BookingStatus.DELIVERED, BookingStatus.COMPLETED],
 
   [BookingStatus.DELIVERED]: [BookingStatus.COMPLETED],
   

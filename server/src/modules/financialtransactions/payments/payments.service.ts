@@ -53,7 +53,7 @@ export class PaymentService {
 
       switch (payload.provider) {
         case 'OPAY': {
-          return this.handleOpayPayment(
+          return await this.handleOpayPayment(
             paymentPayload,
             transaction,
             profile,
@@ -65,14 +65,14 @@ export class PaymentService {
 
         case 'INTERNAL': {
           if (paymentPayload.channel === 'CASH') {
-            return this.handleCashPayment(
+            return await this.handleCashPayment(
               paymentPayload,
               transaction,
               tx
             );
           }
           if (paymentPayload.channel === 'BANK TRANSFER') {
-            return this.handleOtherBankTransfers(
+            return await this.handleOtherBankTransfers(
               paymentPayload,
               transaction,
               tx
@@ -119,7 +119,11 @@ export class PaymentService {
 
   }
 
-  async listPaymentsByUser(userId: string) {
+  /*async listPaymentsByUser(userId?: string, paymentId: string) {
+
+  }*/
+
+  async listAllPayment() {
 
   }
 
@@ -256,10 +260,6 @@ export class PaymentService {
       status: validatedData.status,
       amount: validatedData.amount,
       currency: validatedData.currency,
-      senderBankName: validatedData.bankDetails.senderBankName,
-      senderAccountName: validatedData.bankDetails.senderAccountName,
-      senderTransactionRef: validatedData.bankDetails.senderTransactionRef,
-      transferredAt: validatedData.bankDetails.transferredAt,
 
       transaction: {
         connect: {
@@ -267,6 +267,13 @@ export class PaymentService {
         },
       },
     };
+
+    if (validatedData.bankDetails) {
+      data.senderBankName = validatedData.bankDetails.senderBankName;
+      data.senderAccountName = validatedData.bankDetails.senderAccountName;
+      data.senderTransactionRef = validatedData.bankDetails.senderTransactionRef;
+      data.transferredAt = validatedData.bankDetails.transferredAt;
+    }
 
     if (validatedData.providerRef) {
       data.providerRef = validatedData.providerRef;
@@ -353,6 +360,8 @@ export class PaymentService {
       { id: transaction.id },
       tx
     );
+
+    // console.log('CREATED PAYMENT:', payment);
 
     await this.transactionService.syncTransaction(payment, tx);
 

@@ -24,6 +24,10 @@
   flex-wrap: wrap;
 }
 
+.newdropoffHeader {
+  color: #fff;
+}
+
 .overlay {
   position: fixed;
   z-index: 9999;
@@ -134,23 +138,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 2rem;
+  padding: 2rem 1rem;
   background-position: center;
   height: fit-content;
   overflow: auto;
   gap: 2em;
-}
-
-.servicemanagersection {
-  display: flex;
-  flex-direction: row;
-  position: fixed;
-  padding: 2em;
-  width: 100%;
-  border: #f5f5f5 2px solid;
-  position: relative;
-  color: #0f172a;
-  gap: 1em;
 }
 
 .locationManager {
@@ -185,8 +177,9 @@
 
 .toggleButton {
   padding: 10px 20px;
-  border: 2px solid #ddd;
-  background-color: #f5f5f5;
+  border: 2px solid var(--background);
+  background-color: var(--foreground);
+  color: #0f172a;
   border-radius: 4px;
   cursor: pointer;
   font-size: small;
@@ -194,14 +187,15 @@
 }
 
 .toggleButton:hover {
-  border-color: #999;
-  background-color: #efefef;
+  border-color: #d59056;
+  background-color: #d59056;
+  color: white;
 }
 
 .toggleButton.active {
-  background-color: #007bff;
+  background-color: #0f172a;
   color: white;
-  border-color: #0056b3;
+  border-color: #0f172a;
 }
 
 .locationContent {
@@ -218,6 +212,12 @@
   margin: 0;
   font-size: medium;
   color: #333;
+}
+
+.dropoffPointsHeader {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
 }
 
 .mapHeader {
@@ -350,11 +350,21 @@
 }
 
 .reopenButton {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  background: white;
   cursor: pointer;
   font-size: small;
+  width: 11em;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  color: #0f172a;
+  border: 1px solid #ffffff;
+  border-radius: 1.1rem;
+  height: 3em;
+}
+
+.reopenButton:hover {
+  border-color: #d59056;
+  background-color: #d59056;
+  color: #ffffff;
 }
 
 .serviceslistsection {
@@ -374,6 +384,18 @@
   padding: 1em 0;
 }
 
+.serviceupdatespan {
+  display: inline;
+  padding: 0.7em 0.4em;
+}
+
+.companyOnlyserviceitemContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .servicelistrow {
   display: flex;
   flex-direction: row;
@@ -384,8 +406,34 @@
   background-color: var(--foreground);
   border-radius: 8px;
   padding: 2em 3em;
-  box-shadow: 5px 5px 10px 2px #e8e0e0;
+  /*box-shadow: 5px 5px 10px 2px #e8e0e0;*/
   max-width: 100%;
+}
+
+.serviceListactionbtns {
+  display: flex;
+  height: fit-content;
+}
+
+.editbtn {
+  border: none;
+  background: transparent;
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+.trashbtn {
+  color: red;
+  background-color: transparent;
+  border: 1px solid #555;
+  cursor: pointer;
+}
+
+.allServicesHeader {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .companviewserviceitems {
@@ -417,15 +465,11 @@
 
 @media (max-width: 850px) {
   .allservicescontainer {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
 
   .servicemanager {
     font-size: xx-small;
-  }
-
-  .servicemanagersection {
-    padding: 0.5em;
   }
 
   .addservicebtn {
@@ -452,6 +496,64 @@
 }
 
 @media (max-width: 550px) {
+  .locationSection {
+    padding: 15px;
+  }
+
+  .locationSection h3 {
+    font-size: small;
+    margin-bottom: 15px;
+  }
+
+  .toggleButton {
+    font-size: smaller;
+    padding: 6px 16px;
+  }
+
+  .reopenButton {
+    width: 9em;
+    font-size: smaller;
+  }
+
+  .dropoffPointsHeader h4,
+  .mapHeader h4 {
+    font-size: small;
+  }
+
+  .serviceAreasList h4,
+  .dropoffPointsList h4 {
+    font-size: smaller;
+  }
+
+  .serviceAreasList li,
+  .dropoffPointsList li {
+    font-size: smaller;
+  }
+
+  .activeBadge {
+    font-size: smaller;
+  }
+
+  .serviceslistsection {
+    padding: 1em 1em;
+  }
+
+  .serviceslistsection h4 {
+    font-size: smaller;
+  }
+
+  .allServicesHeader h4 {
+    font-size: small;
+  }
+
+  .servicelistrow {
+    padding: 1em 1em;
+  }
+
+  .servicelistrow span {
+    font-size: smaller;
+  }
+
   .servicemanager form {
     width: 300px;
   }
@@ -467,5 +569,11 @@
 
   .actionbuttons {
     width: 100%;
+  }
+}
+
+@media (max-width: 450px) {
+  .servicelistrow {
+    padding: 1em 0.8em;
   }
 }

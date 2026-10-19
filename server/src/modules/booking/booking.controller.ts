@@ -5,7 +5,7 @@ import { BookingService } from './index.js';
 import { NotFoundError } from '../../middlewares/errorHandler.js';
 
 
-const createBookingController = asyncHandler (async (req, res) => {
+const createBookingController = asyncHandler(async (req, res) => {
     let clientbookingData: CreateBookingSchema = req.body;
 
     const { email, ...bookingData } = clientbookingData;
@@ -24,8 +24,9 @@ const createBookingController = asyncHandler (async (req, res) => {
 
     return res.status(201).json({
         success: true,
-        data: newBooking,
+        data: newBooking.booking,
         message: 'Booking created successfully',
+        warning: newBooking.warning
     });
 });
 
@@ -38,8 +39,9 @@ const updateBookingController = asyncHandler(async (req, res) => {
 
     return res.status(200).json({
         success: true,
-        data: updatedBooking,
-        message: `${updatedBooking.customBookingId} booking has been updated successfully`
+        data: updatedBooking.booking,
+        message: `${updatedBooking.booking.customBookingId} booking has been updated successfully`,
+        warning: updatedBooking.warning
     });
 });
 
@@ -74,7 +76,7 @@ const listBookingsController = asyncHandler(async (req, res) => {
     if (search !== undefined) params.search = search;
     if (profileId !== undefined) params.profileId = profileId;
     params.includeProfile = includeProfile;
-    
+
     const currentUser = req.user ? { id: req.user.id, type: req.user.type } : undefined;
     const isAdmin = req.user?.role?.title === 'ADMIN';
     const result = await BookingService.listBookings(params, currentUser, Boolean(isAdmin));
@@ -89,15 +91,19 @@ const listBookingsController = asyncHandler(async (req, res) => {
 const updateBookingStatusController = asyncHandler(async (req, res) => {
     const { bookingId } = req.params;
     const statusBody: UpdateBookingStatusSchema = req.body;
+    
+    let updated;
 
     const isAdmin = req.user?.role?.title === 'ADMIN';
     const currentUser = req.user ? { id: req.user.id, type: req.user.type } : undefined;
-    const updated = await BookingService.updateBookingStatus(statusBody, bookingId, Boolean(isAdmin), currentUser);
-
+    if (statusBody.status === 'CANCELLED') {
+        updated = await BookingService.softDeleteBooking(bookingId, Boolean(isAdmin));
+    }
+    updated = await BookingService.updateBookingStatus(statusBody, bookingId, Boolean(isAdmin), currentUser);
     return res.status(200).json({
         success: true,
         data: updated,
-        message: `${updated.customBookingId} booking has been updated`
+        message: `${updated?.customBookingId} booking has been updated` || 'Booking successfully cancelled'
     });
 });
 
@@ -143,6 +149,27 @@ const updateBookingSettings = asyncHandler(async (req, res) => {
     }
 });
 
+const getBookingSettings = asyncHandler(async (req, res) => {
+    const bookingSettings = await BookingService.getBookingSettings();
+
+    return res.status(200).json({
+        success: true,
+        data: bookingSettings,
+        message: 'Booking settings retrieved successfully'
+    });
+});
+
+const adminHardDeleteBookingController = asyncHandler(async (req, res) => {
+    const isAdmin = req.user?.role?.title === 'ADMIN';
+
+    const message = await BookingService.adminHardDeleteBookings(Boolean(isAdmin));
+
+    return res.status(200).json({
+        success: true,
+        message: message
+    });
+});
+
 export default {
     createBookingController,
     updateBookingController,
@@ -151,5 +178,7 @@ export default {
     updateBookingStatusController,
     cancelBookingController,
     restoreBookingController,
-    updateBookingSettings
+    updateBookingSettings,
+    getBookingSettings,
+    adminHardDeleteBookingController
 };

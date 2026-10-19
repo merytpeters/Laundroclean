@@ -1,8 +1,8 @@
 import prisma from '../../config/prisma.js';
-import type { PromoCode } from '@prisma/client';
+import { Prisma, type PromoCode } from '@prisma/client';
+import { NotFoundError } from '../../middlewares/errorHandler.js';
 
 const now = () => new Date();
-
 
 const getPromoByCodeForService = async (serviceId: string, code: string): Promise<PromoCode | null> => {
   const n = now();
@@ -83,7 +83,8 @@ const createPromo = async (data: {
 };
 
 const getPromos = async () => {
-  return prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } });
+  const promos = prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } });
+  return promos;
 };
 
 const getPromoById = async (id: string) => {
@@ -102,6 +103,23 @@ const softDeletePromo = async (id: string) => {
   await prisma.promoCode.update({ where: { id }, data: { isActive: false, deletedAt: new Date() } });
 };
 
+const restorePromo =  async (
+  id: string
+) => {
+  const promocode = await prisma.promoCode.findUnique({ where: {id}});
+
+  if (!promocode) throw new NotFoundError('Promo code not found');
+
+  const restored = await prisma.promoCode.update({
+    where: {id},
+    data: {
+      isActive: true,
+      deletedAt: null
+    }
+  });
+  return restored;
+};
+
 export default {
   getPromoByCodeForService,
   isPromoValid,
@@ -111,5 +129,6 @@ export default {
   getPromoById,
   updatePromo,
   softDeletePromo,
+  restorePromo
 };
 

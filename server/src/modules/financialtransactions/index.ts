@@ -3,3 +3,5 @@ export { default as PaymentController } from '../../modules/financialtransaction
 export { default as WebhookController } from '../../modules/financialtransactions/webhooks/webhook.controller.js';
 export { default as PaymentRoutes } from '../../modules/financialtransactions/payments/payment.routes.js';
 export { default as WebhookRoutes } from '../../modules/financialtransactions/webhooks/webhook.routes.js';
+export { default as CompanyBankAccountController } from './companybankaccount/companybankaccount.controller.js';
+export { default as CompanyBankAccountRoutes } from './companybankaccount/companybankaccount.routes.js';

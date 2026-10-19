@@ -1,21 +1,241 @@
-.newrolebtn {
-    width: 12em;
-    background: #0F233A;
-    color: var(--foreground);
-    border-radius: 18px;
-    height: 3em;
-    align-items: center;
-    gap: 1em;
-    font-weight: 600;
-    font-size: small;
+/* role form styles*/
+.form {
+  display: flex;
+  flex-direction: column;
+  border: #ccc 1px solid;
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  padding: 2em;
+  gap: 2em;
+  background-color: #fff;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
-.addstaffbtn {
-    width: 10em;
-    background: #0F233A;
-    color: var(--foreground);
-    border-radius: 18px;
-    gap: 1em;
-    font-weight: 600;
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+.field input {
+  height: 2em;
+  width: 80%;
+  border-radius: 4px;
+}
+
+.permissionSelectitem {
+  width: 80%;
+}
+
+.actions {
+  display: flex;
+  align-self: center;
+  margin-top: 2em;
+}
+
+/* Role List styles*/
+.roleList {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterrole {
+  display: flex;
+  align-self: self-end;
+}
+
+.roleListmapsection {
+  display: flex;
+  flex-direction: column;
+  gap: 6em;
+}
+
+.rolelistitem {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.roleinfo,
+.roleinfo b {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 14em;
+}
+
+.rolepermissionslist {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.rolelistactionbtns {
+  display: flex;
+}
+
+.rolepermissionslist button:hover {
+  color: red;
+}
+
+.roleListmapsection table {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.roleListmapsection thead,
+.tableheader {
+  display: flex;
+  width: 100%;
+  gap: 11em;
+  padding: 0.5em 1em;
+  background-color: #0f172a;
+  color: #fff;
+}
+
+.roleListmapsection tbody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* styles for roleUsers*/
+
+.tablebodyrow {
+  display: flex;
+  width: 100%;
+  gap: 5em;
+  padding: 0.5em 2em;
+}
+
+.tablebodyrow td {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.fullnametd {
+  width: 14em;
+}
+
+.emailtd {
+  width: 12em;
+}
+
+.joineddatetd {
+  width: 18em;
+  align-items: center;
+}
+
+.tablebodyrow:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.tablebodyrow:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+/*Roles tab styles*/
+.roletabContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 1em 2em;
+}
+
+.roletabContainer h3 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.actionbtn {
+  display: flex;
+  align-self: self-end;
+}
+
+.newrolebtn {
+  width: 12em;
+  background: #0f233a;
+  color: var(--foreground);
+  border-radius: 18px;
+  height: 3em;
+  align-items: center;
+  gap: 1em;
+  font-weight: 600;
+  font-size: small;
+}
+
+.createformOverlay {
+  position: fixed;
+  z-index: 9999;
+  background-color: transparent;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  pointer-events: auto;
+  overflow-y: auto;
+  overscroll-behavior: smooth;
+  backdrop-filter: blur(8px);
+  inset: 0;
+}
+
+.createformsection {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  border: #ccc 1px solid;
+  border-radius: 8px;
+  padding: 2em;
+  gap: 2em;
+  position: fixed;
+  z-index: 10000;
+  top: 12%;
+  left: 35%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background-color: transparent;
+}
+
+.cancelbtnspan {
+    display: flex;
+    align-self: self-end;
+}
+
+.cancelbtn {
+    --btn-border: 1px solid #0f233a;
+    --btn-padding: 0.7em 1.4em;
+    --btn-border-radius: 8px;
     font-size: small;
+    background-color: #0f233a;
+    color: #fff;
+}
+
+.cancelbtn:hover {
+    background: red;
+    color: var(--foreground);
+    --btn-border: 1px solid red;
+}
+
+.createrolebtn {
+  border: #d59056 2px solid;
+  padding: auto;
+  width: 8em;
+  border-radius: 24px;
+  color: #0f172a;
+  background-color: #f5f5f5;
+  height: 2.5em;
+  align-self: center;
+  justify-content: center;
+}
+
+.createrolebtn:hover {
+  background: #d59056;
+  color: #f5f5f5;
 }

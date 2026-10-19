@@ -13,17 +13,21 @@ export interface PaginationQuery {
 
 export interface UserQuery extends PaginationQuery {
   status?: 'active' | 'inactive';
-  type?: 'client' | 'company';
+  type?: 'CLIENT' | 'COMPANYUSER';
 }
 
 export interface ServiceQuery extends PaginationQuery {
   includeDeleted?: 'true' | 'false' | 'only';
 }
 
-export interface ByActiveQuery extends PaginationQuery
- {
-  isActive: 'true' | 'false';
- }
+export interface ByActiveQuery extends PaginationQuery {
+  isActive?: 'true' | 'false';
+}
+
+export interface CompanyBankAccountQuery extends ByActiveQuery {
+  isDefault: 'true' | 'false';
+}
+
 const asyncHandler =
   <T = any>(
     callback: RequestHandler<
@@ -34,10 +38,10 @@ const asyncHandler =
       Record<string, any>
     >
   ) =>
-  (req: Request, res: Response<APIResponse<T>>, next: NextFunction) => {
-    return Promise.resolve(callback(req, res, next)).catch((err) => {
-      return next(err);
-    });
-  };
+    (req: Request, res: Response<APIResponse<T>>, next: NextFunction) => {
+      return Promise.resolve(callback(req, res, next)).catch((err) => {
+        return next(err);
+      });
+    };
 
 export default asyncHandler;

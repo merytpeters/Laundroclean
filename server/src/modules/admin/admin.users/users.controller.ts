@@ -28,7 +28,7 @@ const getUsersController = asyncHandler<Profile[]>(async (req, res) => {
     const filter: UserFilter = {};
 
     if (query.status === 'active' || query.status === 'inactive') filter.status = query.status;
-    if (query.type === 'client' || query.type === 'company') filter.type = query.type;
+    if (query.type === 'CLIENT' || query.type === 'COMPANYUSER') filter.type = query.type;
     if (query.search) filter.search = query.search;
 
     const pagination: { page?: number; limit?: number } = {};
@@ -40,7 +40,8 @@ const getUsersController = asyncHandler<Profile[]>(async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Users retrieved successfully',
-      data: users,
+      data: users.data,
+      meta: users.meta
     });
 });
 
@@ -77,6 +78,9 @@ const restoreUserController = asyncHandler(async (req, res) => {
 
     return res.status(200).json({ success: true, message: 'User restored successfully', data: restored });
 });
+
+
+// add an update user role and add users to role endpoint
 
 export default {
     getProfile,

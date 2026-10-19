@@ -1,27 +1,29 @@
 import { mapClientBookingStatus, ACTIVE_STATUS, BookingTrackerProgressCount, statusClassMap, ClientBookingOrderSteps, OrderStatusMessage } from "src/types/booking/bookingStatus"
 import styles from './ActiveOrder.module.css';
 import statusStyles from 'src/components/ui/flexboxes/ScheduleCard.module.css';
-import { mappedDelivery } from "src/services/bookingService/bookingMockData";
-import { BookingDetail } from "src/types/booking/bookingOrder";
+import { BookingDto } from "src/types/booking/booking.dto";
 
 
+interface ActiveOrderProps {
+    data: BookingDto[]
+}
 
-const mappedDetails: (BookingDetail & { progressCount: number; originalStatus: string })[] = mappedDelivery.map((item) => ({
-    ...item,
-    originalStatus: item.status,
-    status: mapClientBookingStatus(item.status, { deliveryType: item.deliveryType }),
-    progressCount: BookingTrackerProgressCount(item.status),
-}))
+export default function ActiveOrder(prop: ActiveOrderProps) {
 
-
-export default function ActiveOrder() {
+    const mappedDetails: (BookingDto & { progressCount: number; originalStatus: string })[] = prop.data.map((item) => ({
+        ...item,
+        originalStatus: item.status,
+        mappedStatus: mapClientBookingStatus(item.status, { deliveryType: item.deliveryType }),
+        progressCount: BookingTrackerProgressCount(item.status),
+    }))
     return (
         <>
             {mappedDetails.map((bookingDetails) => {
                 if (!ACTIVE_STATUS.includes(bookingDetails.originalStatus)) return null;
                 const c = bookingDetails.progressCount ?? 0;
                 let currentIndex = 0;
-                if (c >= 7) currentIndex = 3;
+                if (c >= 8) currentIndex = 4;
+                else if (c >= 7) currentIndex = 3;
                 else if (c >= 6) currentIndex = 2;
                 else if (c >= 4) currentIndex = 1;
                 else if (c >= 3) currentIndex = 0;
@@ -32,7 +34,7 @@ export default function ActiveOrder() {
                         <span className={styles.textnstatus}>
                             <b>{message}.</b>
                             <span className={`${styles.status} ${statusStyles[statusClassMap[bookingDetails.status]]}`}>
-                                {bookingDetails.status}
+                                {bookingDetails.mappedStatus}
                             </span>
                         </span>
 

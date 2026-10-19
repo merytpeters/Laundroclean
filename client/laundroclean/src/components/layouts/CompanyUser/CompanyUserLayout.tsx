@@ -20,6 +20,7 @@ interface CompanyUserLayoutProps {
 
 const LayoutContent = ({ user, children, welcomeMessage, showMenu = true }: CompanyUserLayoutProps) => {
   const { activeMenu, setActiveMenu, menuItems, setMenuItems } = useCompanyUserMenu();
+  if (!user.uiRole) return null;
   const config = roleConfig[user.uiRole];
 
   const isControlPanel = config.settingsAction === "CONTROL PANEL";
