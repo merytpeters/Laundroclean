@@ -45,7 +45,26 @@
  *             expiresAt:
  *               type: string
  *               format: date-time
+ *     PromoCodeListResponse:
+ *       type: array
+ *       items:
+ *         $ref: '#/components/schemas/PromoValidationResult'
  *
+ * /api/v1/promocode:
+ *   get:
+ *     tags:
+ *       - Promo
+ *     summary: get promo codes (public)
+ *     responses:
+ *       '200':
+ *         description: Promo details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PromoCodeListResponse'
+ *       '404':
+ *         description: Not found
+ * 
  * /api/v1/promocode/validate:
  *   get:
  *     tags:

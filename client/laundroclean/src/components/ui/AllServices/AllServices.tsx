@@ -11,7 +11,7 @@ import { useCreateService, useDeactiveServices, useReactiveServices, useServices
 import { useForm } from "react-hook-form";
 import ErrorState, { LoadingState } from "../ErrorState/ErrorState";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import { ServiceDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
+import { ServiceDto, ServicesDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import CurrencySelect from "../PaymentUI/CurrencySelect";
 import { formatDateTime } from "src/utils/globalTimezone";
 import { useSearchParams } from "next/navigation";
@@ -23,6 +23,7 @@ interface AllServicesProps {
     clientuser?: Client;
     user?: CompanyUser | Client;
     isActive?: boolean;
+    services?: ServicesDto | null;
 }
 
 type LocationViewType = "serviceAreas" | "dropoffPoints";

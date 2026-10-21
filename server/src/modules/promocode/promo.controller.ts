@@ -18,17 +18,23 @@ const validatePromo = asyncHandler(async (req, res) => {
 
 const createPromo = asyncHandler(async (req, res) => {
   const promo = await PromoService.createPromo(req.body);
-  res.status(201).json({ success: true, data: { promo }, message: 'Promo created' });
+  res.status(201).json({ success: true, data: promo, message: 'Promo created' });
 });
 
 const getPromos = asyncHandler(async (req, res) => {
-  const promos = await PromoService.getPromos();
+  const user = req.user;
+
+  const userId = user?.type === 'CLIENT' ? user.id : undefined;
+  const promos = await PromoService.getPromos(userId);
   if (!promos) return res.status(404).json({ success: false, message: 'Promos not found' });
-  res.status(200).json({ success: true, data: { promos }, message: 'Promo codes retrieved successfully' });
+  res.status(200).json({ success: true, data: promos, message: 'Promo codes retrieved successfully' });
 });
 
 const getPromo = asyncHandler(async (req, res) => {
-  const promo = await PromoService.getPromoById(req.params.id);
+  const user = req.user;
+
+  const userId = user?.type === 'CLIENT' ? user.id : undefined;
+  const promo = await PromoService.getPromoById(req.params.id, userId);
   if (!promo) return res.status(404).json({ success: false, message: 'Promo not found' });
   res.status(200).json({ success: true, data: { promo }, message: 'Promo code retrieved successfully' });
 });

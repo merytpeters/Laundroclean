@@ -66,29 +66,59 @@ const createPromo = async (data: {
   usageLimit?: number | null;
   perUserLimit?: number | null;
 }) => {
-  const promo = await prisma.promoCode.create({ data: {
-    code: data.code.toUpperCase(),
-    description: data.description ?? null,
-    serviceId: data.serviceId,
-    type: data.type,
-    value: data.value as any,
-    currency: data.currency ? (data.currency as any) : null,
-    isActive: data.isActive ?? true,
-    startsAt: data.startsAt ?? null,
-    expiresAt: data.expiresAt ?? null,
-    usageLimit: data.usageLimit ?? null,
-    perUserLimit: data.perUserLimit ?? null,
-  }});
+  const promo = await prisma.promoCode.create({
+    data: {
+      code: data.code.toUpperCase(),
+      description: data.description ?? null,
+      serviceId: data.serviceId,
+      type: data.type,
+      value: data.value as any,
+      currency: data.currency ? (data.currency as any) : null,
+      isActive: data.isActive ?? true,
+      startsAt: data.startsAt ?? null,
+      expiresAt: data.expiresAt ?? null,
+      usageLimit: data.usageLimit ?? null,
+      perUserLimit: data.perUserLimit ?? null,
+    }
+  });
   return promo;
 };
 
-const getPromos = async () => {
-  const promos = prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } });
+const getPromos = async (userId?: string) => {
+  const include: Prisma.PromoCodeInclude = {
+    service: {
+      select: {
+        name: true,
+      }
+    },
+    promoUsages: userId
+      ? { where: { userId: userId } }
+      : true,
+  };
+
+  const promos = prisma.promoCode.findMany({
+    orderBy: { createdAt: 'desc' },
+    include,
+  });
   return promos;
 };
 
-const getPromoById = async (id: string) => {
-  return prisma.promoCode.findUnique({ where: { id } });
+const getPromoById = async (id: string, userId?: string) => {
+  const include: Prisma.PromoCodeInclude = {
+    service: {
+      select: {
+        name: true,
+      }
+    },
+    promoUsages: userId
+      ? { where: { userId: userId } }
+      : true,
+  };
+  const promo = prisma.promoCode.findUnique({ 
+    where: { id } ,
+    include
+  });
+  return promo;
 };
 
 const updatePromo = async (id: string, payload: any) => {
@@ -103,15 +133,15 @@ const softDeletePromo = async (id: string) => {
   await prisma.promoCode.update({ where: { id }, data: { isActive: false, deletedAt: new Date() } });
 };
 
-const restorePromo =  async (
+const restorePromo = async (
   id: string
 ) => {
-  const promocode = await prisma.promoCode.findUnique({ where: {id}});
+  const promocode = await prisma.promoCode.findUnique({ where: { id } });
 
   if (!promocode) throw new NotFoundError('Promo code not found');
 
   const restored = await prisma.promoCode.update({
-    where: {id},
+    where: { id },
     data: {
       isActive: true,
       deletedAt: null

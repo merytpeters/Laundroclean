@@ -35,6 +35,14 @@ export type PromoCodePayload = {
     isActive: true;
 }
 
+export type PromoCodeFormValues =
+    Omit<PromoCodePayload, "startsAt" | "expiresAt"> & {
+        startsAt: string;
+        startTime: string;
+        expiresAt: string;
+        expiryTime: string;
+    };
+
 export type UpdatePromoCodePayload = {
     code?: string;
     description?: string;
