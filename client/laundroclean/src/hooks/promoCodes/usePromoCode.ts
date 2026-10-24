@@ -7,7 +7,8 @@ import {
     adminDeactivatePromoCodeById,
     adminUpdatePromoCodeById,
     adminReactivatePromoCodeById,
-    publicGetPromoCodesService
+    publicGetPromoCodesService,
+    adminDeletePromoCodes
 } from "src/services/promoService/promo.services";
 import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
 import { promoCodeKeys } from "./keys";
@@ -148,6 +149,35 @@ export function useReactivatePromoCode() {
             if (authUser?.type === "COMPANYUSER") {
                 if (authUser.uiRole === "ADMIN") {
                     return adminReactivatePromoCodeById(id)
+                }
+            }
+        },
+
+        onSuccess: async (data) => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: promoCodeKeys.lists()
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: laundrocleanServicesKeys.lists()
+                }),
+            ])
+            toast.success(data?.message)
+        }
+    });
+
+    return mutation
+}
+
+export function useDeletePromoCodes() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async (ids: string[]) => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return adminDeletePromoCodes(ids)
                 }
             }
         },

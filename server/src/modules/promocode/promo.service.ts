@@ -114,8 +114,8 @@ const getPromoById = async (id: string, userId?: string) => {
       ? { where: { userId: userId } }
       : true,
   };
-  const promo = prisma.promoCode.findUnique({ 
-    where: { id } ,
+  const promo = prisma.promoCode.findUnique({
+    where: { id },
     include
   });
   return promo;
@@ -150,6 +150,19 @@ const restorePromo = async (
   return restored;
 };
 
+const deletePromo = async (
+  ids: string[]
+) => {
+  const promocodes = await prisma.promoCode.deleteMany({
+    where: {
+      id: {
+        in: ids
+      }
+    }
+  });
+  return `${promocodes.count} promocodes have been hard deleted and no longer exists in the database`;
+};
+
 export default {
   getPromoByCodeForService,
   isPromoValid,
@@ -159,6 +172,7 @@ export default {
   getPromoById,
   updatePromo,
   softDeletePromo,
-  restorePromo
+  restorePromo,
+  deletePromo
 };
 

@@ -215,6 +215,12 @@ export const adminApi = {
     getPromoCodes: () =>
         apiRequest<PromoCodeDto[]>('/admin/promocodes'),
 
+    deletePromoCodes: (payload: string[]) =>
+        apiRequest<string>('/admin/promocodes', {
+            method: "DELETE",
+            body: JSON.stringify(payload)
+        }),
+
     getPromoCodeById: (id: string) =>
         apiRequest<PromoCodeDto>(`/admin/promocodes/${id}`),
 

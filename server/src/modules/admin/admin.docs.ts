@@ -1673,6 +1673,15 @@
  *       type: array
  *       items:
  *         $ref: '#/components/schemas/PromoCodeResponse'
+ *     PromoCodeIdsRequest:
+ *       type: object
+ *       required:
+ *         - ids
+ *       properties:
+ *         ids:
+ *           type: array
+ *           example: ["id1", "id2", "id3"]
+ * 
  *
  * /api/v1/admin/promocodes:
  *   post:
@@ -1711,6 +1720,26 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/PromoCodeListResponse'
+ * 
+ *   delete:
+ *     tags:
+ *       - Admin
+ *     summary: Deletes promo codes for different services (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PromoCodeIdsRequest'
+ *     responses:
+ *       '200':
+ *         description: Promocodes deleted successfully
+ *       '400':
+ *         description: Validation error
+ *       '401':
+ *         description: Unauthorized
  *
  * /api/v1/admin/promocodes/{id}:
  *   get:

@@ -10,9 +10,11 @@ router.use(UserAuth.requireCompanyAdmin());
 
 router.post('/promocodes', validate(PromoValidation.promoCreate), PromoController.createPromo);
 router.get('/promocodes', PromoController.getPromos);
+router.delete('/promocodes', PromoController.hardDeletePromo);
 router.get('/promocodes/:id', PromoController.getPromo);
 router.patch('/promocodes/:id', validate(PromoValidation.promoUpdate), PromoController.updatePromo);
 router.patch('/promocodes/deactivate/:id', PromoController.softDeletePromo);
 router.patch('/promocodes/reactivate/:id', PromoController.restorePromo);
+
 
 export default router;

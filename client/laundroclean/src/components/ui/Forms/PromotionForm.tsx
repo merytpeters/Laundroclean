@@ -7,6 +7,7 @@ import Button from "../Button/Button";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
 import { useCreatePromoCode } from "src/hooks/promoCodes/usePromoCode";
 import { toUTCISOString } from "src/utils/globalTimezone";
+import { toast } from "sonner";
 
 interface PromoCodeProps {
     data?: PromoCodeDto[],
@@ -37,6 +38,8 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
 
     const selectedServiceId = formData.watch("serviceId");
 
+    const startsAt = formData.watch("startsAt")
+
     const selectedService = services?.find(
         (service) =>
             String(service.id) === selectedServiceId
@@ -46,32 +49,41 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
 
     formData.setValue("currency", currency)
 
-    const startsAt = formData.getValues("startsAt")
-
     const currencySymbol = currency
         ? mapCurrencySymbol(currency)
         : "";
 
     const handleCreatePromo = async (values: PromoCodeFormValues) => {
-        const payload = {
-            ...values,
-            startsAt: toUTCISOString(
-                values.startsAt,
-                values.startTime
-            ),
-            expiresAt: toUTCISOString(
-                values.expiresAt,
-                values.expiryTime
-            )
-        }
-        createPromoMutation.mutate({
-            payload
-        })
-    }
+        console.log("FORM VALUES:", values);
+
+        const {
+            startTime,
+            expiryTime,
+            ...rest
+        } = values;
+
+        const payload: PromoCodePayload = {
+            ...rest,
+            startsAt: toUTCISOString(values.startsAt, startTime),
+            expiresAt: toUTCISOString(values.expiresAt, expiryTime),
+        };
+
+        console.log("START DATE:", values.startsAt);
+        console.log("START TIME:", startTime);
+        console.log("CONVERTED START:", payload.startsAt);
+
+        console.log("EXPIRY DATE:", values.expiresAt);
+        console.log("EXPIRY TIME:", expiryTime);
+        console.log("CONVERTED EXPIRY:", payload.expiresAt);
+
+        console.log("FINAL PAYLOAD:", payload);
+
+        createPromoMutation.mutate({ payload });
+    };
 
     return (
         <form onSubmit={formData.handleSubmit(handleCreatePromo)} className={styles.promoform}>
-            <h4>{data?.length === 0 ? "Add Your First Promocode" : "Add a New Service"}</h4>
+            <h4>{data?.length === 0 ? "Add Your First Promocode" : "Add a New PromoCode"}</h4>
             <legend><b>Create a new promo code, let customers enjoy cool discounts</b> </legend>
             <span className={styles.formgroup}>
                 <span className={styles.formitem}>
@@ -160,16 +172,22 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
 
                 <span className={styles.formitem}>
                     <label htmlFor="expiresAt">expiresAt</label>
-                    <input type="date" id="expiresAt"
+                    <input type="date" id="expiresAt" min={startsAt || undefined}
                         {...formData.register("expiresAt", {
                             validate: (value) => {
-                                if (startsAt === undefined) {
+                                const startsDate = formData.getValues("startsAt")
+                                console.log("StartsAt:", startsAt)
+                                console.log("StartsDate:", startsDate)
+
+                                if (!startsDate) {
+                                    toast.error('Set start date')
                                     return 'Set start date'
                                 }
-                                return (
-                                    value >= startsAt ||
-                                    'It can not expire before the start date'
-                                )
+
+                                if (value <= startsDate) {
+                                    toast.error('Expiry date cannot be before the start date')
+                                    return ('Expiry date cannot be before the start date')
+                                }
                             }
                         })} />
                     <label htmlFor="expiryTime">Expiry Time</label>

@@ -46,12 +46,18 @@ const updatePromo = asyncHandler(async (req, res) => {
 
 const softDeletePromo = asyncHandler(async (req, res) => {
   await PromoService.softDeletePromo(req.params.id);
-  res.status(200).json({ success: true, message: 'Promo deleted' });
+  res.status(200).json({ success: true, message: 'Promo soft deleted' });
 });
 
 const restorePromo = asyncHandler(async (req, res) => {
   const restoredPromo = await PromoService.restorePromo(req.params.id);
   res.status(200).json({ success: true, data: restoredPromo, message: 'Promo code reactivated'});
+});
+
+const hardDeletePromo = asyncHandler(async (req, res) => {
+  const ids = req.body;
+  await PromoService.deletePromo(ids);
+  res.status(200).json({ success: true, message: 'Promocodes deleted successfully' });
 });
 
 export default {
@@ -61,5 +67,6 @@ export default {
   updatePromo,
   softDeletePromo,
   validatePromo,
-  restorePromo
+  restorePromo,
+  hardDeletePromo
 };

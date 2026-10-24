@@ -10,6 +10,8 @@ import { useState } from "react";
 import CreateNewPromo from "src/components/ui/Forms/PromotionForm";
 import { usePromoCodes } from "src/hooks/promoCodes/usePromoCode";
 import { useServices } from "src/hooks/laundroCleanServices/useServices";
+import { transformFieldInArray } from "src/utils/mapData";
+import { mappedPromoType } from "src/types/laundrocleanServices/promoCode";
 
 
 export default function CompanyUserPromotionsUI() {
@@ -24,15 +26,21 @@ export default function CompanyUserPromotionsUI() {
         : Array.isArray(data?.data)
             ? data.data
             : [];
-    const inactivePromoList = promoCodes.filter((promoCode) => (promoCode.isActive === false));
-    const expiredPromoList = promoCodes.filter((promoCode) => {
+
+    const mappedPromoCodes =  transformFieldInArray(
+            promoCodes,
+            "type",
+            mappedPromoType
+        );
+    const inactivePromoList = mappedPromoCodes.filter((promoCode) => promoCode.isActive === false);
+    const expiredPromoList = mappedPromoCodes.filter((promoCode) => {
         const now = new Date();
         const expiresAt = new Date(promoCode.expiresAt)
         return (
             now >= expiresAt
         )
     });
-    const validPromoList = promoCodes.filter((promoCode) => {
+    const validPromoList = mappedPromoCodes.filter((promoCode) => {
         const now = new Date();
         const expiresAt = new Date(promoCode.expiresAt);
         // not expired and active

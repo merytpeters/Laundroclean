@@ -60,3 +60,11 @@ export async function adminReactivatePromoCodeById (id: string): Promise<ApiResp
 
     return res
 }
+
+export async function adminDeletePromoCodes (ids: string[]): Promise<ApiResponse<string> | null> {
+    const res = await adminApi.deletePromoCodes(ids);
+
+    if (!res.success || !res.message) return null;
+
+    return res
+}
