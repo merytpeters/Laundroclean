@@ -65,7 +65,7 @@ export function PromotionsListCard({ user, promoList }: AllPromotionsUIProps) {
                         <span key={promoDetails.id} className={styles.promolistrow}>
                             <span className={styles.promolistitem}><b>Code: {promoDetails.code}</b></span>
                             <span className={styles.promolistitem}><b>Description: {promoDetails.description}</b></span>
-                            <span className={styles.promolistitem}><b>Service: {promoDetails.service.name}</b></span>
+                            <span className={styles.promolistitem}><b>Service: {promoDetails.service?.name}</b></span>
                             <span className={styles.promolistitem}><b>Promo Type: {promoDetails.type}</b></span>
                             <span className={styles.promolistitem}><b>Value currency: {promoDetails.currency?.toLowerCase()}</b></span>
                             <span className={styles.promolistitem}><b>Starts at: {formatDateTime(promoDetails.startsAt)}</b></span>
@@ -85,7 +85,6 @@ export function PromotionsListCard({ user, promoList }: AllPromotionsUIProps) {
                                     <span className={styles.promototalusage}>
                                         <span><b>Total Usage Limit: {promoDetails.usageLimit} </b></span> {/** This need attention and check */}
                                         <span><b>Total times Used: {promoDetails.timesUsed}</b></span>
-                                        <span><b>Inactive</b></span>
                                     </span>
 
                                     <span className={styles.promotimestamp}>
@@ -110,7 +109,7 @@ export function PromotionsListCard({ user, promoList }: AllPromotionsUIProps) {
                             )} onChange={(e) => handleCheckboxChange(promoDetails.id, e.target.checked)} />
                             <span className={styles.promolistitem}><b>Code: {promoDetails.code}</b></span>
                             <span className={styles.promolistitem}><b>Description: {promoDetails.description}</b></span>
-                            <span className={styles.promolistitem}><b>Service: {promoDetails.service.name}</b></span>
+                            <span className={styles.promolistitem}><b>Service: {promoDetails.service?.name}</b></span>
                             <span className={styles.promolistitem}><b>Promo Type: {promoDetails.type}</b></span>
                             <span className={styles.promolistitem}><b>Value currency: {promoDetails.currency?.toLowerCase()}</b></span>
                             <span className={styles.promolistitem}><b>Starts at: {formatDateTime(promoDetails.startsAt)}</b></span>
@@ -129,7 +128,6 @@ export function PromotionsListCard({ user, promoList }: AllPromotionsUIProps) {
                                     <span className={styles.promototalusage}>
                                         <span><b>Total Usage Limit: {promoDetails.usageLimit} </b></span> {/** This need attention and check */}
                                         <span><b>Total times Used: {promoDetails.timesUsed}</b></span>
-                                        <span><b>Inactive</b></span>
                                     </span>
 
                                     <span className={styles.promotimestamp}>

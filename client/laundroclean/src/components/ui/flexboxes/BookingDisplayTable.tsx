@@ -13,6 +13,7 @@ import { capitalilzeFirstLetter } from "src/utils/capitalize";
 import { statusClassMap } from "src/types/booking/bookingStatus";
 import statusMapStyle from '../flexboxes/ScheduleCard.module.css';
 import { CompanyBookingStatusSelect } from "../Modals/CompanyUser/BookingStatusSelect/BookingStatusSelect";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
 // const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -25,6 +26,7 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
     const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
     const [isEditBookingStatusId, setIsEditBookingStatusId] = useState<string | null>(null);
     const [newBookingStatus, setNewBookingStatus] = useState<Record<string, BookingStatusDto>>({});
+    const [visibleCount, setVisibleCount] = useState(6)
 
     const updateBookingStatusMutation = useUpdateBookingStatus();
 
@@ -73,7 +75,7 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
                     </tr>
                 </thead>
                 <tbody>
-                    {mappedBookingData.slice(0, 6).map((bookingDetail) => (
+                    {mappedBookingData.slice(0, visibleCount).map((bookingDetail) => (
                         <tr key={bookingDetail.id}>
 
                             <td className={styles.moredetails}
@@ -151,10 +153,12 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
 
             </table>
             <div className={styles.actions}>
-                {user.uiRole === "STAFF" ? (
+                {user.uiRole === "STAFF" ? visibleCount < mappedBookingData.length && (
+                    
                     <button
                         className={styles.viewmore}
-                        onClick={() => setActiveMenu("calendar")}
+                        onClick={() => setVisibleCount((prev) => prev + 10)}
+                        //onClick={() => setActiveMenu("calendar")}
                     >
                         view more
                     </button>
@@ -216,6 +220,10 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
     const [isEditBookingStatusId, setIsEditBookingStatusId] = useState<string | null>(null);
     const [newBookingStatus, setNewBookingStatus] = useState<Record<string, BookingStatusDto>>({});
 
+    const { user } = useCompanyUserMenu();
+
+    const router = useRouter();
+
     const updateBookingStatusMutation = useUpdateBookingStatus();
 
     const cancelledBookings = mappedBookingData.filter((booking) => {
@@ -245,6 +253,10 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
             }
         )
     }
+
+    // console.log("Selected Booking:", selectedBooking?.id)
+
+    if (!user.uiRole) return null;
 
     return (
         <section className={styles.bookingdetailsection}>
@@ -375,7 +387,16 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
 
 
             </span>
-            <BookingDetailsOverlay isOpen={selectedBooking !== null} item={selectedBooking} onClose={() => setSelectedBooking(null)} />
+            <BookingDetailsOverlay
+                isOpen={selectedBooking !== null}
+                item={selectedBooking}
+                onClose={() => setSelectedBooking(null)}
+                onMakePayment={() => {
+                    if (!selectedBooking) return;
+
+                    router.push(`/admin/dashboard#payment?bookingId=${selectedBooking.id}&bookingUserId=${selectedBooking.profile?.userId}`)
+                }}
+            />
         </section>
     )
 }
@@ -384,12 +405,14 @@ interface BookingDetailsOverlayProps {
     isOpen: boolean;
     item: BookingDto | null;
     onClose: () => void;
+    onMakePayment?: (item: BookingDto) => void;
 }
 
 export function BookingDetailsOverlay({
     isOpen,
     item,
     onClose,
+    onMakePayment
 }: BookingDetailsOverlayProps) {
     const { user, setActiveMenu, setBookingInfo } = useCompanyUserMenu();
     const bookingId = item?.id ?? "";
@@ -409,7 +432,9 @@ export function BookingDetailsOverlay({
             bookingUserId: item.profile?.userId,
         });
 
-        if (user.uiRole === "ADMIN" || user.uiRole === "STAFF") {
+        onMakePayment?.(item);
+
+        if (!onMakePayment && (user.uiRole === "ADMIN" || user.uiRole === "STAFF")) {
             setActiveMenu("payment");
         }
     };

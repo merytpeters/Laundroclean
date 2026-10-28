@@ -60,7 +60,7 @@ describe('Admin Promocode Routes', () => {
       .send({ code, serviceId, type: 'PERCENTAGE', value: 10 });
 
     expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty('data.promo.code', code.toUpperCase());
+    expect(res.body).toHaveProperty('data.code', code.toUpperCase());
   });
 
   it('should list promos and allow get, update', async () => {
@@ -71,7 +71,7 @@ describe('Admin Promocode Routes', () => {
       .send({ code: 'TEMPTEST', serviceId, type: 'FIXED_AMOUNT', value: 500 });
 
     expect(createRes.status).toBe(201);
-    const promo = createRes.body?.data?.promo;
+    const promo = createRes.body?.data;
     expect(promo).toBeDefined();
 
     // list
@@ -107,7 +107,7 @@ describe('Admin Promocode Routes', () => {
       .send({ code: 'SOFTDELETETEST', serviceId, type: 'FIXED_AMOUNT', value: 500 });
 
     expect(createRes.status).toBe(201);
-    const promo = createRes.body?.data?.promo;
+    const promo = createRes.body?.data;
     expect(promo).toBeDefined();
 
     // list

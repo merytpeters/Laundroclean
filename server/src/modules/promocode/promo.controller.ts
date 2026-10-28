@@ -6,7 +6,7 @@ const validatePromo = asyncHandler(async (req, res) => {
   const { serviceId, code, totalAmount } = q;
   if (!serviceId || !code) return res.status(400).json({ success: false, message: 'serviceId and code are required' });
 
-  const promo = await PromoService.getPromoByCodeForService(serviceId, code);
+  const promo = await PromoService.getPromoByCodeForService(code, serviceId);
   const valid = PromoService.isPromoValid(promo);
   let calc = { discount: 0, finalAmount: totalAmount ? Number(totalAmount) : null };
   if (valid && totalAmount) {

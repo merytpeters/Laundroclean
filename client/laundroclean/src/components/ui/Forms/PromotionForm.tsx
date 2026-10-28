@@ -22,7 +22,7 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
         defaultValues: {
             code: "",
             description: "",
-            serviceId: "",
+            serviceId: undefined,
             expiresAt: "",
             expiryTime: "00:00",
             type: undefined,
@@ -45,12 +45,15 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
             String(service.id) === selectedServiceId
     );
 
-    const currency = selectedService?.prices?.[0]?.currency
+    if (selectedService) {
+        const currency = selectedService?.prices?.[0]?.currency
+        formData.setValue("currency", currency)
+    }
 
-    formData.setValue("currency", currency)
+    const filledCurrency = formData.watch("currency")
 
-    const currencySymbol = currency
-        ? mapCurrencySymbol(currency)
+    const currencySymbol = filledCurrency
+        ? mapCurrencySymbol(filledCurrency)
         : "";
 
     const handleCreatePromo = async (values: PromoCodeFormValues) => {
@@ -81,6 +84,8 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
         createPromoMutation.mutate({ payload });
     };
 
+    console.log("Currency:", formData.getValues("currency"))
+
     return (
         <form onSubmit={formData.handleSubmit(handleCreatePromo)} className={styles.promoform}>
             <h4>{data?.length === 0 ? "Add Your First Promocode" : "Add a New PromoCode"}</h4>
@@ -105,7 +110,9 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
                     <select
                         id="serviceId"
                         {...formData.register(
-                            "serviceId"
+                            "serviceId", {
+                                setValueAs: (value) => (value === "" ? undefined : value)
+                            }
                         )}
                     >
                         <option value="">
@@ -125,10 +132,22 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
                     </select>
                 </span>
 
-                <span className={styles.formitem}>
-                    <label htmlFor="currency">Currency</label>
-                    <input type="text" id="currency" {...formData.register("currency")} placeholder={`${currencySymbol} ${selectedService?.prices?.[0]?.amount ?? ""}`} disabled />
-                </span>
+                {selectedService ? (
+                    <span className={styles.formitem}>
+                        <label htmlFor="currency">Currency</label>
+                        <input type="text" id="currency" {...formData.register("currency")} placeholder={`${currencySymbol} ${selectedService?.prices?.[0]?.amount ?? ""}`} disabled />
+                    </span>
+                ) : (
+                    <span className={styles.formitem}>
+                        <label htmlFor="currency">Currency</label>
+                        <select id="currency" {...formData.register("currency")}>
+                            <option value="" disabled>Please choose currency</option>
+                            <option value="NAIRA">₦</option>
+                            <option value="DOLLAR">$</option>
+                            <option value="POUNDS">£</option>
+                        </select>
+                    </span>
+                )}
 
 
             </span>

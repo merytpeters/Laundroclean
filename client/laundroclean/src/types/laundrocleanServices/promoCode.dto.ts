@@ -2,7 +2,7 @@ export type PromoCodeDto = {
     id: string;
     code: string;
     description?: string;
-    service: {
+    service?: {
         name: string;
     };
     perUserLimit?: number;

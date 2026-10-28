@@ -236,7 +236,7 @@ const createBooking = async (
                 let finalAmount: any = totalAmount;
 
                 if ((input as any).promoCode) {
-                    const promo = await PromoService.getPromoByCodeForService(input.serviceId, (input as any).promoCode);
+                    const promo = await PromoService.getPromoByCodeForService ((input as any).promoCode, input.serviceId,);
                     if (!promo) {
                         throw new UnauthorizedError('Invalid or expired promo code');
                     }
@@ -367,7 +367,7 @@ const updateBooking = async (input: UpdateBookingInput, where: BookingWhereUniqu
 
             // Promo application on update: if promoCode provided, validate and apply
             if ((input as any).promoCode) {
-                const promo = await PromoService.getPromoByCodeForService(booking.serviceId, (input as any).promoCode);
+                const promo = await PromoService.getPromoByCodeForService((input as any).promoCode, booking.serviceId);
                 if (!promo) {
                     throw new UnauthorizedError('Invalid or expired promo code');
                 }

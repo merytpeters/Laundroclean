@@ -25,7 +25,7 @@ export type PromoDetail = {
 export type PromoCodePayload = {
     code: string;
     description?: string;
-    serviceId: string;
+    serviceId?: string;
     expiresAt: string;
     type: PromoType;
     value: number;

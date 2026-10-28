@@ -4,11 +4,10 @@ import { NotFoundError } from '../../middlewares/errorHandler.js';
 
 const now = () => new Date();
 
-const getPromoByCodeForService = async (serviceId: string, code: string): Promise<PromoCode | null> => {
+const getPromoByCodeForService = async (code: string, serviceId?: string): Promise<PromoCode | null> => {
   const n = now();
   const promo = await prisma.promoCode.findFirst({
     where: {
-      serviceId,
       code: String(code).toUpperCase(),
       isActive: true,
       AND: [
@@ -25,6 +24,10 @@ const getPromoByCodeForService = async (serviceId: string, code: string): Promis
           ],
         },
       ],
+      OR: [
+        ...(serviceId ? [{ serviceId }]: []),
+        { serviceId: null}
+      ]
     },
   });
   return promo;
@@ -56,7 +59,7 @@ const calculateDiscount = (totalAmount: number, promo: PromoCode | null): { disc
 const createPromo = async (data: {
   code: string;
   description?: string | null;
-  serviceId: string;
+  serviceId?: string | null;
   type: 'PERCENTAGE' | 'FIXED_AMOUNT';
   value: number | string;
   currency?: string | null;
@@ -70,7 +73,7 @@ const createPromo = async (data: {
     data: {
       code: data.code.toUpperCase(),
       description: data.description ?? null,
-      serviceId: data.serviceId,
+      serviceId: data.serviceId ?? null,
       type: data.type,
       value: data.value as any,
       currency: data.currency ? (data.currency as any) : null,
@@ -92,7 +95,10 @@ const getPromos = async (userId?: string) => {
       }
     },
     promoUsages: userId
-      ? { where: { userId: userId } }
+      ? { 
+        where: 
+        { userId: userId } 
+      }
       : true,
   };
 

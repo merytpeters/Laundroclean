@@ -888,7 +888,7 @@ function ServicesList({ user, isActive = true }: AllServicesProps) {
 
                             <span>
                                 <b>
-                                    Promocodes
+                                    Active Promocodes
                                 </b>
                                 :{" "}
                                 {service.promoCodes
