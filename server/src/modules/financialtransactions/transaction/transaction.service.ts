@@ -3,9 +3,10 @@ import type { Prisma, Transaction, Payment } from '@prisma/client';
 import { TransactionValidation } from '../../../validation/index.js';
 import type { CreateTransactionSchema } from '../../../validation/financialtransactions/transactions.validation.js';
 import { TransactionStatus, PaymentStatus } from '@prisma/client';
-import { NotFoundError } from '../../../middlewares/errorHandler.js';
+import { ConflictError, NotFoundError } from '../../../middlewares/errorHandler.js';
 import { PaymentUtils } from '../index.js';
 import { PrismaClient } from '@prisma/client';
+import { PromoUsageService } from '../../promocode/index.js';
 
 
 type TransactionCreateInput = Prisma.TransactionCreateInput;
@@ -48,12 +49,14 @@ export class TransactionService {
 
         if (existing) return existing;
 
+        const paidAmount = booking.finalAmount ? booking.finalAmount : booking.totalAmount;
+
         const data: TransactionCreateInput = {
             booking: {
                 connect: { id: booking.id },
             },
             userId: validatedData.userId,
-            paidAmount: PaymentUtils.toMinorUnit(booking.totalAmount.toNumber()),
+            paidAmount: PaymentUtils.toMinorUnit(paidAmount.toNumber()),
             transactionRef: PaymentUtils.generateTransactionRef(),
         };
 
@@ -90,17 +93,38 @@ export class TransactionService {
         });
 
         if (transactionStatus === TransactionStatus.SUCCESS) {
-            await db.booking.update({
-                where: { id: fullPayment.transaction.bookingId },
-                data: {
-                    status: 'CONFIRMED',
-                },
+            await prisma.$transaction(async (tx) => {
+                const booking = await db.booking.update({
+                    where: { id: fullPayment.transaction.bookingId },
+                    data: {
+                        status: 'CONFIRMED',
+                    },
+                    include: { profile: true }
+                });
+                // implement promousage
+
+                if (booking.promoCodeId) {
+                    const promo = await tx.promoCode.findUnique({ where: { id: booking.promoCodeId } });
+                    if (!promo) throw new NotFoundError('Promo not found');
+
+                    if (promo.usageLimit !== null && promo.timesUsed >= promo.usageLimit) {
+                        throw new ConflictError('Promo usage limit reached');
+                    }
+
+                    const usage = await tx.promoUsage.findFirst({ where: { promoCodeId: promo.id, userId: booking.profile.userId } });
+                    if (promo.perUserLimit !== null && (usage?.timesUsed ?? 0) >= promo.perUserLimit) {
+                        throw new ConflictError('User promo code usage limit reached');
+                    }
+
+                    await tx.promoCode.update({ where: { id: promo.id }, data: { timesUsed: { increment: 1 } } });
+                    await PromoUsageService.incrementUsage(tx, booking.profile.userId, promo.id);
+                }
             });
         }
 
         if (
             transactionStatus === TransactionStatus.FAILED ||
-            transactionStatus === TransactionStatus.CANCELLED|| 
+            transactionStatus === TransactionStatus.CANCELLED ||
             transactionStatus === TransactionStatus.PENDING
         ) {
             await db.booking.update({

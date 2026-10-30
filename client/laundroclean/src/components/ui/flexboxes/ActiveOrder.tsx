@@ -22,10 +22,10 @@ export default function ActiveOrder(prop: ActiveOrderProps) {
                 if (!ACTIVE_STATUS.includes(bookingDetails.originalStatus)) return null;
                 const c = bookingDetails.progressCount ?? 0;
                 let currentIndex = 0;
-                if (c >= 8) currentIndex = 4;
-                else if (c >= 7) currentIndex = 3;
-                else if (c >= 6) currentIndex = 2;
-                else if (c >= 4) currentIndex = 1;
+                if (c >= 9) currentIndex = 4;
+                else if (c >= 8) currentIndex = 3;
+                else if (c >= 7) currentIndex = 2;
+                else if (c >= 5) currentIndex = 1;
                 else if (c >= 3) currentIndex = 0;
                 const message = OrderStatusMessage[currentIndex] ?? '';
 
@@ -43,9 +43,9 @@ export default function ActiveOrder(prop: ActiveOrderProps) {
                         <div className={styles.progress}>
                             <div
                                 className={styles.progressfill}
-                                style={{ width: `${Math.round((bookingDetails.progressCount / 7) * 100)}%` }}
+                                style={{ width: `${Math.round((bookingDetails.progressCount / 9) * 100)}%` }}
                                 aria-valuemin={0}
-                                aria-valuemax={7}
+                                aria-valuemax={9}
                                 aria-valuenow={bookingDetails.progressCount}
                             />
                         </div>

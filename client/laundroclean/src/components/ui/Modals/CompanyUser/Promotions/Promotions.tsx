@@ -27,11 +27,11 @@ export default function CompanyUserPromotionsUI() {
             ? data.data
             : [];
 
-    const mappedPromoCodes =  transformFieldInArray(
-            promoCodes,
-            "type",
-            mappedPromoType
-        );
+    const mappedPromoCodes = transformFieldInArray(
+        promoCodes,
+        "type",
+        mappedPromoType
+    );
     const inactivePromoList = mappedPromoCodes.filter((promoCode) => promoCode.isActive === false);
     const expiredPromoList = mappedPromoCodes.filter((promoCode) => {
         const now = new Date();
@@ -64,10 +64,10 @@ export default function CompanyUserPromotionsUI() {
         );
     }
 
-    console.log("Promo data:", data)
-    console.log("promocodes:", promoCodes)
-    console.log("Expired promo:", expiredPromoList)
-    console.log("Valid promo:", validPromoList)
+    // console.log("Promo data:", data)
+    // console.log("promocodes:", promoCodes)
+    // console.log("Expired promo:", expiredPromoList)
+    // console.log("Valid promo:", validPromoList)
 
     if (!authUser || authUser.type !== "COMPANYUSER") {
         return null;

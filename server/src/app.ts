@@ -62,7 +62,7 @@ app.use('/api/v1/auth', AuthRoutes);
 // important that AdminServiceRoutes comes before StaffServiceRoutes if not express does not hit all routes
 app.use('/api/v1/admin', AdminRoutes, RolesRoutes, AdminUsersRoutes, AdminServiceRoutes, AdminBookingRoutes, AdminPromoRoutes, AdminPromoUsageRoutes, StaffServiceRoutes, AdminCalendarRoutes);
 app.use('/api/v1/admin/analysis', AdminPromoUsageRoutes);
-app.use('/api/v1/promocode', PromoPublicRoutes);
+app.use('/api/v1/promocodes', PromoPublicRoutes);
 app.use('/api/v1/profile', ProfileRoutes);
 app.use('/api/v1/services', LaundrocleanservicesRoutes);
 app.use('/api/v1/service-price', ServicepriceRoutes);

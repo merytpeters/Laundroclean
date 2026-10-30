@@ -10,6 +10,10 @@ const getPromoByCodeForService = async (code: string, serviceId?: string): Promi
     where: {
       code: String(code).toUpperCase(),
       isActive: true,
+      OR: [
+        ...(serviceId ? [{ serviceId }]: []),
+        { serviceId: null}
+      ],
       AND: [
         {
           OR: [
@@ -24,10 +28,6 @@ const getPromoByCodeForService = async (code: string, serviceId?: string): Promi
           ],
         },
       ],
-      OR: [
-        ...(serviceId ? [{ serviceId }]: []),
-        { serviceId: null}
-      ]
     },
   });
   return promo;

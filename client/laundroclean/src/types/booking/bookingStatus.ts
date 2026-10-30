@@ -164,19 +164,19 @@ export function BookingTrackerProgressCount(status: string) {
         case "COMPANY_PICKED_UP_FROM_POINT":
             return 3;
         case "COMPANY_PICKED_UP_FROM_CUSTOMER":
-            return 3;
-        case "IN_PROGRESS":
             return 4;
+        case "IN_PROGRESS":
+            return 5;
         case "WASHED":
-            return 5
+            return 6
         case "IN_TRANSIT":
-            return 6;
-        case "COMPANY_DROPPED_OFF_AT_POINT":
             return 7;
+        case "COMPANY_DROPPED_OFF_AT_POINT":
+            return 8;
         case "CUSTOMER_PICKED_UP_FROM_POINT":
-            return 8
+            return 9
         case "DELIVERED":
-            return 8
+            return 9
         default:
             return 0
     }

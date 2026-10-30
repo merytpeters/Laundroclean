@@ -50,7 +50,7 @@
  *       items:
  *         $ref: '#/components/schemas/PromoValidationResult'
  *
- * /api/v1/promocode:
+ * /api/v1/promocodes:
  *   get:
  *     tags:
  *       - Promo
@@ -65,7 +65,7 @@
  *       '404':
  *         description: Not found
  * 
- * /api/v1/promocode/validate:
+ * /api/v1/promocodes/validate:
  *   get:
  *     tags:
  *       - Promo
