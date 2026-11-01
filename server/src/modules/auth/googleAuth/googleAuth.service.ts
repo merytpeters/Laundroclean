@@ -142,21 +142,37 @@ const getUserWithRole = async (userId: string) => {
 };
 
 const ensureProfile = async (userId: string, picture?: string) => {
-	return prisma.profile.upsert({
+	const existingProfile = await prisma.profile.findUnique({
 		where: { userId },
-		create: {
-			userId,
-			avatarUrl: picture ?? null,
-			phoneNumber: null,
-			addressLine1: null,
-			addressLine2: null,
-			city: null,
-			state: null,
-			postalCode: null,
-			paymentMethodToken: null,
-		},
-		update: {
-			...(picture ? { avatarUrl: picture } : {}),
+	});
+
+	if (!existingProfile) {
+		return prisma.profile.create({
+			data: {
+				userId,
+				avatarUrl: picture ?? null,
+				phoneNumber: null,
+				addressLine1: null,
+				addressLine2: null,
+				city: null,
+				state: null,
+				postalCode: null,
+				paymentMethodToken: null,
+			},
+		});
+	}
+
+	const hasCustomAvatar = Boolean(existingProfile.avatarPublicId);
+	const hasAnyAvatar = Boolean(existingProfile.avatarUrl);
+
+	if (hasCustomAvatar || hasAnyAvatar || !picture) {
+		return existingProfile;
+	}
+
+	return prisma.profile.update({
+		where: { userId },
+		data: {
+			avatarUrl: picture,
 		},
 	});
 };

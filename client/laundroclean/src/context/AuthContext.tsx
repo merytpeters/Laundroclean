@@ -6,6 +6,7 @@ import {
     useContext,
     useEffect,
     useMemo,
+    useRef,
     useState
 } from "react";
 
@@ -41,6 +42,9 @@ export function AuthProvider({
     const [authUser, setAuthUser] = useState<User | null>(null);
     const [authProfile, setAuthProfile ] = useState<ProfileResponse | null>(null);
     const { data, isLoading, refetch, isError } = useCurrentUser();
+    const resolvedAuthUser = data?.user ?? authUser;
+    const resolvedAuthProfile = data?.profile ?? authProfile;
+    const attemptedHydrationRef = useRef(false);
 
     useEffect(() => {
         if (!data) return;
@@ -58,34 +62,53 @@ export function AuthProvider({
         setAuthProfile(null);
     }, [data, isLoading]);
 
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (!hasAccessToken()) {
+            attemptedHydrationRef.current = false;
+            return;
+        }
+
+        if (data) {
+            attemptedHydrationRef.current = false;
+            return;
+        }
+
+        if (attemptedHydrationRef.current) return;
+
+        attemptedHydrationRef.current = true;
+        void refetch();
+    }, [data, isLoading, refetch]);
+
     const hasPermission = useCallback(
         (permission: Permission): boolean => {
             // Clients don't use role permissions
-            if (authUser?.type !== "COMPANYUSER") {
+            if (resolvedAuthUser?.type !== "COMPANYUSER") {
                 return false;
             }
 
             return checkPermission(
-                authUser.role?.permissions,
+                resolvedAuthUser.role?.permissions,
                 permission
             );
         },
-        [authUser]
+        [resolvedAuthUser]
     );
 
     const value = useMemo(
         () => ({
-            authUser,
+            authUser: resolvedAuthUser,
             setAuthUser,
-            isAuthenticated: !!authUser || hasAccessToken(),
-            authProfile,
+            isAuthenticated: !!resolvedAuthUser || hasAccessToken(),
+            authProfile: resolvedAuthProfile,
             setAuthProfile,
             isLoading,
             refetch,
             isError,
             hasPermission,
         }),
-        [authUser, authProfile, isLoading, refetch, isError]
+        [resolvedAuthUser, resolvedAuthProfile, isLoading, refetch, isError, hasPermission]
     );
 
     return (

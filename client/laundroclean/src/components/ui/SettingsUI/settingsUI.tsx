@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Button from '../Button/Button';
 import styles from './settingsUI.module.css';
-import { FaUser, FaLock, FaCog, FaCreditCard, FaLandmark, FaUserCircle, FaCamera } from 'react-icons/fa';
+import { FaUser, FaLock, FaCog, FaCreditCard, FaLandmark, FaUserCircle, FaCamera, FaSpinner } from 'react-icons/fa';
 import { useChangePassword, useDeleteProfilePic, useSoftDeleteAccount, useUpdateProfile, useUpdateProfilePic } from 'src/hooks/profile/useProfile';
 import { ProfileDto, UserDto } from 'src/types/users/user.dto';
 import { toast } from 'sonner';
@@ -24,6 +24,7 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
     const updateProfileMutation = useUpdateProfile();
     const uploadProfilepicMutation = useUpdateProfilePic();
     const [selectedFile, setSeletedFile] = useState<File | null>(null);
+    const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const logoutMutation = useLogout();
     const deleteProfilePicMutation = useDeleteProfilePic();
@@ -33,6 +34,9 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
     const changePasswordMutation = useChangePassword();
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = useState('password');
+    const isUploadingAvatar = uploadProfilepicMutation.isPending;
+    const isDeletingAvatar = deleteProfilePicMutation.isPending;
+    const isAvatarBusy = isUploadingAvatar || isDeletingAvatar;
 
 
     const formData = useForm<UserDto & ProfileDto>({
@@ -58,6 +62,23 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
         }
     }, [user, profile, formData]);
 
+    useEffect(() => {
+        return () => {
+            if (localAvatarPreview) {
+                URL.revokeObjectURL(localAvatarPreview);
+            }
+        };
+    }, [localAvatarPreview]);
+
+    useEffect(() => {
+        if (!profile?.updatedAt) return;
+
+        setLocalAvatarPreview((prev) => {
+            if (prev) URL.revokeObjectURL(prev);
+            return null;
+        });
+    }, [profile?.updatedAt]);
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
@@ -67,11 +88,29 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
     }
 
     const handleSave = async () => {
+        if (isAvatarBusy) return;
         if (!selectedFile) return;
 
         try {
             const resizedFile = await resizeProfileImage(selectedFile);
-            uploadProfilepicMutation.mutate(resizedFile);
+            const previewUrl = URL.createObjectURL(resizedFile);
+
+            setLocalAvatarPreview((prev) => {
+                if (prev) URL.revokeObjectURL(prev);
+                return previewUrl;
+            });
+
+            uploadProfilepicMutation.mutate(resizedFile, {
+                onSuccess: () => {
+                    setSeletedFile(null);
+                },
+                onError: () => {
+                    setLocalAvatarPreview((prev) => {
+                        if (prev) URL.revokeObjectURL(prev);
+                        return null;
+                    });
+                },
+            });
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Failed to process profile image");
         }
@@ -90,6 +129,12 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
     }
 
     const handleDeleteProfilePic = () => {
+        if (isAvatarBusy) return;
+        setLocalAvatarPreview((prev) => {
+            if (prev) URL.revokeObjectURL(prev);
+            return null;
+        });
+        setSeletedFile(null);
         deleteProfilePicMutation.mutate()
     }
 
@@ -107,6 +152,14 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
     const handlePasswordChange = (values: ChangePasswordPayload) => {
         changePasswordMutation.mutate(values);
     }
+
+    const remoteAvatarUrl = profile?.avatarUrl
+        ? profile.avatarPublicId
+            ? `${profile.avatarUrl}${profile.avatarUrl.includes("?") ? "&" : "?"}v=${encodeURIComponent(profile.updatedAt)}`
+            : profile.avatarUrl
+        : null;
+
+    const avatarToDisplay = localAvatarPreview || remoteAvatarUrl;
 
 
     return (
@@ -175,19 +228,33 @@ export default function SettingsUI({ user, profile}: SettingsUIProps) {
                         {/**Profile display tenary */}
                         <span className={styles.profilepic}>
                             <span className={styles.profileavatar}>
-                                {profile?.avatarUrl ? (
-                                    <img src={profile.avatarUrl} alt="Profile" className={styles.profileImage} />
+                                {avatarToDisplay ? (
+                                    <img src={avatarToDisplay} alt="Profile" className={styles.profileImage} />
                                 ) : (
                                     <FaUserCircle size={230} className={styles.avataricon} />
                                 )}
+
+                                {isAvatarBusy && (
+                                    <span className={styles.avatarLoadingOverlay} aria-hidden="true">
+                                        <FaSpinner size={24} className={styles.spinner} />
+                                    </span>
+                                )}
+
                                 <span className={styles.camerabadge}>
-                                    <FaCamera size={35} className={styles.cameraicon} onClick={() => fileInputRef.current?.click()} />
+                                    <FaCamera
+                                        size={35}
+                                        className={styles.cameraicon}
+                                        onClick={() => {
+                                            if (isAvatarBusy) return;
+                                            fileInputRef.current?.click();
+                                        }}
+                                    />
                                 </span>
                             </span>
 
                             <span className={styles.profilepicbtns}>
-                                <Button text="Upload New" onClick={() => handleSave()} className={styles.uploadnewbtn} />
-                                <Button text="Delete Avatar" onClick={() => handleDeleteProfilePic()} className={styles.deleteavatarbtn} />
+                                <Button text={isUploadingAvatar ? "Uploading..." : "Upload New"} onClick={() => handleSave()} className={styles.uploadnewbtn} />
+                                <Button text={isDeletingAvatar ? "Removing..." : "Delete Avatar"} onClick={() => handleDeleteProfilePic()} className={styles.deleteavatarbtn} />
                             </span>
                             <input type="file" ref={fileInputRef} accept='image/*' hidden onChange={handleFileChange} />
 

@@ -61,7 +61,7 @@ export async function updateProfilePicService(imageFile: File): Promise<ProfileR
     const res = await profileApi.updateProfilePic(formData);
 
     if (!res.success || !res.data) {
-        return null
+        throw new Error(res.message || "Failed to update profile picture")
     }
 
     return res.data
@@ -71,7 +71,7 @@ export async function deleteProfilePicService(): Promise<ProfileResponse | null>
     const res = await profileApi.deleteProfilePic();
 
     if (!res.success || !res.data) {
-        return null
+        throw new Error(res.message || "Failed to delete profile picture")
     }
 
     return res.data

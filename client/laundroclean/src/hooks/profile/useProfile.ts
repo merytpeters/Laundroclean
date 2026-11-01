@@ -3,6 +3,7 @@ import { getCurrentUserProfileService, updateProfilePicService, updateProfileSer
 import { profileKeys } from "./keys";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { UserProfileResponse } from "src/types/users/user";
 
 export function useCurrentUser() {
     return useQuery({
@@ -17,7 +18,20 @@ export function useUpdateProfilePic() {
     return useMutation ({
         mutationFn: updateProfilePicService,
 
-        onSuccess() {
+        onSuccess(data) {
+            if (!data) {
+                toast.error("Failed to update profile picture");
+                return;
+            }
+
+            queryClient.setQueryData<UserProfileResponse | null>(profileKeys.profile(), (previous) => {
+                if (!previous) return previous;
+                return {
+                    ...previous,
+                    profile: data,
+                };
+            });
+
             queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
             toast.success("Profile picture updated successfully")
         },
@@ -51,7 +65,20 @@ export function useDeleteProfilePic() {
     return useMutation ({
         mutationFn: deleteProfilePicService,
 
-        onSuccess() {
+        onSuccess(data) {
+            if (!data) {
+                toast.error("Failed to delete profile picture");
+                return;
+            }
+
+            queryClient.setQueryData<UserProfileResponse | null>(profileKeys.profile(), (previous) => {
+                if (!previous) return previous;
+                return {
+                    ...previous,
+                    profile: data,
+                };
+            });
+
             queryClient.invalidateQueries({ queryKey: profileKeys.profile() });
             toast.success("Profile picture deleted successfully")
         },

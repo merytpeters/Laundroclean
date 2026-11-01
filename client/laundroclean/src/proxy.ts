@@ -5,7 +5,7 @@ const protectedRoutes = [
     "/user",
     "/staff"
 ]
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const token = request.cookies.get("accessToken")?.value;
     const isProtected = protectedRoutes.some((route) =>
         request.nextUrl.pathname.startsWith(route)

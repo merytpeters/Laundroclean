@@ -18,22 +18,107 @@
   min-width: 400px;
 }
 
-.profilepic {
+.avatarContainer {
   display: flex;
-  align-items: left;
-  width: 30%;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
   position: relative;
 }
 
-.penicon {
-  stroke: #ffffff;
-  fill: #ffffff;
-  height: 17px;
-  cursor: pointer;
-  margin-top: 20px;
-  left: 28px;
-  width: fit-content;
+.avatarImage {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  display: block;
+}
+
+.avatarLoadingOverlay {
   position: absolute;
+  inset: 1px;
+  border-radius: 50%;
+  background-color: rgba(15, 35, 58, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.spinner {
+  color: #ffffff;
+  animation: appHeaderSpin 0.8s linear infinite;
+}
+
+@keyframes appHeaderSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.penicon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background-color: #0f233a;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: absolute;
+  right: -6px;
+  bottom: -2px;
+  z-index: 2;
+}
+
+.avatarMenu {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  z-index: 4;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d7dde4;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.uploadnewbtn {
+  border: 1px solid #cad4e2;
+  background-color: #f8fbff;
+  color: #0f233a;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.deleteavatarbtn {
+  border: 1px solid #edd2d2;
+  background-color: #fff6f6;
+  color: #943636;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.penicon:disabled,
+.uploadnewbtn:disabled,
+.deleteavatarbtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .rightProps {
@@ -94,11 +179,18 @@
     min-width: 150px;
   }
 
-  .profilepic {
-    width: 50%;
+  .avatarContainer {
+    width: 42px;
+    height: 42px;
   }
+
+  .avatarImage {
+    width: 40px;
+    height: 40px;
+  }
+
   .penicon {
-    height: 10px;
-    left: 22px;
+    width: 18px;
+    height: 18px;
   }
 }
