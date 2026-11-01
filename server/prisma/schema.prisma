@@ -371,8 +371,8 @@ model PromoCode {
   id           String       @id @default(uuid())
   code         String       @unique
   description  String?
-  serviceId    String
-  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId    String?
+  service      Service?      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   bookings     Booking[]
   type         PromoType
   value        Decimal

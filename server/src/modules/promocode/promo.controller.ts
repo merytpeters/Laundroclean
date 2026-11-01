@@ -6,7 +6,7 @@ const validatePromo = asyncHandler(async (req, res) => {
   const { serviceId, code, totalAmount } = q;
   if (!serviceId || !code) return res.status(400).json({ success: false, message: 'serviceId and code are required' });
 
-  const promo = await PromoService.getPromoByCodeForService(serviceId, code);
+  const promo = await PromoService.getPromoByCodeForService(code, serviceId);
   const valid = PromoService.isPromoValid(promo);
   let calc = { discount: 0, finalAmount: totalAmount ? Number(totalAmount) : null };
   if (valid && totalAmount) {
@@ -18,17 +18,23 @@ const validatePromo = asyncHandler(async (req, res) => {
 
 const createPromo = asyncHandler(async (req, res) => {
   const promo = await PromoService.createPromo(req.body);
-  res.status(201).json({ success: true, data: { promo }, message: 'Promo created' });
+  res.status(201).json({ success: true, data: promo, message: 'Promo created' });
 });
 
 const getPromos = asyncHandler(async (req, res) => {
-  const promos = await PromoService.getPromos();
+  const user = req.user;
+
+  const userId = user?.type === 'CLIENT' ? user.id : undefined;
+  const promos = await PromoService.getPromos(userId);
   if (!promos) return res.status(404).json({ success: false, message: 'Promos not found' });
-  res.status(200).json({ success: true, data: { promos }, message: 'Promo codes retrieved successfully' });
+  res.status(200).json({ success: true, data: promos, message: 'Promo codes retrieved successfully' });
 });
 
 const getPromo = asyncHandler(async (req, res) => {
-  const promo = await PromoService.getPromoById(req.params.id);
+  const user = req.user;
+
+  const userId = user?.type === 'CLIENT' ? user.id : undefined;
+  const promo = await PromoService.getPromoById(req.params.id, userId);
   if (!promo) return res.status(404).json({ success: false, message: 'Promo not found' });
   res.status(200).json({ success: true, data: { promo }, message: 'Promo code retrieved successfully' });
 });
@@ -40,12 +46,18 @@ const updatePromo = asyncHandler(async (req, res) => {
 
 const softDeletePromo = asyncHandler(async (req, res) => {
   await PromoService.softDeletePromo(req.params.id);
-  res.status(200).json({ success: true, message: 'Promo deleted' });
+  res.status(200).json({ success: true, message: 'Promo soft deleted' });
 });
 
 const restorePromo = asyncHandler(async (req, res) => {
   const restoredPromo = await PromoService.restorePromo(req.params.id);
   res.status(200).json({ success: true, data: restoredPromo, message: 'Promo code reactivated'});
+});
+
+const hardDeletePromo = asyncHandler(async (req, res) => {
+  const ids = req.body;
+  await PromoService.deletePromo(ids);
+  res.status(200).json({ success: true, message: 'Promocodes deleted successfully' });
 });
 
 export default {
@@ -55,5 +67,6 @@ export default {
   updatePromo,
   softDeletePromo,
   validatePromo,
-  restorePromo
+  restorePromo,
+  hardDeletePromo
 };

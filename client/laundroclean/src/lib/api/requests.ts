@@ -103,7 +103,6 @@ export async function apiRequest<T>(
         if (!response.ok) {
             const shouldRetryWithRefresh =
                 response.status === 401 &&
-                !!token &&
                 !fetchOptions.skipAuthRetry &&
                 cleanEndpoint !== 'auth/refresh';
 

@@ -10,18 +10,42 @@ import { useState } from "react";
 import CreateNewPromo from "src/components/ui/Forms/PromotionForm";
 import { usePromoCodes } from "src/hooks/promoCodes/usePromoCode";
 import { useServices } from "src/hooks/laundroCleanServices/useServices";
+import { transformFieldInArray } from "src/utils/mapData";
+import { mappedPromoType } from "src/types/laundrocleanServices/promoCode";
 
 
 export default function CompanyUserPromotionsUI() {
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
-    const { data: servicesRes} = useServices({});
+    const { data: servicesRes } = useServices({});
     const services = Array.isArray(servicesRes?.data)
         ? servicesRes.data
         : [];
     const { data } = usePromoCodes();
-    const promoCodes = Array.isArray(data?.data)
-        ? data.data
-        : [];
+    const promoCodes = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.data)
+            ? data.data
+            : [];
+
+    const mappedPromoCodes = transformFieldInArray(
+        promoCodes,
+        "type",
+        mappedPromoType
+    );
+    const inactivePromoList = mappedPromoCodes.filter((promoCode) => promoCode.isActive === false);
+    const expiredPromoList = mappedPromoCodes.filter((promoCode) => {
+        const now = new Date();
+        const expiresAt = new Date(promoCode.expiresAt)
+        return (
+            now >= expiresAt
+        )
+    });
+    const validPromoList = mappedPromoCodes.filter((promoCode) => {
+        const now = new Date();
+        const expiresAt = new Date(promoCode.expiresAt);
+        // not expired and active
+        if (expiresAt > now) return promoCode.isActive
+    });
 
     const { authUser, isLoading, refetch, isError } = useAuth();
 
@@ -40,6 +64,11 @@ export default function CompanyUserPromotionsUI() {
         );
     }
 
+    // console.log("Promo data:", data)
+    // console.log("promocodes:", promoCodes)
+    // console.log("Expired promo:", expiredPromoList)
+    // console.log("Valid promo:", validPromoList)
+
     if (!authUser || authUser.type !== "COMPANYUSER") {
         return null;
     }
@@ -49,16 +78,16 @@ export default function CompanyUserPromotionsUI() {
             <span className={styles.promoheader}>
                 <h3>All Offers & Promotions</h3>
                 {!isFormOpen && (
-                    <Button text={promoCodes.length === 0 ? "Create First PromoCode": "Create New Promos"} className={styles.newpromobtn} onClick={() => setIsFormOpen(true)}/>
+                    <Button text={promoCodes.length === 0 ? "Create First PromoCode" : "Create New Promos"} className={styles.newpromobtn} onClick={() => setIsFormOpen(true)} />
                 )}
                 {isFormOpen && (
                     <div>
                         <span className={styles.overlay}></span>
-                        <CreateNewPromo data={promoCodes} services={services} onClose={() => setIsFormOpen(false)}/>
+                        <CreateNewPromo data={promoCodes} services={services} onClose={() => setIsFormOpen(false)} />
                     </div>
                 )}
             </span>
-            <AllPromotionsUI user={authUser} />
+            <AllPromotionsUI user={authUser} inactivePromoList={inactivePromoList} expiredPromoList={expiredPromoList} validPromoList={validPromoList} />
         </section>
     )
 }

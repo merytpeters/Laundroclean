@@ -2,6 +2,16 @@ import { adminApi } from "src/lib/api/adminApi";
 import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import { ApiResponse } from "src/lib/api/requests";
+import { publicApi } from "src/lib/api/shared/publicApi";
+
+
+export async function publicGetPromoCodesService (): Promise<ApiResponse<PromoCodeDto[]> | null> {
+    const res = await publicApi.getPromoCodes();
+
+    if (!res.success || !res.data) return null;
+
+    return res
+}
 
 export async function adminCreatePromoCodeService (payload: PromoCodePayload): Promise<ApiResponse<PromoCodeDto> | null> {
     const res = await adminApi.createPromoCode(payload);
@@ -45,6 +55,14 @@ export async function adminDeactivatePromoCodeById (id: string): Promise<ApiResp
 
 export async function adminReactivatePromoCodeById (id: string): Promise<ApiResponse<PromoCodeDto> | null> {
     const res = await adminApi.reactivatePromoCodeById(id);
+
+    if (!res.success || !res.message) return null;
+
+    return res
+}
+
+export async function adminDeletePromoCodes (ids: string[]): Promise<ApiResponse<string> | null> {
+    const res = await adminApi.deletePromoCodes(ids);
 
     if (!res.success || !res.message) return null;
 

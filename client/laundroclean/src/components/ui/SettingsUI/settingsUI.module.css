@@ -96,6 +96,31 @@
   flex-shrink: 0;
 }
 
+.avatarLoadingOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: rgba(15, 35, 58, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.spinner {
+  color: #ffffff;
+  animation: settingsAvatarSpin 0.8s linear infinite;
+}
+
+@keyframes settingsAvatarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .avatarFrame {
   width: 230px;
   height: 230px;
@@ -146,6 +171,11 @@
   z-index: 2;
   cursor: pointer;
   padding: 0;
+}
+
+.profileavatar:has(.avatarLoadingOverlay) .camerabadge {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .cameraicon {

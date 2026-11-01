@@ -16,7 +16,7 @@ export default function ClientBookingHistory({ mappedBookingData }: BookingListP
     return (
         <>
             <h4 className={styles.pastbookingsheader}>Past Bookings</h4>
-            <p className={styles.pastbookingsheader}>Download or print recepts</p>
+            <p className={styles.pastbookingsheader}>Download or print recepts</p> {/** to be implememted */}
             <div className={styles.pastbookingsbox}>
                 {mappedBookingData.map((receipt) => (
                     <span className={styles.pastbookingscard} key={receipt.id}>
@@ -25,7 +25,13 @@ export default function ClientBookingHistory({ mappedBookingData }: BookingListP
                         <span>{receipt.profile?.user?.firstName} {receipt.profile?.user?.lastName}</span>
                         <span><b>Service:</b> {receipt.service?.name}</span>
                         <span><b>Ref Id:</b> {receipt.transactions?.[0]?.transactionRef}</span>
-                        <span><b>Amount:</b> {receipt.currency}{receipt.transactions?.[0]?.paidAmount}</span>
+                        <span><b>Amount:</b> {receipt.totalAmount}</span>
+                        {receipt.discountAmount && (
+                            <span><b>Discount received:</b> {receipt.currency} {receipt.discountAmount}</span>
+                        )}
+                        {receipt.transactions && (<span>
+                            <span><b>Amount Paid:</b> {receipt.currency}{receipt.transactions?.[0]?.paidAmount !== null ? (receipt.transactions?.[0].paidAmount / 100).toFixed(2): "-"}</span>
+                        </span>)}
                         <span>
                             {receipt.weight ? (<><b>Weight:</b> {receipt.weight}kg</>) : (<><b>Item Count:</b> {receipt.itemCount}</>)}
                         </span>

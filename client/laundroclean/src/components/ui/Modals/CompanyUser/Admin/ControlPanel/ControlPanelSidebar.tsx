@@ -52,6 +52,14 @@ export default function ControlPanelSidebar () {
                     </div>
                     
                 </li>
+                <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/bookings` ? styles.active : ""}`}>
+                    <div className={styles.navrow}>
+                        <span className={styles.icon}>
+                            <FaCalendarCheck size={16} />
+                        </span>
+                        <Link href={`${controlpanelbasepath}/bookings`} className={styles.label}> Bookings </Link>
+                    </div>
+                </li>
                 <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/promotions` ? styles.active : ""}`}>
                     <div className={styles.navrow}>
                         <span className={styles.icon}>
@@ -66,14 +74,6 @@ export default function ControlPanelSidebar () {
                             <FaUsersCog size={16} />
                         </span>
                         <Link href={`${controlpanelbasepath}/staff-access`} className={styles.label}> Staff & Access</Link>
-                    </div>
-                </li>
-                <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/bookings` ? styles.active : ""}`}>
-                    <div className={styles.navrow}>
-                        <span className={styles.icon}>
-                            <FaCalendarCheck size={16} />
-                        </span>
-                        <Link href={`${controlpanelbasepath}/bookings`} className={styles.label}> Bookings </Link>
                     </div>
                 </li>
                 <li className={`${styles.navitem} ${path === `${controlpanelbasepath}/customers` ? styles.active : ""}`}>

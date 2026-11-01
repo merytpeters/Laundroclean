@@ -65,6 +65,7 @@ export default function ClientBookings() {
 
     const pastBookingData = mappedBookingData.filter((booking) => {
         return (
+            booking.status === "CUSTOMER_PICKED_UP_FROM_POINT" ||
             booking.status === "COMPLETED" ||
             booking.status === "DELIVERED"
         );
@@ -72,6 +73,7 @@ export default function ClientBookings() {
 
     const allOtherBookingData = mappedBookingData.filter((booking) => {
         return (
+            booking.status !== "CUSTOMER_PICKED_UP_FROM_POINT" &&
             booking.status !== "COMPLETED" &&
             booking.status !== "DELIVERED"
         );
@@ -104,6 +106,9 @@ export default function ClientBookings() {
         authUser,
         authProfile
     }
+
+    console.log("PAST BOOKINGS", pastBookingData)
+    console.log("Ongoing Bookings", mappedVisibleOngoingBookingDataStatus)
 
     return (
         <div className={styles.clientbookingcontainer}>

@@ -36,7 +36,7 @@ describe('Promo Controller', () => {
     await PromoController.createPromo(req, res, next as any);
 
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.objectContaining({ promo: expect.objectContaining({ code: 'SAVE10' }) }) }));
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.objectContaining({ code: 'SAVE10' }) }));
   });
 
   it('getPromos/getPromo/updatePromo/deletePromo flow', async () => {
@@ -46,7 +46,7 @@ describe('Promo Controller', () => {
     // getPromos
     const resList: any = { json: jest.fn(), status: jest.fn().mockReturnThis()};
     await PromoController.getPromos({} as any, resList as any, next as any);
-    expect(resList.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.objectContaining({ promos: expect.any(Array) }) }));
+    expect(resList.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: expect.any(Array) }));
 
     // getPromo
     const reqGet: any = { params: { id: created.id } };

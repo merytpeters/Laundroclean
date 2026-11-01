@@ -38,9 +38,9 @@ describe('Public Promocode Routes', () => {
     await prisma.$disconnect();
   });
 
-  it('GET /api/v1/promocode/validate should validate promo and return promo data', async () => {
+  it('GET /api/v1/promocodes/validate should validate promo and return promo data', async () => {
     const res = await request(app)
-      .get('/api/v1/promocode/validate')
+      .get('/api/v1/promocodes/validate')
       .query({ serviceId: service.id, code: 'SAVE20', totalAmount: 10000 });
 
     expect(res.status).toBe(200);

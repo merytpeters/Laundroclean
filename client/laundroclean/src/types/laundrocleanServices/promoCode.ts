@@ -1,6 +1,7 @@
 import { CurrencyTypeValue } from "./laundroservices";
 
 export type PromoType = "PERCENTAGE" | "FIXED_AMOUNT"
+export type PromoTypeDisplayValue = "percentage" | "fixed amount"
 
 export type PromoDetail = {
     id: string;
@@ -24,7 +25,7 @@ export type PromoDetail = {
 export type PromoCodePayload = {
     code: string;
     description?: string;
-    serviceId: string;
+    serviceId?: string;
     expiresAt: string;
     type: PromoType;
     value: number;
@@ -34,6 +35,14 @@ export type PromoCodePayload = {
     perUserLimit?: number;
     isActive: true;
 }
+
+export type PromoCodeFormValues =
+    Omit<PromoCodePayload, "startsAt" | "expiresAt"> & {
+        startsAt: string;
+        startTime: string;
+        expiresAt: string;
+        expiryTime: string;
+    };
 
 export type UpdatePromoCodePayload = {
     code?: string;
@@ -62,3 +71,14 @@ export const PromoTypeDropDownOptions = [
     {value: "PERCENTAGE", label: "%"},
     {value: "FIXED_AMOUNT", label: "fixed amount"}
 ]
+
+export function mappedPromoType(promoType: PromoType): PromoTypeDisplayValue {
+    switch(promoType) {
+        case "PERCENTAGE":
+            return "percentage"
+        case "FIXED_AMOUNT":
+            return "fixed amount"
+        default:
+            throw new Error(`Unknown delivery type: ${promoType}`)
+    }
+}

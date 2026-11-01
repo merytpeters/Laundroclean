@@ -13,6 +13,8 @@ import { capitalilzeFirstLetter } from "src/utils/capitalize";
 import { statusClassMap } from "src/types/booking/bookingStatus";
 import statusMapStyle from '../flexboxes/ScheduleCard.module.css';
 import { CompanyBookingStatusSelect } from "../Modals/CompanyUser/BookingStatusSelect/BookingStatusSelect";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { spawn } from "child_process";
 
 
 // const mappedDetails: BookingDetail[] = transformFieldInArray(mappedDelivery, "status", mapBookingStatus)
@@ -25,6 +27,7 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
     const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(null);
     const [isEditBookingStatusId, setIsEditBookingStatusId] = useState<string | null>(null);
     const [newBookingStatus, setNewBookingStatus] = useState<Record<string, BookingStatusDto>>({});
+    const [visibleCount, setVisibleCount] = useState(6)
 
     const updateBookingStatusMutation = useUpdateBookingStatus();
 
@@ -73,7 +76,7 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
                     </tr>
                 </thead>
                 <tbody>
-                    {mappedBookingData.slice(0, 6).map((bookingDetail) => (
+                    {mappedBookingData.slice(0, visibleCount).map((bookingDetail) => (
                         <tr key={bookingDetail.id}>
 
                             <td className={styles.moredetails}
@@ -151,10 +154,12 @@ export default function BookingDisplayTable({ mappedBookingData }: BookingListPr
 
             </table>
             <div className={styles.actions}>
-                {user.uiRole === "STAFF" ? (
+                {user.uiRole === "STAFF" ? visibleCount < mappedBookingData.length && (
+
                     <button
                         className={styles.viewmore}
-                        onClick={() => setActiveMenu("calendar")}
+                        onClick={() => setVisibleCount((prev) => prev + 10)}
+                    //onClick={() => setActiveMenu("calendar")}
                     >
                         view more
                     </button>
@@ -216,6 +221,10 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
     const [isEditBookingStatusId, setIsEditBookingStatusId] = useState<string | null>(null);
     const [newBookingStatus, setNewBookingStatus] = useState<Record<string, BookingStatusDto>>({});
 
+    const { user } = useCompanyUserMenu();
+
+    const router = useRouter();
+
     const updateBookingStatusMutation = useUpdateBookingStatus();
 
     const cancelledBookings = mappedBookingData.filter((booking) => {
@@ -246,6 +255,10 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
         )
     }
 
+    // console.log("Selected Booking:", selectedBooking?.id)
+
+    if (!user.uiRole) return null;
+
     return (
         <section className={styles.bookingdetailsection}>
             <span className={styles.allbookingsheader}>
@@ -258,124 +271,141 @@ export function AdminAllBookings({ mappedBookingData }: BookingListProp) {
 
             </span>
 
-            <span className={styles.bookingInfo}>
-                <span className={styles.bookingInfoHeader}>
-                    <span>Booking ID</span>
-                    <span>Customer</span>
-                    <span>Service</span>
-                    <span>Date Booked</span>
-                    <span>Pickup/Delivery Date</span>
-                    <span>Delivery Tag</span>
-                    <span>Status</span>
-                    <span>Amount</span>
-                    <span>Assigned Staff</span>
-                    <span>Actions</span>
+            {restMappedBookingData.length === 0 ? (
+                <span>
+                   <i>Bookings list will show here when available</i>
                 </span>
-                <span className={styles.bookingInfocard}>
-                    {restMappedBookingData.map((bookingDetail) => (
-                        <span key={bookingDetail.id} className={styles.bookingInfodetails}>
-                            <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
-                            <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
-                            <span>{bookingDetail.service?.name}</span>
-                            <span>
-                                {bookingDetail.transactions?.[0]?.paidAt
-                                    ? formatDateTime(bookingDetail.transactions[0].paidAt)
-                                    : "Unpaid"}
-                            </span>
-                            <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
-                            <span>{bookingDetail.deliveryType}</span>
-                            <span>
-                                {bookingDetail.mappedStatus && (
+            ) : (
+                <span className={styles.bookingdetailsection}>
+                    <span className={styles.bookingInfo}>
+                        <span className={styles.bookingInfoHeader}>
+                            <span>Booking ID</span>
+                            <span>Customer</span>
+                            <span>Service</span>
+                            <span>Date Booked</span>
+                            <span>Pickup/Delivery Date</span>
+                            <span>Delivery Tag</span>
+                            <span>Status</span>
+                            <span>Amount</span>
+                            <span>Assigned Staff</span>
+                            <span>Actions</span>
+                        </span>
+                        <span className={styles.bookingInfocard}>
+                            {restMappedBookingData.map((bookingDetail) => (
+                                <span key={bookingDetail.id} className={styles.bookingInfodetails}>
+                                    <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
+                                    <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
+                                    <span>{bookingDetail.service?.name}</span>
                                     <span>
-                                        {isEditBookingStatusId === bookingDetail.id ? (
-                                            <CompanyBookingStatusSelect
-                                                id={`booking-status-${bookingDetail.id}`}
-                                                currentStatus={
-                                                    newBookingStatus[
-                                                    bookingDetail.id
-                                                    ] ?? (
-                                                        bookingDetail.status
-                                                    )
-                                                }
-                                                onStatusChange={(
-                                                    newStatus
-                                                ) => {
-                                                    const selectedStatus = newStatus as BookingStatusDto;
-                                                    setNewBookingStatus(
-                                                        (
-                                                            prev
-                                                        ) => ({
-                                                            ...prev,
-                                                            [bookingDetail.id]:
-                                                                selectedStatus
-                                                        })
-                                                    )
-                                                    setIsEditBookingStatusId(null)
-                                                    handleUpdateBookingStatus(bookingDetail.id, { status: selectedStatus } as BookingStatusPayload)
-                                                }}
-                                            />
-                                        ) : (
-                                            <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[bookingDetail.mappedStatus]]}`} style={{ cursor: "pointer" }} onClick={() => (setIsEditBookingStatusId(bookingDetail.id))}>
-                                                {capitalilzeFirstLetter(bookingDetail.mappedStatus)}
+                                        {bookingDetail.transactions?.[0]?.paidAt
+                                            ? formatDateTime(bookingDetail.transactions[0].paidAt)
+                                            : "Unpaid"}
+                                    </span>
+                                    <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
+                                    <span>{bookingDetail.deliveryType}</span>
+                                    <span>
+                                        {bookingDetail.mappedStatus && (
+                                            <span>
+                                                {isEditBookingStatusId === bookingDetail.id ? (
+                                                    <CompanyBookingStatusSelect
+                                                        id={`booking-status-${bookingDetail.id}`}
+                                                        currentStatus={
+                                                            newBookingStatus[
+                                                            bookingDetail.id
+                                                            ] ?? (
+                                                                bookingDetail.status
+                                                            )
+                                                        }
+                                                        onStatusChange={(
+                                                            newStatus
+                                                        ) => {
+                                                            const selectedStatus = newStatus as BookingStatusDto;
+                                                            setNewBookingStatus(
+                                                                (
+                                                                    prev
+                                                                ) => ({
+                                                                    ...prev,
+                                                                    [bookingDetail.id]:
+                                                                        selectedStatus
+                                                                })
+                                                            )
+                                                            setIsEditBookingStatusId(null)
+                                                            handleUpdateBookingStatus(bookingDetail.id, { status: selectedStatus } as BookingStatusPayload)
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <span className={`${statusMapStyle.status} ${statusMapStyle[statusClassMap[bookingDetail.mappedStatus]]}`} style={{ cursor: "pointer" }} onClick={() => (setIsEditBookingStatusId(bookingDetail.id))}>
+                                                        {capitalilzeFirstLetter(bookingDetail.mappedStatus)}
+                                                    </span>
+                                                )}
                                             </span>
                                         )}
                                     </span>
-                                )}
-                            </span>
-                            <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
-                            <span>
-                                {bookingDetail.assignedTo
-                                    ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
-                                    : "—"}
-                            </span>
-                            <span>
-                                <button className={styles.editbtn}>
-                                    <FiEdit color="blue" />
-                                </button>
+                                    <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
+                                    <span>
+                                        {bookingDetail.assignedTo
+                                            ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
+                                            : "—"}
+                                    </span>
+                                    <span>
+                                        <button className={styles.editbtn}>
+                                            <FiEdit color="blue" />
+                                        </button>
 
 
-                            </span>
+                                    </span>
+                                </span>
+                            ))}
+                            {cancelledBookings?.length > 0 && (
+                                <span>
+                                    <Button text="Delete All Cancelled Bookings" className={styles.cancelledbookingsDeletebtn} onClick={handleDeleteCancelledBookings} />
+                                </span>
+                            )}
+
+                            {cancelledBookings.map((bookingDetail) => (
+                                <span key={bookingDetail.id} className={styles.bookingInfodetails}>
+                                    <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
+                                    <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
+                                    <span>{bookingDetail.service?.name}</span>
+                                    <span>
+                                        {bookingDetail.transactions?.[0]?.paidAt
+                                            ? formatDateTime(bookingDetail.transactions[0].paidAt)
+                                            : "Unpaid"}
+                                    </span>
+                                    <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
+                                    <span>{bookingDetail.deliveryType}</span>
+                                    <span>{bookingDetail.status}</span>
+                                    <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
+                                    <span>
+                                        {bookingDetail.assignedTo
+                                            ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
+                                            : "—"}
+                                    </span>
+                                    <span>
+                                        <button className={styles.editbtn}>
+                                            <FiEdit color="blue" />
+                                        </button>
+
+                                    </span>
+                                </span>
+                            ))}
+
                         </span>
-                    ))}
-                    {cancelledBookings?.length > 0 && (
-                        <span>
-                            <Button text="Delete All Cancelled Bookings" className={styles.cancelledbookingsDeletebtn} onClick={handleDeleteCancelledBookings} />
-                        </span>
-                    )}
 
-                    {cancelledBookings.map((bookingDetail) => (
-                        <span key={bookingDetail.id} className={styles.bookingInfodetails}>
-                            <span className={styles.moredetails} onClick={() => setSelectedBooking(bookingDetail)}>{bookingDetail.customBookingId}</span>
-                            <span>{bookingDetail.profile?.user?.firstName} {bookingDetail.profile?.user?.lastName}</span>
-                            <span>{bookingDetail.service?.name}</span>
-                            <span>
-                                {bookingDetail.transactions?.[0]?.paidAt
-                                    ? formatDateTime(bookingDetail.transactions[0].paidAt)
-                                    : "Unpaid"}
-                            </span>
-                            <span>{formatDateTime(bookingDetail.scheduledDate)}</span>
-                            <span>{bookingDetail.deliveryType}</span>
-                            <span>{bookingDetail.status}</span>
-                            <span>{bookingDetail.currency} {bookingDetail.finalAmount}</span>
-                            <span>
-                                {bookingDetail.assignedTo
-                                    ? `${bookingDetail.assignedTo.firstName} ${bookingDetail.assignedTo.lastName}`
-                                    : "—"}
-                            </span>
-                            <span>
-                                <button className={styles.editbtn}>
-                                    <FiEdit color="blue" />
-                                </button>
 
-                            </span>
-                        </span>
-                    ))}
+                    </span>
+                    <BookingDetailsOverlay
+                        isOpen={selectedBooking !== null}
+                        item={selectedBooking}
+                        onClose={() => setSelectedBooking(null)}
+                        onMakePayment={() => {
+                            if (!selectedBooking) return;
 
+                            router.push(`/admin/dashboard#payment?bookingId=${selectedBooking.id}&bookingUserId=${selectedBooking.profile?.userId}`)
+                        }}
+                    />
                 </span>
-
-
-            </span>
-            <BookingDetailsOverlay isOpen={selectedBooking !== null} item={selectedBooking} onClose={() => setSelectedBooking(null)} />
+            )}
         </section>
     )
 }
@@ -384,12 +414,14 @@ interface BookingDetailsOverlayProps {
     isOpen: boolean;
     item: BookingDto | null;
     onClose: () => void;
+    onMakePayment?: (item: BookingDto) => void;
 }
 
 export function BookingDetailsOverlay({
     isOpen,
     item,
     onClose,
+    onMakePayment
 }: BookingDetailsOverlayProps) {
     const { user, setActiveMenu, setBookingInfo } = useCompanyUserMenu();
     const bookingId = item?.id ?? "";
@@ -409,7 +441,9 @@ export function BookingDetailsOverlay({
             bookingUserId: item.profile?.userId,
         });
 
-        if (user.uiRole === "ADMIN" || user.uiRole === "STAFF") {
+        onMakePayment?.(item);
+
+        if (!onMakePayment && (user.uiRole === "ADMIN" || user.uiRole === "STAFF")) {
             setActiveMenu("payment");
         }
     };

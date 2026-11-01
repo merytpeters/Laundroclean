@@ -6,6 +6,8 @@ import { PromoValidation } from '../../validation/index.js';
 const router = express.Router();
 
 // Public endpoint to validate/preview a promo for a service
+router.get('/', PromoController.getPromos);
 router.get('/validate', validate(PromoValidation.promoCheck, 'query'), PromoController.validatePromo);
+
 
 export default router;

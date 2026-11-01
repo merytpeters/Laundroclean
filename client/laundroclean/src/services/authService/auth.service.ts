@@ -30,6 +30,10 @@ export async function registerUserService(payload: RegisterPayload): Promise<{ u
 export async function loginUserService(payload: LoginPayload): Promise<{ user: AuthSession; message: string }| null> {
     const res = await authApi.loginUser(payload);
 
+    if (!res.success) {
+        throw new Error(res.message || 'Login failed');
+    }
+
     if (!res.data) return null;
     const { user: authenticatedUser, accessToken } = res.data;
     const message = res.message ?? 'Success';

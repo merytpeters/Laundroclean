@@ -1,12 +1,14 @@
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "src/context/AuthContext";
-import { 
+import {
     adminGetPromoCodeByIdService,
     adminCreatePromoCodeService,
     adminGetPromoCodeListService,
     adminDeactivatePromoCodeById,
     adminUpdatePromoCodeById,
-    adminReactivatePromoCodeById
+    adminReactivatePromoCodeById,
+    publicGetPromoCodesService,
+    adminDeletePromoCodes
 } from "src/services/promoService/promo.services";
 import { PromoCodePayload, UpdatePromoCodePayload } from "src/types/laundrocleanServices/promoCode";
 import { promoCodeKeys } from "./keys";
@@ -34,7 +36,7 @@ export function useCreatePromoCode() {
             }
         },
 
-        onSuccess: async(data) => {
+        onSuccess: async (data) => {
             await Promise.all([
                 queryClient.invalidateQueries({
                     queryKey: promoCodeKeys.lists()
@@ -62,7 +64,7 @@ export function useUpdatePromoCode() {
     const mutation = useMutation({
         mutationFn: async ({
             id
-        ,    payload
+            , payload
         }: UpdatePromoCodeVariables) => {
             if (authUser?.type === "COMPANYUSER") {
                 if (authUser.uiRole === "ADMIN") {
@@ -71,7 +73,7 @@ export function useUpdatePromoCode() {
             }
         },
 
-        onSuccess: async(data) => {
+        onSuccess: async (data) => {
             await Promise.all([
                 queryClient.invalidateQueries({
                     queryKey: promoCodeKeys.lists()
@@ -87,15 +89,25 @@ export function useUpdatePromoCode() {
     return mutation
 }
 
-export function usePromoCodes(id?:string) {
+export function usePromoCodes(id?: string) {
+    const { authUser } = useAuth();
+
     return useQuery<ApiResponse<PromoCodeDto | PromoCodeDto[]> | null>({
         queryKey: id
             ? promoCodeKeys.detail(id)
             : promoCodeKeys.lists(),
-        queryFn: () =>
-            id
-                ? adminGetPromoCodeByIdService(id)
-                : adminGetPromoCodeListService()
+        queryFn: () => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser?.uiRole === "ADMIN") {
+                    return id
+                        ? adminGetPromoCodeByIdService(id)
+                        : adminGetPromoCodeListService()
+                }
+                return publicGetPromoCodesService()
+            }
+
+            return publicGetPromoCodesService()
+        }
     })
 }
 
@@ -112,7 +124,7 @@ export function useDeactivatePromoCode() {
             }
         },
 
-        onSuccess: async(data) => {
+        onSuccess: async (data) => {
             await Promise.all([
                 queryClient.invalidateQueries({
                     queryKey: promoCodeKeys.lists()
@@ -141,7 +153,36 @@ export function useReactivatePromoCode() {
             }
         },
 
-        onSuccess: async(data) => {
+        onSuccess: async (data) => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: promoCodeKeys.lists()
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: laundrocleanServicesKeys.lists()
+                }),
+            ])
+            toast.success(data?.message)
+        }
+    });
+
+    return mutation
+}
+
+export function useDeletePromoCodes() {
+    const queryClient = useQueryClient();
+    const { authUser } = useAuth();
+
+    const mutation = useMutation({
+        mutationFn: async (ids: string[]) => {
+            if (authUser?.type === "COMPANYUSER") {
+                if (authUser.uiRole === "ADMIN") {
+                    return adminDeletePromoCodes(ids)
+                }
+            }
+        },
+
+        onSuccess: async (data) => {
             await Promise.all([
                 queryClient.invalidateQueries({
                     queryKey: promoCodeKeys.lists()

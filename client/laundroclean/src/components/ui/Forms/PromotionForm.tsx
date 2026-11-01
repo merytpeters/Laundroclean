@@ -1,10 +1,13 @@
 import { PromoCodeDto } from "src/types/laundrocleanServices/promoCode.dto";
 import styles from './PromotionForm.module.css';
 import { useForm } from "react-hook-form";
-import { PromoCodePayload, PromoTypeDropDownOptions } from "src/types/laundrocleanServices/promoCode";
+import { PromoCodeFormValues, PromoCodePayload, PromoTypeDropDownOptions } from "src/types/laundrocleanServices/promoCode";
 import { ServiceDto } from "src/types/laundrocleanServices/laundrocleanservices.dto";
 import Button from "../Button/Button";
 import { mapCurrencySymbol } from "src/types/laundrocleanServices/laundroservices";
+import { useCreatePromoCode } from "src/hooks/promoCodes/usePromoCode";
+import { toUTCISOString } from "src/utils/globalTimezone";
+import { toast } from "sonner";
 
 interface PromoCodeProps {
     data?: PromoCodeDto[],
@@ -13,47 +16,79 @@ interface PromoCodeProps {
 }
 
 export default function CreateNewPromo({ data, services, onClose }: PromoCodeProps) {
+    const createPromoMutation = useCreatePromoCode();
 
-    const formData = useForm<PromoCodePayload>({
+    const formData = useForm<PromoCodeFormValues>({
         defaultValues: {
             code: "",
             description: "",
-            serviceId: "",
+            serviceId: undefined,
             expiresAt: "",
+            expiryTime: "00:00",
             type: undefined,
-            value: 0,
+            value: undefined,
             currency: undefined,
             startsAt: "",
-            usageLimit: 0,
-            perUserLimit: 0,
+            startTime: "12:00",
+            usageLimit: undefined,
+            perUserLimit: undefined,
             isActive: true,
         }
     })
 
-    const handleCreatePromo = async () => {
-
-    }
-
     const selectedServiceId = formData.watch("serviceId");
+
+    const startsAt = formData.watch("startsAt")
 
     const selectedService = services?.find(
         (service) =>
             String(service.id) === selectedServiceId
     );
 
-    const currency = selectedService?.prices?.[0]?.currency
+    if (selectedService) {
+        const currency = selectedService?.prices?.[0]?.currency
+        formData.setValue("currency", currency)
+    }
 
-    const selectedCurrency = formData.setValue("currency", currency)
+    const filledCurrency = formData.watch("currency")
 
-    const startsAt = formData.getValues("startsAt")
-
-    const currencySymbol = currency
-        ? mapCurrencySymbol(currency)
+    const currencySymbol = filledCurrency
+        ? mapCurrencySymbol(filledCurrency)
         : "";
+
+    const handleCreatePromo = async (values: PromoCodeFormValues) => {
+        console.log("FORM VALUES:", values);
+
+        const {
+            startTime,
+            expiryTime,
+            ...rest
+        } = values;
+
+        const payload: PromoCodePayload = {
+            ...rest,
+            startsAt: toUTCISOString(values.startsAt, startTime),
+            expiresAt: toUTCISOString(values.expiresAt, expiryTime),
+        };
+
+        console.log("START DATE:", values.startsAt);
+        console.log("START TIME:", startTime);
+        console.log("CONVERTED START:", payload.startsAt);
+
+        console.log("EXPIRY DATE:", values.expiresAt);
+        console.log("EXPIRY TIME:", expiryTime);
+        console.log("CONVERTED EXPIRY:", payload.expiresAt);
+
+        console.log("FINAL PAYLOAD:", payload);
+
+        createPromoMutation.mutate({ payload });
+    };
+
+    console.log("Currency:", formData.getValues("currency"))
 
     return (
         <form onSubmit={formData.handleSubmit(handleCreatePromo)} className={styles.promoform}>
-            <h4>{data?.length === 0 ? "Add Your First Promocode" : "Add a New Service"}</h4>
+            <h4>{data?.length === 0 ? "Add Your First Promocode" : "Add a New PromoCode"}</h4>
             <legend><b>Create a new promo code, let customers enjoy cool discounts</b> </legend>
             <span className={styles.formgroup}>
                 <span className={styles.formitem}>
@@ -75,7 +110,9 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
                     <select
                         id="serviceId"
                         {...formData.register(
-                            "serviceId"
+                            "serviceId", {
+                                setValueAs: (value) => (value === "" ? undefined : value)
+                            }
                         )}
                     >
                         <option value="">
@@ -95,17 +132,29 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
                     </select>
                 </span>
 
-                <span className={styles.formitem}>
-                    <label htmlFor="currency">Currency</label>
-                    <input type="text" id="currency" {...formData.register("currency")} placeholder={`${currencySymbol} ${selectedService?.prices?.[0]?.amount ?? ""}`} disabled />
-                </span>
+                {selectedService ? (
+                    <span className={styles.formitem}>
+                        <label htmlFor="currency">Currency</label>
+                        <input type="text" id="currency" {...formData.register("currency")} placeholder={`${currencySymbol} ${selectedService?.prices?.[0]?.amount ?? ""}`} disabled />
+                    </span>
+                ) : (
+                    <span className={styles.formitem}>
+                        <label htmlFor="currency">Currency</label>
+                        <select id="currency" {...formData.register("currency")}>
+                            <option value="" disabled>Please choose currency</option>
+                            <option value="NAIRA">₦</option>
+                            <option value="DOLLAR">$</option>
+                            <option value="POUNDS">£</option>
+                        </select>
+                    </span>
+                )}
 
 
             </span>
             <span className={styles.formgroup}>
                 <span className={styles.formitem}>
                     <label htmlFor="value">Value</label>
-                    <input type="number" id="value" {...formData.register("value")} />
+                    <input type="number" id="value" {...formData.register("value", { valueAsNumber: true, })} />
                 </span>
 
                 <span className={styles.formitem}>
@@ -136,34 +185,44 @@ export default function CreateNewPromo({ data, services, onClose }: PromoCodePro
                 <span className={styles.formitem}>
                     <label htmlFor="startsAt">Starts at</label>
                     <input type="date" id="startsAt" {...formData.register("startsAt")} />
+                    <label htmlFor="startTime">Start Time</label>
+                    <input type="time" id="startTime" {...formData.register("startTime")} />
                 </span>
 
                 <span className={styles.formitem}>
                     <label htmlFor="expiresAt">expiresAt</label>
-                    <input type="date" id="expiresAt"
+                    <input type="date" id="expiresAt" min={startsAt || undefined}
                         {...formData.register("expiresAt", {
                             validate: (value) => {
-                                if (startsAt === undefined) {
+                                const startsDate = formData.getValues("startsAt")
+                                console.log("StartsAt:", startsAt)
+                                console.log("StartsDate:", startsDate)
+
+                                if (!startsDate) {
+                                    toast.error('Set start date')
                                     return 'Set start date'
                                 }
-                                return (
-                                    value >= startsAt ||
-                                    'It can not expire before the start date'
-                                )
+
+                                if (value <= startsDate) {
+                                    toast.error('Expiry date cannot be before the start date')
+                                    return ('Expiry date cannot be before the start date')
+                                }
                             }
                         })} />
+                    <label htmlFor="expiryTime">Expiry Time</label>
+                    <input type="time" id="expiryTime" {...formData.register("expiryTime")} />
                 </span>
 
             </span>
             <span className={styles.formgroup}>
                 <span className={styles.formitem}>
                     <label htmlFor="usageLimit">Total Usage Limit</label>
-                    <input type="number" id="usageLimit" {...formData.register("usageLimit")} />
+                    <input type="number" id="usageLimit" {...formData.register("usageLimit", { valueAsNumber: true, })} />
                 </span>
 
                 <span className={styles.formitem}>
                     <label htmlFor="perUserLimit">Limit a single user gets</label>
-                    <input type="number" id="perUserLimit" {...formData.register("perUserLimit")} />
+                    <input type="number" id="perUserLimit" {...formData.register("perUserLimit", { valueAsNumber: true, })} />
                 </span>
             </span>
             <span className={styles.actionbuttons}>

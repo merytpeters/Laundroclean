@@ -1,6 +1,6 @@
 import prisma from '../../config/prisma.js';
 import z from 'zod';
-import type { Prisma, Service } from '@prisma/client';
+import type { Prisma, Service, PromoCode } from '@prisma/client';
 import { ProcessingError, NotFoundError, ValidationError } from '../../middlewares/errorHandler.js';
 import type { ServiceSchema, UpdateServiceSchema } from '../../validation/laundrocleanservices/services.validation.js';
 import ServiceValidation from '../../validation/laundrocleanservices/services.validation.js';
@@ -14,7 +14,7 @@ type ServiceUpdateInput = Prisma.ServiceUpdateInput
 type BatchPayload = Prisma.BatchPayload
 
 
-const createService = async(payload: ServiceSchema): Promise<Service> => {
+const createService = async (payload: ServiceSchema): Promise<Service> => {
     try {
         const validatedData = ServiceValidation.serviceSchema.parse(payload);
 
@@ -36,7 +36,7 @@ const createService = async(payload: ServiceSchema): Promise<Service> => {
     }
 };
 
-const updateService = async(where: ServiceWhereUniqueInput, payload: UpdateServiceSchema): Promise<Service> => {
+const updateService = async (where: ServiceWhereUniqueInput, payload: UpdateServiceSchema): Promise<Service> => {
     const now = new Date();
     try {
         const service = await prisma.service.findUnique({ where });
@@ -66,9 +66,9 @@ const updateService = async(where: ServiceWhereUniqueInput, payload: UpdateServi
     }
 };
 
-const getActiveServiceById = async(
+const getActiveServiceById = async (
     where: ServiceWhereUniqueInput
-): Promise<Service & { prices: { id: string; amount: string; currency: string; pricingType: string; isActive: boolean }[] }> => {
+): Promise<Service & { prices: { id: string; amount: string; currency: string; pricingType: string; isActive: boolean }[], promoCodes: PromoCode[] }> => {
     try {
         const whereClause = Object.fromEntries(
             Object.entries(where).filter(([, value]) => value !== undefined)
@@ -80,14 +80,37 @@ const getActiveServiceById = async(
             } as ServiceWhereInput,
             include: {
                 prices: { where: { isActive: true } },
-                promoCodes: {where: {isActive: true}},
+                promoCodes: {
+                    where:
+                    {
+                        isActive: true,
+                    }
+                },
+            }
+        });
+
+        const globalPromoCodes = await prisma.promoCode.findMany({
+            where: {
+                isActive: true,
+                serviceId: null
             }
         });
 
         if (!service) throw new NotFoundError('Service not found');
 
+        const promoCodes = [
+            ...service.promoCodes,
+            ...globalPromoCodes.filter(
+                globalPromo =>
+                    !service.promoCodes.some(
+                        promo => promo.id === globalPromo.id
+                    )
+            )
+        ];
+
         return {
             ...service,
+            promoCodes,
             prices: service.prices.map(price => ({
                 id: price.id,
                 amount: price.amount.toString(),
@@ -103,21 +126,45 @@ const getActiveServiceById = async(
 };
 
 
-const getServiceById = async(
+const getServiceById = async (
     where: ServiceWhereUniqueInput
-): Promise<Service & { prices: { id: string; amount: string; currency: string; pricingType: string; isActive: boolean }[] }> => {
+): Promise<Service & { prices: { id: string; amount: string; currency: string; pricingType: string; isActive: boolean }[], promoCodes: PromoCode[] }> => {
     try {
         const service = await prisma.service.findUnique({
             where,
             include: {
                 prices: {
-                    where: { isActive: true } 
-                }
+                    where: { isActive: true }
+                },
+                promoCodes: {
+                    where:
+                    {
+                        isActive: true
+                    }
+                },
             }
         });
+        const globalPromoCodes = await prisma.promoCode.findMany({
+            where: {
+                isActive: true,
+                serviceId: null
+            }
+        });
+
         if (!service) throw new NotFoundError('Service not found');
+
+        const promoCodes = [
+            ...service.promoCodes,
+            ...globalPromoCodes.filter(
+                globalPromo =>
+                    !service.promoCodes.some(
+                        promo => promo.id === globalPromo.id
+                    )
+            )
+        ];
         return {
             ...service,
+            promoCodes,
             prices: service.prices.map(price => ({
                 id: price.id,
                 amount: price.amount.toString(),
@@ -133,7 +180,7 @@ const getServiceById = async(
 };
 
 // include client user
-const searchActiveServices = async(
+const searchActiveServices = async (
     query?: PaginationQuery
 ): Promise<{ data: Service[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
     try {
@@ -150,7 +197,7 @@ const searchActiveServices = async(
             })
         };
 
-        const [services, total] = await Promise.all([
+        const [services, total, globalPromoCodes] = await Promise.all([
             await prisma.service.findMany({
                 where,
                 skip,
@@ -160,23 +207,36 @@ const searchActiveServices = async(
                         where: { isActive: true }
                     },
                     promoCodes: {
-                        select: {
-                            code: true,
-                            description: true,
-                            startsAt: true,
-                            expiresAt: true,
-                            value: true,
-                            currency: true,
-                            type: true,
-                        }
+                        where: {
+                            isActive: true,
+                        },
                     }
                 }
             }),
-            prisma.service.count({ where })
+            prisma.service.count({ where }),
+            prisma.promoCode.findMany({
+                where: {
+                    isActive: true,
+                    serviceId: null
+                },
+            })
         ]);
 
+        const data = services.map(service => ({
+            ...service,
+            promoCodes: [
+                ...service.promoCodes,
+                ...globalPromoCodes.filter(
+                    globalPromo =>
+                        !service.promoCodes.some(
+                            promo => promo.id === globalPromo.id
+                        )
+                )
+            ]
+        }));
+
         return {
-            data: services,
+            data,
             meta: {
                 total,
                 page,
@@ -190,7 +250,7 @@ const searchActiveServices = async(
     }
 };
 
-const softDeleteServices = async(
+const softDeleteServices = async (
     where: ServiceWhereInput
 ): Promise<BatchPayload> => {
     const now = new Date();
@@ -210,17 +270,17 @@ const softDeleteServices = async(
 };
 
 
-const searchAllServices = async(
+const searchAllServices = async (
     query?: ServiceQuery
-):Promise<{ data: Service[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+): Promise<{ data: Service[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
     try {
         const { page, limit, skip } = getPagination(query || {});
         const search = query?.search?.trim();
         const includeDeleted = query?.includeDeleted?.trim();
 
         const where: ServiceWhereInput = {
-            ...(includeDeleted === 'false' && {isActive: true}),
-            ...(includeDeleted === 'only' && {isActive: false}),
+            ...(includeDeleted === 'false' && { isActive: true }),
+            ...(includeDeleted === 'only' && { isActive: false }),
             ...(search && {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },
@@ -229,18 +289,42 @@ const searchAllServices = async(
             })
         };
 
-        const [services, total] = await Promise.all([
+        const [services, total, globalPromoCodes] = await Promise.all([
             prisma.service.findMany({
                 where,
                 skip,
                 take: limit,
-                include: { prices: true }
+                include: {
+                    prices: true,
+                    promoCodes: {
+                        where: { isActive: true}
+                    },
+                }
             }),
-            prisma.service.count({ where })
+            prisma.service.count({ where }),
+            prisma.promoCode.findMany({
+                where: {
+                    isActive: true,
+                    serviceId: null
+                }
+            })
         ]);
 
+        const data = services.map(service => ({
+            ...service,
+            promoCodes: [
+                ...service.promoCodes,
+                ...globalPromoCodes.filter(
+                    globalPromo =>
+                        !service.promoCodes.some(
+                            promo => promo.id === globalPromo.id
+                        )
+                )
+            ]
+        }));
+
         return {
-            data: services,
+            data,
             meta: {
                 total,
                 page,
@@ -254,7 +338,7 @@ const searchAllServices = async(
     }
 };
 
-const restoreService = async(
+const restoreService = async (
     where: ServiceWhereUniqueInput
 ): Promise<Service> => {
     try {
@@ -276,7 +360,7 @@ const restoreService = async(
     }
 };
 
-const restoreManyServices = async(
+const restoreManyServices = async (
     where: ServiceWhereInput
 ): Promise<BatchPayload> => {
     try {

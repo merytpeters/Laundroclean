@@ -1,5 +1,5 @@
 "use client";
-import { LoadingState } from "src/components/ui/ErrorState/ErrorState";
+import ErrorState, { LoadingState } from "src/components/ui/ErrorState/ErrorState";
 import { AdminAllBookings } from "src/components/ui/flexboxes/BookingDisplayTable";
 import { useGetbookings } from "src/hooks/booking/useBooking";
 import { mapBookingStatus, mapDeliveryType } from "src/types/booking/bookingStatus";
@@ -8,6 +8,7 @@ import { transformFieldInArray } from "src/utils/mapData";
 import Pagination from "src/components/ui/Pagination/Pagination";
 import { useSearchParams } from "next/navigation";
 import { useDebounce } from "src/hooks/debounceHook";
+import { useAuth } from "src/context/AuthContext";
 
 export default function AllBookingsInfo() {
     const searchParams = useSearchParams();
@@ -50,6 +51,9 @@ export default function AllBookingsInfo() {
         }))
 
     const metaData = data?.meta;
+    const {authUser} = useAuth();
+    if (authUser?.type !== "COMPANYUSER") return <ErrorState />
+    if (authUser?.uiRole !== "ADMIN") return <ErrorState />
 
     if (bookingDataLoadingState) return <LoadingState />;
 

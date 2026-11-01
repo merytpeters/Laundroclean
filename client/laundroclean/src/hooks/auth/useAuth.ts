@@ -17,17 +17,25 @@ export function useRegisterUser() {
 }
 
 export function useLoginUser() {
-    const { setAuthUser } = useAuth();
+    const { setAuthUser, setAuthProfile, refetch } = useAuth();
     const router = useRouter();
     return useMutation({
         mutationFn: loginUserService,
 
-        onSuccess(data) {
+        async onSuccess(data) {
             setAccessToken(data?.user.accessToken ?? null);
             toast.success(data?.message);
             const user = data?.user.user;
             if (!user) return;
-            setAuthUser(user)
+            setAuthUser(user);
+
+            try {
+                const result = await refetch();
+                setAuthProfile(result.data?.profile ?? null);
+            } catch {
+                setAuthProfile(null);
+            }
+
             if (user.type === "CLIENT") {
                 router.push("/user/dashboard");
             } else if (user.uiRole === "ADMIN") {
@@ -90,7 +98,7 @@ export function useResetPassword() {
 }
 
 export function useLogout() {
-    const { setAuthUser } = useAuth();
+    const { setAuthUser, setAuthProfile } = useAuth();
     const router = useRouter();
     return useMutation({
         mutationFn: logoutService,
@@ -98,6 +106,7 @@ export function useLogout() {
         onSuccess(data) {
             clearAccessToken();
             setAuthUser(null);
+            setAuthProfile(null);
             if (data) {
                 toast.success(data);
             }

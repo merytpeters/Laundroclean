@@ -4,13 +4,16 @@ import { NotFoundError } from '../../middlewares/errorHandler.js';
 
 const now = () => new Date();
 
-const getPromoByCodeForService = async (serviceId: string, code: string): Promise<PromoCode | null> => {
+const getPromoByCodeForService = async (code: string, serviceId?: string): Promise<PromoCode | null> => {
   const n = now();
   const promo = await prisma.promoCode.findFirst({
     where: {
-      serviceId,
       code: String(code).toUpperCase(),
       isActive: true,
+      OR: [
+        ...(serviceId ? [{ serviceId }]: []),
+        { serviceId: null}
+      ],
       AND: [
         {
           OR: [
@@ -56,7 +59,7 @@ const calculateDiscount = (totalAmount: number, promo: PromoCode | null): { disc
 const createPromo = async (data: {
   code: string;
   description?: string | null;
-  serviceId: string;
+  serviceId?: string | null;
   type: 'PERCENTAGE' | 'FIXED_AMOUNT';
   value: number | string;
   currency?: string | null;
@@ -66,29 +69,62 @@ const createPromo = async (data: {
   usageLimit?: number | null;
   perUserLimit?: number | null;
 }) => {
-  const promo = await prisma.promoCode.create({ data: {
-    code: data.code.toUpperCase(),
-    description: data.description ?? null,
-    serviceId: data.serviceId,
-    type: data.type,
-    value: data.value as any,
-    currency: data.currency ? (data.currency as any) : null,
-    isActive: data.isActive ?? true,
-    startsAt: data.startsAt ?? null,
-    expiresAt: data.expiresAt ?? null,
-    usageLimit: data.usageLimit ?? null,
-    perUserLimit: data.perUserLimit ?? null,
-  }});
+  const promo = await prisma.promoCode.create({
+    data: {
+      code: data.code.toUpperCase(),
+      description: data.description ?? null,
+      serviceId: data.serviceId ?? null,
+      type: data.type,
+      value: data.value as any,
+      currency: data.currency ? (data.currency as any) : null,
+      isActive: data.isActive ?? true,
+      startsAt: data.startsAt ?? null,
+      expiresAt: data.expiresAt ?? null,
+      usageLimit: data.usageLimit ?? null,
+      perUserLimit: data.perUserLimit ?? null,
+    }
+  });
   return promo;
 };
 
-const getPromos = async () => {
-  const promos = prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } });
+const getPromos = async (userId?: string) => {
+  const include: Prisma.PromoCodeInclude = {
+    service: {
+      select: {
+        name: true,
+      }
+    },
+    promoUsages: userId
+      ? { 
+        where: 
+        { userId: userId } 
+      }
+      : true,
+  };
+
+  const promos = prisma.promoCode.findMany({
+    orderBy: { createdAt: 'desc' },
+    include,
+  });
   return promos;
 };
 
-const getPromoById = async (id: string) => {
-  return prisma.promoCode.findUnique({ where: { id } });
+const getPromoById = async (id: string, userId?: string) => {
+  const include: Prisma.PromoCodeInclude = {
+    service: {
+      select: {
+        name: true,
+      }
+    },
+    promoUsages: userId
+      ? { where: { userId: userId } }
+      : true,
+  };
+  const promo = prisma.promoCode.findUnique({
+    where: { id },
+    include
+  });
+  return promo;
 };
 
 const updatePromo = async (id: string, payload: any) => {
@@ -103,21 +139,34 @@ const softDeletePromo = async (id: string) => {
   await prisma.promoCode.update({ where: { id }, data: { isActive: false, deletedAt: new Date() } });
 };
 
-const restorePromo =  async (
+const restorePromo = async (
   id: string
 ) => {
-  const promocode = await prisma.promoCode.findUnique({ where: {id}});
+  const promocode = await prisma.promoCode.findUnique({ where: { id } });
 
   if (!promocode) throw new NotFoundError('Promo code not found');
 
   const restored = await prisma.promoCode.update({
-    where: {id},
+    where: { id },
     data: {
       isActive: true,
       deletedAt: null
     }
   });
   return restored;
+};
+
+const deletePromo = async (
+  ids: string[]
+) => {
+  const promocodes = await prisma.promoCode.deleteMany({
+    where: {
+      id: {
+        in: ids
+      }
+    }
+  });
+  return `${promocodes.count} promocodes have been hard deleted and no longer exists in the database`;
 };
 
 export default {
@@ -129,6 +178,7 @@ export default {
   getPromoById,
   updatePromo,
   softDeletePromo,
-  restorePromo
+  restorePromo,
+  deletePromo
 };
 
